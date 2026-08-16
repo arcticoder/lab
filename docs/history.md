@@ -2707,18 +2707,22 @@ It's a quad analog switch—four independent switches controlled by digital logi
 **Is this what you want to build next, or keep jumping?**
 <!-- ------ -->
 ---
-Structure is in place and all three netlists verified against ngspice. Here's what's set up in lab/, matching the pico repo's per-circuit folder conventions:
+Structure is in place and all three netlists verified against ngspice. Here's what's set up in `lab/`, matching the pico repo's per-circuit folder conventions:
 
-psu_ultralow_v1/ — single AA + 50 mA polyfuse (bootstrap tier)
-psu_low_v2/ — 2×AA + Schottky + 500 mA polyfuse
-psu_medlow_usbc/ — 5V USB-C + 500 mA polyfuse + bypass cap
-Each has a .spice netlist (ran clean through ngspice -b), a generated schematic.png (via a copy of tools/spice_to_schematic.py), a breadboard.md wiring guide, and a README.md with build/simulate/expected-behavior sections — the same layout as pico/gpio_led_basic/. A top-level README.md documents the repo structure and points to docs/history.md for the design reasoning, without carrying over the pico repo's electrogravitics research framing.
+-   **`psu_ultralow_v1/`** --- single AA + 50 mA polyfuse (bootstrap tier)
+-   **`psu_low_v2/`** --- 2×AA + Schottky + 500 mA polyfuse
+-   **`psu_medlow_usbc/`** --- 5V USB-C + 500 mA polyfuse + bypass cap
 
-Everything else in the dependency diagram (safety circuits, tiers 1–9) is designed conceptually but has no concrete netlist yet, so per your answer I left those out rather than scaffolding empty folders — they'll get a folder here once a circuit actually gets a netlist.
+Each has a `.spice` netlist (ran clean through `ngspice -b`), a generated `schematic.png` (via a copy of `tools/spice_to_schematic.py`), a `breadboard.md` wiring guide, and a `README.md` with build/simulate/expected-behavior sections --- the same layout as `pico/gpio_led_basic/`. A top-level `README.md` documents the repo structure and points to `docs/history.md` for the design reasoning, without carrying over the pico repo's electrogravitics research framing.
 
-Nothing's committed yet — want me to commit this, or do you want to look it over first?
+Everything else in the dependency diagram (safety circuits, tiers 1--9) is designed conceptually but has no concrete netlist yet, so per your answer I left those out rather than scaffolding empty folders --- they'll get a folder here once a circuit actually gets a netlist.
+
+Nothing's committed yet --- want me to commit this, or do you want to look it over first?
 <!-- ------ -->
 ---
 The PNGs are now properly ignored, and README docs (top-level + all three circuits) explain they're regenerated via tools/spice_to_schematic.py rather than committed. Changes are staged in the working tree but not committed — let me know if you'd like me to commit these.
+<!-- ------ -->
+---
+The PNGs are now properly ignored, and README docs (top-level + all three circuits) explain they're regenerated via `tools/spice_to_schematic.py` rather than committed. Changes are staged in the working tree but not committed --- let me know if you'd like me to commit these.
 <!-- ------ -->
 ---
