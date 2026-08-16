@@ -1,0 +1,33 @@
+* psu_low_v2 — 2x AA battery (series) + 1N5817 Schottky + 500 mA polyfuse
+*
+* Circuit topology:
+*   2x AA cell in series (3.0V, ~0.1 ohm internal R each) -> Dschottky
+*     -> Rfuse (500 mA polyfuse, cold state) -> Rload -> GND
+*
+* Spec target: 3.0 V, <300 mA, ~0.9 W (docs/spacetime_circuits_dependency.md,
+* psu_low subgraph — upgrade path from psu_ultralow_v1)
+*
+* Schottky (1N5817) protects against reverse-polarity wiring; adds ~0.35V
+* drop at 300 mA. Polyfuse (RXEF050) approximated by cold-state resistance.
+*
+* Load swept from 5 to 30 ohm to show the V/I curve either side of the
+* 300 mA design point (Rload = 10 ohm -> ~260 mA after diode drop).
+
+Vbatt1  1 0 DC 1.5
+Vbatt2  2 1 DC 1.5             ; second cell stacked on top of the first
+Dschottky 2 3 D_1N5817
+Rfuse   3 4 0.5                ; 500 mA polyfuse, cold-state resistance
+Rload   4 0 10                 ; nominal load: ~2.65V / 10R ~= 265 mA
+
+.model D_1N5817 D(IS=1e-6 RS=0.03 N=1.05 BV=20 IBV=1e-3)
+
+.control
+op
+print v(2) v(3) v(4) i(Vbatt2)
+
+dc Rload 5 30 5
+print v(4)
+quit
+.endc
+
+.end

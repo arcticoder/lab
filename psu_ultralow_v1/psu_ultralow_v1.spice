@@ -1,0 +1,32 @@
+* psu_ultralow_v1 — Single AA battery + 50 mA slow-blow polyfuse
+*
+* Circuit topology:
+*   AA cell (1.5V, ~0.1 ohm internal R) -> Rfuse (50 mA polyfuse, cold state)
+*     -> Rload -> GND
+*
+* Spec target: 1.5 V, ~100 mA, <0.15 W (bootstrap tier — see
+* docs/spacetime_circuits_dependency.md, psu_ultralow subgraph)
+*
+* Polyfuse (Littelfuse RXEF005 / 50 mA slow-blow) is approximated here by its
+* cold-state resistance (~0.5 ohm). This netlist finds the steady-state
+* operating point; it does not model the PTC trip transient.
+*
+* Load swept from 100 ohm down to 5 ohm to show the V/I curve either side of
+* the 100 mA design point (Rload = 15 ohm -> ~97 mA).
+
+Vbatt   1 0 DC 1.5
+Rbatt   1 2 0.1                ; AA internal resistance
+Rfuse   2 3 0.5                ; 50 mA polyfuse, cold-state resistance
+Rload   3 0 15                 ; nominal load: 1.5V / 15R ~= 100 mA
+
+.control
+op
+print v(2) v(3) i(Vbatt)
+
+* Sweep the load to see how output voltage and current track a real AA cell
+dc Rload 5 100 5
+print v(3)
+quit
+.endc
+
+.end

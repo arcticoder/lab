@@ -1,0 +1,28 @@
+* psu_medlow_usbc — 5V USB-C wall adapter + 500 mA polyfuse + bypass cap
+*
+* Circuit topology:
+*   USB-C VBUS (5V, regulated by the wall adapter) -> Rfuse
+*     -> Cbypass (100 nF, output to GND) -> Rload -> GND
+*
+* Spec target: 5V USB path of psu_medlow (docs/spacetime_circuits_dependency.md
+* — "Medium: 5V USB + Regulator OR 12V" subgraph). No local regulation: the
+* wall adapter already regulates to 5V, so this is fuse + bypass only.
+*
+* Load swept from 5 to 50 ohm to show behaviour around the 500 mA fuse
+* threshold (Rload = 10 ohm -> ~500 mA, right at the trip point by design).
+
+Vusb    1 0 DC 5.0
+Rfuse   1 2 0.5                ; 500 mA polyfuse, cold-state resistance
+Cbypass 2 0 100n               ; smooths USB power-rail ripple
+Rload   2 0 10                 ; nominal load: ~5V / 10R ~= 500 mA
+
+.control
+op
+print v(2) i(Vusb)
+
+dc Rload 5 50 5
+print v(2)
+quit
+.endc
+
+.end
