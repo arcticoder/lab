@@ -17,7 +17,7 @@ conversation.
 | File | Purpose |
 |------|---------|
 | `psu_low_v2.spice` | ngspice netlist — operating point + load sweep |
-| `schematic.png` | Generated schematic image |
+| `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `breadboard.md` | Step-by-step breadboard wiring |
 
 ---

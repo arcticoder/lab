@@ -13,8 +13,9 @@ generated schematic, and a breadboard wiring guide.
 
 ## Schematics
 
-Each project has a `schematic.png` generated from its `.spice` netlist. To
-regenerate any schematic after editing the netlist:
+Each project can render a `schematic.png` from its `.spice` netlist.
+`schematic.png` is **not committed** (see `.gitignore`) — it's a build
+artifact, regenerated on demand:
 
 ```bash
 # from the repo root
@@ -75,19 +76,19 @@ built — folders for those will show up here as they get a netlist to test.
 ```
 psu_ultralow_v1/            single AA + 50 mA polyfuse (built)
     psu_ultralow_v1.spice
-    schematic.png
+    schematic.png            (generated, gitignored)
     breadboard.md
     README.md
 
 psu_low_v2/                 2xAA + Schottky + 500 mA polyfuse (built)
     psu_low_v2.spice
-    schematic.png
+    schematic.png            (generated, gitignored)
     breadboard.md
     README.md
 
 psu_medlow_usbc/            5V USB-C + 500 mA polyfuse + bypass cap (built)
     psu_medlow_usbc.spice
-    schematic.png
+    schematic.png            (generated, gitignored)
     breadboard.md
     README.md
 

@@ -2719,3 +2719,6 @@ Everything else in the dependency diagram (safety circuits, tiers 1–9) is desi
 Nothing's committed yet — want me to commit this, or do you want to look it over first?
 <!-- ------ -->
 ---
+The PNGs are now properly ignored, and README docs (top-level + all three circuits) explain they're regenerated via tools/spice_to_schematic.py rather than committed. Changes are staged in the working tree but not committed — let me know if you'd like me to commit these.
+<!-- ------ -->
+---

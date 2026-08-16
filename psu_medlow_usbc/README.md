@@ -16,7 +16,7 @@ conversation.
 | File | Purpose |
 |------|---------|
 | `psu_medlow_usbc.spice` | ngspice netlist — operating point + load sweep |
-| `schematic.png` | Generated schematic image (note: the schematic tool only draws V/R/D elements, so the bypass cap isn't rendered — see the netlist for the full circuit) |
+| `schematic.png` | Generated schematic image, gitignored — see repo `README.md` (note: the schematic tool only draws V/R/D elements, so the bypass cap isn't rendered — see the netlist for the full circuit) |
 | `breadboard.md` | Step-by-step breadboard wiring |
 
 ---

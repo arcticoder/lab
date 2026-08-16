@@ -1,0 +1,11 @@
+# --- Generated schematics ---
+# Deterministically regenerated from each circuit's .spice netlist via
+# tools/spice_to_schematic.py — see README.md "Schematics" section.
+schematic.png
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py[cod]
