@@ -2,11 +2,13 @@
 
 ## Circuit overview
 
-No new power circuit — this probes an *existing* PSU build
+No new power circuit — this probes whichever PSU circuit you build first
 ([psu_ultralow_v1](../power_supplies/psu_ultralow_v1/) or
 [psu_low_v2](../power_supplies/psu_low_v2/)) with a Raspberry Pi Pico ADC
-input. The Pico is powered by the PC's USB port, independent of the circuit
-under test.
+input. Neither this circuit nor its prerequisite PSU has been built yet;
+build the PSU first, per its own `breadboard.md`, then come back here. The
+Pico is powered by the PC's USB port, independent of the circuit under
+test.
 
 **Equivalent to:** `fuse_test_voltmeter.spice`
 
@@ -19,13 +21,13 @@ under test.
 | Raspberry Pi Pico | RP2040 | 1 |
 | Micro USB cable | data-capable, to PC | 1 |
 | Dupont M-F jumper | 22cm | 2 |
-| psu_ultralow_v1 or psu_low_v2 | built and wired | 1 |
-| Test load resistor | 10 Ω | 1 (already on the PSU breadboard) |
+| psu_ultralow_v1 or psu_low_v2 | build and wire first | 1 |
+| Test load resistor | 10 Ω | 1 (part of the PSU breadboard build) |
 
 No new parts beyond what's already in the psu_ultralow_v1 / psu_low_v2
-builds — see [docs/history.md](../docs/history.md) (2026-08-15 10:41) for
-why 10 Ω is reused for both fuse ratings instead of ordering a dedicated
-value.
+parts lists — see [docs/history.md](../docs/history.md) (2026-08-15 10:41)
+for why 10 Ω is reused for both fuse ratings instead of ordering a
+dedicated value.
 
 ---
 
@@ -38,7 +40,10 @@ connection `main.py` prints to — no separate power source for the Pico.
 
 ### 2. Probe the test load
 
-The fuse under test is already wired on its own breadboard:
+The fuse under test needs to be wired first on its own breadboard, per
+[psu_ultralow_v1/breadboard.md](../power_supplies/psu_ultralow_v1/breadboard.md)
+or
+[psu_low_v2/breadboard.md](../power_supplies/psu_low_v2/breadboard.md):
 `battery → fuse → 10 Ω load resistor → ground`.
 
 | From | To | Wire |

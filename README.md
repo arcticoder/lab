@@ -49,7 +49,7 @@ nominal load, then sweeps the load resistor to show the V/I curve.
 
 ---
 
-## Circuits (built)
+## Circuits (designed, not yet built)
 
 | Folder | Circuit | Tier |
 |--------|---------|------|
@@ -58,10 +58,11 @@ nominal load, then sweeps the load resistor to show the V/I curve.
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
 | `fuse_test_voltmeter/` | Pico ADC probe, streams voltage over USB to validate a polyfuse before it's trusted near an LED | bootstrap / concurrent measurement tool |
 
-Everything else in `docs/spacetime_circuits_dependency.md` (safety
-monitoring, tiers 1–9, remaining bootstrap measurement tools) is designed
-but not yet built — folders for those will show up here as they get a
-netlist to test.
+Each of these has a SPICE netlist, a generated schematic, and a breadboard
+wiring guide, but none have been physically assembled yet. Everything else
+in `docs/spacetime_circuits_dependency.md` (safety monitoring, tiers 1–9,
+remaining bootstrap measurement tools) hasn't been worked out to netlist
+stage at all — folders for those will show up here as they get one.
 
 ---
 
@@ -85,25 +86,25 @@ netlist to test.
 
 ```
 power_supplies/
-    psu_ultralow_v1/         single AA + 50 mA polyfuse (built)
+    psu_ultralow_v1/         single AA + 50 mA polyfuse (designed, not built)
         psu_ultralow_v1.spice
         schematic.png         (generated, gitignored)
         breadboard.md
         README.md
 
-    psu_low_v2/               2xAA + Schottky + 500 mA polyfuse (built)
+    psu_low_v2/               2xAA + Schottky + 500 mA polyfuse (designed, not built)
         psu_low_v2.spice
         schematic.png         (generated, gitignored)
         breadboard.md
         README.md
 
-    psu_medlow_usbc/          5V USB-C + 500 mA polyfuse + bypass cap (built)
+    psu_medlow_usbc/          5V USB-C + 500 mA polyfuse + bypass cap (designed, not built)
         psu_medlow_usbc.spice
         schematic.png         (generated, gitignored)
         breadboard.md
         README.md
 
-fuse_test_voltmeter/         Pico ADC voltmeter, validates polyfuses via USB (built)
+fuse_test_voltmeter/         Pico ADC voltmeter, validates polyfuses via USB (designed, not built)
     fuse_test_voltmeter.spice
     schematic.png             (generated, gitignored)
     breadboard.md

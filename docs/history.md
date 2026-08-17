@@ -2735,3 +2735,9 @@ Done. Summary:
 Nothing is committed --- it's all staged, ready for you to review or ask me to commit.
 <!-- ------ -->
 ---
+Updated wording in both files to reflect that none of the circuits have actually been built yet:
+
+-   **`lab/README.md`**: renamed the table section to "Circuits (designed, not yet built)," clarified that each has a netlist/schematic/breadboard guide but no physical assembly, and swapped the `(built)` tags in the repo-structure tree to `(designed, not built)`.
+-   **`lab/fuse_test_voltmeter/breadboard.md`**: reworded the circuit overview and parts table to say the prerequisite PSU (and this circuit itself) still needs to be built and wired, changed "already wired on its own breadboard" to instructions to wire it first per the PSU's own `breadboard.md`, and fixed the "builds" → "parts lists" wording so it doesn't imply an existing assembly.
+<!-- ------ -->
+---
