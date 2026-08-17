@@ -2726,3 +2726,12 @@ The PNGs are now properly ignored, and README docs (top-level + all three circui
 The PNGs are now properly ignored, and README docs (top-level + all three circuits) explain they're regenerated via `tools/spice_to_schematic.py` rather than committed. Changes are staged in the working tree but not committed --- let me know if you'd like me to commit these.
 <!-- ------ -->
 ---
+Done. Summary:
+
+-   **Reorganized**: `git mv`'d the three PSU circuits into `power_supplies/` (psu\_ultralow\_v1, psu\_low\_v2, psu\_medlow\_usbc), fixing their relative doc links.
+-   **New circuit**: `fuse_test_voltmeter/` --- a Pico ADC probe (GP26 vs GND) powered/read over USB from this PC, purpose-built to prove a polyfuse trips and resets correctly before you trust it in front of an LED. Includes `README.md`, `breadboard.md`, a verified `fuse_test_voltmeter.spice` netlist (ran clean through ngspice, matches hand-calculated cold/tripped voltages for both the v1 and v2 PSU tiers), and `main.py` --- MicroPython styled after `pico/gpio_analog_sensing`'s conventions, which the README also links to for anyone wanting fancier ADC filtering/calibration.
+-   Updated the top-level `README.md` (paths, circuits table, repo-structure tree, notes) to match, and noted that general-purpose Pico work belongs in the sibling `pico/` repo while this repo now carries the one firmware file it actually needs.
+
+Nothing is committed --- it's all staged, ready for you to review or ask me to commit.
+<!-- ------ -->
+---

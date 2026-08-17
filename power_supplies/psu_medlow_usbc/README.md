@@ -5,8 +5,8 @@ adapter ripple. No local regulation — the wall adapter already regulates to
 5V, so this is fuse + bypass only.
 
 Spec: 5V USB path of the medium-low tier. See
-[docs/spacetime_circuits_dependency.md](../docs/spacetime_circuits_dependency.md)
-(`psu_medlow` node) and [docs/history.md](../docs/history.md) for the design
+[docs/spacetime_circuits_dependency.md](../../docs/spacetime_circuits_dependency.md)
+(`psu_medlow` node) and [docs/history.md](../../docs/history.md) for the design
 conversation.
 
 ---

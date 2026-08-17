@@ -7,7 +7,10 @@ See [docs/history.md](docs/history.md) for the design conversation behind
 each circuit — component choices, tradeoffs, and dead ends included.
 
 Each circuit gets its own top-level folder with a SPICE netlist, a
-generated schematic, and a breadboard wiring guide.
+generated schematic, and a breadboard wiring guide. Power supplies are
+grouped under `power_supplies/`; other circuit categories (measurement
+tools, safety monitoring, etc.) get their own top-level folders as they're
+built.
 
 ---
 
@@ -19,7 +22,7 @@ artifact, regenerated on demand:
 
 ```bash
 # from the repo root
-python tools/spice_to_schematic.py psu_ultralow_v1/psu_ultralow_v1.spice
+python tools/spice_to_schematic.py power_supplies/psu_ultralow_v1/psu_ultralow_v1.spice
 ```
 
 Output is written as `schematic.png` in the same directory as the `.spice`
@@ -35,9 +38,10 @@ to predict voltages and currents before building.
 
 ```bash
 # from the repo root
-ngspice -b psu_ultralow_v1/psu_ultralow_v1.spice
-ngspice -b psu_low_v2/psu_low_v2.spice
-ngspice -b psu_medlow_usbc/psu_medlow_usbc.spice
+ngspice -b power_supplies/psu_ultralow_v1/psu_ultralow_v1.spice
+ngspice -b power_supplies/psu_low_v2/psu_low_v2.spice
+ngspice -b power_supplies/psu_medlow_usbc/psu_medlow_usbc.spice
+ngspice -b fuse_test_voltmeter/fuse_test_voltmeter.spice
 ```
 
 Run from the repo root. Each netlist prints an operating point at its
@@ -49,22 +53,28 @@ nominal load, then sweeps the load resistor to show the V/I curve.
 
 | Folder | Circuit | Tier |
 |--------|---------|------|
-| `psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap) |
-| `psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` |
-| `psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
+| `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap) |
+| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` |
+| `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
+| `fuse_test_voltmeter/` | Pico ADC probe, streams voltage over USB to validate a polyfuse before it's trusted near an LED | bootstrap / concurrent measurement tool |
 
 Everything else in `docs/spacetime_circuits_dependency.md` (safety
-monitoring, tiers 1–9, bootstrap measurement tools) is designed but not yet
-built — folders for those will show up here as they get a netlist to test.
+monitoring, tiers 1–9, remaining bootstrap measurement tools) is designed
+but not yet built — folders for those will show up here as they get a
+netlist to test.
 
 ---
 
 ## Notes
 
-- No Raspberry Pi Pico firmware lives in this repo. Where a build uses the
-  Pico as a validation instrument (ADC probing, fuse trip tests), that's
-  called out in the circuit's `README.md` and covered in `docs/history.md`
-  — code, if any, stays local to the test session rather than checked in.
+- `fuse_test_voltmeter/` is the one circuit here with Pico firmware
+  (`main.py`) checked in — everywhere else the Pico is used purely as an ad
+  hoc probe, per the design conversation in `docs/history.md`. For more
+  capable Pico ADC work (filtering, calibration curves, noise
+  characterization), see the sibling `pico/` repo's
+  `gpio_analog_sensing/` — that repo isn't limited to one project, so
+  general-purpose Pico infrastructure lives there rather than being
+  duplicated here.
 - See `docs/history.md` for the reasoning behind part substitutions
   (e.g. why the fuse is 50 mA and not 500 mA, why the AA holder is two
   single-cell holders instead of one 2×AA holder).
@@ -74,22 +84,30 @@ built — folders for those will show up here as they get a netlist to test.
 ## Repo structure
 
 ```
-psu_ultralow_v1/            single AA + 50 mA polyfuse (built)
-    psu_ultralow_v1.spice
-    schematic.png            (generated, gitignored)
-    breadboard.md
-    README.md
+power_supplies/
+    psu_ultralow_v1/         single AA + 50 mA polyfuse (built)
+        psu_ultralow_v1.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        README.md
 
-psu_low_v2/                 2xAA + Schottky + 500 mA polyfuse (built)
-    psu_low_v2.spice
-    schematic.png            (generated, gitignored)
-    breadboard.md
-    README.md
+    psu_low_v2/               2xAA + Schottky + 500 mA polyfuse (built)
+        psu_low_v2.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        README.md
 
-psu_medlow_usbc/            5V USB-C + 500 mA polyfuse + bypass cap (built)
-    psu_medlow_usbc.spice
-    schematic.png            (generated, gitignored)
+    psu_medlow_usbc/          5V USB-C + 500 mA polyfuse + bypass cap (built)
+        psu_medlow_usbc.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        README.md
+
+fuse_test_voltmeter/         Pico ADC voltmeter, validates polyfuses via USB (built)
+    fuse_test_voltmeter.spice
+    schematic.png             (generated, gitignored)
     breadboard.md
+    main.py
     README.md
 
 docs/

@@ -5,8 +5,8 @@ bootstrap power tier — the first PSU in the build order, with no regulation
 and no adjustability, just a battery and a resettable fuse.
 
 Spec: 1.5 V, ~100 mA, <0.15 W. See
-[docs/spacetime_circuits_dependency.md](../docs/spacetime_circuits_dependency.md)
-(`psu_ultralow` node) and [docs/history.md](../docs/history.md) for the
+[docs/spacetime_circuits_dependency.md](../../docs/spacetime_circuits_dependency.md)
+(`psu_ultralow` node) and [docs/history.md](../../docs/history.md) for the
 design conversation.
 
 ---

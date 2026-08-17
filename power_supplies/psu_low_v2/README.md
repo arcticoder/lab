@@ -6,8 +6,8 @@ protection, and a 500 mA slow-blow polyfuse. Upgrade path from
 headroom.
 
 Spec: 3.0 V, <300 mA, ~0.9 W. See
-[docs/spacetime_circuits_dependency.md](../docs/spacetime_circuits_dependency.md)
-(`psu_low` node) and [docs/history.md](../docs/history.md) for the design
+[docs/spacetime_circuits_dependency.md](../../docs/spacetime_circuits_dependency.md)
+(`psu_low` node) and [docs/history.md](../../docs/history.md) for the design
 conversation.
 
 ---

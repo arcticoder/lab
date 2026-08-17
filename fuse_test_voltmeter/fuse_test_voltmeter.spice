@@ -1,0 +1,53 @@
+* fuse_test_voltmeter — Pico ADC probe across a polyfuse under test
+*
+* This isn't a powered circuit of its own — the Pico gets its power from the
+* PC's USB port and just senses. What's modeled here is the *fuse under
+* test* (reusing the psu_ultralow_v1 and psu_low_v2 topologies) with the
+* ADC probe as a high-impedance tap across the fuse, so you can see what the
+* Pico should read before and after a trip.
+*
+* Circuit topology (per tier under test):
+*   Vbatt -> Rfuse -> Rload (10 ohm, shared test load) -> GND
+*                        ^
+*              [Pico ADC probe (GP26) here, GND to the load's far leg]
+*
+* Rfuse is modeled twice per tier: cold-state (normal) and tripped-state
+* (approximate high-R PTC behavior once it's heated past threshold). As the
+* fuse's resistance climbs, the voltage at this node collapses — that's the
+* signal the Pico is watching for. The Pico's ADC input impedance
+* (~100 kOhm) is high enough relative to these fuse/load values that it
+* doesn't need to be modeled as a load.
+*
+* v1: 1.5V, 50 mA polyfuse (RXEF005), 10 ohm test load -> ~150 mA forced,
+*     3x the trip threshold (docs/history.md, 2026-08-15 10:41)
+* v2: 3.0V, 500 mA polyfuse (RXEF050), 10 ohm test load -> ~300 mA forced,
+*     right at the trip threshold
+
+* --- v1 (psu_ultralow_v1), fuse cold ---
+Vbatt1      10 0  DC 1.5
+Rfuse1_cold 10 11  0.5
+Rload1      11 0   10
+
+* --- v1, fuse tripped (approx. high-R PTC state) ---
+Rfuse1_trip 10 12  100
+Rload1b     12 0   10
+
+* --- v2 (psu_low_v2), fuse cold ---
+Vbatt2      20 0  DC 3.0
+Rfuse2_cold 20 21  0.5
+Rload2      21 0   10
+
+* --- v2, fuse tripped ---
+Rfuse2_trip 20 22  100
+Rload2b     22 0   10
+
+.control
+op
+echo --- v1 (1.5V, 50 mA fuse): cold vs. tripped ADC-probe voltage ---
+print v(11) v(12)
+echo --- v2 (3.0V, 500 mA fuse): cold vs. tripped ADC-probe voltage ---
+print v(21) v(22)
+quit
+.endc
+
+.end
