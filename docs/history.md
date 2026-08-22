@@ -2767,3 +2767,34 @@ Biggest ticket items: lock-in amplifier ($120), ADC modules ($60–80 total), hi
 Realistic timeline at newbie pace: 6–12 months to build and validate the full workbench.
 <!-- ------ -->
 ---
+Summary
+-------
+
+**Task 1** was already done in a prior commit (`daae9c3`) --- the Zone.Identifier file isn't tracked and `*Zone.Identifier` is gitignored. I also deleted two more stray `Zone.Identifier` sidecar files that had accumulated on disk in `docs/manuals/`.
+
+**Tasks 2--3** --- ingested the 9 on-order items and the 1 received breadboard:
+
+-   Converted the 3 manual PDFs with `markitdown` into tracked `.md` files in [lab/docs/manuals/](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/manuals/) (source PDFs stay gitignored). The Schottky-diode PDF is scanned/image-only with no text layer --- noted that explicitly and used the listing description instead.
+-   New [lab/docs/orders.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/orders.md): received vs. on-order log, cross-referenced to build tiers.
+-   New [lab/docs/parts\_reference.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/parts_reference.md): pinouts/specs for CD4066B, LM358, 1N5817, RXEF polyfuse naming, breadboard variants, USB-C breakout board (flagged a likely `D+`/`U+` transcription slip in the photo-derived pinout).
+-   New [lab/docs/kb/ordering\_ingestion\_notes.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/kb/ordering_ingestion_notes.md): LLM-only process notes (markitdown's silent-empty-output-on-scanned-PDF gotcha, AliExpress multi-SKU listing ambiguity, gitignore behavior, cross-repo inventory).
+-   Updated [lab/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/README.md) to point at the new docs.
+-   Updated [pico/docs/inventory.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/pico/docs/inventory.md): added the received black SYB-170 mini breadboard to the Prototyping table, and a new "On Order" section for the 9 pending items.
+
+Nothing has been committed in either repo --- just let me know if you want that done.
+
+**Task 4 --- next order to hit AliExpress's $10 minimum:**
+
+Your PSU protection tiers (`psu_ultralow`/`psu_low`) are now well-stocked from this order. The next gap per `spacetime_circuits_dependency.md` is **Tier 1 (Foundational)** plus the still-missing `psu_medlow` fast-blow fuse. `spacetime_lab_budget.md` already has AliExpress-based estimates for these:
+
+| Item | Qty | Est. cost | Fills |
+| --- |  --- |  --- |  --- |
+| TL431 precision voltage reference | 5--10 | ~$2--3 | Tier 1 `REF` |
+| --- |  --- |  --- |  --- |
+| 555 Timer ICs | 10 | ~$1 | Tier 1 `OSC` / bootstrap frequency counter |
+| Fast-blow fuses (2A, 5×20mm glass/ceramic) + inline holder | 10--20 | ~$2--3 | `psu_medlow` protection (currently missing) |
+| Trim potentiometers (10-turn, 10k) | 10--20 | ~$2--3 | Tier 1 oscillator tuning / reference trim |
+
+Any 3 of these four comfortably clears $10 and gets you the parts to start Tier 1 once the current order lands.
+<!-- ------ -->
+---

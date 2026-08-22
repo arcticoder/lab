@@ -79,6 +79,11 @@ stage at all — folders for those will show up here as they get one.
 - See `docs/history.md` for the reasoning behind part substitutions
   (e.g. why the fuse is 50 mA and not 500 mA, why the AA holder is two
   single-cell holders instead of one 2×AA holder).
+- See `docs/orders.md` for what's actually been ordered/received from
+  AliExpress against the `spacetime_lab_budget.md` estimates, and
+  `docs/parts_reference.md` for pinouts/specs on those parts. Physical part
+  counts are also mirrored into the sibling `pico/` repo's
+  `pico/docs/inventory.md`, the shared master inventory across both repos.
 
 ---
 
@@ -114,6 +119,11 @@ fuse_test_voltmeter/         Pico ADC voltmeter, validates polyfuses via USB (de
 docs/
     history.md                          design conversation log
     spacetime_circuits_dependency.md    full dependency diagram (mermaid)
+    spacetime_lab_budget.md             parts list & budget estimate
+    orders.md                           AliExpress order log (received / on order)
+    parts_reference.md                  pinouts & specs for ordered parts without a datasheet on file
+    manuals/                            converted (markitdown) part manuals; source PDFs gitignored
+    kb/                                 process notes for future LLM sessions, not end-user docs
 
 tools/
     spice_to_schematic.py   generate schematic.png from a .spice file
