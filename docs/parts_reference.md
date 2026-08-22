@@ -104,10 +104,14 @@ higher than hold current by some multiple, and time-dependent) — check the
 Littelfuse/Bourns datasheet for the exact trip curve before relying on a
 specific trip threshold.
 
-Both values ordered:
+Both values received 2026-08-21 (20 each):
 
 - RXEF005 (0.05A / 50mA) — `psu_ultralow` tier
 - RXEF050 (0.5A / 500mA) — `psu_low` tier
+
+Not yet validated per-unit — see [orders.md](orders.md#polyfuses-rxef005-and-rxef050)
+and [fuse_test_voltmeter](../fuse_test_voltmeter/) for the per-fuse
+trip/reset check before trusting one near an LED.
 
 ---
 
@@ -115,6 +119,9 @@ Both values ordered:
 
 See [manuals/schottky-rectifier-diodes-in5817-1a20v-do-41.md](manuals/schottky-rectifier-diodes-in5817-1a20v-do-41.md).
 1A / 20V, DO-41, ~0.45V forward drop. Cathode-banded end.
+
+20 received 2026-08-21, not yet validated per-unit — see
+[orders.md](orders.md#1n5817-schottky-diode-1a-20v-do-41).
 
 ---
 
@@ -125,3 +132,5 @@ ABS housing, red/black lead wires. Manual's only real content: insert
 battery per polarity marking, avoid humid environments, don't let bare
 lead ends touch once a battery is loaded (short-circuit risk), wires are
 thin/low-current rated only.
+
+5 received 2026-08-21, ready to use — no per-unit validation needed.

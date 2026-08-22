@@ -2798,3 +2798,17 @@ Your PSU protection tiers (`psu_ultralow`/`psu_low`) are now well-stocked from t
 Any 3 of these four comfortably clears $10 and gets you the parts to start Tier 1 once the current order lands.
 <!-- ------ -->
 ---
+All the changes are in place across both repos. Nothing has been committed --- let me know if you'd like that done.
+
+**Summary of what changed:**
+
+1.  **`pico/docs/inventory.md`** --- added a new "Power Supply & Protection Components" section for the received RXEF005/RXEF050 polyfuses, 1N5817 diode, and AA battery holder (moved out of "On Order"), each flagged with its actual next step (test vs. ready-to-use).
+2.  **`lab/docs/orders.md`** --- mirrored the same move from "On order" to "Received," with per-item validation notes and links to `fuse_test_voltmeter/`.
+3.  **`lab/docs/parts_reference.md`** --- updated wording from "ordered" to "received 2026-08-21" with validation pointers.
+4.  **`lab/README.md`** --- added a note pointing to `pico/README.md § Running on real hardware` for the WSL/`usbipd`/`mpremote` setup, rather than duplicating it --- that's what you'll need whenever you run `fuse_test_voltmeter/main.py` against the real polyfuses/diodes.
+5.  **`lab/docs/spacetime_circuits_dependency.md`** --- reworded the `PASSVM` bootstrap node from "Passive Analog Voltmeter with Galvanometer" to reflect that the Pico ADC probe (already built as `fuse_test_voltmeter/`) satisfies this node; no galvanometer needed.
+6.  **`lab/docs/kb/`** --- added process notes (received≠validated tracking, the 3-file sync workflow, and a note that the dependency diagram is pure-mermaid with no separate prose to keep in sync).
+
+One thing I did *not* touch: `lab/docs/spacetime_lab_budget.md` still lists a "Salvaged Galvanometer" and neodymium magnets as budget line items (~$30 combined) for the passive voltmeter. Since you only flagged the dependency diagram, I left the budget alone --- but if the Pico is replacing that build entirely, you may want those line items pulled from the cost estimate too. Want me to do that?
+<!-- ------ -->
+---

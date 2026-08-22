@@ -63,3 +63,29 @@ USB-C pinout has that label — it's almost certainly a mis-transcription of
 silkscreen on arrival. General lesson: treat photo-transcribed pin labels
 as provisional until the physical part confirms them, especially single
 characters that could be OCR confusions (D/U, O/0, B/8, etc.).
+
+## Moving an item from "on order" to "received" touches 3 files, not 1
+
+When a physical part arrives, it needs updating in all of: `pico/docs/inventory.md`
+(delete from the "On Order" table, add to/create the appropriate received-parts
+table), `lab/docs/orders.md` (delete the row from "On order", add a "Received"
+subsection entry with the received date), and `lab/docs/parts_reference.md`
+(the pinout/spec entry usually says "ordered" somewhere and should be updated
+to say "received <date>" for accuracy — it's easy to migrate the other two
+files and forget this one since it doesn't have an explicit on-order/received
+table structure). Did this for the RXEF005/RXEF050/1N5817/AA-holder batch on
+2026-08-21 — used as the template for future arrivals.
+
+## "Received" ≠ "validated" for bulk/consumable parts
+
+For parts bought in bulk from AliExpress (polyfuses, diodes — anything where
+a DOA rate across the batch is plausible), don't mark a part as simply
+"received" without also tracking whether it's been individually tested yet.
+The convention used here: the inventory.md/orders.md/parts_reference.md entry
+gets an explicit "untested" or "not yet validated per-unit" note plus a
+pointer to whatever tool does the validation (e.g.
+`lab/fuse_test_voltmeter/` for polyfuses and the Schottky diode), and that
+caveat should be removed only once the user confirms the batch (or specific
+units) have actually been tested — don't assume "received" implies "known
+good" for these part classes. Single-item non-consumable parts (e.g. the AA
+battery holder) don't need this caveat.

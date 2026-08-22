@@ -76,6 +76,13 @@ stage at all — folders for those will show up here as they get one.
   `gpio_analog_sensing/` — that repo isn't limited to one project, so
   general-purpose Pico infrastructure lives there rather than being
   duplicated here.
+- Getting the physical Pico talking to this PC (WSL + `usbipd` device
+  attach, MicroPython firmware, installing/using `mpremote`) is documented
+  once in the sibling `pico/` repo rather than duplicated here — see
+  [pico/README.md § Running on real hardware](../pico/README.md#running-on-real-hardware).
+  Needed any time you run `fuse_test_voltmeter/main.py` (e.g. to validate
+  the received polyfuses/Schottky diodes before trusting them in a PSU
+  build) against real hardware instead of just simulating.
 - See `docs/history.md` for the reasoning behind part substitutions
   (e.g. why the fuse is 50 mA and not 500 mA, why the AA holder is two
   single-cell holders instead of one 2×AA holder).

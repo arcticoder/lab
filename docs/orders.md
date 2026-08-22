@@ -30,6 +30,41 @@ the converted `.md` files are tracked).
   `psu_ultralow`/`psu_low` subgraphs.
 - Logged received: 2026-08-21.
 
+### Polyfuses (RXEF005 and RXEF050)
+
+- 20 of each hold-current variant received, matching the `psu_ultralow`
+  and `psu_low` protection tiers per [history.md](history.md) design
+  conversation. See
+  [parts_reference.md](parts_reference.md#polyfuses-rxef-series) for the
+  RXEF naming convention and trip-curve caveat.
+- Not yet validated per-unit — before trusting any individual fuse in
+  front of an LED, run it through
+  [fuse_test_voltmeter](../fuse_test_voltmeter/) to confirm cold-state
+  resistance and correct trip/reset behavior. Bulk AliExpress buys have a
+  nonzero DOA rate, so "received" here does not yet mean "known good."
+- Logged received: 2026-08-21.
+
+### 1N5817 Schottky diode (1A 20V, DO-41)
+
+- 20 received, for `psu_low` reverse-polarity protection.
+- Not yet validated per-unit — check forward drop (~0.35–0.45V) on each
+  before wiring into `psu_low_v2`; see
+  [psu_low_v2/README.md](../power_supplies/psu_low_v2/README.md#validation-without-a-multimeter)
+  for the Pico-probe procedure used to check it without a multimeter.
+- Manual: [schottky-rectifier-diodes-in5817-1a20v-do-41.md](manuals/schottky-rectifier-diodes-in5817-1a20v-do-41.md)
+  (source PDF is scanned/image-only with no text layer — listing
+  description used instead, see the manual file for the caveat).
+- Logged received: 2026-08-21.
+
+### AA battery holder (1×AA, single-cell)
+
+- 5 received, for `psu_ultralow`/`psu_low` tiers.
+- No validation step needed — ready for direct use in
+  [psu_ultralow_v1](../power_supplies/psu_ultralow_v1/) and
+  [psu_low_v2](../power_supplies/psu_low_v2/) builds.
+- Manual: [aa-power-battery-holder-lr6-container-with-lead-cables.md](manuals/aa-power-battery-holder-lr6-container-with-lead-cables.md)
+- Logged received: 2026-08-21.
+
 ---
 
 ## On order (placed, not yet received as of 2026-08-21)
@@ -41,11 +76,7 @@ the converted `.md` files are tracked).
 | CD4066BCN | Quad bilateral analog switch, DIP-14 | 10 | See [parts_reference.md](parts_reference.md#cd4066b-quad-bilateral-switch) |
 | LM358P | Dual op-amp, DIP-8 | 10 | See [parts_reference.md](parts_reference.md#lm358-dual-op-amp) |
 | TYPE-C Female Test Board | USB3.1 16P → 2.54mm breakout, blue | 1 | See [parts_reference.md](parts_reference.md#usb-c-16-pin-test-breakout-board) |
-| RXEF005 polyfuse | 0.05A / 50mA | 20 | Matches `psu_ultralow` protection per [history.md](history.md) design conversation |
-| RXEF050 polyfuse | 0.5A / 500mA | 20 | Matches `psu_low` protection |
-| 1N5817 Schottky diode | 1A 20V, DO-41 | 20 | [manual](manuals/schottky-rectifier-diodes-in5817-1a20v-do-41.md) — `psu_low` reverse-polarity protection |
-| AA battery holder (1×AA) | 1AA, single-cell, lead cables | 5 | [manual](manuals/aa-power-battery-holder-lr6-container-with-lead-cables.md) — `psu_ultralow`/`psu_low` |
 
 None of the on-order items are reflected in `pico/docs/inventory.md` yet —
 they move from this table into that inventory (and out of "on order" here)
-once physically received, same as the SYB-170 6-pack above.
+once physically received, same as the items above.
