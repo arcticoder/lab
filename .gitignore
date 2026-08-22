@@ -9,3 +9,6 @@ __pycache__/
 *.pyo
 *.pyd
 *.py[cod]
+
+docs/manuals/*.pdf
+*Zone.Identifier
