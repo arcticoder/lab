@@ -2812,3 +2812,19 @@ All the changes are in place across both repos. Nothing has been committed --- l
 One thing I did *not* touch: `lab/docs/spacetime_lab_budget.md` still lists a "Salvaged Galvanometer" and neodymium magnets as budget line items (~$30 combined) for the passive voltmeter. Since you only flagged the dependency diagram, I left the budget alone --- but if the Pico is replacing that build entirely, you may want those line items pulled from the cost estimate too. Want me to do that?
 <!-- ------ -->
 ---
+Clean --- the one remaining hit is the intentional KB note referencing the old path by name for context. Everything else checks out. I haven't committed anything, per the no-unsolicited-commits rule.
+
+Summary
+-------
+
+1.  **Relocated** `lab/fuse_test_voltmeter/` (plus the stray top-level `fuse_test_voltmeter.spice`) into `lab/measurement_tools/fuse_test_voltmeter/` via `git mv`, mirroring the `power_supplies/*` pattern. Updated every cross-reference across both repos (`lab/README.md` in five places, `docs/orders.md`, `docs/parts_reference.md`, `docs/spacetime_circuits_dependency.md`'s mermaid label, both `docs/kb/*.md` files, and `pico/docs/inventory.md`) --- `docs/history.md` was left alone since it's an append-only log.
+
+2.  **Fixed build ordering**: `lab/README.md`'s circuits table now lists the voltmeter before the PSU tiers, with an explanatory blurb, and `breadboard.md` now states the voltmeter has no PSU prerequisite at all.
+
+3.  **Split test vs. demo** in `measurement_tools/fuse_test_voltmeter/README.md` and `breadboard.md` into three explicit stages: **self-check** (prove the voltmeter itself works using a plain jumper wire, no fuse/PSU needed), **test** (bench-sort all 20 RXEF005 + 20 RXEF050 units on a minimal jig --- battery + fuse + resistor, not a full PSU), and **demo** (build a PSU with an already-confirmed-good fuse and re-probe it to validate the PSU's wiring, not the fuse).
+
+Also logged two new entries in `lab/docs/kb/repo_docs_conventions.md` for future sessions: the full checklist of files a category-folder move touches, and the fact that the test/demo distinction is deliberate and shouldn't be re-collapsed later.
+
+Nothing has been committed --- let me know if you'd like that done.
+<!-- ------ -->
+---
