@@ -39,7 +39,7 @@ the converted `.md` files are tracked).
   RXEF naming convention and trip-curve caveat.
 - Not yet validated per-unit — before trusting any individual fuse in
   front of an LED, run it through
-  [fuse_test_voltmeter](../fuse_test_voltmeter/) to confirm cold-state
+  [fuse_test_voltmeter](../measurement_tools/fuse_test_voltmeter/) to confirm cold-state
   resistance and correct trip/reset behavior. Bulk AliExpress buys have a
   nonzero DOA rate, so "received" here does not yet mean "known good."
 - Logged received: 2026-08-21.

@@ -84,7 +84,7 @@ a DOA rate across the batch is plausible), don't mark a part as simply
 The convention used here: the inventory.md/orders.md/parts_reference.md entry
 gets an explicit "untested" or "not yet validated per-unit" note plus a
 pointer to whatever tool does the validation (e.g.
-`lab/fuse_test_voltmeter/` for polyfuses and the Schottky diode), and that
+`lab/measurement_tools/fuse_test_voltmeter/` for polyfuses and the Schottky diode), and that
 caveat should be removed only once the user confirms the batch (or specific
 units) have actually been tested — don't assume "received" implies "known
 good" for these part classes. Single-item non-consumable parts (e.g. the AA

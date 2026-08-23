@@ -110,7 +110,7 @@ Both values received 2026-08-21 (20 each):
 - RXEF050 (0.5A / 500mA) — `psu_low` tier
 
 Not yet validated per-unit — see [orders.md](orders.md#polyfuses-rxef005-and-rxef050)
-and [fuse_test_voltmeter](../fuse_test_voltmeter/) for the per-fuse
+and [fuse_test_voltmeter](../measurement_tools/fuse_test_voltmeter/) for the per-fuse
 trip/reset check before trusting one near an LED.
 
 ---

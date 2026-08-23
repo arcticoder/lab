@@ -55,7 +55,7 @@ graph TD
     end
 
     subgraph bootstrap ["Bootstrap: Minimal-Cost Validation (Build First, No Off-Shelf Gear)"]
-        PASSVM["Bootstrap DC Voltmeter — Pico ADC probe (fuse_test_voltmeter/), no galvanometer build needed"]
+        PASSVM["Bootstrap DC Voltmeter — Pico ADC probe (measurement_tools/fuse_test_voltmeter/), no galvanometer build needed"]
         LEDIND["LED/Relay Presence Indicator"]
         SIMPLECNT["Basic Frequency Counter (555-gated or manual)"]
         TUNINGFK["Calibrated Tuning Fork Frequency Reference"]

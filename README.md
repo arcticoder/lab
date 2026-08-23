@@ -8,9 +8,9 @@ each circuit — component choices, tradeoffs, and dead ends included.
 
 Each circuit gets its own top-level folder with a SPICE netlist, a
 generated schematic, and a breadboard wiring guide. Power supplies are
-grouped under `power_supplies/`; other circuit categories (measurement
-tools, safety monitoring, etc.) get their own top-level folders as they're
-built.
+grouped under `power_supplies/`; measurement/test tools are grouped under
+`measurement_tools/`; other circuit categories (safety monitoring, etc.)
+get their own top-level folders as they're built.
 
 ---
 
@@ -38,10 +38,10 @@ to predict voltages and currents before building.
 
 ```bash
 # from the repo root
+ngspice -b measurement_tools/fuse_test_voltmeter/fuse_test_voltmeter.spice
 ngspice -b power_supplies/psu_ultralow_v1/psu_ultralow_v1.spice
 ngspice -b power_supplies/psu_low_v2/psu_low_v2.spice
 ngspice -b power_supplies/psu_medlow_usbc/psu_medlow_usbc.spice
-ngspice -b fuse_test_voltmeter/fuse_test_voltmeter.spice
 ```
 
 Run from the repo root. Each netlist prints an operating point at its
@@ -51,12 +51,20 @@ nominal load, then sweeps the load resistor to show the V/I curve.
 
 ## Circuits (designed, not yet built)
 
+Build order runs top to bottom: the voltmeter has to exist — and its own
+fuse-free sanity check has to pass — before it's trustworthy for sorting
+good polyfuses from bad, and a polyfuse has to be sorted good before it
+belongs in a PSU. See
+[measurement_tools/fuse_test_voltmeter/README.md](measurement_tools/fuse_test_voltmeter/README.md)
+for the voltmeter self-check → bench-test-the-fuse-batch → demo-in-a-PSU
+sequence this drives.
+
 | Folder | Circuit | Tier |
 |--------|---------|------|
+| `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe, streams voltage over USB; self-check, then bench-tests polyfuses before any of them go into a PSU | bootstrap / concurrent measurement tool (build first) |
 | `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap) |
 | `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
-| `fuse_test_voltmeter/` | Pico ADC probe, streams voltage over USB to validate a polyfuse before it's trusted near an LED | bootstrap / concurrent measurement tool |
 
 Each of these has a SPICE netlist, a generated schematic, and a breadboard
 wiring guide, but none have been physically assembled yet. Everything else
@@ -68,11 +76,11 @@ stage at all — folders for those will show up here as they get one.
 
 ## Notes
 
-- `fuse_test_voltmeter/` is the one circuit here with Pico firmware
-  (`main.py`) checked in — everywhere else the Pico is used purely as an ad
-  hoc probe, per the design conversation in `docs/history.md`. For more
-  capable Pico ADC work (filtering, calibration curves, noise
-  characterization), see the sibling `pico/` repo's
+- `measurement_tools/fuse_test_voltmeter/` is the one circuit here with
+  Pico firmware (`main.py`) checked in — everywhere else the Pico is used
+  purely as an ad hoc probe, per the design conversation in
+  `docs/history.md`. For more capable Pico ADC work (filtering, calibration
+  curves, noise characterization), see the sibling `pico/` repo's
   `gpio_analog_sensing/` — that repo isn't limited to one project, so
   general-purpose Pico infrastructure lives there rather than being
   duplicated here.
@@ -80,9 +88,9 @@ stage at all — folders for those will show up here as they get one.
   attach, MicroPython firmware, installing/using `mpremote`) is documented
   once in the sibling `pico/` repo rather than duplicated here — see
   [pico/README.md § Running on real hardware](../pico/README.md#running-on-real-hardware).
-  Needed any time you run `fuse_test_voltmeter/main.py` (e.g. to validate
-  the received polyfuses/Schottky diodes before trusting them in a PSU
-  build) against real hardware instead of just simulating.
+  Needed any time you run `measurement_tools/fuse_test_voltmeter/main.py`
+  (e.g. to validate the received polyfuses/Schottky diodes before trusting
+  them in a PSU build) against real hardware instead of just simulating.
 - See `docs/history.md` for the reasoning behind part substitutions
   (e.g. why the fuse is 50 mA and not 500 mA, why the AA holder is two
   single-cell holders instead of one 2×AA holder).
@@ -97,6 +105,14 @@ stage at all — folders for those will show up here as they get one.
 ## Repo structure
 
 ```
+measurement_tools/
+    fuse_test_voltmeter/     Pico ADC voltmeter, validates polyfuses via USB (designed, not built)
+        fuse_test_voltmeter.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        README.md
+
 power_supplies/
     psu_ultralow_v1/         single AA + 50 mA polyfuse (designed, not built)
         psu_ultralow_v1.spice
@@ -115,13 +131,6 @@ power_supplies/
         schematic.png         (generated, gitignored)
         breadboard.md
         README.md
-
-fuse_test_voltmeter/         Pico ADC voltmeter, validates polyfuses via USB (designed, not built)
-    fuse_test_voltmeter.spice
-    schematic.png             (generated, gitignored)
-    breadboard.md
-    main.py
-    README.md
 
 docs/
     history.md                          design conversation log
