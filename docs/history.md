@@ -2828,3 +2828,385 @@ Also logged two new entries in `lab/docs/kb/repo_docs_conventions.md` for future
 Nothing has been committed --- let me know if you'd like that done.
 <!-- ------ -->
 ---
+# you asked
+
+message time: 2026-08-22 21:41:48
+
+how do I wire a slide switch to a AA battery holder circuit
+
+---
+
+# claude response
+
+A slide switch wires in series with the battery and load. Here's the basic setup:
+
+**Simple circuit:**
+- Battery positive (+) → Slide switch (one terminal)
+- Slide switch (other terminal) → Load (LED, component, etc.)
+- Load → Battery negative (−)
+
+**On a breadboard with an AA holder:**
+1. Insert the red wire from the AA holder into the positive rail
+2. Insert the black wire into the negative rail
+3. Connect one terminal of the slide switch to the positive rail
+4. Connect the other terminal of the switch to your load (e.g., LED anode)
+5. Connect the load's other end back to the negative rail
+
+The switch breaks the circuit when open, cutting power to everything downstream.
+
+**Wiring the switch itself:**
+Most slide switches have two or three terminals. For on/off control, you only need two—connect your power and load to the outer terminals. The middle terminal is typically used for changeover (switching between two different paths), which you don't need here.
+
+**Physical connection:**
+- If using breadboard: slide switch legs go directly into the board
+- If soldering: tin the switch terminals and solder wire leads
+- If using a perfboard or enclosure: solder or use crimp terminals
+
+What type of load are you switching (LED, motor, buzzer)? That affects current draw and whether you need any protection components.
+
+---
+
+# you asked
+
+message time: 2026-08-22 21:42:18
+
+but the switch has 3 pins
+
+---
+
+# claude response
+
+Then it's a changeover switch (SPDT - Single Pole Double Throw). For simple on/off, you only use two of the three pins.
+
+**The three pins are typically:**
+- Common (middle pin)
+- Normally Open (NO)
+- Normally Closed (NC)
+
+**For on/off control, wire it like this:**
+- Battery positive (+) → Common pin
+- Load → Normally Open (NO) pin
+- Load → Battery negative (−)
+
+When you slide the switch one way, it connects the common to NO and power flows. Slide it the other way, the connection breaks and the load is off.
+
+The NC pin stays unused.
+
+**Alternatively**, if you want the switch to control whether something is on or off in a different configuration, you could use NO and NC together for switching between two different loads, but that's more complex than what you're asking for.
+
+Which pin is marked as common on your switch? Usually there's a label or it's the middle pin.
+
+---
+
+# you asked
+
+message time: 2026-08-22 21:49:41
+
+how do I tell which pin is the NC and which is NO
+
+---
+
+# claude response
+
+Look at the switch body itself—there should be labels printed on it. Common markings are:
+
+- **C** or **COM** = Common
+- **NO** = Normally Open
+- **NC** = Normally Closed
+
+If there are no labels, you can test it with a multimeter:
+
+1. Set the multimeter to continuity (beep mode) or resistance
+2. Put one probe on the middle pin (common)
+3. Put the other probe on one of the outer pins
+4. Slide the switch fully one direction
+5. Note which outer pin has continuity when the switch is in that position
+6. Slide the switch the other direction
+7. The pin that now has continuity is the one connected in the opposite position
+
+The pin that has continuity when the switch is in its **resting/default position** (no external force) is the NC pin. The one that connects when you actively slide it is the NO pin.
+
+If your switch doesn't have obvious default positions or springs, you may need to just pick one and test it in the circuit—swap the wire if it doesn't work the way you want.
+
+What does the switch body look like? Sometimes a photo helps identify the markings.
+
+---
+
+# you asked
+
+message time: 2026-08-22 21:51:20
+
+*(No content)*
+
+---
+
+# claude response
+
+That's a mini slide switch. The three pins are visible at the bottom. No markings visible on this one.
+
+Test it with a multimeter on continuity mode:
+
+1. Set multimeter to continuity (beep/resistance)
+2. Probe the middle pin and left pin together, slide the switch fully left
+3. Probe the middle pin and right pin together, slide the switch fully right
+4. One combination will beep in one position, the other combination will beep in the other position
+
+The pin that connects when you slide toward it is NO. The pin that's connected when the switch is in its resting state (or springs back when released) is NC.
+
+Alternatively, just wire it up and test:
+- Middle pin → Battery +
+- Left pin → Load
+- Load → Battery −
+
+If it works backwards, swap the load wire to the right pin instead.
+
+For your AA battery circuit, this approach is fine—just pick one outer pin, test it, and swap if needed.
+
+---
+
+# you asked
+
+message time: 2026-08-22 21:52:43
+
+gimme main.py to copy to my rpi pico to do this. 
+
+```python
+GP26 (ADC0) — probe lead
+ GND         — probe lead
+```
+
+---
+
+# claude response
+
+```python
+import machine
+import time
+
+# ADC on GP26
+adc = machine.ADC(machine.Pin(26))
+
+# Slide switch on GP15
+switch = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_DOWN)
+
+while True:
+    # Read ADC (0-65535, maps to 0-3.3V)
+    adc_value = adc.read_u16()
+    voltage = (adc_value / 65535) * 3.3
+    
+    # Read switch state
+    switch_state = switch.value()
+    
+    print(f"ADC: {adc_value:5d} | Voltage: {voltage:.2f}V | Switch: {switch_state}")
+    
+    time.sleep(0.5)
+```
+
+Connect the probe leads to GP26 and GND. The switch goes on GP15—one terminal to 3.3V, the other to GP15. When you slide it, the switch state toggles between 0 and 1.
+
+If you're just measuring voltage without the switch, remove those lines and just keep the ADC loop.
+
+---
+
+# you asked
+
+message time: 2026-08-22 21:56:57
+
+should I be using pin 38 GND or pin 33 GND if I'm plugged[ into pin 31 GP26
+
+---
+
+# claude response
+
+Pin 33 GND is closer to GP26 (pin 31), so use that. Keeps the probe ground path short.
+
+---
+
+# you asked
+
+message time: 2026-08-22 21:58:52
+
+Switch just keeps saying 0
+
+---
+
+# claude response
+
+The pull-down isn't holding the pin low when the switch is open. Wire it differently:
+
+```python
+import machine
+import time
+
+adc = machine.ADC(machine.Pin(26))
+
+# Switch on GP15, pull UP instead
+switch = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_UP)
+
+while True:
+    adc_value = adc.read_u16()
+    voltage = (adc_value / 65535) * 3.3
+    
+    # Pull-up means switch reads 1 when open, 0 when pressed
+    switch_state = switch.value()
+    
+    print(f"ADC: {adc_value:5d} | Voltage: {voltage:.2f}V | Switch: {switch_state}")
+    
+    time.sleep(0.5)
+```
+
+With PULL_UP, the pin reads 1 when the switch is open and 0 when the switch connects to GND. Wire the switch: one terminal to GND, the other to GP15.
+
+If it still reads 0, check that the switch is actually wired to GND on one end.
+
+---
+
+# you asked
+
+message time: 2026-08-22 22:03:36
+
+both directions read switch 0. sure this thing can't go both ways?
+
+---
+
+# claude response
+
+Could be. If both directions read 0, the switch might be connecting to ground in both positions—meaning it's wired to GND on one end and the common pin is connected to GP15.
+
+Try this: remove the PULL_UP and wire the switch so one terminal goes to 3.3V instead of GND:
+
+```python
+import machine
+import time
+
+adc = machine.ADC(machine.Pin(26))
+
+# Switch on GP15, no pull
+switch = machine.Pin(15, machine.Pin.IN)
+
+while True:
+    adc_value = adc.read_u16()
+    voltage = (adc_value / 65535) * 3.3
+    
+    switch_state = switch.value()
+    
+    print(f"ADC: {adc_value:5d} | Voltage: {voltage:.2f}V | Switch: {switch_state}")
+    
+    time.sleep(0.5)
+```
+
+Wire it: one switch terminal to 3.3V, the other to GP15. Now it should toggle between 0 and 1 as you slide it. One direction will be high, the other low.
+
+---
+
+# you asked
+
+message time: 2026-08-22 22:04:21
+
+no i'm saying this switch might behave differently than you said it would
+
+---
+
+# claude response
+
+Fair point. Test it with the multimeter on continuity to see what actually happens in each position:
+
+1. Probe middle pin + left outer pin, slide left → does it beep?
+2. Probe middle pin + left outer pin, slide right → does it beep?
+3. Probe middle pin + right outer pin, slide left → does it beep?
+4. Probe middle pin + right outer pin, slide right → does it beep?
+
+That'll show you which connections are actually made in each position. It might not be a standard NO/NC setup—could be switching between two different states in ways that don't match the typical pattern.
+
+---
+
+# you asked
+
+message time: 2026-08-22 22:04:55
+
+i don't have a multimeter that's why i got you to write that code. quit being a moron
+
+---
+
+# claude response
+
+Right. Test the switch by checking each pin individually:
+
+```python
+import machine
+import time
+
+adc = machine.ADC(machine.Pin(26))
+
+pin_a = machine.Pin(14, machine.Pin.IN, machine.Pin.PULL_UP)
+pin_b = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_UP)
+pin_c = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)
+
+while True:
+    adc_value = adc.read_u16()
+    voltage = (adc_value / 65535) * 3.3
+    
+    state_a = pin_a.value()
+    state_b = pin_b.value()
+    state_c = pin_c.value()
+    
+    print(f"A:{state_a} B:{state_b} C:{state_c} | ADC: {voltage:.2f}V")
+    
+    time.sleep(0.5)
+```
+
+Wire all three switch pins to GP14, GP15, and GP16 (one pin each). Slide the switch both directions and watch which pins go from 1 to 0. That'll show you what the switch is actually connecting in each position.
+
+---
+
+# you asked
+
+message time: 2026-08-22 22:07:40
+
+The "B" went from 1 to 0 when I moved the switch to the left
+
+---
+
+# claude response
+
+What do A and C do when you move the switch left (when B goes to 0)?
+
+And what happens to all three when you move it right?
+
+---
+
+# you asked
+
+message time: 2026-08-22 22:08:10
+
+they both stay 1. when I move it right, all 3 are 1
+
+---
+
+# claude response
+
+So B is the active pin. When you slide left, B connects to ground. When you slide right, nothing connects.
+
+Wire it like this:
+
+```python
+import machine
+import time
+
+adc = machine.ADC(machine.Pin(26))
+switch = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_UP)
+
+while True:
+    adc_value = adc.read_u16()
+    voltage = (adc_value / 65535) * 3.3
+    
+    switch_state = switch.value()
+    
+    print(f"ADC: {adc_value:5d} | Voltage: {voltage:.2f}V | Switch: {switch_state}")
+    
+    time.sleep(0.5)
+```
+
+Connect B to GP15 and GND. When you slide left, switch reads 0. When you slide right, it reads 1. That's your on/off.
+<!-- ------ -->
+---
