@@ -3226,3 +3226,22 @@ All 20 items are done and verified. Summary:
 All 8 lab netlists and 8 smoke tests pass; both repos have everything staged (`git add -A`) but **not committed** --- let me know if you'd like me to commit and, for pico, push.
 <!-- ------ -->
 ---
+All 12 items are done and all 8 smoke tests still pass. Summary:
+
+**1--2 (docs).** Swapped the dead 96W MacBook charger for the Lenovo 65W USB-C PD adapter in `docs/general_purpose_circuit_dependency.md` and `docs/spacetime_lab_budget.md` (budget line + grand total recalculated). Removed the `docs/history.md` "see design conversation" pointers from `lab/README.md` and, since the same pattern was everywhere once I looked, from every other doc that had one (`fuse_test_voltmeter`, `switch_pin_identifier`, `psu_low_v2`, `psu_ultralow_v1`, `psu_medlow_usbc`, `orders.md`, `parts_reference.md`, the Schottky manual) --- noted the convention in the KB so it doesn't creep back in.
+
+**3--5 (smoke tests).** `lab/README.md` now lists all 8 `smoke_test.py` commands, plus a new `tools/run_all_smoke_tests.py` that finds and runs every one of them so the list can't drift out of sync. Dropped the "this caught a real bug" self-narration paragraph.
+
+**6--8, 11.** Same history.md cleanup in `fuse_test_voltmeter` and `switch_pin_identifier` (README + `main.py`). Added the missing `smoke_test.py` row to all 8 circuit READMEs that were missing it.
+
+**9.** `Dupont M-F` → `M-M` across every `breadboard.md` in the repo (`fuse_test_voltmeter`, `cd4066_switch_tester`, `switch_pin_identifier`) --- the Pico sits mounted directly on the breadboard, so both ends of a wire land in breadboard holes.
+
+**10.** `switch_pin_identifier/breadboard.md` now wires everything first, powers the Pico last.
+
+**12 --- the actual bug.** You found it correctly: the breadboard instructions never wired anything to a Pico GND pin. With all three switch terminals only going to GP14/15/16 (all internally pulled up), closing the switch just shorts two already-high GPIOs together --- nothing can ever read LOW, hence the constant `A:1 B:1 C:1`. Fixed by redesigning the circuit: one switch terminal now wires directly to Pico **physical pin 18** (GND, right next to GP14/15), and only the *remaining* terminal(s) get GPIO+pull-up probes --- GP16 is no longer used at all. Updated `main.py`, the `.spice` model, `smoke_test.py`, and both docs to match.
+
+**To fix your bench setup right now:** take the wire currently on GP16 and move its Pico-side end to **physical pin 18** (GND) instead --- leave the switch-side end where it is. `main.py` now only reads GP14(A)/GP15(B), so re-run it after moving that wire.
+
+I also flagged one thing in the docs I wasn't fully certain about: the README used to claim a specific pin role ("one outer pin always floats") for the already-characterized 3-pin slide switch, based on an older ad hoc session. That session is ambiguous about whether it actually had a GND wire either, so I softened that claim to "reconfirm this once the GND wire is actually in place" rather than asserting it as settled fact.
+<!-- ------ -->
+---

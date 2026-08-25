@@ -13,8 +13,8 @@ This is a high-level component list derived from general_purpose_circuit_depende
 | AA Battery Holder (2-slot) | 5 | $1.50 | $7.50 | Multiple circuits in progress |
 | USB 5V/3A Wall Adapter | 2 | $8 | $16 | Redundancy, different circuits |
 | 12V Sabrent USB-C Adapter | 1 | $35 | $35 | Medium-power backbone |
-| MacBook 96W USB-C Adapter (or equivalent) | 1 | $45 | $45 | Medium-high tier testing |
-| **Subtotal PSU** | | | **$106.50** | |
+| Lenovo 65W USB-C PD Adapter | 1 | $0 | $0 | Medium-high tier testing — already on hand, replaces the 96W MacBook adapter (charger died, not being replaced) |
+| **Subtotal PSU** | | | **$61.50** | |
 
 ---
 
@@ -220,7 +220,7 @@ This is a high-level component list derived from general_purpose_circuit_depende
 
 | Section | Subtotal |
 |---------|----------|
-| Power Supply System | $106.50 |
+| Power Supply System | $61.50 |
 | Circuit Protection | $80.50 |
 | Bootstrap & Measurement Tools | $118 |
 | Tier 1 | $132.50 |
@@ -237,7 +237,7 @@ This is a high-level component list derived from general_purpose_circuit_depende
 | Test & Calibration Fixtures | $80 |
 | Contingency & Misc | $230 |
 | | |
-| **GRAND TOTAL** | **$2,375.50** |
+| **GRAND TOTAL** | **$2,330.50** |
 
 ---
 

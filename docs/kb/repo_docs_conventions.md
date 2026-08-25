@@ -159,6 +159,95 @@ fastest path to power right now, not the long-term intended PSU for
 circuits that should be electrically independent of the PC/Pico's own USB
 supply.
 
+## `switch_pin_identifier`'s original 3-GPIO design had no GND reference — always read all-1s on real hardware (found 2026-08-24)
+
+The first cut of this circuit wired all 2–3 switch terminals straight to
+GPIO probe pins (GP14/GP15/GP16), each with the Pico's internal pull-up,
+and expected one to read LOW when the switch closed. That's physically
+wrong: with nothing in the circuit tied to GND, closing the switch just
+shorts two already-pulled-up-high GPIOs together — both stay HIGH. The
+user built this exact circuit and confirmed it: `A:1 B:1 C:1`, unchanging
+across every switch position. They also independently noticed the wiring
+table never mentioned a GND pin at all, which is what tipped it off.
+
+The `docs/history.md` session this circuit generalizes from (2026-08-22
+21:41 onward) is ambiguous about whether the original ad hoc test that
+"worked" (user reported `B` going `1`→`0`) had a real GND wire in place —
+an earlier step in that same session did instruct "wire the switch: one
+terminal to GND, the other to GP15," but the later 3-pin test's
+instructions ("wire all three switch pins to GP14/15/16") don't
+explicitly say to keep that GND wire, and there's no way to tell from the
+transcript alone whether the user left it physically connected or not.
+Don't take that transcript as confirmed evidence either way for a given
+pin's role — what's certain is only the physics (no GND reference means
+no pin can read LOW) and the current user's confirmed hardware result
+against *this* repo's actual (GND-less) breadboard.md, both of which
+independently point to the same fix. Fixed (2026-08-24) by making the GND
+wire explicit and mandatory: one terminal always
+wires directly to a Pico GND pin (physical pin 18, adjacent to
+GP14/GP15 — physical pin 19/20), and only the *remaining* 1–2 terminals
+get GPIO+pull-up probes. This also simplified the design from 3 GPIO
+probes down to 2 (GP14, GP15) — a 3rd probe pin was never actually needed
+once one terminal is dedicated to GND, since 2 probes plus a grounded
+reference fully characterizes a 2-position (or ON-OFF-ON 3-position)
+switch. `main.py`, `switch_pin_identifier.spice`, and `smoke_test.py` were
+all updated to drop the `C`/`GP16` pin accordingly. If a similar
+"probe every terminal, none tied to a reference" pattern shows up in a
+future circuit design here, it has the same bug — internal pull-ups alone
+never establish a LOW without an explicit path to GND somewhere in the
+circuit.
+
+## `Dupont M-F` jumper wording was wrong throughout the repo — should be `M-M` (fixed 2026-08-24)
+
+Every `breadboard.md`'s parts list and wiring tables originally called for
+"Dupont M-F jumper" (or "M-F, female end on breadboard") wherever a wire
+ran from a Pico pin to elsewhere on the breadboard. That's backwards for
+how these builds actually work: the Pico sits mounted directly on the
+breadboard (straddling the center gap, per the Sunfounder Thales kit
+instructions / Wokwi convention), so its pins are already seated in
+breadboard holes — there's no separate female receptacle on the Pico side
+to plug an M-F's male end into. The correct wire is M-M (both ends plug
+into breadboard holes — one in the Pico's pin column, one wherever else
+the connection needs to land), or a bent solid-core wire. Fixed across
+`fuse_test_voltmeter/breadboard.md`, `cd4066_switch_tester/breadboard.md`,
+and `switch_pin_identifier/breadboard.md`. `docs/history.md` still has the
+old (wrong) M-F reasoning at 2026-08-15 13:03 — left alone per the
+append-only-log convention (see the "moving a circuit" entry above); don't
+resurrect that reasoning if referencing that history.md session.
+
+## Wiring order: build the circuit fully before powering the Pico on
+
+`switch_pin_identifier/breadboard.md` originally listed "plug the Pico
+into the PC" as its first step, before any of the switch wiring. Per user
+feedback, this is backwards in general — power should go on only after
+the circuit is fully wired, not before, to avoid a transient short while a
+jumper is half-seated. Fixed there (wiring is now step 1, power is step
+2). Deliberately did *not* apply the same reorder to
+`fuse_test_voltmeter/breadboard.md` or `psu_pico_rail/breadboard.md`:
+both need the Pico powered throughout for reasons beyond just this one
+circuit's wiring (serial console needed to watch readings as the jig is
+adjusted; `psu_pico_rail` literally *is* the Pico's own onboard rail being
+tapped, so there's nothing to wire before powering it). If asked to make
+this consistent repo-wide, that's the distinction to preserve rather than
+mechanically moving "plug in USB" to last everywhere.
+
+## `docs/history.md` is not a doc readers should be pointed to — strip "see history.md" pointers on sight
+
+As of 2026-08-24, per explicit user feedback, no README/breadboard/main.py
+should tell a reader to consult `docs/history.md` for design rationale —
+it's a raw chat-session log (see the append-only-log note above), not
+polished documentation, and the user doesn't want it surfaced as if it
+were. Removed a first round of these pointers from `README.md`,
+`fuse_test_voltmeter/README.md` + `main.py`, `switch_pin_identifier/README.md`
++ `main.py`, `psu_low_v2/README.md`, `psu_ultralow_v1/README.md`,
+`psu_medlow_usbc/README.md`, `docs/orders.md`, `docs/parts_reference.md`,
+and `docs/manuals/schottky-rectifier-diodes-in5817-1a20v-do-41.md`. When
+adding new docs, don't add a fresh "see history.md" pointer even though
+older docs in git history do this — just state the relevant fact directly
+instead of citing the log. The repo-structure tree listing in
+`README.md` still names `history.md` as a file that exists (factual
+inventory, not a "go read this" pointer) — that one line is fine to leave.
+
 ## Fixing bad commit authorship in `pico/` (2026-08-24)
 
 Three tip commits on `pico`'s `main` were authored as `Your Name

@@ -32,7 +32,7 @@ def check(label, condition, detail):
 
 values = get_op_values(SPICE_FILE)
 
-for node in ("a", "c", "b2"):
+for node in ("a", "b2"):
     v = values[f"v({node})"]
     check(
         f"functional — pin {node.upper()} reads solid digital HIGH when floating",

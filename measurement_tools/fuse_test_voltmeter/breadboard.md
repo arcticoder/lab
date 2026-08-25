@@ -37,7 +37,7 @@ to be known good *before* it's wired into a PSU, not after.
 |-----------|-------|----------|
 | Raspberry Pi Pico | RP2040 | 1 |
 | Micro USB cable | data-capable, to PC | 1 |
-| Dupont M-F jumper | 22cm | 2 |
+| Dupont M-M jumper | 22cm | 2 |
 | AA battery holder (single-cell) | — | 1 (RXEF005 jig, 1.5V) or 2 in series (RXEF050 jig, 3.0V) |
 | AA battery | fresh | 1–2, matching holder count above |
 | Test load resistor | 10 Ω, **≥1W** | 1 |
@@ -52,9 +52,8 @@ to be known good *before* it's wired into a PSU, not after.
 | Raspberry Pi Pico + jumpers | same as above | — |
 
 No new parts beyond what's already in the psu_ultralow_v1 / psu_low_v2
-parts lists — see [docs/history.md](../../docs/history.md) (2026-08-15
-10:41) for why 10 Ω is reused for both fuse ratings instead of ordering a
-dedicated value. **Wattage matters here**: the RXEF050 jig (3.0V across
+parts lists — the same 10 Ω value is reused for both fuse ratings instead
+of ordering a dedicated value. **Wattage matters here**: the RXEF050 jig (3.0V across
 10 Ω, cold) dissipates ~0.82W in the load resistor — a standard 1/4W or
 1/2W part will run hot or fail. Use a ≥1W resistor (or a higher resistance
 at correspondingly lower current) for this jig; see `smoke_test.py`.
@@ -75,8 +74,8 @@ Build the bare jig with a plain jumper wire in place of a fuse:
 
 | From | To | Wire |
 |------|----|------|
-| Pico GP26 | Load resistor's jumper-side leg (the node between the jumper and the resistor) | Dupont M-F, female end on breadboard |
-| Pico GND | Load resistor's ground-side leg | Dupont M-F, female end on breadboard |
+| Pico GP26 | Load resistor's jumper-side leg (the node between the jumper and the resistor) | Dupont M-M jumper |
+| Pico GND | Load resistor's ground-side leg | Dupont M-M jumper |
 
 Run `main.py` (`mpremote run main.py`) and check:
 
@@ -99,8 +98,8 @@ time from the batch:
 
 | From | To | Wire |
 |------|----|------|
-| Pico GP26 | Load resistor's fuse-side leg (the node between the fuse and the resistor) | Dupont M-F, female end on breadboard |
-| Pico GND | Load resistor's ground-side leg | Dupont M-F, female end on breadboard |
+| Pico GP26 | Load resistor's fuse-side leg (the node between the fuse and the resistor) | Dupont M-M jumper |
+| Pico GND | Load resistor's ground-side leg | Dupont M-M jumper |
 
 For **RXEF005** units, use the 1×AA (1.5V) jig. For **RXEF050** units, use
 the 2×AA-in-series (3.0V) jig — same 10 Ω load resistor either way.
@@ -136,8 +135,8 @@ tier you're building:
 
    | From | To | Wire |
    |------|----|------|
-   | Pico GP26 | PSU's load resistor's fuse-side leg | Dupont M-F, female end on breadboard |
-   | Pico GND | PSU's load resistor's ground-side leg | Dupont M-F, female end on breadboard |
+   | Pico GP26 | PSU's load resistor's fuse-side leg | Dupont M-M jumper |
+   | Pico GND | PSU's load resistor's ground-side leg | Dupont M-M jumper |
 
 3. Run the same short/reset check as step 2. Since the fuse itself was
    already proven good, this run is a demonstration that the PSU's own

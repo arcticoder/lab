@@ -7,8 +7,7 @@ headroom.
 
 Spec: 3.0 V, <300 mA, ~0.9 W. See
 [docs/general_purpose_circuit_dependency.md](../../docs/general_purpose_circuit_dependency.md)
-(`psu_low` node) and [docs/history.md](../../docs/history.md) for the design
-conversation.
+(`psu_low` node).
 
 ---
 
@@ -19,6 +18,7 @@ conversation.
 | `psu_low_v2.spice` | ngspice netlist — operating point + load sweep |
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `breadboard.md` | Step-by-step breadboard wiring |
+| `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 
 ---
 
@@ -56,8 +56,7 @@ V_out ≈ (3.0V − V_schottky) × Rload / (Rload + Rfuse)
 ```
 
 At Rload = 10 Ω: **V_out ≈ 2.53 V, I ≈ 253 mA** — the Schottky costs about
-0.35 V at this current, same as the hand-calculated figure in
-`docs/history.md`.
+0.35 V at this current.
 
 ---
 
@@ -65,5 +64,4 @@ At Rload = 10 Ω: **V_out ≈ 2.53 V, I ≈ 253 mA** — the Schottky costs abou
 
 Probe across the Schottky with a Pico ADC pin. Forward bias should read
 ~0.35 V drop; reversing the battery leads should read ~0 V across the load
-(diode blocking). See `docs/history.md` (2026-08-15 13:11) for the full
-forward/reverse test walkthrough.
+(diode blocking).

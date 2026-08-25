@@ -25,6 +25,7 @@ within its ~100mA budget.
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `breadboard.md` | Step-by-step wiring guide |
 | `main.py` | MicroPython — toggles the control pin, reads GP26, prints pass/block state |
+| `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 
 ---
 

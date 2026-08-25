@@ -15,8 +15,7 @@ What this measures
 -------------------
   * Voltage at the probe point, streamed over USB serial to the PC
   * Trip/reset transitions (voltage crossing LOW_VOLTAGE), so a fuse can be
-    proven good before it's ever wired in front of an LED — see
-    ../docs/history.md (2026-08-15) for why this exists
+    proven good before it's ever wired in front of an LED
 
 Run from MicroPico (or rshell / mpremote), Pico connected to the PC by USB:
   mpremote run main.py

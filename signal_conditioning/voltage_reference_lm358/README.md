@@ -20,6 +20,7 @@ own ~1.65mA).
 | `voltage_reference_lm358.spice` | ngspice netlist — bare divider (sags under load) vs. buffered output (holds steady) |
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`). Only draws the R/V elements; the LM358 itself doesn't render (see netlist comments) |
 | `breadboard.md` | Step-by-step wiring |
+| `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 
 ---
 

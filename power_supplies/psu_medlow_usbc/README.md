@@ -6,8 +6,7 @@ adapter ripple. No local regulation — the wall adapter already regulates to
 
 Spec: 5V USB path of the medium-low tier. See
 [docs/general_purpose_circuit_dependency.md](../../docs/general_purpose_circuit_dependency.md)
-(`psu_medlow` node) and [docs/history.md](../../docs/history.md) for the design
-conversation.
+(`psu_medlow` node).
 
 ---
 
@@ -18,6 +17,7 @@ conversation.
 | `psu_medlow_usbc.spice` | ngspice netlist — operating point + load sweep |
 | `schematic.png` | Generated schematic image, gitignored — see repo `README.md` (note: the schematic tool only draws V/R/D elements, so the bypass cap isn't rendered — see the netlist for the full circuit) |
 | `breadboard.md` | Step-by-step breadboard wiring |
+| `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 
 ---
 

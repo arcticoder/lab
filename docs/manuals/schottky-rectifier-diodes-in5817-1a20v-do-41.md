@@ -29,5 +29,4 @@
 
 Matches the Schottky diode called for in the `psu_low` power tier in
 [general_purpose_circuit_dependency.md](../general_purpose_circuit_dependency.md)
-(reverse-polarity / back-EMF protection in series with the 2×AA supply) —
-see `history.md` for why this part was chosen over a generic 1N5408.
+(reverse-polarity / back-EMF protection in series with the 2×AA supply).

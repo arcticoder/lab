@@ -17,7 +17,7 @@ control pin driven by a Pico GPIO and I/O B probed by another.
 | Resistor | 10 kΩ | 2 |
 | Dupont M-M jumper (red) | 12–20cm | 1 |
 | Dupont M-M jumper (black) | 12–20cm | 1 |
-| Dupont M-F jumper | 22cm | 2 |
+| Dupont M-M jumper | 22cm | 2 |
 
 ---
 
@@ -52,8 +52,8 @@ same pattern on their own I/O A / I/O B / control pins.
 
 | From | To | Wire |
 |------|----|------|
-| Pico GP15 | CD4066B pin 13 (Control 1) | Dupont M-F jumper |
-| Pico GP26 (ADC0) | CD4066B pin 2 (I/O B) | Dupont M-F jumper |
+| Pico GP15 | CD4066B pin 13 (Control 1) | Dupont M-M jumper |
+| Pico GP26 (ADC0) | CD4066B pin 2 (I/O B) | Dupont M-M jumper |
 
 ### 4. Run and read
 

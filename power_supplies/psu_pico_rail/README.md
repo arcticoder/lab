@@ -21,6 +21,7 @@ Spec: 3.3V, treat **~100mA as the safe external budget**. See
 | `psu_pico_rail.spice` | ngspice netlist — operating point + load sweep |
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `breadboard.md` | Step-by-step wiring |
+| `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 
 ---
 

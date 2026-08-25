@@ -8,9 +8,7 @@ current driving objective and gets its own tier graph in
 [docs/spacetime_circuits_dependency.md](docs/spacetime_circuits_dependency.md),
 but the general-purpose foundation underneath it — PSU tiers, protection,
 safety monitoring, signal conditioning, measurement tools — isn't specific
-to that goal and is meant to be useful on its own. See
-[docs/history.md](docs/history.md) for the design conversation behind each
-circuit — component choices, tradeoffs, and dead ends included.
+to that goal and is meant to be useful on its own.
 
 Each circuit gets its own top-level folder with a SPICE netlist, a
 generated schematic, and a breadboard wiring guide. Power supplies are
@@ -78,16 +76,26 @@ reuses.
 
 ```bash
 # from the repo root
+python measurement_tools/cd4066_switch_tester/smoke_test.py
 python measurement_tools/fuse_test_voltmeter/smoke_test.py
+python measurement_tools/switch_pin_identifier/smoke_test.py
+python power_supplies/psu_low_v2/smoke_test.py
+python power_supplies/psu_medlow_usbc/smoke_test.py
+python power_supplies/psu_pico_rail/smoke_test.py
 python power_supplies/psu_ultralow_v1/smoke_test.py
-# ...and so on, one smoke_test.py per circuit folder
+python signal_conditioning/voltage_reference_lm358/smoke_test.py
 ```
 
-Exits non-zero on any failed check. Running this caught a real issue in
-`fuse_test_voltmeter`'s bench jig: at the RXEF050 (3.0V) test point, the
-physical 10Ω load resistor dissipates ~0.82W — well past a standard 1/4W
-or 1/2W part's rating — so `breadboard.md`'s parts list now calls for a
-≥1W resistor there.
+Or run all of them at once with `tools/run_all_smoke_tests.py`, which
+finds every `smoke_test.py` in the repo so this list doesn't have to be
+kept in sync by hand:
+
+```bash
+# from the repo root
+python tools/run_all_smoke_tests.py
+```
+
+Exits non-zero on any failed check.
 
 ---
 
@@ -223,4 +231,5 @@ docs/
 tools/
     spice_to_schematic.py   generate schematic.png from a .spice file
     ngspice_runner.py       shared ngspice-invocation/parsing helper for smoke_test.py scripts
+    run_all_smoke_tests.py  finds and runs every smoke_test.py in the repo
 ```

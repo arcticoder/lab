@@ -45,8 +45,8 @@ graph TD
             PROTMEDLOW["Fuse (2A fast-blow) + Polyfuse (500mA backup) for 12V path"]
         end
         
-        subgraph psu_medhigh ["Medium-High: 19–24V, 2–5A, 40–120W"]
-            PSUMEDHIGH["MacBook 96W/140W USB-C Adapter"]
+        subgraph psu_medhigh ["Medium-High: 9–20V, 2–3.25A, up to 65W"]
+            PSUMEDHIGH["Lenovo 65W USB-C PD Adapter (20V/3.25A, 15V/3A, 9V/2A, 5V/2A)"]
             PROTMEDHIGH["Fuse (3A) + Electronic Current Limiter (MOSFET sense)"]
         end
         

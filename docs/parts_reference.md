@@ -104,7 +104,7 @@ verify values with a meter before assuming a specific standard resistance.
 Naming pattern: `RXEF<NNN>` where the numeric suffix is the hold current in
 amps, decimal point implied — e.g. `RXEF005` = 0.05A hold, `RXEF050` =
 0.5A hold. This matches the RXEF005/RXEF050 already used in the
-`psu_ultralow`/`psu_low` design (see [history.md](history.md)). Trip
+`psu_ultralow`/`psu_low` design. Trip
 current and trip time are *not* implied by the part number alone (typically
 higher than hold current by some multiple, and time-dependent) — check the
 Littelfuse/Bourns datasheet for the exact trip curve before relying on a

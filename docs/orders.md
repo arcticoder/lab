@@ -34,8 +34,7 @@ the converted `.md` files are tracked).
 ### Polyfuses (RXEF005 and RXEF050)
 
 - 20 of each hold-current variant received, matching the `psu_ultralow`
-  and `psu_low` protection tiers per [history.md](history.md) design
-  conversation. See
+  and `psu_low` protection tiers. See
   [parts_reference.md](parts_reference.md#polyfuses-rxef-series) for the
   RXEF naming convention and trip-curve caveat.
 - Not yet validated per-unit — before trusting any individual fuse in

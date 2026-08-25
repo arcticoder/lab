@@ -20,10 +20,9 @@ itself is good — that's what the test is for. See
 sequence.
 
 Not a powered circuit of its own: the Pico gets its power from the PC's USB
-port, independent of whatever it's probing. See
-[docs/history.md](../../docs/history.md) (2026-08-15 10:32 onward) for the
-design conversation — this formalizes the ad hoc Pico-as-voltmeter probing
-used throughout that session into its own reusable circuit.
+port, independent of whatever it's probing. This formalizes the ad hoc
+Pico-as-voltmeter probing worked out early on into its own reusable
+circuit.
 
 For a more capable Pico ADC readout (filtering, noise characterization,
 calibration curves), see
@@ -45,6 +44,7 @@ channel, one job.
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `breadboard.md` | Step-by-step probing/wiring guide (self-check → test → demo) |
 | `main.py` | MicroPython — reads GP26, prints voltage over USB serial, flags trip/reset |
+| `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 
 ---
 
