@@ -1,0 +1,50 @@
+* voltage_reference_lm358 — LM358 unity-gain buffer off a resistor divider
+*
+* Circuit topology:
+*   psu_pico_rail (3.3V) -> R1/R2 divider (1k/1k, ~1.65V unloaded)
+*     -> LM358 non-inverting input -> unity-gain buffer -> Rload
+*
+* Spec target: tier1 REF node (general_purpose_circuit_dependency.md) —
+* a stable reference that doesn't sag under a downstream load, powered
+* from psu_pico_rail (../../power_supplies/psu_pico_rail/) while wire
+* strippers are in transit for the AA-holder PSUs.
+*
+* LM358 is modeled as an ideal op-amp: a very-high-gain (1e5)
+* voltage-controlled voltage source with unity feedback (E element) —
+* ngspice has no built-in LM358 primitive, and the schematic tool only
+* draws V/R/D elements, so the op-amp itself won't render in
+* schematic.png (see repo README's smoke_test.py conventions). This
+* approximates the LM358's real behavior well at DC and the current
+* levels here (sub-mA); it does not model input offset voltage, bias
+* current, or output swing headroom (see README.md for the real part's
+* headroom caveat near VCC).
+*
+* Two dividers are modeled side by side to show *why* buffering matters:
+*   A: bare divider, loaded directly by Rload -> sags under load
+*   B: same divider ratio, feeding the LM358 buffer; Rload is on the
+*      buffer's OUTPUT instead -> divider node stays unloaded, buffered
+*      output holds steady
+
+Vcc     1 0  DC 3.3
+
+* --- A: unbuffered divider, loaded directly ---
+R1a     1 2a  1k
+R2a     2a 0  1k
+RloadA  2a 0  1k
+
+* --- B: same divider, buffered; load is on the buffer output ---
+R1b     1 2b  1k
+R2b     2b 0  1k
+Eopamp  3b 0  2b 3b  1e5
+RloadB  3b 0  1k
+
+.control
+op
+echo --- A: bare divider, loaded directly (sags) ---
+print v(2a)
+echo --- B: buffered divider node (unloaded, ~1.65V) vs buffer output (loaded, should match) ---
+print v(2b) v(3b)
+quit
+.endc
+
+.end

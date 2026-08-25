@@ -40,7 +40,7 @@ to be known good *before* it's wired into a PSU, not after.
 | Dupont M-F jumper | 22cm | 2 |
 | AA battery holder (single-cell) | — | 1 (RXEF005 jig, 1.5V) or 2 in series (RXEF050 jig, 3.0V) |
 | AA battery | fresh | 1–2, matching holder count above |
-| Test load resistor | 10 Ω | 1 |
+| Test load resistor | 10 Ω, **≥1W** | 1 |
 | Plain jumper wire | — | 1 (stands in for the fuse during self-check) |
 | Polyfuse under test | RXEF005 or RXEF050 | 1 at a time, swapped in from the batch of 20 each |
 
@@ -54,7 +54,10 @@ to be known good *before* it's wired into a PSU, not after.
 No new parts beyond what's already in the psu_ultralow_v1 / psu_low_v2
 parts lists — see [docs/history.md](../../docs/history.md) (2026-08-15
 10:41) for why 10 Ω is reused for both fuse ratings instead of ordering a
-dedicated value.
+dedicated value. **Wattage matters here**: the RXEF050 jig (3.0V across
+10 Ω, cold) dissipates ~0.82W in the load resistor — a standard 1/4W or
+1/2W part will run hot or fail. Use a ≥1W resistor (or a higher resistance
+at correspondingly lower current) for this jig; see `smoke_test.py`.
 
 ---
 

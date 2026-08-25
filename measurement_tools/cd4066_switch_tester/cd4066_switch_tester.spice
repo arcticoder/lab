@@ -1,0 +1,45 @@
+* cd4066_switch_tester — bring-up/validation jig for one CD4066B switch
+*
+* Circuit topology (per switch under test, one of the 4 on a CD4066B):
+*   VDD -> RA (10k) -> I/O A -> [switch under test] -> I/O B -> RB (10k) -> GND
+*                                                          ^
+*                                          [Pico ADC probe (GP26) here]
+*   Control pin driven by a Pico GPIO: HIGH = closed (conducting), LOW = open
+*
+* Spec target: bring-up/validation for the 10x CD4066BCN received
+* 2026-08-24 (pico/docs/inventory.md), before any is trusted in a later
+* design (tier9 MUX, tier4 DEMOD — general_purpose_circuit_dependency.md).
+* Same "validate the part before trusting it downstream" philosophy as
+* measurement_tools/fuse_test_voltmeter/, applied to an IC instead of a
+* passive component. Powered from psu_pico_rail
+* (../../power_supplies/psu_pico_rail/).
+*
+* Switch is modeled at its typical on-resistance (~200 ohm at VDD=3.3V,
+* per CD4066B datasheet trend — RON is lower at higher VDD, this is a
+* conservative mid-range estimate) when closed, and near-infinite
+* (leakage-level) when open. I/O A and I/O B nodes are duplicated per
+* state (same technique as fuse_test_voltmeter's cold/tripped modeling)
+* so both outcomes print side by side instead of overwriting one another.
+
+Vdd        1 0  DC 3.3
+
+* --- Switch CLOSED (control pin driven HIGH) ---
+RA_closed  1 Ac  10k
+Rsw_closed Ac Bc 200
+RB_closed  Bc 0  10k
+
+* --- Switch OPEN (control pin driven LOW) ---
+RA_open    1 Ao  10k
+Rsw_open   Ao Bo 1e9
+RB_open    Bo 0  10k
+
+.control
+op
+echo --- Switch CLOSED: I/O A vs I/O B (Pico ADC probe on I/O B) ---
+print v(Ac) v(Bc)
+echo --- Switch OPEN: I/O A vs I/O B (should read near 0, isolated) ---
+print v(Ao) v(Bo)
+quit
+.endc
+
+.end

@@ -12,8 +12,8 @@ one exists.
 | Type | Tie points | Size | Source |
 |---|---|---|---|
 | SYB-170 (received, 6-pack) | 170 | 35 × 47mm approx, 10mm thick | black variant received |
-| SYB-170 (on order, 2-pack) | 170 | same as above | second listing, separate order |
-| MB-102 | 400 (300 terminal-strip + 100 distribution-bar) | 8.5 × 5.5 × 1.0cm | [manual](manuals/400-tie-points-solderless-breadboard-_mb-102_-for-diy-electronics.md) |
+| SYB-170 (received, 2-pack) | 170 | same as above | second listing, separate order; received 2026-08-24 |
+| MB-102 (received) | 400 (300 terminal-strip + 100 distribution-bar) | 8.5 × 5.5 × 1.0cm | [manual](manuals/400-tie-points-solderless-breadboard-_mb-102_-for-diy-electronics.md); received 2026-08-24 |
 | Full breadboard (existing inventory) | 830 | — | SunFounder Thales kit, see `pico/docs/inventory.md` |
 
 MB-102 terminal strips: rows labeled a–e and f–j are connected horizontally
@@ -26,7 +26,10 @@ manual; wire gauge 21–26 AWG recommended for the spring clips.
 
 ## CD4066B (quad bilateral switch)
 
-10 ordered, DIP-14 package. Four independent analog switches, each gated by
+10 received 2026-08-24, DIP-14 package. Not yet validated per-unit — see
+[measurement_tools/cd4066_switch_tester/](../measurement_tools/cd4066_switch_tester/)
+for the bring-up jig that checks each of the 4 switches per chip before
+trusting one downstream. Four independent analog switches, each gated by
 its own digital control pin (logic high = closed/conducting). Useful for:
 analog multiplexer (tier9 `MUX`), sample-and-hold gating (tier9 `SAMHOLD`),
 synchronous demodulator switching (tier4 `DEMOD`).
@@ -51,7 +54,9 @@ Switches are bidirectional — either I/O pin can be signal in or out.
 
 ## LM358 (dual op-amp)
 
-10 ordered, DIP-8. Standard pinout:
+10 received 2026-08-24, DIP-8. First use:
+[signal_conditioning/voltage_reference_lm358/](../signal_conditioning/voltage_reference_lm358/).
+Standard pinout:
 
 | Pin | Function |
 |---|---|
@@ -75,8 +80,9 @@ budget/bring-up substitute.
 
 ## USB-C 16-pin test breakout board
 
-Board size 21.6×14.2mm, 2.54mm hole pitch, FR-4, double-sided (front/back
-plug testing). Breakout pads, as silkscreened:
+1 received 2026-08-24, blue variant. Board size 21.6×14.2mm, 2.54mm hole
+pitch, FR-4, double-sided (front/back plug testing). Breakout pads, as
+silkscreened:
 
 `CC2, D+, D-, SBU1, SBU2, CC1, VBUS, GND`
 

@@ -1,8 +1,9 @@
 # AliExpress Component Orders
 
-Running log of components ordered for the spacetime research lab build. Each
-entry cross-references which subsystem in
-[spacetime_circuits_dependency.md](spacetime_circuits_dependency.md) it
+Running log of components ordered for the lab build. Each entry
+cross-references which subsystem in
+[general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
+or [spacetime_circuits_dependency.md](spacetime_circuits_dependency.md) it
 supports. Physical part counts are mirrored into the sibling `pico/` repo's
 [`pico/docs/inventory.md`](../../pico/docs/inventory.md), which is the
 shared master inventory across both repos — update both files together.
@@ -26,7 +27,7 @@ the converted `.md` files are tracked).
 - Compatible with 22–29 AWG jumper wire.
 - Supports: bootstrap-tier builds needing a small breadboard footprint
   (`psu_ultralow_v1`, `psu_low_v2`) — see
-  [spacetime_circuits_dependency.md](spacetime_circuits_dependency.md)
+  [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
   `psu_ultralow`/`psu_low` subgraphs.
 - Logged received: 2026-08-21.
 
@@ -65,18 +66,52 @@ the converted `.md` files are tracked).
 - Manual: [aa-power-battery-holder-lr6-container-with-lead-cables.md](manuals/aa-power-battery-holder-lr6-container-with-lead-cables.md)
 - Logged received: 2026-08-21.
 
+### SYB-170 mini breadboard (2pk)
+
+- Listing: "SYB-170 Breadboard", second small-breadboard source, distinct
+  from the received 6-pack above.
+- 2 received.
+- Supports: same bootstrap-tier builds as the black SYB-170 above.
+- Logged received: 2026-08-24.
+
+### MB-102 breadboard (400 tie-point)
+
+- 300 terminal-strip + 100 distribution-bar tie points, full-size board
+  for larger builds (tier2+). Manual:
+  [400-tie-points-solderless-breadboard-_mb-102_-for-diy-electronics.md](manuals/400-tie-points-solderless-breadboard-_mb-102_-for-diy-electronics.md).
+- 1 received.
+- Logged received: 2026-08-24.
+
+### CD4066BCN (quad bilateral switch, DIP-14)
+
+- 10 received. See
+  [parts_reference.md](parts_reference.md#cd4066b-quad-bilateral-switch)
+  for pinout. Bring-up/validation jig:
+  [measurement_tools/cd4066_switch_tester/](../measurement_tools/cd4066_switch_tester/) —
+  not yet validated per-unit (40 individual switches across 10 chips);
+  run each switch through the tester before trusting it in a downstream
+  design (tier9 `MUX`, tier4 `DEMOD`).
+- Logged received: 2026-08-24.
+
+### LM358P (dual op-amp, DIP-8)
+
+- 10 received. See
+  [parts_reference.md](parts_reference.md#lm358-dual-op-amp) for pinout.
+  First use:
+  [signal_conditioning/voltage_reference_lm358/](../signal_conditioning/voltage_reference_lm358/)
+  (tier1 `REF`).
+- Logged received: 2026-08-24.
+
+### TYPE-C Female Test Board (USB3.1 16P → 2.54mm breakout, blue)
+
+- 1 received. See
+  [parts_reference.md](parts_reference.md#usb-c-16-pin-test-breakout-board)
+  for the pad list and the `U+`/`D+` transcription caveat — verify against
+  the physical silkscreen now that it's on hand.
+- Logged received: 2026-08-24.
+
 ---
 
-## On order (placed, not yet received as of 2026-08-21)
+## On order (placed, not yet received)
 
-| Item | Variant ordered | Qty | Manual/notes |
-|---|---|---|---|
-| SYB-170 mini breadboard (2pk) | SYB-170 Breadboard | 2 | Second small-breadboard source, distinct listing from the received 6-pack above |
-| MB-102 breadboard | 400 tie-point (300 terminal + 100 distribution) | 1 | [manual](manuals/400-tie-points-solderless-breadboard-_mb-102_-for-diy-electronics.md) — full-size board for larger builds (tier2+) |
-| CD4066BCN | Quad bilateral analog switch, DIP-14 | 10 | See [parts_reference.md](parts_reference.md#cd4066b-quad-bilateral-switch) |
-| LM358P | Dual op-amp, DIP-8 | 10 | See [parts_reference.md](parts_reference.md#lm358-dual-op-amp) |
-| TYPE-C Female Test Board | USB3.1 16P → 2.54mm breakout, blue | 1 | See [parts_reference.md](parts_reference.md#usb-c-16-pin-test-breakout-board) |
-
-None of the on-order items are reflected in `pico/docs/inventory.md` yet —
-they move from this table into that inventory (and out of "on order" here)
-once physically received, same as the items above.
+Nothing currently on order.

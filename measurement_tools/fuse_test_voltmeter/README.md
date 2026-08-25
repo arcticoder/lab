@@ -27,7 +27,7 @@ used throughout that session into its own reusable circuit.
 
 For a more capable Pico ADC readout (filtering, noise characterization,
 calibration curves), see
-[pico/gpio_analog_sensing](../../../pico/gpio_analog_sensing/) in the
+[pico/measurement_tools/gpio_analog_sensing](../../../pico/measurement_tools/gpio_analog_sensing/) in the
 sibling `pico/` repo (see `lab.code-workspace`, which opens both) — that's
 general-purpose analog sensing
 infrastructure, not lab-specific, so it lives over there rather than being

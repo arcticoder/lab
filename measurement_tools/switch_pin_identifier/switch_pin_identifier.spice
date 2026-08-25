@@ -1,0 +1,40 @@
+* switch_pin_identifier — Pico internal pull-ups vs an unknown switch's 3 pins
+*
+* Not a powered circuit of its own — the Pico gets its power from the PC's
+* USB port and just senses, same as fuse_test_voltmeter. What's modeled
+* here is each probe pin's internal pull-up (RP2040 datasheet: nominal
+* ~50 kOhm) pulling a switch terminal to 3.3V, and the switch's *active*
+* pin (the one that actually connects to GND in one position, per the
+* 2026-08-22 diagnostic in docs/history.md) in both of its two positions.
+* Pins A and C are modeled once each since the specific switch under test
+* never connects them in either position — a different switch under test
+* might, in which case reuse the B-node pattern for whichever pin turns
+* out to be active.
+*
+* Position 1: active pin (B) shorted to GND through the switch's closed
+*             contact resistance (a few ohms, modeled as 1 ohm)
+* Position 2: active pin (B) floating — same as A and C, pulled to 3.3V
+
+Vdd     99 0  DC 3.3
+
+* --- Pins that never connect to GND on this switch (pull-up only) ---
+RpuA    99 A   50k
+RpuC    99 C   50k
+
+* --- Active pin, position 1 (switch closed to GND) ---
+RpuB1   99 B1  50k
+RclosedB1 B1 0 1
+
+* --- Active pin, position 2 (switch open / floating) ---
+RpuB2   99 B2  50k
+
+.control
+op
+echo --- Pins A and C: always floating (pulled high) regardless of switch position ---
+print v(A) v(C)
+echo --- Pin B (active pin): position 1 (closed to GND) vs position 2 (floating) ---
+print v(B1) v(B2)
+quit
+.endc
+
+.end

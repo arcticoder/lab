@@ -1,0 +1,38 @@
+* psu_pico_rail — Raspberry Pi Pico onboard 3V3(OUT) rail as a bench PSU
+*
+* Circuit topology:
+*   Pico onboard RT6150 regulator (3.3V, modeled with a small output
+*   impedance) -> Rload -> GND
+*
+* Spec target: 3.3V, treat ~100mA as the safe external budget (Pico
+* datasheet documents the RT6150 as capable of ~300mA total, but that's
+* shared with the Pico's own ~20-30mA logic draw and has not been
+* independently verified here with a real load — see README.md).
+* Interim PSU while wire strippers are in transit for the AA-holder-based
+* psu_ultralow_v1/psu_low_v2 builds (docs/spacetime_circuits_dependency.md,
+* psu_pico_rail node).
+*
+* Output impedance is not in the RP2040/RT6150 datasheet at the precision
+* needed here, so it's approximated at 2 ohm (conservative — real
+* regulator+trace impedance is typically lower) to show a plausible sag
+* trend under load; treat the sag numbers as illustrative; confirm with a
+* real Pico + switch_pin_identifier-style ADC probe before relying on
+* precise figures.
+*
+* Load swept from 15 to 100 ohm to stay within the ~100mA conservative
+* budget across the sweep (Rload = 33 ohm -> ~100mA design point).
+
+Vreg    1 0 DC 3.3
+Rint    1 2 2
+Rload   2 0 33
+
+.control
+op
+print v(2) i(Vreg)
+
+dc Rload 15 100 5
+print v(2)
+quit
+.endc
+
+.end

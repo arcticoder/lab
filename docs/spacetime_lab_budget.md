@@ -1,7 +1,7 @@
 # Spacetime Research Lab: Parts List & Budget Estimate
 
 ## Overview
-This is a high-level component list derived from spacetime_circuits_dependency.md. Prices are approximate AliExpress/budget-source estimates as of 2026. Excludes consumables (solder, wire, tape, enclosures) and cheap discretes (resistors, capacitors under $1).
+This is a high-level component list derived from general_purpose_circuit_dependency.md and spacetime_circuits_dependency.md. Prices are approximate AliExpress/budget-source estimates as of 2026. Excludes consumables (solder, wire, tape, enclosures) and cheap discretes (resistors, capacitors under $1).
 
 ---
 

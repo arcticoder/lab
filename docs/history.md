@@ -3210,3 +3210,19 @@ while True:
 Connect B to GP15 and GND. When you slide left, switch reads 0. When you slide right, it reads 1. That's your on/off.
 <!-- ------ -->
 ---
+All 20 items are done and verified. Summary:
+
+**pico repo**
+
+1.  Fixed authorship on the 3 tip commits and force-pushed to origin
+2.  Slide switch documented (3-pin "1P2T", one active pin); new AliExpress parts + WorkPro soldering iron added to inventory
+3.  Removed Wokwi (`diagram.json` files + all references), the Valone2008/`docs/related/` tree, and `biefeld_brown_lifter` mentions
+4.  Reorganized flat circuit folders into `leds/`, `buttons/`, `measurement_tools/`, `displays/`, fixing every internal link
+5.  `schematic.png` untracked everywhere, wildcarded in `.gitignore`
+6.  README rewritten as general-purpose, linked to `arcticoder/lab`, trimmed SunFounder/"prior hardware" and forward-looking language
+
+**lab repo** 7. New `measurement_tools/switch_pin_identifier/` (generalizes the switch-diagnosis conversation from history.md) 8. New `power_supplies/psu_pico_rail/` (interim PSU using the Pico's own 3.3V rail) 9. Two new circuits built against it: `signal_conditioning/voltage_reference_lm358/` and `measurement_tools/cd4066_switch_tester/` 10. `docs/spacetime_circuits_dependency.md` split into that file (spacetime-specific tiers) + new `general_purpose_circuit_dependency.md` (everything else), with pico circuits cross-linked as optional alternatives 11. Every circuit now has a real `smoke_test.py` (shared `tools/ngspice_runner.py`) --- this caught a genuine issue: `fuse_test_voltmeter`'s RXEF050 test point dissipates ~0.82W in an unspecified-wattage resistor, fixed to require ≥1W 12. README retitled, and the "physically assembled"/"ad hoc probe" wording fixed per your notes
+
+All 8 lab netlists and 8 smoke tests pass; both repos have everything staged (`git add -A`) but **not committed** --- let me know if you'd like me to commit and, for pico, push.
+<!-- ------ -->
+---

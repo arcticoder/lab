@@ -1,16 +1,24 @@
-# Spacetime Research Lab — Circuits
+# Electronics Lab — Circuits
 
 Test and measurement circuits for a physics lab bench, built bottom-up from
 a bootstrap PSU through the tiers laid out in
-[docs/spacetime_circuits_dependency.md](docs/spacetime_circuits_dependency.md).
-See [docs/history.md](docs/history.md) for the design conversation behind
-each circuit — component choices, tradeoffs, and dead ends included.
+[docs/general_purpose_circuit_dependency.md](docs/general_purpose_circuit_dependency.md).
+Spacetime research (electrogravitics, the Biefeld-Brown effect) is the
+current driving objective and gets its own tier graph in
+[docs/spacetime_circuits_dependency.md](docs/spacetime_circuits_dependency.md),
+but the general-purpose foundation underneath it — PSU tiers, protection,
+safety monitoring, signal conditioning, measurement tools — isn't specific
+to that goal and is meant to be useful on its own. See
+[docs/history.md](docs/history.md) for the design conversation behind each
+circuit — component choices, tradeoffs, and dead ends included.
 
 Each circuit gets its own top-level folder with a SPICE netlist, a
 generated schematic, and a breadboard wiring guide. Power supplies are
 grouped under `power_supplies/`; measurement/test tools are grouped under
-`measurement_tools/`; other circuit categories (safety monitoring, etc.)
-get their own top-level folders as they're built.
+`measurement_tools/`; signal-conditioning building blocks (references,
+amplifiers) are grouped under `signal_conditioning/`; other circuit
+categories (safety monitoring, etc.) get their own top-level folders as
+they're built.
 
 ---
 
@@ -39,13 +47,47 @@ to predict voltages and currents before building.
 ```bash
 # from the repo root
 ngspice -b measurement_tools/fuse_test_voltmeter/fuse_test_voltmeter.spice
+ngspice -b measurement_tools/switch_pin_identifier/switch_pin_identifier.spice
+ngspice -b measurement_tools/cd4066_switch_tester/cd4066_switch_tester.spice
+ngspice -b power_supplies/psu_pico_rail/psu_pico_rail.spice
 ngspice -b power_supplies/psu_ultralow_v1/psu_ultralow_v1.spice
 ngspice -b power_supplies/psu_low_v2/psu_low_v2.spice
 ngspice -b power_supplies/psu_medlow_usbc/psu_medlow_usbc.spice
+ngspice -b signal_conditioning/voltage_reference_lm358/voltage_reference_lm358.spice
 ```
 
 Run from the repo root. Each netlist prints an operating point at its
 nominal load, then sweeps the load resistor to show the V/I curve.
+
+---
+
+## Smoke-testing a circuit
+
+Printing an operating point documents what a circuit *should* do; it
+doesn't check it. Every circuit folder also has a `smoke_test.py` that
+runs its netlist and asserts against real thresholds: no node exceeding a
+part's safe voltage, no resistor dissipating more than its rated wattage
+(where the resistor is an actual physical part — some netlists use `Rload`
+purely as a simulated stand-in for whatever gets attached later, which
+isn't a smoke risk on its own), and a functional check that the circuit
+actually does what it claims (a divider ratio within tolerance, a
+buffered reference holding steady under load, a switch reading
+unambiguously different when open vs. closed). `tools/ngspice_runner.py`
+holds the shared ngspice-invocation/parsing logic every `smoke_test.py`
+reuses.
+
+```bash
+# from the repo root
+python measurement_tools/fuse_test_voltmeter/smoke_test.py
+python power_supplies/psu_ultralow_v1/smoke_test.py
+# ...and so on, one smoke_test.py per circuit folder
+```
+
+Exits non-zero on any failed check. Running this caught a real issue in
+`fuse_test_voltmeter`'s bench jig: at the RXEF050 (3.0V) test point, the
+physical 10Ω load resistor dissipates ~0.82W — well past a standard 1/4W
+or 1/2W part's rating — so `breadboard.md`'s parts list now calls for a
+≥1W resistor there.
 
 ---
 
@@ -62,38 +104,39 @@ sequence this drives.
 | Folder | Circuit | Tier |
 |--------|---------|------|
 | `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe, streams voltage over USB; self-check, then bench-tests polyfuses before any of them go into a PSU | bootstrap / concurrent measurement tool (build first) |
-| `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap) |
-| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` |
+| `measurement_tools/switch_pin_identifier/` | Pico digital probe, identifies which pin(s) of an unmarked 2/3-pin switch are active in each position | bootstrap measurement tool |
+| `power_supplies/psu_pico_rail/` | Pico's own onboard 3.3V rail, ~100mA budget | interim bootstrap PSU (build/use now, while wire strippers are in transit) |
+| `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap, waiting on wire strippers) |
+| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (waiting on wire strippers) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
+| `signal_conditioning/voltage_reference_lm358/` | LM358 unity-gain buffer holds a resistor-divider reference steady under load | tier1 `REF` |
+| `measurement_tools/cd4066_switch_tester/` | Pico-driven bring-up jig for one CD4066B analog switch — confirms it passes/blocks before trusting it in a later design | component validation (ahead of tier9 `MUX`) |
 
-Each of these has a SPICE netlist, a generated schematic, and a breadboard
-wiring guide, but none have been physically assembled yet. Everything else
-in `docs/spacetime_circuits_dependency.md` (safety monitoring, tiers 1–9,
-remaining bootstrap measurement tools) hasn't been worked out to netlist
-stage at all — folders for those will show up here as they get one.
+Each of these has a SPICE netlist, a generated schematic, a breadboard
+wiring guide, and a `smoke_test.py`, but none have been physically tested
+on with real components yet. Everything else in
+`docs/general_purpose_circuit_dependency.md` /
+`docs/spacetime_circuits_dependency.md` (safety monitoring, most of tiers
+1–9) hasn't been worked out to netlist stage at all — folders for those
+will show up here as they get one.
 
 ---
 
 ## Notes
 
-- `measurement_tools/fuse_test_voltmeter/` is the one circuit here with
-  Pico firmware (`main.py`) checked in — everywhere else the Pico is used
-  purely as an ad hoc probe, per the design conversation in
-  `docs/history.md`. For more capable Pico ADC work (filtering, calibration
-  curves, noise characterization), see the sibling `pico/` repo's
-  `gpio_analog_sensing/` — that repo isn't limited to one project, so
-  general-purpose Pico infrastructure lives there rather than being
-  duplicated here.
+- `measurement_tools/fuse_test_voltmeter/` and `cd4066_switch_tester/` are
+  the circuits here with Pico firmware (`main.py`) checked in. For more
+  capable Pico ADC work (filtering, calibration curves, noise
+  characterization), see the sibling `pico/` repo's
+  `measurement_tools/gpio_analog_sensing/` — that repo isn't limited to
+  one project, so general-purpose Pico infrastructure lives there rather
+  than being duplicated here.
 - Getting the physical Pico talking to this PC (WSL + `usbipd` device
   attach, MicroPython firmware, installing/using `mpremote`) is documented
   once in the sibling `pico/` repo rather than duplicated here — see
   [pico/README.md § Running on real hardware](../pico/README.md#running-on-real-hardware).
-  Needed any time you run `measurement_tools/fuse_test_voltmeter/main.py`
-  (e.g. to validate the received polyfuses/Schottky diodes before trusting
-  them in a PSU build) against real hardware instead of just simulating.
-- See `docs/history.md` for the reasoning behind part substitutions
-  (e.g. why the fuse is 50 mA and not 500 mA, why the AA holder is two
-  single-cell holders instead of one 2×AA holder).
+  Needed any time you run one of this repo's `main.py` scripts against
+  real hardware instead of just simulating.
 - See `docs/orders.md` for what's actually been ordered/received from
   AliExpress against the `spacetime_lab_budget.md` estimates, and
   `docs/parts_reference.md` for pinouts/specs on those parts. Physical part
@@ -111,36 +154,73 @@ measurement_tools/
         schematic.png         (generated, gitignored)
         breadboard.md
         main.py
+        smoke_test.py
+        README.md
+
+    switch_pin_identifier/   Pico digital probe, identifies switch pin behavior (designed, not built)
+        switch_pin_identifier.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        smoke_test.py
+        README.md
+
+    cd4066_switch_tester/    CD4066B analog-switch bring-up jig (designed, not built)
+        cd4066_switch_tester.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        smoke_test.py
         README.md
 
 power_supplies/
+    psu_pico_rail/            Pico onboard 3.3V rail, ~100mA (interim, designed)
+        psu_pico_rail.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        smoke_test.py
+        README.md
+
     psu_ultralow_v1/         single AA + 50 mA polyfuse (designed, not built)
         psu_ultralow_v1.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        smoke_test.py
         README.md
 
     psu_low_v2/               2xAA + Schottky + 500 mA polyfuse (designed, not built)
         psu_low_v2.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        smoke_test.py
         README.md
 
     psu_medlow_usbc/          5V USB-C + 500 mA polyfuse + bypass cap (designed, not built)
         psu_medlow_usbc.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        smoke_test.py
+        README.md
+
+signal_conditioning/
+    voltage_reference_lm358/  LM358 buffered voltage reference (designed, not built)
+        voltage_reference_lm358.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        smoke_test.py
         README.md
 
 docs/
-    history.md                          design conversation log
-    spacetime_circuits_dependency.md    full dependency diagram (mermaid)
-    spacetime_lab_budget.md             parts list & budget estimate
-    orders.md                           AliExpress order log (received / on order)
-    parts_reference.md                  pinouts & specs for ordered parts without a datasheet on file
-    manuals/                            converted (markitdown) part manuals; source PDFs gitignored
-    kb/                                 process notes for future LLM sessions, not end-user docs
+    history.md                                  design conversation log
+    general_purpose_circuit_dependency.md       general-purpose tier graph (PSU, protection, tiers 1-4/6/9)
+    spacetime_circuits_dependency.md            spacetime-specific tier graph (tiers 5/7/8)
+    spacetime_lab_budget.md                     parts list & budget estimate
+    orders.md                                   AliExpress order log (received / on order)
+    parts_reference.md                          pinouts & specs for ordered parts without a datasheet on file
+    manuals/                                    converted (markitdown) part manuals; source PDFs gitignored
+    kb/                                         process notes for future LLM sessions, not end-user docs
 
 tools/
     spice_to_schematic.py   generate schematic.png from a .spice file
+    ngspice_runner.py       shared ngspice-invocation/parsing helper for smoke_test.py scripts
 ```
