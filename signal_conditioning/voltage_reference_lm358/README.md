@@ -21,6 +21,7 @@ own ~1.65mA).
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`). Only draws the R/V elements; the LM358 itself doesn't render (see netlist comments) |
 | `breadboard.md` | Step-by-step wiring |
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
+| `main.py` | MicroPython — runs the "Validation without a multimeter" check below on real hardware |
 
 ---
 
@@ -81,3 +82,18 @@ Probe the output (pin 1) with a Pico ADC pin, with and without `RloadB`
 (a 1kΩ resistor) connected — the reading should barely move. If it sags
 noticeably, either the feedback wire (pin 1 → pin 2) is missing, or the
 LM358 isn't getting power on pin 8/pin 4.
+
+`main.py` runs this check on real hardware: wire GP26 to LM358 pin 1 and
+a Pico GND pin to the LM358's own GND (pin 4), then run it with the Pico
+plugged in over USB:
+
+```bash
+mpremote run main.py
+```
+
+It takes an averaged reading, then prompts you to disconnect/reconnect
+`RloadB` between readings — waiting on your Enter keypress each time
+instead of streaming continuously, since there's nothing useful to watch
+scroll by while you're moving a resistor lead on the breadboard. It
+finishes by printing `PASS`/`FAIL` against the same ±2% tolerance
+`smoke_test.py` uses for the simulated buffered-vs-unloaded comparison.

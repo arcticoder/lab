@@ -45,7 +45,6 @@ to predict voltages and currents before building.
 ```bash
 # from the repo root
 ngspice -b measurement_tools/fuse_test_voltmeter/fuse_test_voltmeter.spice
-ngspice -b measurement_tools/switch_pin_identifier/switch_pin_identifier.spice
 ngspice -b measurement_tools/cd4066_switch_tester/cd4066_switch_tester.spice
 ngspice -b power_supplies/psu_pico_rail/psu_pico_rail.spice
 ngspice -b power_supplies/psu_ultralow_v1/psu_ultralow_v1.spice
@@ -78,7 +77,6 @@ reuses.
 # from the repo root
 python measurement_tools/cd4066_switch_tester/smoke_test.py
 python measurement_tools/fuse_test_voltmeter/smoke_test.py
-python measurement_tools/switch_pin_identifier/smoke_test.py
 python power_supplies/psu_low_v2/smoke_test.py
 python power_supplies/psu_medlow_usbc/smoke_test.py
 python power_supplies/psu_pico_rail/smoke_test.py
@@ -112,7 +110,6 @@ sequence this drives.
 | Folder | Circuit | Tier |
 |--------|---------|------|
 | `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe, streams voltage over USB; self-check, then bench-tests polyfuses before any of them go into a PSU | bootstrap / concurrent measurement tool (build first) |
-| `measurement_tools/switch_pin_identifier/` | Pico digital probe, identifies which pin(s) of an unmarked 2/3-pin switch are active in each position | bootstrap measurement tool |
 | `power_supplies/psu_pico_rail/` | Pico's own onboard 3.3V rail, ~100mA budget | interim bootstrap PSU (build/use now, while wire strippers are in transit) |
 | `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap, waiting on wire strippers) |
 | `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (waiting on wire strippers) |
@@ -132,8 +129,9 @@ will show up here as they get one.
 
 ## Notes
 
-- `measurement_tools/fuse_test_voltmeter/` and `cd4066_switch_tester/` are
-  the circuits here with Pico firmware (`main.py`) checked in. For more
+- `measurement_tools/fuse_test_voltmeter/`, `cd4066_switch_tester/`, and
+  `signal_conditioning/voltage_reference_lm358/` are the circuits here with
+  Pico firmware (`main.py`) checked in. For more
   capable Pico ADC work (filtering, calibration curves, noise
   characterization), see the sibling `pico/` repo's
   `measurement_tools/gpio_analog_sensing/` — that repo isn't limited to
@@ -159,14 +157,6 @@ will show up here as they get one.
 measurement_tools/
     fuse_test_voltmeter/     Pico ADC voltmeter, validates polyfuses via USB (designed, not built)
         fuse_test_voltmeter.spice
-        schematic.png         (generated, gitignored)
-        breadboard.md
-        main.py
-        smoke_test.py
-        README.md
-
-    switch_pin_identifier/   Pico digital probe, identifies switch pin behavior (designed, not built)
-        switch_pin_identifier.spice
         schematic.png         (generated, gitignored)
         breadboard.md
         main.py
@@ -215,6 +205,7 @@ signal_conditioning/
         voltage_reference_lm358.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        main.py
         smoke_test.py
         README.md
 

@@ -76,6 +76,32 @@ files and forget this one since it doesn't have an explicit on-order/received
 table structure). Did this for the RXEF005/RXEF050/1N5817/AA-holder batch on
 2026-08-21 — used as the template for future arrivals.
 
+## AliExpress listing titles can misuse standard part-family terminology, not just bundle SKUs
+
+The 3296W trimmer potentiometer batch (ordered 2026-08-25) is titled
+"Multi-turn Trimming" but the 3296 package is the industry-standard
+**single-turn** cermet trimmer designation (a genuinely multi-turn part
+in a similar footprint is usually a different suffix, e.g. 3296X). This
+is a different failure mode than the earlier "bundled part-number
+variants" and "OCR/transcription slip" entries above — here the listing
+text itself asserts an electrical property (turn count) that contradicts
+the well-known meaning of the part's own package code. Don't take a
+listing's adjectives (multi-turn, precision, etc.) at face value even
+when the part number looks specific and legitimate; cross-check against
+the package/family's established meaning and flag the discrepancy in
+`parts_reference.md` rather than silently repeating the listing's claim.
+
+## Two unrelated items can arrive in the same user message with the same URL
+
+When ingesting the 2026-08-25 batch, the "18-in-1 wire stripper pliers"
+item and the "2A glass tube fuses" item were given the identical
+AliExpress URL — clearly a paste mistake on the user's part (a pliers
+listing and a fuse listing are not the same product). Don't silently
+"fix" this by guessing a plausible URL for the mismatched item; just log
+the order from its title/spec text (which was distinct and complete for
+both items) and flag the URL collision explicitly in `orders.md` so a
+future session doesn't trust that link for the pliers.
+
 ## "Received" ≠ "validated" for bulk/consumable parts
 
 For parts bought in bulk from AliExpress (polyfuses, diodes — anything where

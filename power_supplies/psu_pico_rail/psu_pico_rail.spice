@@ -16,8 +16,7 @@
 * needed here, so it's approximated at 2 ohm (conservative — real
 * regulator+trace impedance is typically lower) to show a plausible sag
 * trend under load; treat the sag numbers as illustrative; confirm with a
-* real Pico + switch_pin_identifier-style ADC probe before relying on
-* precise figures.
+* real Pico ADC probe before relying on precise figures.
 *
 * Load swept from 15 to 100 ohm to stay within the ~100mA conservative
 * budget across the sweep (Rload = 33 ohm -> ~100mA design point).

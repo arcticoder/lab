@@ -68,12 +68,10 @@ external budget, not a hard verified limit.
 
 ## Validation without a multimeter
 
-Probe the 3V3(OUT) pin directly with a second Pico's ADC (or, once
-[switch_pin_identifier](../../measurement_tools/switch_pin_identifier/) or
-a similar single-Pico probe setup is adapted for it) to confirm the rail
-holds close to 3.3V under your circuit's actual load before trusting it —
-same philosophy as the other PSU tiers' "validation without a multimeter"
-sections.
+Probe the 3V3(OUT) pin directly with a second Pico's ADC (or a similar
+single-Pico probe setup) to confirm the rail holds close to 3.3V under
+your circuit's actual load before trusting it — same philosophy as the
+other PSU tiers' "validation without a multimeter" sections.
 
 ---
 

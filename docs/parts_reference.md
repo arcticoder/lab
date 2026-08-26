@@ -140,3 +140,77 @@ lead ends touch once a battery is loaded (short-circuit risk), wires are
 thin/low-current rated only.
 
 5 received 2026-08-21, ready to use — no per-unit validation needed.
+
+---
+
+## 3296 trimming potentiometer
+
+10 ordered 2026-08-25 (10kΩ variant), not yet received. See
+[orders.md](orders.md#3296w-trimming-potentiometer).
+
+Standard 3-pin cermet trimmer, top-adjust screw wiper. The listing calls
+it "multi-turn," but the 3296 package designation is normally a
+**single-turn** trimmer (a multi-turn part in this size class is usually
+labeled 3296X or similar) — verify actual wiper travel/turns-per-span
+against the physical part once received rather than trusting the listing
+title. Pinout: two outer pins are the fixed ends of the resistive
+element (10kΩ end-to-end), the middle pin is the wiper. Candidate use:
+calibration trim for tier1 `OSC` timing or fine-adjusting a reference
+divider ratio.
+
+---
+
+## Panel-mount fuse holder (6×30mm)
+
+1 ordered 2026-08-25, not yet received. See
+[orders.md](orders.md#panel-mount-fuse-holder-6x30mm). EGBO brand, panel
+opening 12/14mm, rated 10A/250V max, accepts standard 6×30mm glass tube
+fuses (also fits 5×20mm per the listing, though the selected variant is
+sized for 6×30mm). Pairs with the 2A glass tube fuse below for the
+`psu_medlow` protection tier.
+
+---
+
+## NE555 timer
+
+10 ordered 2026-08-25, DIP-8 package. See
+[orders.md](orders.md#ne555-timer-ic-dip-8). Standard NE555 pinout:
+
+| Pin | Function | Pin | Function |
+|---|---|---|---|
+| 1 | GND | 8 | VCC |
+| 2 | Trigger | 7 | Discharge |
+| 3 | Output | 6 | Threshold |
+| 4 | Reset | 5 | Control Voltage |
+
+Supply 4.5–16V typical. Candidate for tier1 `OSC` (astable configuration)
+and tier2 `FREQC` (as a gate-time generator for a frequency counter).
+
+---
+
+## TL431A precision shunt reference
+
+5 ordered 2026-08-25, TO-92 package. See
+[orders.md](orders.md#tl431a-precision-shunt-reference-to-92). 3-terminal
+adjustable shunt regulator/reference: Cathode, Anode, Reference. Internal
+bandgap reference is 2.495V between Ref and Anode; feeding back a
+resistor divider from Cathode to Ref sets any output from 2.5V up to 36V,
+regulated by the device sinking current at Cathode to hold Ref at 2.495V.
+Needs a pull-up/current source into Cathode (it only sinks, never
+sources) — unlike the LM358 buffer in
+[voltage_reference_lm358](../signal_conditioning/voltage_reference_lm358/),
+which is a true low-impedance source output. Candidate as a more
+temperature-stable tier1 `REF` alternative once wired with its required
+external pull-up resistor.
+
+---
+
+## Glass tube fuses (6×30mm)
+
+10 ordered 2026-08-25, 2A fast-blow variant, 250V rated. See
+[orders.md](orders.md#glass-tube-fuses-6x30mm-250v). Same listing offers
+0.1A–30A variants; 2A was the selected SKU. Pairs with the panel-mount
+holder above for the `psu_medlow` protection tier (2A fast-blow +
+polyfuse backup, per
+[general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)'s
+`PROTMEDLOW` node).

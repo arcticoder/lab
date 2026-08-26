@@ -3245,3 +3245,32 @@ All 12 items are done and all 8 smoke tests still pass. Summary:
 I also flagged one thing in the docs I wasn't fully certain about: the README used to claim a specific pin role ("one outer pin always floats") for the already-characterized 3-pin slide switch, based on an older ad hoc session. That session is ambiguous about whether it actually had a GND wire either, so I softened that claim to "reconfirm this once the GND wire is actually in place" rather than asserting it as settled fact.
 <!-- ------ -->
 ---
+All four preceding tasks are complete and verified (smoke tests pass, no stray references remain outside the append-only log). Here's the answer to Task 5:
+
+After `voltage_reference_lm358` testing: what's next
+----------------------------------------------------
+
+Checking [general\_purpose\_circuit\_dependency.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/home/echo_/Code/python/lab/docs/general_purpose_circuit_dependency.md) against current inventory + what's now on order, three circuits are buildable **immediately, with zero new parts**, and two are genuinely blocked on parts you don't have yet:
+
+| Circuit | Tier | Status | Why |
+| --- |  --- |  --- |  --- |
+| `psu_medlow_usbc` | PSU (`psu_medlow`) | **Build now** | USB-C breakout, RXEF050 polyfuse, and 100nF cap are all already in inventory. Only prerequisite: run one RXEF050 through `fuse_test_voltmeter` first (they're marked "untested per-unit"). |
+| --- |  --- |  --- |  --- |
+| `VM` --- Precision DC Voltmeter | tier2 | **Build now** | Same LM358 unity-gain buffer topology as `voltage_reference_lm358`, just wired as an *input* buffer ahead of a Pico ADC instead of behind a divider --- so probing doesn't load down a high-impedance source. LM358 stock (10 chips, 1 used) covers it. |
+| `FREQC` --- Basic Frequency Counter | tier2 | **Build now** | Pure Pico GPIO edge-counting over a gated time window --- no analog parts needed at all. Can self-test with one GPIO PWM-driving a known frequency into another GPIO. |
+| `OSC` --- Precision Timing Oscillator | tier1 | **Blocked** | NE555 is on order but not received. Also: standard NE555 needs ≥4.5V --- `psu_pico_rail`'s 3.3V won't run it, so this also needs `psu_medlow_usbc` (5V) built first. |
+| `AM` --- Precision Current Shunt Ammeter | tier2 | **Blocked** | Needs a true shunt resistor (0.1--1Ω); inventory's lowest value is 10Ω. Not ordered yet. |
+| `TIA` --- Transimpedance Amplifier | tier2 | **Blocked** | Needs a photodiode; inventory only has an LDR photoresistor, which isn't the same thing (no photocurrent output). Not ordered yet. |
+
+**Recommended order:** `psu_medlow_usbc` first (unblocks a real 5V rail), then `VM` and `FREQC` in either order (both tier2, both fully unblocked).
+
+**Parts to order for the two blocked ones:**
+
+-   A precision shunt resistor set --- 0.1Ω and 1Ω, 1%, ≥1W --- for `AM`.
+-   A general-purpose silicon photodiode (e.g. BPW34-class) --- for `TIA`.
+
+Everything already on order (NE555, TL431A, 3296 trimmer, fuse holder + 2A fuse, wire strippers) is already accounted for in the table above --- none of it is wasted, just not all of it unlocks something *yet*.
+
+I haven't scaffolded new circuit folders (spice/breadboard/smoke\_test) for any of these --- say the word if you want me to build one out the same way the existing circuits are structured.
+<!-- ------ -->
+---

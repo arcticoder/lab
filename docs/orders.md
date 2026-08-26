@@ -113,4 +113,79 @@ the converted `.md` files are tracked).
 
 ## On order (placed, not yet received)
 
-Nothing currently on order.
+### 3296W trimming potentiometer
+
+- Listing: "10PCS 3296W Potentiometer Precision Adjustable Resistance
+  Multi-turn Trimming 1K 2K 5K 10K 100K 103 100R Trimmer Potentiometer"
+  (variant selected: "10K Ohm").
+- 10 ordered, all 10kΩ. The listing title bundles several resistance
+  values under one product; only the 10kΩ variant was selected.
+- The title calls this "multi-turn," but the 3296 package designation is
+  the standard Bourns-style single-turn cermet trimmer (top-adjust screw,
+  ~25 turns of the screw ≠ multi-turn wiper travel) — treat "multi-turn"
+  as unverified marketing copy until the physical part confirms actual
+  wiper behavior. See
+  [parts_reference.md](parts_reference.md#3296-trimming-potentiometer).
+- Supports: tier1 `OSC`/reference-adjustment use (calibration trim), per
+  [spacetime_lab_budget.md](spacetime_lab_budget.md)'s "Trim
+  Potentiometers" line.
+- Ordered: 2026-08-25.
+
+### Panel-mount fuse holder (6×30mm)
+
+- Listing: "EGBO 1~10PCS 5×20mm & 6×30mm Glass Fuse Holders (EGBO,
+  1~10PCS): Panel Mount Socket for Fuse Panels" (variant selected:
+  "6X30mm 1PCS").
+- 1 ordered. Panel-mount socket, opening 12/14mm, rated 10A/250V.
+- Supports: `psu_medlow` protection tier, paired with the 2A glass fuse
+  below. See
+  [parts_reference.md](parts_reference.md#panel-mount-fuse-holder).
+- Ordered: 2026-08-25.
+
+### NE555 timer IC (DIP-8)
+
+- Listing: "10-100PCS NE555 555 DIP-8 IC Timers NEW GOOD QUALITY
+  PRECISION TIMERS" (variant selected: "DIP-10PCS").
+- 10 ordered, DIP-8 package.
+- Supports: tier1 `OSC` (precision timing oscillator) and tier2 `FREQC`
+  (basic frequency counter, typically 555-gated). See
+  [parts_reference.md](parts_reference.md#ne555-timer).
+- Ordered: 2026-08-25.
+
+### TL431A precision shunt reference (TO-92)
+
+- Listing: "5piece TL431A TL431 TO-92".
+- 5 ordered, TO-92 package.
+- Supports: tier1 `REF` — an adjustable bandgap shunt reference, a more
+  precise alternative to the resistor-divider + LM358 buffer approach in
+  [voltage_reference_lm358](../signal_conditioning/voltage_reference_lm358/).
+  See [parts_reference.md](parts_reference.md#tl431a-precision-shunt-reference).
+- Ordered: 2026-08-25.
+
+### Glass tube fuses, 6×30mm 250V
+
+- Listing: "Hzy 10pcs multimeter Fuse Quick Fast Blow Fuse Glass Tube
+  thermo Fuses 6*30mm 250V 1A/2A/3A/4A/5A/6A/7A/8A/10A/15A/20A/25A/30A"
+  (variant selected: "2A").
+- 10 ordered (lot of 10 per the listing's unit type), all 2A fast-blow.
+- Supports: `psu_medlow` protection tier, paired with the panel-mount
+  holder above. See
+  [parts_reference.md](parts_reference.md#glass-tube-fuses-6x30mm).
+- Ordered: 2026-08-25.
+
+### 18-in-1 wire stripper/crimper pliers
+
+- Listing: "18 in 1 Electrician Pliers Multifunctional Wire Stripper
+  Crimper Cutting Pliers Professional Electrical Repair Hand Tool".
+  High-carbon steel + PVC handle, insulated/non-insulated terminal
+  crimping, common AWG stripping gauges.
+- 1 ordered. Not an electrical component — a tool. Resolves the
+  wire-stripper dependency that's been blocking AA battery holder lead
+  termination for `psu_ultralow_v1`/`psu_low_v2` (see
+  [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)).
+- **Note:** the URL given for this listing was identical to the glass
+  tube fuse listing above (`1005003099267179`) — almost certainly a
+  paste artifact, since the two products are unrelated. Not corrected
+  here; re-verify the actual order/tracking details against the AliExpress
+  order history rather than the URL in this note once the item ships.
+- Ordered: 2026-08-25.

@@ -159,6 +159,27 @@ fastest path to power right now, not the long-term intended PSU for
 circuits that should be electrically independent of the PC/Pico's own USB
 supply.
 
+## `measurement_tools/switch_pin_identifier/` deleted (2026-08-25) — premise was wrong, not just the first draft
+
+The whole circuit existed to identify which pin of an unmarked "1P2T"
+slide switch was active, because the inventory row hypothesized one
+floating outer pin and one active pin (see the README's own "treat it as
+a hypothesis to reconfirm" caveat, written before this deletion). The
+actual switch received turned out to be a standard SunFounder Thales-kit
+slide switch: pin 2 (middle) is the fixed/common contact, and it connects
+to pin 1 or pin 3 depending on slide direction — a completely standard,
+already-documented-by-the-manufacturer SPDT-style part, not something
+that needs per-unit reverse-engineering. Per user instruction the folder
+was deleted outright rather than kept as a generic "identify any unmarked
+switch" tool. The two entries below (GND-reference bug, wiring-order fix)
+describe bugs found while building this now-gone circuit; the folder,
+`main.py`, `smoke_test.py`, and every README/spice/inventory.md reference
+to it are gone, but the two entries are left in place because the
+technical lessons — no probe pin can read LOW without an explicit GND
+path in the circuit, and wire fully before powering on — generalize to
+any future digital-probe circuit design here, not just this one. Don't
+treat either entry as describing a file that currently exists.
+
 ## `switch_pin_identifier`'s original 3-GPIO design had no GND reference — always read all-1s on real hardware (found 2026-08-24)
 
 The first cut of this circuit wired all 2–3 switch terminals straight to
