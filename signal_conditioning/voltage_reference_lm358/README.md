@@ -78,10 +78,14 @@ divider ratio much higher without checking the specific part's datasheet.
 
 ## Validation without a multimeter
 
-Probe the output (pin 1) with a Pico ADC pin, with and without `RloadB`
-(a 1kΩ resistor) connected — the reading should barely move. If it sags
-noticeably, either the feedback wire (pin 1 → pin 2) is missing, or the
-LM358 isn't getting power on pin 8/pin 4.
+Probe the output (pin 1) with a Pico ADC pin, with and without `R_load`
+(a *third*, separate 1kΩ resistor — not R1 or R2 from the divider)
+connected — the reading should barely move. If it sags noticeably,
+either the feedback wire (pin 1 → pin 2) is missing, or the LM358 isn't
+getting power on pin 8/pin 4. See
+[breadboard.md](breadboard.md#6-optional-add-r_load-for-mainpys-validation-check)
+for how to wire `R_load` — it's only needed for this check, not for the
+circuit itself.
 
 `main.py` runs this check on real hardware: wire GP26 to LM358 pin 1 and
 a Pico GND pin to the LM358's own GND (pin 4), then run it with the Pico
@@ -91,9 +95,10 @@ plugged in over USB:
 mpremote run main.py
 ```
 
-It takes an averaged reading, then prompts you to disconnect/reconnect
-`RloadB` between readings — waiting on your Enter keypress each time
-instead of streaming continuously, since there's nothing useful to watch
-scroll by while you're moving a resistor lead on the breadboard. It
-finishes by printing `PASS`/`FAIL` against the same ±2% tolerance
-`smoke_test.py` uses for the simulated buffered-vs-unloaded comparison.
+It takes an averaged reading, then gives you a fixed 10-second countdown
+to disconnect/reconnect `R_load` between readings, instead of a
+keypress prompt — `mpremote run` streams the device's output back but
+never forwards your terminal's keystrokes to it, so a script run this
+way can't use `input()` to wait for you. It finishes by printing
+`PASS`/`FAIL` against the same ±2% tolerance `smoke_test.py` uses for
+the simulated buffered-vs-unloaded comparison.

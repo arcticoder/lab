@@ -14,7 +14,7 @@ A 1kΩ/1kΩ divider off the [psu_pico_rail](../../power_supplies/psu_pico_rail/)
 | Component | Value | Quantity |
 |-----------|-------|----------|
 | LM358P | dual op-amp, DIP-8 | 1 |
-| Resistor | 1 kΩ | 2 |
+| Resistor | 1 kΩ | 2 (+1 optional, see step 6) |
 | Dupont M-M jumper (red) | 12–20cm | 2 |
 | Dupont M-M jumper (black) | 12–20cm | 2 |
 
@@ -50,9 +50,17 @@ Only channel 1 (pins 1–3) is used; leave channel 2 (pins 5–7) unconnected.
 
 ### 3. Feed the divider into the buffer
 
-Wire the divider midpoint (between R1 and R2) to LM358 pin 3
-(non-inverting input) — same breadboard row, no extra wire needed if
-they're already in the same row.
+Run a jumper wire from the divider midpoint row (where R1 and R2 meet)
+to the row holding LM358 pin 3 (non-inverting input).
+
+A breadboard row is one electrically-bonded node, so if you deliberately
+land one of R1/R2's legs *in the same row as pin 3* back in step 2
+(instead of a fresh, separate row), they're already the same node and
+this jumper is unnecessary. That's a planning choice made *during* step
+2, though — it won't happen by coincidence, since the LM358's DIP-8 body
+straddles the breadboard's center gap and each of its pins sits in its
+own row, physically separate from wherever you happened to plug R1/R2.
+When in doubt, just run the jumper.
 
 ### 4. Close the feedback loop
 
@@ -62,6 +70,21 @@ makes it a unity-gain buffer instead of an open-loop comparator.
 ### 5. Take the output
 
 Output is LM358 pin 1 (same node as the feedback wire).
+
+### 6. Optional: add `R_load` for `main.py`'s validation check
+
+Only needed if you're running `main.py`'s "validation without a
+multimeter" check (see [README.md](README.md)) — skip this for the
+circuit itself.
+
+`R_load` is a **third** 1kΩ resistor, separate from R1 and R2 — don't
+reuse either divider resistor for this, since removing R1 or R2 breaks
+the divider instead of just testing the buffer under load.
+
+Insert `R_load` with one leg in the LM358 pin 1 row and the other leg in
+a GND rail row. `main.py` walks you through disconnecting/reconnecting
+it (as a fixed countdown, not a keypress prompt — see the README section
+above for why) while it takes ADC readings.
 
 ---
 

@@ -283,3 +283,89 @@ This only works cleanly when the bad commits are contiguous at the tip;
 if bad-author commits are interleaved with good ones further back,
 `git rebase -i` with per-commit `exec` lines (or `git filter-branch`/
 `git filter-repo` for a bulk rewrite) would be needed instead.
+
+## `mpremote run` cannot forward host keystrokes to a running script — never write `input()` into a script meant to be launched that way (found 2026-08-26)
+
+Confirmed empirically (pexpect against a real Pico on `/dev/ttyACM0`,
+`mpremote/1.27.0`) and traced in `mpremote`'s own source
+(`transport_serial.py`'s `follow()` and `commands.py`'s `_do_execbuffer`):
+`mpremote run script.py` executes the script over the raw-REPL protocol
+and streams device *output* back by reading serial until it sees the
+`\x04` (EOF) sentinel — it never reads the host's stdin or writes
+anything back to the device while `follow()` is running. So a script
+launched this way that calls `input()` blocks forever on the device side;
+the user's local Enter keypress goes nowhere and the only way out is
+Ctrl-C on the host, which kills the local `mpremote` process but leaves
+the device still stuck mid-`input()` (confirmed — the device needs an
+explicit `mpremote soft-reset` afterward, since it doesn't recover on its
+own).
+
+This bit `signal_conditioning/voltage_reference_lm358/main.py`, which
+used two `input("...then press Enter...")` calls despite its own
+docstring saying to run it with `mpremote run main.py` — the exact
+"press Enter and nothing happens" symptom the user hit. Fixed by
+replacing both `input()` calls with a fixed `time.sleep`-based countdown
+(`COUNTDOWN_S = 10`) instead — confirmed working end-to-end (`mpremote
+run` exits 0) since the script never touches stdin at all anymore.
+
+Workarounds that looked plausible but were tested and ruled out, in case
+this comes up again:
+- **`mpremote repl` + Ctrl-K file injection** (`--inject-file` +
+  in-REPL Ctrl-K): the injection helper calls `exit_raw_repl()`
+  immediately after starting the script, and the raw-REPL-exit byte
+  sequence it sends gets consumed by the script's still-pending
+  `input()` as a stray empty line — so the *first* `input()` resolves
+  instantly with `""` before the user can type anything. Looks like it
+  works, silently doesn't.
+- **MicroPython REPL paste mode** (Ctrl-E, paste source, Ctrl-D) inside
+  `mpremote repl`: in principle this stays inside the same bidirectional
+  `do_repl_main_loop` the whole time (unlike raw-REPL exec), so it should
+  work, but scripting it reliably via a host-side automation harness
+  (pexpect) proved flaky — timing-dependent, unclear if the flakiness is
+  pexpect-specific or a real device-side issue. Not ruled fully in or out;
+  don't assume it works without testing on the actual target script.
+- The only mode `mpremote`'s own source confirms as truly bidirectional
+  is interactive `mpremote repl` with a human actually typing at the
+  keyboard (`repl.py`'s `do_repl_main_loop`, which forwards every
+  keystroke to serial and every serial byte back to the console, in a
+  single loop, with no protocol-exit sequence in between).
+
+Rule for future lab scripts meant to run via `mpremote run`: never use
+`input()`. If the script needs the user to pause and physically change
+something, use a printed countdown (`time.sleep` in a loop, as in the
+`voltage_reference_lm358` fix) instead. Checked the rest of the repo
+(`grep -rl "input(" --include=main.py`) — `voltage_reference_lm358` was
+the only offender; `fuse_test_voltmeter` and `cd4066_switch_tester`'s
+`main.py` scripts stream output only and don't call `input()`.
+
+## A script's docstring/README referencing a component isn't the same as `breadboard.md` telling you to wire it — check both when a script assumes hardware exists (found 2026-08-26)
+
+`voltage_reference_lm358/main.py` and its `README.md` both referenced
+"`RloadB`, a 1kΩ resistor" to be connected/disconnected from pin 1 during
+the ADC validation check, but `breadboard.md`'s wiring steps (1 through
+5) never once mentioned it — the divider's R1/R2 were the only resistors
+described. A user following `breadboard.md` literally, then running
+`main.py`, has nothing to disconnect when prompted and no way to know
+"RloadB" isn't just an alias for R2 (guessing so and disconnecting R2
+breaks the divider itself instead of testing the buffer under load).
+
+Fixed by: renaming to `R_load` for clarity (avoids implying it's a
+counterpart to some "RloadA"), adding an explicit "optional, test-only"
+step 6 to `breadboard.md` describing it as a *third*, separate resistor,
+and cross-linking README.md's mention of it to that step. General lesson:
+when a `main.py`/README references a physical component or action by
+name, grep `breadboard.md` for that same name before trusting the docs
+are complete — a script can be internally consistent with its README
+while `breadboard.md` still has a real gap, since nothing currently
+checks the two against each other.
+
+Also worth noting for future wiring-step edits: the original step 3
+("same breadboard row, no extra wire needed if they're already in the
+same row") was true in principle (breadboard rows are single electrical
+nodes) but unactionable as written — it reads like something that might
+coincidentally happen, when actually it only happens if you deliberately
+plan for it back in step 2, and won't by default since the LM358's DIP-8
+body straddles the breadboard's center gap, putting every one of its
+pins in its own row separate from wherever R1/R2 got plugged. Rewrote it
+as an unconditional "run a jumper" instruction with the row-sharing
+optimization noted as an aside, not the primary instruction.

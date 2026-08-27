@@ -3274,3 +3274,20 @@ Everything already on order (NE555, TL431A, 3296 trimmer, fuse holder + 2A fuse,
 I haven't scaffolded new circuit folders (spice/breadboard/smoke\_test) for any of these --- say the word if you want me to build one out the same way the existing circuits are structured.
 <!-- ------ -->
 ---
+Summary
+-------
+
+**#1 --- the "same row" wording**: You were right to be confused --- it's not something that happens by coincidence. It only works if you *deliberately* plug an R1/R2 leg directly into the row holding LM358 pin 3 back when you built the divider. Since the LM358's DIP-8 body straddles the breadboard's center gap, each of its pins sits in its own row, separate from wherever you happened to put R1/R2. I rewrote [breadboard.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/signal_conditioning/voltage_reference_lm358/breadboard.md) step 3 as an unconditional "run a jumper wire" instruction. **This is also your real bug** --- I confirmed it by running the script against your actual hardware: the buffered output measured 0.319V instead of the expected ~1.65V, meaning pin 3 is floating right now. Fix: add a jumper from the R1/R2 midpoint row to LM358 pin 3's row.
+
+**#2 --- "RloadB" / script hanging**: Two separate problems, both fixed:
+
+-   `breadboard.md` never actually told you to wire a load resistor at all --- R1/R2 are the divider, not a load. `RloadB` (renamed `R_load`) is a *third*, separate 1kΩ resistor that only exists for this ADC check, wired between pin 1 and GND. I added it as an explicit optional step 6.
+-   Separately --- and this is the actual reason nothing happened after you pressed Enter --- `mpremote run` **cannot forward keyboard input to a running script**. I verified this on your connected Pico: it streams device output back but never reads your terminal's keystrokes, so any `input()` call hangs forever regardless of what you type or wire. I rewrote `main.py` to use a 10-second countdown instead of `input()`, and confirmed the whole script now runs end-to-end cleanly (exit 0).
+
+**#3 --- git-lfs**: Ran `git lfs install --local` and `git lfs track "*.jpg"`. That created `.gitattributes` (untracked, not yet committed --- left for you to review/commit).
+
+Documented the mpremote/stdin finding and the breadboard.md gap pattern in `lab/docs/kb/repo_docs_conventions.md` for future sessions; checked the rest of the repo and confirmed no other `main.py` uses `input()`, so this was an isolated case.
+
+**Next step for your hardware**: add the pin-3 jumper, then wire the third `R_load` resistor per the new breadboard.md step 6, then re-run `mpremote run main.py` --- it should now complete without hanging and read close to 1.65V both times.
+<!-- ------ -->
+---

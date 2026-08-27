@@ -3,16 +3,21 @@ voltage_reference_lm358/main.py
 --------------------------------
 Pico ADC probe implementing README.md's "Validation without a
 multimeter" check: read the LM358 buffered reference (pin 1) with and
-without RloadB (1kOhm) connected, and confirm the reading barely moves.
+without R_load (a separate 1kOhm resistor, not R1/R2 from the divider)
+connected, and confirm the reading barely moves.
 
 Hardware
 --------
   GP26 (ADC0) — probe lead, on LM358 pin 1 (buffered reference output)
   GND         — probe lead, shared with the LM358's own GND (pin 4)
 
-Prompts pause for you to physically add/remove RloadB between readings,
-instead of streaming continuous samples — there's nothing to watch scroll
-by while your hands are on the breadboard.
+Each phase gives you a fixed countdown to add/remove R_load instead of
+waiting on a keypress: `mpremote run` executes this script over the raw
+REPL protocol, which streams device output back but never forwards your
+terminal's keystrokes to the device, so a blocking input() call here
+would hang forever (confirmed — see docs/kb/repo_docs_conventions.md's
+"mpremote run cannot forward host keystrokes" entry). Don't reintroduce
+input() in a script meant to run this way.
 
 Run from MicroPico (or rshell / mpremote), Pico connected to the PC by USB:
   mpremote run main.py
@@ -28,6 +33,7 @@ VREF = 3.3  # Pico ADC reference voltage
 SAMPLES = 20  # averaged per reading, to smooth ADC noise
 SAMPLE_INTERVAL_S = 0.05
 TOLERANCE = 0.02  # matches smoke_test.py's buffered-vs-unloaded tolerance
+COUNTDOWN_S = 10  # time given to move R_load between readings
 
 
 def raw_to_voltage(raw: int) -> float:
@@ -44,16 +50,24 @@ def stable_reading() -> float:
     return total / SAMPLES
 
 
+def countdown(seconds: int) -> None:
+    for s in range(seconds, 0, -1):
+        print(f"  ...{s}s")
+        time.sleep(1)
+
+
 def main() -> None:
     print("voltage_reference_lm358 validation — probing GP26 (LM358 pin 1)")
     print()
 
-    input("Disconnect RloadB (1kOhm) from pin 1, then press Enter...")
+    print(f"Disconnect R_load (1kOhm) from pin 1 — {COUNTDOWN_S}s:")
+    countdown(COUNTDOWN_S)
     v_unloaded = stable_reading()
     print(f"unloaded: {v_unloaded:.3f}V")
     print()
 
-    input("Now connect RloadB (1kOhm) between pin 1 and GND, then press Enter...")
+    print(f"Now connect R_load (1kOhm) between pin 1 and GND — {COUNTDOWN_S}s:")
+    countdown(COUNTDOWN_S)
     v_loaded = stable_reading()
     print(f"loaded:   {v_loaded:.3f}V")
     print()
