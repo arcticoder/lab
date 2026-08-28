@@ -3368,3 +3368,19 @@ Your questions
 **Next step for your bench**: add the 10 Ω (≥1W) resistor and the Pico GP26/GND probe wires to the circuit you already have wired (battery + RXEF005 + switch) --- that's electrically the same jig `fuse_test_voltmeter` describes --- then run its `main.py`.
 <!-- ------ -->
 ---
+This reads consistently. Everything's updated and verified. Summary for the user:
+
+**You're right --- the kit resistors aren't 1W.** The SunFounder Thales kit only stocks 1/4W (0.25W) resistors at every value; there's no ≥1W part on hand.
+
+**Can you still test the 50mA fuses (RXEF005)? Yes, no change needed.** That jig dissipates only ~0.204W in the 10Ω resistor (1.5V cold) --- under the 1/4W rating with margin, and the fuse self-trips within seconds anyway, further limiting exposure.
+
+**The 500mA fuses (RXEF050) needed a fix.** That jig dissipates ~0.82W total --- over 3x a single 1/4W resistor's rating, which would overheat/drift/fail and give you a false reading. Fix: build the 10Ω equivalent load as a **2-series × 2-parallel bank of four 10Ω 1/4W resistors** (two 20Ω branches in parallel) instead of one part. Each resistor then only sees ~0.204W --- within spec --- using nothing but kit-stock 10Ω resistors (you have 10, only need 4).
+
+Updated and verified:
+
+-   `pico/docs/inventory.md` --- noted the kit's resistors are all 1/4W
+-   `lab/measurement_tools/fuse_test_voltmeter/breadboard.md` --- parts table, wattage note, and all wiring steps (self-check, bench-test, PSU demo) updated for the 2s2p bank
+-   `smoke_test.py` --- now checks *per-resistor* power against 0.25W (was wrongly checking total power against a fictional 1W part) --- reran it, all 8 checks pass
+-   `lab/docs/kb/repo_docs_conventions.md` --- added an entry for future sessions explaining the earlier "≥1W" spec was never checked against real inventory
+<!-- ------ -->
+---

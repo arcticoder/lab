@@ -564,6 +564,43 @@ step-by-step procedure and its Expected Behavior section were reworded
 2026-08-28 to say this explicitly, so a fuse tripping before it's ever
 shorted should read as expected behavior, not a wiring problem.
 
+## `fuse_test_voltmeter`'s "≥1W" load resistor spec was unsourceable — the kit has no such part; fixed with a 2x2 series-parallel bank of 1/4W resistors (2026-08-28)
+
+The `smoke_test.py` convention entry above (2026-08-24) records that the
+RXEF050 tier's ~0.82W dissipation was "fixed by specifying ≥1W in that
+one part's row" in `breadboard.md`. That spec was never actually checked
+against the real inventory — the user pointed out the SunFounder Thales
+kit (`pico/docs/inventory.md`) only stocks 1/4W (0.25W) resistors at every
+listed value; there's no ≥1W part to pull for this jig. `RLOAD_RATING_W =
+1.0` in `smoke_test.py` was asserting a part that doesn't exist in this
+lab's inventory — the smoke test was passing against a spec, not against
+what could actually be built.
+
+Fixed by building the RXEF050 jig's 10 Ω equivalent load as a 2-series x
+2-parallel bank of four 10 Ω 1/4W resistors (two 20 Ω branches in
+parallel) instead of a single part. In a symmetric 2s2p network the total
+power divides evenly across all four resistors, so each one sees only
+~0.204W (0.816W total / 4) — under its 0.25W rating with headroom, using
+only kit-stock 10 Ω resistors (10 on hand, only 4 needed). The RXEF005
+jig was never the problem: its single 10 Ω resistor dissipates ~0.204W
+(1.5V cold), already under 1/4W, and the fuse self-trips within seconds
+under that load anyway, further limiting exposure — no bank needed there.
+
+`smoke_test.py` was rewritten to check *per-resistor* power
+(`RLOAD_UNIT_RATING_W = 0.25`, `p_cold_total / n_resistors` where
+`n_resistors` is 1 for the RXEF005 tier and 4 for RXEF050) instead of
+comparing the network's total dissipation against a single part's rating
+— this ties the smoke test to what `breadboard.md` actually specifies
+building, catching exactly this class of mismatch in the future.
+`pico/docs/inventory.md`'s Resistors section now states the 1/4W ceiling
+explicitly so this doesn't need re-deriving from kit-listing silence
+again. Lesson: a "use a ≥X-rated part" fix in a breadboard.md is only a
+real fix if that part is confirmed to exist in `pico/docs/inventory.md`
+(or a sourced replacement) — cross-check the actual inventory before
+trusting a wattage/rating spec that was invented to satisfy a smoke-test
+number, especially in a repo whose whole premise is "no part beyond what's
+already on hand."
+
 ## AA battery holder leads: twisted bare jump wire + electrical tape is an accepted temporary termination, not a wiring defect (2026-08-28)
 
 Ahead of the wire-stripper order (`pico/docs/inventory.md`) arriving, the

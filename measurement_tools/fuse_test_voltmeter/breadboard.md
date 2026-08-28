@@ -40,7 +40,8 @@ to be known good *before* it's wired into a PSU, not after.
 | Dupont M-M jumper | 22cm | 2 |
 | AA battery holder (single-cell) | — | 1 (RXEF005 jig, 1.5V) or 2 in series (RXEF050 jig, 3.0V) |
 | AA battery | fresh | 1–2, matching holder count above |
-| Test load resistor | 10 Ω, **≥1W** | 1 |
+| Test load resistor, RXEF005 jig | 10 Ω, 1/4W (kit-standard) | 1 |
+| Test load resistor, RXEF050 jig | 10 Ω 1/4W ×4, wired as a 2-series × 2-parallel bank (10 Ω equivalent) | 4 |
 | Plain jumper wire | — | 1 (stands in for the fuse during self-check) |
 | Polyfuse under test | RXEF005 or RXEF050 | 1 at a time, swapped in from the batch of 20 each |
 
@@ -54,9 +55,17 @@ to be known good *before* it's wired into a PSU, not after.
 No new parts beyond what's already in the psu_ultralow_v1 / psu_low_v2
 parts lists — the same 10 Ω value is reused for both fuse ratings instead
 of ordering a dedicated value. **Wattage matters here**: the RXEF050 jig (3.0V across
-10 Ω, cold) dissipates ~0.82W in the load resistor — a standard 1/4W or
-1/2W part will run hot or fail. Use a ≥1W resistor (or a higher resistance
-at correspondingly lower current) for this jig; see `smoke_test.py`.
+10 Ω, cold) dissipates ~0.82W total — a single kit resistor (1/4W /
+0.25W, see `pico/docs/inventory.md`; the kit has no higher-wattage part)
+would run at over 3x its rating and can overheat, drift, or fail open,
+which would read as a false trip. The kit-only fix is a **2-series ×
+2-parallel bank of four 10 Ω 1/4W resistors** (two 20 Ω series branches in
+parallel), which nets the same 10 Ω equivalent load while each individual
+resistor only sees ~0.2W — within its 1/4W rating. The RXEF005 jig doesn't
+need this: its single 10 Ω resistor sees ~0.2W (1.5V cold), already under
+1/4W, and the fuse self-trips within seconds anyway, limiting exposure.
+See `smoke_test.py`, which checks per-resistor power against this actual
+kit-part rating for both jigs.
 
 ---
 
@@ -70,19 +79,26 @@ connection `main.py` prints to — no separate power source for the Pico.
 ### 1. Self-check the voltmeter (no fuse yet)
 
 Build the bare jig with a plain jumper wire in place of a fuse:
-`battery → jumper wire → 10 Ω load resistor → GND`.
+`battery → jumper wire → 10 Ω load resistor network → GND`. For the
+RXEF005 (1.5V) jig, that "network" is the single 10 Ω resistor from the
+parts table. For the RXEF050 (3.0V) jig, build the 2-series × 2-parallel
+bank of four 10 Ω resistors described above first — self-check the bank
+itself, not a single resistor, since that's what the bench test in step 2
+will actually be probing.
 
 | From | To | Wire |
 |------|----|------|
-| Pico GP26 | Load resistor's jumper-side leg (the node between the jumper and the resistor) | Dupont M-M jumper |
-| Pico GND | Load resistor's ground-side leg | Dupont M-M jumper |
+| Pico GP26 | Load network's jumper-side node (the node between the jumper and the resistor/bank) | Dupont M-M jumper |
+| Pico GND | Load network's ground-side node | Dupont M-M jumper |
 
 Run `main.py` (`mpremote run main.py`) and check:
 
 - Cold reading is close to the battery's fresh voltage (a plain wire adds
   ~0 Ω, so this should track the SPICE cold-state numbers below).
-- Deliberately touch the resistor's two leads together (short it) — the
-  reading should collapse toward 0V, `main.py` should print
+- Deliberately short the load network's two end nodes together (touch the
+  resistor's two leads for the RXEF005 jig; touch the bank's two outer
+  nodes for the RXEF050 jig — not any single resistor's leads within the
+  bank) — the reading should collapse toward 0V, `main.py` should print
   `*** FUSE TRIPPED ***`, and the onboard LED should light.
 - Remove the short — reading should recover immediately, `main.py` should
   print `*** fuse reset ***`, LED off.
@@ -98,11 +114,15 @@ time from the batch:
 
 | From | To | Wire |
 |------|----|------|
-| Pico GP26 | Load resistor's fuse-side leg (the node between the fuse and the resistor) | Dupont M-M jumper |
-| Pico GND | Load resistor's ground-side leg | Dupont M-M jumper |
+| Pico GP26 | Load network's fuse-side node (the node between the fuse and the resistor/bank) | Dupont M-M jumper |
+| Pico GND | Load network's ground-side node | Dupont M-M jumper |
 
-For **RXEF005** units, use the 1×AA (1.5V) jig. For **RXEF050** units, use
-the 2×AA-in-series (3.0V) jig — same 10 Ω load resistor either way.
+For **RXEF005** units, use the 1×AA (1.5V) jig with the single 10 Ω
+resistor. For **RXEF050** units, use the 2×AA-in-series (3.0V) jig with the
+2-series × 2-parallel bank of four 10 Ω resistors — both networks are 10 Ω
+equivalent, so the SPICE predictions below apply to either one, but the
+RXEF050 jig needs the bank specifically (see "Wattage matters here"
+above); a single 1/4W resistor there is not safe.
 
 For each fuse under test:
 
@@ -111,8 +131,10 @@ For each fuse under test:
    tier this reading may only last a few seconds before the fuse trips on
    its own, since the plain 10 Ω load already draws ~3x its rated current
    — that's expected, not a sign of a problem.
-2. Short the load resistor to force a much larger overcurrent — expect the
-   voltage to collapse and `main.py` to print `*** FUSE TRIPPED ***`
+2. Short the load network's two end nodes (the single resistor's leads for
+   RXEF005, or the bank's two outer nodes for RXEF050 — not a single
+   resistor within the bank) to force a much larger overcurrent — expect
+   the voltage to collapse and `main.py` to print `*** FUSE TRIPPED ***`
    within about a second. Do this regardless of whether the fuse already
    tripped on its own in step 1 — it's the deterministic version of the
    same check.
@@ -134,14 +156,17 @@ tier you're building:
 1. Build [psu_ultralow_v1](../../power_supplies/psu_ultralow_v1/) or
    [psu_low_v2](../../power_supplies/psu_low_v2/) per its own
    `breadboard.md`, installing that specific confirmed-good fuse:
-   `battery → fuse → 10 Ω load resistor → ground`.
+   `battery → fuse → 10 Ω load resistor network → ground`. Reuse the same
+   network from step 2 — the single 10 Ω resistor for RXEF005, or the
+   2-series × 2-parallel bank of four for RXEF050 (same wattage reasoning
+   applies here; it's the same physical resistor(s), not a fresh part).
 2. Wire the Pico the same way as step 2, but clipped onto the built PSU's
-   own load-resistor node instead of the bench jig's:
+   own load-network node instead of the bench jig's:
 
    | From | To | Wire |
    |------|----|------|
-   | Pico GP26 | PSU's load resistor's fuse-side leg | Dupont M-M jumper |
-   | Pico GND | PSU's load resistor's ground-side leg | Dupont M-M jumper |
+   | Pico GP26 | PSU's load network's fuse-side node | Dupont M-M jumper |
+   | Pico GND | PSU's load network's ground-side node | Dupont M-M jumper |
 
 3. Run the same short/reset check as step 2. Since the fuse itself was
    already proven good, this run is a demonstration that the PSU's own
