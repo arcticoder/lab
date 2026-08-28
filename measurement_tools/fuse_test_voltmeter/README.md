@@ -58,9 +58,9 @@ version:
 
 1. Plug the Pico into the PC over USB (power + serial, nothing else needed).
 2. **Self-check first**: wire GP26/GND across a load resistor with a plain
-   jumper wire standing in for a fuse, and confirm the reading and
-   trip/reset logic behave sanely before trusting the instrument on any
-   real fuse.
+   jumper wire standing in for a fuse, wire the GP15 arm switch (see
+   `breadboard.md`), and confirm the reading and trip/reset logic behave
+   sanely before trusting the instrument on any real fuse.
 3. **Then test**: swap in one polyfuse at a time from the batch on the
    same minimal jig (no PSU needed yet) to sort good units from faulty
    ones.
@@ -106,6 +106,13 @@ probe reads ~2.86V cold, collapses to ~0.27V once the fuse trips.
 tripped readings for both tiers, so the same firmware flags a trip
 whether it's probing the bench jig or a PSU during a demo, without
 changes.
+
+An SPDT slide switch on GP15 (wiring in `breadboard.md`/`quickstart.md`)
+lets the operator flag ARMED/DISARMED before trip/reset detection is
+trusted — see `main.py`'s docstring. This exists because the battery
+itself has to be physically connected/disconnected by hand mid-test, and
+without an explicit signal the expected zero-volt reading during that
+action reads identically to a real trip.
 
 ---
 

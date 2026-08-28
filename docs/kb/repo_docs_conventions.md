@@ -689,3 +689,92 @@ and shouldn't be read as a defect on its own. `quickstart.md` was updated
 2026-08-28 with a short paragraph covering this, since it only had the
 "may self-trip" half of the story (from `breadboard.md`) and nothing about
 the fast self-clearing case.
+
+## `fuse_test_voltmeter` second real-hardware run (different fuse, same day) weakens the "still-warm PTC" explanation for the sub-1.4V resting reading — battery chemistry is a better first hypothesis (2026-08-28)
+
+The entry above hypothesized that the ~1.04V resting reading (vs. ~1.4V
+predicted) was the fuse never fully returning to a cold baseline between
+chatter cycles — plausible, but explicitly flagged there as unconfirmed
+and only explaining *post-trip* low readings. A second run the same day,
+with a fresh/different 50 mA fuse, showed the same ~1.0–1.08V resting
+value from the *very first* sample — before any trip had occurred at all,
+so there'd been no chance yet for the fuse to be pre-warmed by a prior
+chatter cycle. The user also independently noted they'd now seen this on
+two different physical fuses and didn't think it was fuse-specific. Two
+independent units producing the identical below-prediction baseline from
+a cold start points away from a fuse-specific PTC-memory effect and
+toward something common to both trials instead — the battery, or the
+loop's total series resistance.
+
+Working hypothesis, not yet confirmed on this bench (no multimeter
+available — see README.md "Validation" intro): 1.4V assumes a fresh 1.5V
+alkaline cell with near-zero internal resistance. If the AA in the holder
+is actually a 1.2V-nominal NiMH rechargeable, the same 10 Ω/cold-fuse
+divider math predicts ~1.14V — already most of the ~1.0–1.08V observed gap
+— with the remainder plausibly ordinary sag under the ~150 mA this load
+draws (3x the fuse's rating; see the entries above). `quickstart.md`'s
+troubleshooting section now suggests a cheap way to check this without a
+meter: with ARMED off, move the GP26/GND probe jumpers directly onto the
+battery holder's leads (bypassing fuse and resistor) to read open-circuit
+voltage — ~1.5V is alkaline, ~1.2–1.3V is NiMH or a partly-discharged
+cell. If a future session gets this diagnostic run, record the result
+here and update/retire whichever hypothesis (still-warm PTC vs. battery
+chemistry) it points away from — right now neither is confirmed, they're
+just the two live candidates.
+
+## `fuse_test_voltmeter` gained a GP15 arm/disarm switch (SPDT slide switch) to stop battery insertion/removal from reading as a false trip (2026-08-28)
+
+The user's real-hardware runs kept ending with `*** FUSE TRIPPED ***`
+printed at the very end of the log, from deliberately disconnecting the
+battery to stop the test — a real trip and an intentional power-down are
+indistinguishable to `main.py` purely from the voltage collapsing to
+~0V, since both look identical on GP26. Fixed by adding a second,
+independent GPIO input (GP15) wired to an SPDT slide switch: common (pin
+2) to GP15, one throw (pin 1) to GND, the other throw (pin 3) to 3V3(OUT).
+Because both throws are driven (never floating), no pull resistor is
+needed and the pin always reads a definite HIGH (armed) or LOW (disarmed)
+— this sidesteps the exact floating-input bug the deleted
+`switch_pin_identifier` circuit hit (see the GND-reference entry above).
+
+Design choice worth preserving: the switch is **not** wired into the
+battery's power path (i.e., not in series with the fuse under test) —
+it's a separate signal-only circuit read by a second GPIO. Putting it in
+the power path would have added the switch's own contact resistance to
+the very loop whose current/voltage this jig exists to characterize,
+which would confound the fuse test it's supposed to validate. `main.py`
+now gates trip/reset detection and the onboard LED on this ARMED state
+(`armed` variable in `main()`); voltage still streams every cycle
+regardless of ARMED/DISARMED, only the trip/reset print and LED are
+suspended while disarmed. GP15 was picked because it's unused elsewhere
+in this repo (GP14–16 were freed when `switch_pin_identifier` was deleted)
+and sits next to a physical GND pin (pin 18, per the entry above) for a
+short GND jumper run. If a future circuit here also needs a spare digital
+input, check `main.py`/`breadboard.md` GPIO usage across the repo first —
+there's no central pin-allocation table, just per-circuit docstrings.
+
+One footgun worth flagging to a future session touching this circuit: if
+the operator forgets to flip to ARMED before shorting the resistor during
+an actual fuse test, the voltage collapse still happens and still prints
+as a raw number, but `*** FUSE TRIPPED ***` and the LED won't fire —
+easy to misread as "it didn't trip" when actually the switch was just
+left in the wrong position. Both `breadboard.md` and `quickstart.md` now
+call out sliding to ARMED once the circuit has settled, before the short
+step, but there's no code-side safeguard against forgetting it.
+
+## `fuse_test_voltmeter`'s resistor-shorting instruction (hand-touching two bare leads) is unreliable — switched to a jumper seated in the breadboard rows instead (2026-08-28)
+
+The original short-test instruction in `quickstart.md`/`breadboard.md`
+said to "touch the resistor's two legs together" by hand, using two
+Dupont wire tips. The user reported this connection as spotty and
+inconsistent — consistent with hand-holding two thin wire tips against
+each other being a poor, easily-fumbled contact compared to a wire seated
+firmly in a breadboard's spring contacts. Since the whole jig is already
+breadboard-mounted (`quickstart.md`'s parts list opens with "Parts to add
+to what's already on the breadboard"), both ends of the resistor already
+land in distinct breadboard rows — so a spare jumper wire (or a bent
+solid-core one) plugged into those same two rows gives a firm, hands-free,
+repeatable short instead. Both docs were updated to describe this
+technique in place of hand-touching. If a future circuit here has a
+similar "deliberately short two nodes by hand" step, prefer the
+same jumper-in-breadboard-rows approach over hand contact from the start
+rather than waiting for a reliability complaint.

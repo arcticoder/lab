@@ -13,14 +13,19 @@ covers the general/batch procedure this one doesn't.)
 
 - 1× AA battery (fresh)
 - 1× 10 Ω resistor, 1/4 W (any one from the kit's resistor drawer)
-- 2× male-male jumper wires
+- 1× slide switch (SPDT) — arm/disarm signal, see step 6 below
+- 5× male-male jumper wires (2 for the probe, 3 for the switch)
+- 1× spare male-male jumper wire (or a bent solid-core jumper), kept aside
+  for shorting the resistor later — don't wire this one in yet
 - Your 50 mA polyfuse
 
 ## What you're building
 
 One loop: **battery → fuse → resistor → back to battery.** The Pico just
 taps two points on that loop to read voltage — it's not part of the power
-path.
+path. A second, separate switch tells the Pico "I'm intentionally
+connecting/disconnecting the battery right now" so it doesn't mistake that
+for a real fuse trip.
 
 ## Wire it
 
@@ -31,10 +36,16 @@ path.
    the **ground node**.
 4. Jumper: Pico **GP26** → probe node (the junction from step 2).
 5. Jumper: Pico **GND** → ground node (the junction from step 3).
+6. Arm switch — this is a separate signal path, not part of the battery
+   loop above:
+   - Switch pin 2 (the middle/common pin) → Pico **GP15**.
+   - Switch pin 1 → a Pico **GND** pin (any one, doesn't need to be the
+     same physical pin as step 5).
+   - Switch pin 3 → Pico **3V3(OUT)**.
 
 That's it — two parts in series across the battery, Pico watching the
-midpoint. Leave the battery out of the holder until all the wiring above
-is done, then drop it in last.
+midpoint, plus the arm switch off to the side. Leave the battery out of
+the holder until all the wiring above is done, then drop it in last.
 
 ## Run it
 
@@ -44,15 +55,31 @@ From this folder:
 mpremote run main.py
 ```
 
+Slide the arm switch back and forth once and watch the terminal — one
+direction prints `-- ARMED --`, the other `-- DISARMED --`. Note which
+physical direction is which (the switch has no printed markings), then
+leave it on **DISARMED** before you drop the battery in.
+
 ## What you should see
 
-- A steady reading around **1.4V**, printed roughly 5×/second.
-- Touch the resistor's two legs together (a dead short across it) — the
-  reading collapses toward **0V**, the terminal prints
-  `*** FUSE TRIPPED ***`, and the Pico's onboard LED lights up.
-- Let go of the short, wait about 2 minutes for the fuse to cool, and the
+- With the switch DISARMED and the battery seated, the reading settles —
+  trip/reset detection is suspended in this state, so an unsteady or
+  near-zero number here is expected, not a fault.
+- Slide to **ARMED**. You should now see a steady reading around **1.4V**,
+  printed roughly 5×/second, with no `TRIPPED`/`reset` chatter from the act
+  of arming itself.
+- With a spare jumper wire (or the bent one you set aside), bridge the
+  resistor's two breadboard rows directly — plug both ends into the same
+  two rows the resistor's legs occupy, rather than hand-holding two wire
+  tips against the leads. Touching bare leads together is a spotty, easy
+  to fumble connection; a jumper seated in the breadboard rows gives a
+  firm, repeatable short. This collapses the reading toward **0V**, prints
+  `*** FUSE TRIPPED ***`, and lights the Pico's onboard LED.
+- Pull that jumper, wait about 2 minutes for the fuse to cool, and the
   reading climbs back to ~1.4V, the terminal prints `*** fuse reset ***`,
   LED goes off.
+- Before disconnecting the battery again, slide back to **DISARMED** first
+  — otherwise the drop to 0V as you pull it reads as another trip.
 
 **A good fuse can also trip on its own, before you touch anything** — this
 10 Ω load already draws ~150 mA, 3x the fuse's 50 mA rating, so a fresh
@@ -78,3 +105,16 @@ Pull the fuse and bridge steps 1–2 with a spare jumper wire instead (no
 fuse anywhere in the loop). If the reading still isn't near 1.4V, or
 shorting the resistor doesn't print the trip message, the problem is the
 Pico wiring (GP26/GND), not the fuse — fix that first.
+
+**If it's landing consistently around 1.0–1.1V instead (same result across
+more than one fuse, so not a fuse-specific problem)**, check the battery
+chemistry before suspecting wiring: 1.4V assumes a fresh 1.5V alkaline
+cell. A NiMH rechargeable AA is 1.2V nominal, and 1.2V through this same
+10 Ω/cold-fuse math lands around 1.14V — already most of the gap, with the
+rest plausibly ordinary battery sag under the ~150 mA this load draws.
+There's no multimeter on this bench, but the Pico can substitute: with
+ARMED off, temporarily move the GP26/GND jumpers straight onto the battery
+holder's two leads (bypassing the fuse and resistor entirely) and read the
+open-circuit voltage directly — close to 1.5V confirms alkaline, close to
+1.2–1.3V means it's NiMH (or a partly-discharged cell), which explains a
+sub-1.4V resting reading on its own, independent of any wiring fault.

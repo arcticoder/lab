@@ -42,7 +42,8 @@ to be known good *before* it's wired into a PSU, not after.
 |-----------|-------|----------|
 | Raspberry Pi Pico | RP2040 | 1 |
 | Micro USB cable | data-capable, to PC | 1 |
-| Dupont M-M jumper | 22cm | 2 |
+| Dupont M-M jumper | 22cm | 5 (2 probe, 3 arm switch) |
+| Slide switch (SPDT) | — | 1 — arm/disarm signal to GP15, see "Wire the arm switch" below |
 | AA battery holder (single-cell) | — | 1 (RXEF005 jig, 1.5V) or 2 in series (RXEF050 jig, 3.0V) |
 | AA battery | fresh | 1–2, matching holder count above |
 | Test load resistor, RXEF005 jig | 10 Ω, 1/4W (kit-standard) | 1 |
@@ -81,6 +82,27 @@ kit-part rating for both jigs.
 Micro USB cable, Pico to PC. This powers the Pico and gives you the serial
 connection `main.py` prints to — no separate power source for the Pico.
 
+### 0b. Wire the arm switch
+
+`main.py` reads GP15 as a digital input with no pull resistor, so it must
+be wired before any run of the script — an unconnected GP15 floats and
+produces unpredictable ARMED/DISARMED readings. Wire this once; it's
+reused across every stage below and isn't part of the battery power path.
+
+| From | To | Wire |
+|------|----|------|
+| Switch pin 2 (middle/common) | Pico GP15 | Dupont M-M jumper |
+| Switch pin 1 | Pico GND (any pin) | Dupont M-M jumper |
+| Switch pin 3 | Pico 3V3(OUT) | Dupont M-M jumper |
+
+Run `mpremote run main.py` and slide the switch — one direction prints
+`-- ARMED --`, the other `-- DISARMED --`. Note which physical direction
+is which (no printed markings on this part). Leave it DISARMED whenever
+you're inserting or removing a battery; flip to ARMED only once the
+circuit is settled and you're actually watching for a trip. Voltage keeps
+streaming in both states — only trip/reset detection and the onboard LED
+are gated on ARMED.
+
 ### 1. Self-check the voltmeter (no fuse yet)
 
 Build the bare jig with a plain jumper wire in place of a fuse:
@@ -96,15 +118,18 @@ will actually be probing.
 | Pico GP26 | Load network's jumper-side node (the node between the jumper and the resistor/bank) | Dupont M-M jumper |
 | Pico GND | Load network's ground-side node | Dupont M-M jumper |
 
-Run `main.py` (`mpremote run main.py`) and check:
+Run `main.py` (`mpremote run main.py`), slide the arm switch to **ARMED**
+once the reading looks settled, and check:
 
 - Cold reading is close to the battery's fresh voltage (a plain wire adds
   ~0 Ω, so this should track the SPICE cold-state numbers below).
-- Deliberately short the load network's two end nodes together (touch the
-  resistor's two leads for the RXEF005 jig; touch the bank's two outer
-  nodes for the RXEF050 jig — not any single resistor's leads within the
-  bank) — the reading should collapse toward 0V, `main.py` should print
-  `*** FUSE TRIPPED ***`, and the onboard LED should light.
+- Deliberately short the load network's two end nodes together with a
+  spare jumper wire seated in the same breadboard rows as those nodes
+  (RXEF005: the resistor's two rows; RXEF050: the bank's two outer rows —
+  not any single resistor's leads within the bank) rather than
+  hand-holding two wire tips together, which is a spotty, easy-to-fumble
+  connection — the reading should collapse toward 0V, `main.py` should
+  print `*** FUSE TRIPPED ***`, and the onboard LED should light.
 - Remove the short — reading should recover immediately, `main.py` should
   print `*** fuse reset ***`, LED off.
 
@@ -131,24 +156,30 @@ above); a single 1/4W resistor there is not safe.
 
 For each fuse under test:
 
+0. Swap the fuse in with the arm switch **DISARMED**, then slide to
+   **ARMED** once the reading looks settled — otherwise the initial
+   zero-to-cold-voltage transition can print as a spurious trip/reset.
 1. Note the cold reading — should be close to the SPICE prediction for
    that tier (see "Simulate" in [README.md](README.md)). For the RXEF005
    tier this reading may only last a few seconds before the fuse trips on
    its own, since the plain 10 Ω load already draws ~3x its rated current
    — that's expected, not a sign of a problem.
-2. Short the load network's two end nodes (the single resistor's leads for
-   RXEF005, or the bank's two outer nodes for RXEF050 — not a single
-   resistor within the bank) to force a much larger overcurrent — expect
-   the voltage to collapse and `main.py` to print `*** FUSE TRIPPED ***`
-   within about a second. Do this regardless of whether the fuse already
-   tripped on its own in step 1 — it's the deterministic version of the
-   same check.
+2. Short the load network's two end nodes with a spare jumper wire seated
+   in the same breadboard rows as those nodes (the single resistor's rows
+   for RXEF005, or the bank's two outer rows for RXEF050 — not a single
+   resistor within the bank; don't hand-hold wire tips against the leads,
+   see step 1's short instruction above) to force a much larger
+   overcurrent — expect the voltage to collapse and `main.py` to print
+   `*** FUSE TRIPPED ***` within about a second. Do this regardless of
+   whether the fuse already tripped on its own in step 1 — it's the
+   deterministic version of the same check.
 3. Remove the short, wait ~2 minutes for the polyfuse to cool, and confirm
    full reset — voltage and LED both back to normal, `*** fuse reset ***`
    printed.
 4. **Pass**: trips promptly, resets fully, cold reading matches
    prediction. **Fail**: doesn't trip, doesn't reset, or reads far off the
    prediction — discard the unit; don't wire it in front of an LED.
+5. Slide back to **DISARMED** before pulling this fuse for the next one.
 
 Repeat per unit across the batch. Keep a simple tally of which units
 passed — those are the only ones that go into a PSU build in step 3.
@@ -172,6 +203,11 @@ tier you're building:
    |------|----|------|
    | Pico GP26 | PSU's load network's fuse-side node | Dupont M-M jumper |
    | Pico GND | PSU's load network's ground-side node | Dupont M-M jumper |
+
+   The arm switch from step 0b stays wired as-is — it's on the Pico side,
+   not the PSU, so nothing about it changes for the demo. Same DISARMED/
+   ARMED discipline applies: disarm before seating the fuse or touching
+   the battery, arm once settled and watching for a trip.
 
 3. Run the same short/reset check as step 2. Since the fuse itself was
    already proven good, this run is a demonstration that the PSU's own

@@ -3400,3 +3400,14 @@ I split the old file: `breadboard.md` was trying to be one doc for two fuse tier
 Bottom line: the quick reset isn't the documented full cool-down cycle — it looks like the fuse chattering at its trip threshold under the jig's normal (already 3x-rated) load, not a proper hard trip. To actually validate the fuse, do the deliberate short from quickstart.md, then time the recovery — it should hold tripped for the full ~2 minutes. I've added that caveat to quickstart.md for future runs and logged the reasoning in lab/docs/kb/repo_docs_conventions.md for future sessions.
 <!-- ------ -->
 ---
+Everything checks out syntactically. Here's a summary of what changed and my answer to 1.3:
+
+1.1 — Arm switch (done): Added an SPDT slide switch on GP15 (common→GP15, one throw→GND, other throw→3V3, so it's always driven, never floating). main.py now suspends trip/reset detection and the LED while DISARMED, but keeps streaming voltage either way. Flip to DISARMED before touching the battery, ARMED once settled. Updated main.py, quickstart.md, breadboard.md, README.md, and pico/docs/inventory.md's Slide Switch row.
+
+1.2 — Shorting technique (done): Your instinct was right — hand-touching two Dupont tips is a bad contact. Since the whole jig sits on a breadboard, the resistor's two legs already occupy distinct rows, so both docs now say to seat a spare jumper wire (or a bent solid-core one) into those same two rows instead of touching bare leads by hand.
+
+1.3 — Is ~1.0V close enough? No — that's a real gap worth chasing, not noise. With a fresh 1.5V alkaline, 10Ω load, and ~0.5Ω cold fuse, the math predicts ~1.43V; ADC noise or normal battery sag wouldn't plausibly account for a 30% shortfall, especially reproduced across two different fuses (which rules out a fuse-specific cause, as you suspected). My leading hypothesis: check whether that AA is actually a 1.2V NiMH rechargeable rather than a 1.5V alkaline — the same math with 1.2V predicts ~1.14V, which is most of the gap on its own. Since there's no multimeter on this bench, quickstart.md now has a diagnostic: with the switch DISARMED, temporarily move the GP26/GND jumpers straight onto the battery holder's leads (bypassing fuse and resistor) and read open-circuit voltage directly — ~1.5V confirms alkaline, ~1.2–1.3V confirms NiMH or a partly-discharged cell.
+
+I also logged this reasoning, plus the fact that two fuses now show the same low-baseline pattern (which weakens an earlier session's "still-warm PTC" hypothesis for the same symptom), in lab/docs/kb/repo_docs_conventions.md for future reference — it's flagged as unconfirmed until you actually run that open-circuit check.
+<!-- ------ -->
+---
