@@ -107,10 +107,15 @@ the 2×AA-in-series (3.0V) jig — same 10 Ω load resistor either way.
 For each fuse under test:
 
 1. Note the cold reading — should be close to the SPICE prediction for
-   that tier (see "Simulate" in [README.md](README.md)).
-2. Short the load resistor to force an over-threshold current — expect the
+   that tier (see "Simulate" in [README.md](README.md)). For the RXEF005
+   tier this reading may only last a few seconds before the fuse trips on
+   its own, since the plain 10 Ω load already draws ~3x its rated current
+   — that's expected, not a sign of a problem.
+2. Short the load resistor to force a much larger overcurrent — expect the
    voltage to collapse and `main.py` to print `*** FUSE TRIPPED ***`
-   within about a second.
+   within about a second. Do this regardless of whether the fuse already
+   tripped on its own in step 1 — it's the deterministic version of the
+   same check.
 3. Remove the short, wait ~2 minutes for the polyfuse to cool, and confirm
    full reset — voltage and LED both back to normal, `*** fuse reset ***`
    printed.
@@ -150,11 +155,18 @@ circuit under test share a common ground point.
 
 ## Expected behavior
 
-**RXEF005 tier (1.5V, 50 mA fuse):** steady ~1.43V at the probe point
-under normal 10 Ω load. Short the load resistor to force ~150 mA (3x trip
-threshold) — voltage collapses to ~0.14V within about a second as the fuse
-trips, and `main.py` prints `*** FUSE TRIPPED ***` and lights the Pico's
-onboard LED. Remove the short and wait ~2 minutes for the polyfuse to cool
+**RXEF005 tier (1.5V, 50 mA fuse):** ~1.43V at the probe point under the
+plain 10 Ω load itself — note that this is already ~150 mA, 3x the fuse's
+rated current, so a good unit may begin heating and trip on its own within
+a few seconds of being loaded, before you ever short anything. Treat that
+as expected, not a sign of a bad fuse or bad wiring. Shorting the load
+resistor (step 2 below) isn't required to see a trip — it forces a much
+larger overcurrent (near-dead-short across the battery/fuse) that
+guarantees a fast, unambiguous trip regardless of unit-to-unit tolerance,
+which is why the procedure below still calls for it as the deliberate
+test step. Either way, voltage collapses to ~0.14V once tripped, and
+`main.py` prints `*** FUSE TRIPPED ***` and lights the Pico's onboard LED.
+Remove the short (if applied) and wait ~2 minutes for the polyfuse to cool
 and reset; voltage should climb back to ~1.43V and the onboard LED turns
 off.
 

@@ -3342,3 +3342,29 @@ Check #4 with a multimeter across the rail (not by eye) before touching anything
 I've recorded this in [cd4066\_switch\_tester/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/measurement_tools/cd4066_switch_tester/README.md) as an ordered troubleshooting checklist, updated [lab/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/README.md)'s bench-test note to record the three ruled-out substitutions, and logged the elimination reasoning in `docs/kb/repo_docs_conventions.md` for future sessions.
 <!-- ------ -->
 ---
+Done. Summary of what changed and answers to your two open questions:
+
+Docs updated
+------------
+
+-   **`pico/docs/inventory.md`** --- CD4066BCN row now records all 10 units passing switch 1, notes switches 2--4/chip untested, and points to the correct pinout doc. AA battery holder row now documents the twist-wire+tape termination as a confirmed-working stopgap.
+-   **`lab/README.md`** --- `cd4066_switch_tester` moved into "built & bench-tested" with the 2026-08-28 result; removed the stale 2026-08-27 FAIL/"not yet root-caused" paragraph.
+-   **`cd4066_switch_tester/README.md`** --- Troubleshooting section now leads with "Resolved 2026-08-28: root cause was pin misidentification," not a continuity fault.
+-   **`psu_ultralow_v1/breadboard.md`** and **`fuse_test_voltmeter/breadboard.md`** --- clarified the 15 Ω vs 10 Ω confusion (see below) directly in the docs so it doesn't recur.
+-   **`lab/docs/kb/repo_docs_conventions.md`** --- four new dated entries: the pin-misidentification root cause (correcting the two prior kb entries that chased continuity as the lead hypothesis), the 15 Ω/10 Ω distinction, the "10 Ω load is already 3x the RXEF005's rating" nuance, and the battery-holder workaround being an accepted technique, not a defect.
+
+Your questions
+--------------
+
+**3\. Do you need to keep `cd4066_switch_tester` assembled?** No --- put the parts back in inventory. Repo convention (documented in `lab/README.md` and the kb): a circuit's breadboard doesn't stay wired once its bench check passes, unless something currently being built needs it in place. CD4066B feeds tier9 `MUX`, which is far downstream --- nothing currently under construction consumes it. The netlist/`breadboard.md`/`main.py` are the durable record for rebuilding it later.
+
+**4\. The 15 Ω vs 10 Ω confusion:** they're two unrelated numbers, not a contradiction.
+
+-   **15 Ω** (`psu_ultralow_v1/breadboard.md`/`README.md`) is a `.spice`\-derived characterization of the *finished PSU's* output --- not a resistor you wire in. No such resistor is in that circuit's parts list; `README.md` § "Validation without a multimeter" is the actual recommended check (probe the fuse leads directly with GP26/GND).
+-   **10 Ω** (`fuse_test_voltmeter`) is the real, physical load resistor in that jig's parts list, used to bench-test a bare fuse *before* it goes into any PSU. It's 10 Ω instead of 15 Ω simply because you didn't have a 15 Ω resistor in stock back on 2026-08-15 (only 10 Ω/100 Ω), so 10 Ω got reused for both fuse tiers.
+-   Yes --- `breadboard.md:72--102` (steps 1--2) *is* the "1×AA jig" referenced at 104--105.
+-   One more wrinkle I found and fixed in the docs: at 10 Ω, the RXEF005's *normal, unshorted* load already draws ~150 mA (3x its rating) --- that's where the "~1.43V" figure comes from. So a good fuse may trip on its own within a few seconds of loading, before you ever short anything --- that's expected, not a fault. The deliberate short (breadboard.md step 2) just forces a much larger, guaranteed-fast trip.
+
+**Next step for your bench**: add the 10 Ω (≥1W) resistor and the Pico GP26/GND probe wires to the circuit you already have wired (battery + RXEF005 + switch) --- that's electrically the same jig `fuse_test_voltmeter` describes --- then run its `main.py`.
+<!-- ------ -->
+---

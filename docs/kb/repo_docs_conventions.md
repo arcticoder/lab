@@ -497,3 +497,82 @@ the previous entry. If a future session sees another report of "swapped
 the suspect part, identical symptom" on any circuit here, apply the same
 elimination logic before proposing a new hypothesis: list what was
 actually held constant across the trials before guessing what's wrong.
+
+## `cd4066_switch_tester` FAIL root cause was DIP pin misidentification, not power/control continuity — the two entries above chased the wrong hypothesis (resolved 2026-08-28)
+
+The two kb entries above this one built up a careful elimination case for
+VDD/control-pin continuity or split power rails as the fault, after
+swapping the control wire, VDD wire, and the chip itself all reproduced
+the identical ~2.05–2.11V/delta-~0.04V symptom. None of that was actually
+wrong reasoning given what was known, but the real cause was upstream of
+all of it: the user had misidentified the CD4066B's DIP-14 pins, so most
+of the intended connections (I/O A, I/O B, control, VSS, the bias
+resistors) weren't landing on the pins `breadboard.md` describes in the
+first place. Swapping "the control wire" or "the chip" didn't change
+anything because the swap preserved the same wrong pin mapping every
+time — this is a case the elimination logic from the entry above
+genuinely can't catch, since a systematic wiring-plan error is common
+across every trial by construction, same as a real continuity fault
+would be. Once wired to the pins `lab/docs/parts_reference.md` actually
+specifies, all 10 CD4066BCN units passed switch 1 on the first run — see
+`lab/README.md`'s bench-tested table and `cd4066_switch_tester/README.md`'s
+"Resolved 2026-08-28" note.
+
+Lesson for future DIP-package bring-up jigs here: before trusting any
+continuity/power-rail hypothesis for a "swap didn't help" symptom, verify
+pin identification itself first (pin 1 notch/dot, counting direction)
+against `lab/docs/parts_reference.md` — a systematic pin-mapping error
+produces exactly the same "every substitution reproduces the fault"
+signature as a real constant-cause fault, and is cheaper to rule out.
+
+## `psu_ultralow_v1`'s 15 Ω and `fuse_test_voltmeter`'s 10 Ω are two unrelated test loads, not a documentation contradiction (clarified 2026-08-28)
+
+`psu_ultralow_v1/breadboard.md` and `README.md` state "15 Ω test load →
+~1.44V, ~96mA" as the `.spice`-derived nominal design point (`Rload = 15`
+in `psu_ultralow_v1.spice`, chosen for a ~100mA operating-point target).
+`fuse_test_voltmeter/breadboard.md` and `.spice` use a 10 Ω load for its
+own bench fuse-test jig instead. These look like the same "output load
+resistor" restated with different values, but they aren't — the 15 Ω
+figure is a purely descriptive characterization of the *finished PSU's*
+output (no resistor is in `psu_ultralow_v1/breadboard.md`'s parts list or
+wiring steps; `README.md` § "Validation without a multimeter" recommends
+probing the fuse leads directly instead). The 10 Ω figure is an actual
+physical component in `fuse_test_voltmeter`'s parts list, used to
+bench-test a bare polyfuse *before* it's trusted in a PSU build at all —
+see `breadboard.md`'s own build-order note ("voltmeter → test → PSU →
+demo. Not PSU-first"). The 10 Ω value itself traces back to
+`docs/history.md`'s 2026-08-15 10:41 entry: the user didn't have a 15 Ω
+resistor in stock (only 10 Ω and 100 Ω), so 10 Ω was substituted and then
+reused for both the RXEF005 and RXEF050 tiers rather than ordering a
+dedicated value — it was never meant to match `psu_ultralow_v1`'s 15 Ω.
+Both `breadboard.md` files now cross-reference each other on this point
+(2026-08-28 edit) — if a future session sees a value mismatch between a
+PSU's own characterization numbers and a measurement-tool jig's load
+value, check whether they're actually describing the same test before
+treating it as a bug.
+
+Related, clarified the same day: `fuse_test_voltmeter.spice`'s header
+comment states the RXEF005 tier's plain 10 Ω load (no short) already
+draws ~150mA — 3x the fuse's 50mA rating — matching the ~1.43V "cold
+reading" in `breadboard.md`'s Expected Behavior section. This isn't a
+separate current level the deliberate short step produces; the fuse may
+trip on its own within a few seconds of being loaded at all, and the
+short step (near-dead-short current) exists to force a fast, unambiguous
+trip regardless of unit-to-unit tolerance rather than to create the
+overcurrent condition in the first place. Both `breadboard.md`'s
+step-by-step procedure and its Expected Behavior section were reworded
+2026-08-28 to say this explicitly, so a fuse tripping before it's ever
+shorted should read as expected behavior, not a wiring problem.
+
+## AA battery holder leads: twisted bare jump wire + electrical tape is an accepted temporary termination, not a wiring defect (2026-08-28)
+
+Ahead of the wire-stripper order (`pico/docs/inventory.md`) arriving, the
+user terminated one AA battery holder's bare leads by twisting a
+non-covered 0.25cm jump wire around each lead and wrapping the joint in
+electrical tape — no soldering, no crimp, no Dupont connector. This was
+confirmed electrically sound in an actual `psu_ultralow_v1`-shaped build
+(battery + RXEF005 fuse + slide switch). Treat this construction as a
+valid, intentional stand-in when reviewing this or similar breadboard
+photos/wiring going forward — not as something to flag or suggest
+re-wiring — until the leads get properly stripped and terminated to
+Dupont connectors once the stripper/crimper tool arrives.

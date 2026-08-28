@@ -90,6 +90,16 @@ have some switches good and others bad.
 
 ### Troubleshooting a "fixed in-between value" fail
 
+**Resolved 2026-08-28**: the original 2026-08-27 FAIL on switch 1 of the
+first CD4066BCN, and the checklist below, turned out not to be the cause
+— the actual root cause was misidentifying the DIP-14 pins, so most of
+the intended connections weren't landing on the pins this doc describes.
+Double-check pin identification (pin 1 notch/dot, counting counterclockwise)
+against `lab/docs/parts_reference.md`'s CD4066B pinout *before* trusting
+any of the electrical checks below. Once wired to the correct pins, all
+10 CD4066BCN units passed switch 1 (I/O A pin 1 / I/O B pin 2, control
+pin 13) on the first run — see `lab/README.md`'s bench-tested table.
+
 If both states read close together (small delta) instead of near the
 rails, check these in order — swapping the control wire, the VDD wire, or
 the chip itself does **not** rule out any of the items below, since none

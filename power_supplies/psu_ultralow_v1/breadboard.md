@@ -46,5 +46,14 @@ rail, tied to the battery negative.
 
 ## Expected behavior
 
-With a 15 Ω test load across the output: ~1.44 V, ~96 mA. See
-[README.md](README.md) for the full simulate/validate workflow.
+With a 15 Ω test load across the output: ~1.44 V, ~96 mA. This is the
+`.spice` nominal design-point characterization of the *finished PSU's*
+output, not a component in this breadboard's own parts list or a step
+above — no 15 Ω resistor needs to be wired in to build or validate this
+circuit. It is also unrelated to the 10 Ω load resistor used in
+[fuse_test_voltmeter](../../measurement_tools/fuse_test_voltmeter/)'s
+bench fuse-test jig (different circuit, different purpose — that jig
+validates the bare polyfuse *before* it goes into this PSU). See
+[README.md](README.md) § Validation without a multimeter for how to
+actually check this circuit once built (probe across the fuse leads with
+a Pico ADC pin — no load resistor needed).

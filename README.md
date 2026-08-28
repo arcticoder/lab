@@ -110,6 +110,7 @@ as the record for rebuilding it later.
 |--------|---------|------|--------------|
 | `power_supplies/psu_pico_rail/` | Pico's own onboard 3.3V rail, ~100mA budget | interim bootstrap PSU | 2026-08 |
 | `signal_conditioning/voltage_reference_lm358/` | LM358 unity-gain buffer holds a resistor-divider reference steady under load | tier1 `REF` | 2026-08-27 — loaded reading within 0.23% of unloaded (±2% tolerance) |
+| `measurement_tools/cd4066_switch_tester/` | Pico-driven bring-up jig for one CD4066B analog switch — confirms it passes/blocks before trusting it in a later design | component validation (ahead of tier9 `MUX`) | 2026-08-28 — switch 1 (I/O A pin 1 / I/O B pin 2 / control pin 13) PASS on all 10 CD4066BCN units; switches 2–4 per chip not yet individually tested |
 
 ---
 
@@ -129,20 +130,6 @@ sequence this drives.
 | `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap, waiting on wire strippers) |
 | `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (waiting on wire strippers) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
-| `measurement_tools/cd4066_switch_tester/` | Pico-driven bring-up jig for one CD4066B analog switch — confirms it passes/blocks before trusting it in a later design | component validation (ahead of tier9 `MUX`) |
-
-`cd4066_switch_tester` was physically wired and run against real hardware
-on 2026-08-27 (switch 1 of the first CD4066BCN) — `RESULT: FAIL`. Both
-closed and open readings sat around 2.04–2.11V (expected ~1.63V / ~0V),
-a delta of only ~0.04V versus the 0.5V the pass criteria require. Three
-follow-up substitutions the same day — the GP15→pin 13 control wire, the
-VDD (pin 14) wire, and the CD4066BCN itself — each reproduced the
-identical failure to within a few mV, ruling out the control wire, the
-VDD wire, and this particular chip as the cause. Not yet root-caused; see
-[cd4066_switch_tester/README.md § Troubleshooting](measurement_tools/cd4066_switch_tester/README.md#troubleshooting-a-fixed-in-between-value-fail)
-for the checklist of what's left to check (VSS/GND continuity, the bias
-resistors, the probe wire, and split power rails). Stays in this table
-(not "built & bench-tested") until a switch passes.
 
 Each of these has a SPICE netlist, a generated schematic, a breadboard
 wiring guide, and a `smoke_test.py`, but none have been physically tested
@@ -190,7 +177,7 @@ measurement_tools/
         smoke_test.py
         README.md
 
-    cd4066_switch_tester/    CD4066B analog-switch bring-up jig (designed, not built)
+    cd4066_switch_tester/    CD4066B analog-switch bring-up jig (built & bench-tested)
         cd4066_switch_tester.spice
         schematic.png         (generated, gitignored)
         breadboard.md
