@@ -57,10 +57,11 @@ same pattern on their own I/O A / I/O B / control pins.
 
 ### 4. Run and read
 
-Run `main.py` (`mpremote run main.py`). It toggles the control pin every
-second and prints the I/O B voltage alongside the commanded state — see
-[README.md § Expected behaviour](README.md#expected-behaviour) for
-pass/fail criteria.
+Run `main.py` (`mpremote run main.py`). It toggles the control pin for 5
+closed/open cycles, prints the I/O B voltage alongside each commanded
+state, then prints a `RESULT: PASS` or `RESULT: FAIL` verdict and exits —
+see [README.md § Expected behaviour](README.md#expected-behaviour) for
+the pass/fail criteria.
 
 ---
 

@@ -24,7 +24,7 @@ within its ~100mA budget.
 | `cd4066_switch_tester.spice` | ngspice netlist — I/O B voltage, switch closed vs. open |
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `breadboard.md` | Step-by-step wiring guide |
-| `main.py` | MicroPython — toggles the control pin, reads GP26, prints pass/block state |
+| `main.py` | MicroPython — toggles the control pin, reads GP26, prints a PASS/FAIL verdict, and exits |
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 
 ---
@@ -39,8 +39,9 @@ Follow **[breadboard.md](breadboard.md)**. Short version:
    I/O B (pin 2) through a 10kΩ resistor to GND.
 3. Wire that switch's control pin (pin 13) to Pico GP15.
 4. Probe I/O B (pin 2) with Pico GP26 (ADC0).
-5. Run `main.py` and watch it toggle the control pin and print the
-   resulting voltage.
+5. Run `main.py` — it toggles the control pin for 5 closed/open cycles,
+   prints each reading, then averages each state and prints a PASS/FAIL
+   verdict before exiting.
 
 ---
 
@@ -67,16 +68,23 @@ v(bo) = 3.299934e-05
 **Closed** (control HIGH): I/O B reads ~1.63V — signal passes through the
 switch's on-resistance to the pull-down. **Open** (control LOW): I/O B
 reads ~0V — the switch blocks, and the pull-down holds the node at ground.
-`main.py` toggles the control pin every second and prints both states, so
-a working switch shows the reading alternate between roughly 1.6V and 0V
-in step with the printed `control=` state.
+`main.py` toggles the control pin for 5 closed/open cycles, printing each
+reading, then averages each state and checks it against three thresholds
+(mirroring `smoke_test.py`'s checks against the SPICE model):
 
-**Pass**: reading clearly tracks the commanded state (high when closed,
-near-zero when open). **Fail**: reading stays near 0V regardless of
-control state (switch stuck open, or dead), stays high regardless (stuck
-closed, or control pin not actually reaching the part), or sits at some
-fixed in-between value that doesn't move (control pin not connected).
-Repeat for each of the 4 switches per chip by moving the I/O A / I/O B /
-control wires to that switch's pins (see `lab/docs/parts_reference.md`
+- closed average > 1.0V
+- open average < 0.1V
+- (closed average − open average) > 0.5V
+
+**Pass**: all three hold — reading clearly tracks the commanded state
+(high when closed, near-zero when open). **Fail**: reading stays near 0V
+regardless of control state (switch stuck open, or dead), stays high
+regardless (stuck closed, or control pin not actually reaching the part),
+or sits at some fixed in-between value that doesn't move much either way
+(e.g. both averages near VDD/2 with a delta of a few tens of mV — usually
+means the chip isn't actually powered, or the control pin isn't reaching
+it). `main.py` prints `RESULT: PASS` or `RESULT: FAIL` and exits either
+way. Repeat for each of the 4 switches per chip by moving the I/O A / I/O
+B / control wires to that switch's pins (see `lab/docs/parts_reference.md`
 for the full CD4066B pinout) — a chip can have some switches good and
 others bad.

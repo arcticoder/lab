@@ -3314,3 +3314,15 @@ Yes, it already exists: `measurement_tools/cd4066_switch_tester/`. It's designed
 Covered by the same edit as #1 --- the "designed, not yet built" section and its closing "none have been physically tested" line no longer include `psu_pico_rail` or `voltage_reference_lm358`.
 <!-- ------ -->
 ---
+**Verdict: it failed.** Both states read ~2.05--2.11V (expected ~1.63V closed / ~0V open), and the closed-vs-open delta was only ~0.04--0.05V --- far short of the 0.5V needed to call the states distinguishable. That's the "stuck at a fixed in-between value" failure mode the README already calls out, not a working switch. The mid-rail value (near VDD/2) points at VDD (pin 14) or the control wire (GP15→pin 13) not actually making contact, rather than the switch itself being dead --- but that's not confirmed, just the likely first thing to check since it's still wired up.
+
+What I changed:
+
+-   **`main.py`**: now samples 5 closed/open cycles, averages each state, checks against the same thresholds `smoke_test.py` uses against the SPICE model (closed avg > 1.0V, open avg < 0.1V, delta > 0.5V), prints `RESULT: PASS`/`RESULT: FAIL`, and exits instead of looping forever.
+-   **`README.md`** / **`breadboard.md`**: updated to describe the new cycle-then-verdict behavior and spell out the numeric thresholds.
+-   **`lab/README.md`**: added a dated note under the "designed, not yet built" table recording this FAIL result (it stays out of "built & bench-tested" until a switch actually passes).
+-   **`lab/docs/kb/repo_docs_conventions.md`**: two entries --- one generalizing "scripts must print a verdict and exit" as the same defect class as the earlier `input()`/countdown fixes, and one recording the VDD/2-with-tiny-delta symptom as a diagnostic pattern for future analog-switch bring-up sessions.
+
+Next step on the bench: check VDD pin 14 and the GP15→pin 13 wire for actual continuity before swapping the chip or switch.
+<!-- ------ -->
+---

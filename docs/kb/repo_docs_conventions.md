@@ -402,6 +402,56 @@ are complete — a script can be internally consistent with its README
 while `breadboard.md` still has a real gap, since nothing currently
 checks the two against each other.
 
+## `main.py` scripts must print a verdict and exit, not stream readings forever (found 2026-08-27, `cd4066_switch_tester`)
+
+Before this date, `cd4066_switch_tester/main.py` toggled the control pin
+and printed a reading every second in an unconditional `while True:` —
+same shape as the pre-fix `switch_pin_identifier`/`voltage_reference_lm358`
+scripts before those got their own fixes (see the `input()`/countdown/push-button
+entries above). The user ran it, watched it flip-flop indefinitely, and
+had to Ctrl-C out and ask "did it pass?" — the script never told them, and
+the loop wouldn't have stopped on its own either way. This is the same
+underlying defect class as the `input()` and fixed-countdown entries
+above: a `mpremote run`-launched script that doesn't know how to end
+itself pushes the "is this done, and did it work" judgment call onto the
+user, every time. Fixed by sampling a fixed number of cycles (`CYCLES =
+5`, closed+open pairs), averaging each state, checking the averages
+against the *same* thresholds `smoke_test.py` already checks against the
+SPICE model (`CLOSED_MIN = 1.0`, `OPEN_MAX = 0.1`, delta `> 0.5`), then
+printing `RESULT: PASS`/`RESULT: FAIL` and returning. Rule for future
+`main.py` scripts here: if the hardware check has a knowable finite
+duration (N samples, N cycles), don't loop forever printing raw data and
+leave the pass/fail call to whoever's reading the terminal — sample a
+fixed count, apply the same numeric thresholds `smoke_test.py` uses
+against the sim (duplicate the constants; the Pico can't import the host
+`tools/ngspice_runner.py` machinery), and print an explicit verdict before
+exiting.
+
+## `cd4066_switch_tester` symptom pattern: both states near VDD/2, delta of tens of mV — chip likely unpowered or control pin not reaching it, not (necessarily) a dead switch (found 2026-08-27)
+
+First real-hardware run against switch 1 of the first CD4066BCN read
+~2.05–2.11V for *both* `CLOSED` and `OPEN` (expected ~1.63V closed, ~0V
+open; delta needs to be `> 0.5V`, actual delta was only ~0.04–0.05V) —
+`RESULT: FAIL`. This matches the "sits at some fixed in-between value
+that doesn't move" failure mode already called out in this circuit's
+README, but the *specific* voltage is a useful diagnostic detail worth
+keeping: ~2.05–2.11V is close to VDD/2 (VDD=3.3V rail), not close to
+either expected rail-referenced value, and it barely shifts with the
+control pin. A CD4066B analog switch has body diodes to VDD/VSS on each
+I/O pin regardless of whether the chip's control logic is actually
+switching; with VDD unpowered or the control pin not actually reaching
+pin 13, those diodes (plus the two 10kΩ bias resistors from VDD and to
+GND on either side) can produce a fixed-ish mid-rail divider that has
+nothing to do with the commanded state — which is consistent with what
+was observed. This has **not** been confirmed as the root cause on this
+specific bench setup (VDD/control continuity wasn't independently
+probed before this was written) — treat "check VDD pin 14 and the GP15→
+pin 13 control wire for actual continuity before condemning the switch
+itself" as the first debugging step, not a settled diagnosis. If a future
+session sees this same symptom (both states clustering near VDD/2, tiny
+delta) on this or a similar bilateral-switch bring-up jig, check power/
+control continuity first rather than assuming the part itself is bad.
+
 Also worth noting for future wiring-step edits: the original step 3
 ("same breadboard row, no extra wire needed if they're already in the
 same row") was true in principle (breadboard rows are single electrical

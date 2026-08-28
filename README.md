@@ -131,6 +131,15 @@ sequence this drives.
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
 | `measurement_tools/cd4066_switch_tester/` | Pico-driven bring-up jig for one CD4066B analog switch — confirms it passes/blocks before trusting it in a later design | component validation (ahead of tier9 `MUX`) |
 
+`cd4066_switch_tester` was physically wired and run against real hardware
+on 2026-08-27 (switch 1 of the first CD4066BCN) — `RESULT: FAIL`. Both
+closed and open readings sat around 2.05–2.11V (expected ~1.63V / ~0V),
+a delta of only ~0.04–0.05V versus the 0.5V the pass criteria require —
+the reading barely moved between commanded states. Not yet root-caused;
+next step is re-checking that VDD (pin 14) and the control wire (GP15 →
+pin 13) are actually making contact before condemning the switch itself.
+Stays in this table (not "built & bench-tested") until a switch passes.
+
 Each of these has a SPICE netlist, a generated schematic, a breadboard
 wiring guide, and a `smoke_test.py`, but none have been physically tested
 on with real components yet. Everything else in
