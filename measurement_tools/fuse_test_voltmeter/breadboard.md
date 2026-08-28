@@ -1,5 +1,10 @@
 # Breadboard Wiring — fuse_test_voltmeter
 
+**Just have one fuse and one battery in front of you right now?** Skip
+this file and use [quickstart.md](quickstart.md) instead — it's the same
+circuit with none of the batch/tier framing below. Come back here for the
+500 mA fuse, testing more than one unit, or the PSU demo afterward.
+
 ## Circuit overview
 
 This circuit has no PSU prerequisite of its own — the Pico is powered by

@@ -42,7 +42,8 @@ channel, one job.
 |------|---------|
 | `fuse_test_voltmeter.spice` | ngspice netlist — probe-point voltage, fuse cold vs. tripped, for both v1 and v2 |
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
-| `breadboard.md` | Step-by-step probing/wiring guide (self-check → test → demo) |
+| `quickstart.md` | Just one fuse, one battery, in front of you right now — the direct build, no tiers/batch framing |
+| `breadboard.md` | Full self-check → test → demo procedure (500 mA tier, batches of fuses, PSU demo) |
 | `main.py` | MicroPython — reads GP26, prints voltage over USB serial, flags trip/reset |
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 
@@ -50,7 +51,10 @@ channel, one job.
 
 ## Build
 
-Follow **[breadboard.md](breadboard.md)**. Short version:
+Testing a single fuse right now? Follow
+**[quickstart.md](quickstart.md)** — it skips the batch/tier framing
+below. Otherwise, follow **[breadboard.md](breadboard.md)**. Short
+version:
 
 1. Plug the Pico into the PC over USB (power + serial, nothing else needed).
 2. **Self-check first**: wire GP26/GND across a load resistor with a plain

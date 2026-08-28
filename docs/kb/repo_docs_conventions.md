@@ -613,3 +613,34 @@ valid, intentional stand-in when reviewing this or similar breadboard
 photos/wiring going forward — not as something to flag or suggest
 re-wiring — until the leads get properly stripped and terminated to
 Dupont connectors once the stripper/crimper tool arrives.
+
+## `breadboard.md` files written as general/batch procedures are unusable as bench instructions for one physical unit — split off a `quickstart.md` (2026-08-28)
+
+`measurement_tools/fuse_test_voltmeter/breadboard.md` was written to cover
+the full scope at once: self-check, both fuse tiers (RXEF005 1.5V /
+RXEF050 3.0V), a batch of 20 units per tier, the RXEF050 2s×2p resistor
+bank, and the eventual PSU demo — every wiring table branched on "for
+RXEF005 jig... for RXEF050 jig...". The user, holding one battery holder,
+one 50 mA fuse, and a Pico already wired to USB, reported not being able
+to make any sense of it and asked (with considerable profanity) for
+explicit next steps for exactly the hardware in front of them. The fix
+was not rewording the existing file — it was adding
+[quickstart.md](../../measurement_tools/fuse_test_voltmeter/quickstart.md),
+a separate doc with zero tier/batch branching, hardcoded to the single
+1.5V/RXEF005/1-resistor case with concrete wire-by-wire steps, and no
+"why" prose — plus a one-line pointer at the top of `breadboard.md`
+sending the single-unit case there. `README.md`'s Files table and Build
+section were updated to route to `quickstart.md` first. `breadboard.md`
+itself was left otherwise intact — it's still the correct reference for
+the 500 mA tier, batches, and the PSU demo, just not the first thing to
+hand someone mid-build.
+
+General lesson for any future circuit here with more than one
+tier/variant/batch dimension: write the multi-dimensional reference doc
+(good for planning, smoke tests, "why" context) *and* a separate,
+tier-locked quickstart with no conditional branching at all, rather than
+assuming a reader mid-build will filter a general doc down to their own
+case themselves. Don't retrofit this everywhere preemptively — do it when
+a circuit's `breadboard.md` actually has more than one branch a bench
+user has to track (as fuse_test_voltmeter's did with 2 tiers × 3 stages),
+not for single-path circuits that don't need it.

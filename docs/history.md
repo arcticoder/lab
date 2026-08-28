@@ -3384,3 +3384,16 @@ Updated and verified:
 -   `lab/docs/kb/repo_docs_conventions.md` --- added an entry for future sessions explaining the earlier "≥1W" spec was never checked against real inventory
 <!-- ------ -->
 ---
+**Do this right now:**
+
+1.  Add: 1 AA battery, 1× 10 Ω resistor (1/4 W, from the kit), 2× male-male jumpers, your 50 mA fuse.
+2.  Wire: battery **+** → fuse → resistor → battery **-**. That's the whole power loop, just two parts in series.
+3.  Jumper Pico **GP26** to the junction between the fuse and resistor. Jumper Pico **GND** to the junction between the resistor and battery **-**.
+4.  Drop the battery in, run `mpremote run main.py` from that folder.
+5.  You should see ~1.4V, steady. Touch the resistor's two legs together --- voltage collapses toward 0V, terminal prints `*** FUSE TRIPPED ***`, onboard LED lights. Let go, wait ~2 min for it to cool, it should climb back to ~1.4V and print `*** fuse reset ***`.
+
+Full write-up: [quickstart.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/home/echo_/Code/python/lab/measurement_tools/fuse_test_voltmeter/quickstart.md)
+
+I split the old file: `breadboard.md` was trying to be one doc for two fuse tiers, batches of 20, and a later PSU-demo stage all at once --- every table branched by tier, which is exactly why it read as noise while you're just trying to wire one fuse. I left `breadboard.md` in place (it's still correct for the 500 mA fuse / batch testing / PSU demo later) but added `quickstart.md` with zero branching, locked to your exact 1-battery-1-fuse case, and pointed both `breadboard.md` and the folder's `README.md` at it. Also fixed a stray typo in `main.py`'s docstring (said "10kOhm" where it's actually 10 Ω). Logged the doc-structure lesson in `lab/docs/kb/` for future sessions so this doesn't happen again on the next multi-tier circuit.
+<!-- ------ -->
+---

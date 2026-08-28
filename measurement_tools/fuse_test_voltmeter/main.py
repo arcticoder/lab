@@ -6,7 +6,7 @@ Pico ADC voltmeter for polyfuse trip testing.
 Hardware
 --------
   GP26 (ADC0) — probe lead, clipped to the load resistor's fuse-side leg in
-                 psu_ultralow_v1 or psu_low_v2 (battery -> fuse -> 10kOhm
+                 psu_ultralow_v1 or psu_low_v2 (battery -> fuse -> 10 Ohm
                  load -> GND)
   GND         — probe lead, clipped to the load resistor's ground-side leg
   GP25        — onboard LED, lit while the fuse under test reads tripped
