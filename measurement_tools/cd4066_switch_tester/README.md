@@ -81,10 +81,32 @@ reading, then averages each state and checks it against three thresholds
 regardless of control state (switch stuck open, or dead), stays high
 regardless (stuck closed, or control pin not actually reaching the part),
 or sits at some fixed in-between value that doesn't move much either way
-(e.g. both averages near VDD/2 with a delta of a few tens of mV — usually
-means the chip isn't actually powered, or the control pin isn't reaching
-it). `main.py` prints `RESULT: PASS` or `RESULT: FAIL` and exits either
-way. Repeat for each of the 4 switches per chip by moving the I/O A / I/O
-B / control wires to that switch's pins (see `lab/docs/parts_reference.md`
-for the full CD4066B pinout) — a chip can have some switches good and
-others bad.
+(e.g. both averages a couple volts above ground with a delta of a few
+tens of mV). `main.py` prints `RESULT: PASS` or `RESULT: FAIL` and exits
+either way. Repeat for each of the 4 switches per chip by moving the I/O A
+/ I/O B / control wires to that switch's pins (see
+`lab/docs/parts_reference.md` for the full CD4066B pinout) — a chip can
+have some switches good and others bad.
+
+### Troubleshooting a "fixed in-between value" fail
+
+If both states read close together (small delta) instead of near the
+rails, check these in order — swapping the control wire, the VDD wire, or
+the chip itself does **not** rule out any of the items below, since none
+of those swaps touch them:
+
+1. **VSS (pin 6) → GND continuity.** Confirm with a multimeter that pin 6
+   is actually at the same potential as the Pico's own GND, not just that
+   a wire is present.
+2. **The two 10kΩ bias resistors and their breadboard rows.** Confirm
+   each resistor leg is in the row `breadboard.md` says it should be, not
+   an adjacent row.
+3. **The GP26 probe wire.** Confirm it lands in I/O B's row (pin 2 for
+   switch 1) and not a neighboring one.
+4. **Power-rail continuity across the whole board.** Many breadboards
+   split their power rails into independent left/right halves that look
+   like one continuous rail but aren't electrically joined. If the VDD or
+   GND jumper from `psu_pico_rail` lands on a different rail segment than
+   the bias resistors or the VSS jumper, everything downstream floats
+   regardless of how correct each individual wire looks in isolation.
+   Check with a multimeter across the rail, not just by eye.

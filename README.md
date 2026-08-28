@@ -133,12 +133,16 @@ sequence this drives.
 
 `cd4066_switch_tester` was physically wired and run against real hardware
 on 2026-08-27 (switch 1 of the first CD4066BCN) — `RESULT: FAIL`. Both
-closed and open readings sat around 2.05–2.11V (expected ~1.63V / ~0V),
-a delta of only ~0.04–0.05V versus the 0.5V the pass criteria require —
-the reading barely moved between commanded states. Not yet root-caused;
-next step is re-checking that VDD (pin 14) and the control wire (GP15 →
-pin 13) are actually making contact before condemning the switch itself.
-Stays in this table (not "built & bench-tested") until a switch passes.
+closed and open readings sat around 2.04–2.11V (expected ~1.63V / ~0V),
+a delta of only ~0.04V versus the 0.5V the pass criteria require. Three
+follow-up substitutions the same day — the GP15→pin 13 control wire, the
+VDD (pin 14) wire, and the CD4066BCN itself — each reproduced the
+identical failure to within a few mV, ruling out the control wire, the
+VDD wire, and this particular chip as the cause. Not yet root-caused; see
+[cd4066_switch_tester/README.md § Troubleshooting](measurement_tools/cd4066_switch_tester/README.md#troubleshooting-a-fixed-in-between-value-fail)
+for the checklist of what's left to check (VSS/GND continuity, the bias
+resistors, the probe wire, and split power rails). Stays in this table
+(not "built & bench-tested") until a switch passes.
 
 Each of these has a SPICE netlist, a generated schematic, a breadboard
 wiring guide, and a `smoke_test.py`, but none have been physically tested

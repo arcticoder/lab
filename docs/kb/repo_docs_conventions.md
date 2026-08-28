@@ -462,3 +462,38 @@ body straddles the breadboard's center gap, putting every one of its
 pins in its own row separate from wherever R1/R2 got plugged. Rewrote it
 as an unconditional "run a jumper" instruction with the row-sharing
 optimization noted as an aside, not the primary instruction.
+
+## `cd4066_switch_tester` fail persists after swapping control wire, VDD wire, and the chip itself — narrows the fault to whatever wasn't touched (2026-08-27)
+
+Following up on the entry above: the user swapped the GP15→pin 13
+control wire, then the VDD (pin 14) wire, then the whole CD4066BCN, each
+as a separate re-run. All three trials reproduced the same failure to
+within a few mV (~2.08–2.10V closed, ~2.04–2.06V open, delta ~0.04V
+every time) — none of the three swaps moved the reading at all. This
+disproves the previous entry's leading hypothesis (VDD or control-pin
+continuity, or a bad chip) as stated: if any of those three things were
+the actual fault, replacing that specific thing should have changed the
+symptom, and it didn't, across all three independent substitutions.
+
+Elimination logic worth reusing on similar "swapped the obvious suspects,
+symptom identical" reports: when N independent substitutions each
+reproduce a symptom unchanged, the fault is almost certainly in whatever
+was common to all N trials, not in any of the swapped parts. Here, what
+stayed constant across all three trials: the VSS (pin 6) → GND wire (never
+swapped), the two 10kΩ bias resistors and their breadboard rows (never
+touched), the GP26 probe wire (never touched), and the physical
+breadboard rows/rail segments themselves. Updated
+`cd4066_switch_tester/README.md` with an explicit "Troubleshooting"
+checklist covering exactly these four items, ordered by how cheap they
+are to check, and flagged one candidate worth specifically calling out:
+full-size breadboards commonly split their power rails into independent
+left/right halves that look continuous but aren't bridged — if
+`psu_pico_rail`'s GND jumper and the pull-down resistor's GND leg (or the
+VDD jumper and the pull-up resistor's VDD leg) land on different
+unbridged segments, every downstream reading floats regardless of how
+correct each individual wire looks. None of this is confirmed yet — it's
+the next set of things to check, same "not a settled diagnosis" caveat as
+the previous entry. If a future session sees another report of "swapped
+the suspect part, identical symptom" on any circuit here, apply the same
+elimination logic before proposing a new hypothesis: list what was
+actually held constant across the trials before guessing what's wrong.

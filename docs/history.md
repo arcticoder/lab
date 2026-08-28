@@ -3326,3 +3326,19 @@ What I changed:
 Next step on the bench: check VDD pin 14 and the GP15→pin 13 wire for actual continuity before swapping the chip or switch.
 <!-- ------ -->
 ---
+Docs updated. Here's the diagnosis:
+
+**Swapping the control wire, the VDD wire, and the chip itself, with the identical failure every time, is actually the useful result** --- it rules those three things out. If any of them were the fault, replacing that specific part should have changed the reading, and it didn't (all three trials: closed ~2.08--2.10V, open ~2.04--2.06V, delta ~0.04V, every time).
+
+That means the fault is in whatever stayed constant across all three trials --- not in anything you've swapped so far:
+
+1.  **VSS (pin 6) → GND wire** --- never swapped. Check with a multimeter that pin 6 is actually at the same potential as Pico GND, not just that a wire is plugged in.
+2.  **The two 10kΩ bias resistors and their breadboard rows** --- never touched. Confirm each leg sits in the row `breadboard.md` specifies.
+3.  **The GP26 probe wire** --- never touched. Confirm it's actually in I/O B's row (pin 2), not an adjacent one.
+4.  **Split power rails** --- the strongest single candidate. Full-size breadboards often split their top/bottom rails into independent left/right halves that look like one continuous rail but aren't electrically joined. If `psu_pico_rail`'s GND or VDD jumper lands on a different rail segment than the bias resistors or the VSS jumper, every reading downstream floats no matter how correct each wire looks individually --- and this would explain why the number is stable and reproducible across all three "fixes" rather than noisy.
+
+Check #4 with a multimeter across the rail (not by eye) before touching anything else --- it's the cheapest check and best fits a symptom that's this consistent.
+
+I've recorded this in [cd4066\_switch\_tester/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/measurement_tools/cd4066_switch_tester/README.md) as an ordered troubleshooting checklist, updated [lab/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/README.md)'s bench-test note to record the three ruled-out substitutions, and logged the elimination reasoning in `docs/kb/repo_docs_conventions.md` for future sessions.
+<!-- ------ -->
+---
