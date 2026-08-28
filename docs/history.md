@@ -3291,3 +3291,26 @@ Documented the mpremote/stdin finding and the breadboard.md gap pattern in `lab/
 **Next step for your hardware**: add the pin-3 jumper, then wire the third `R_load` resistor per the new breadboard.md step 6, then re-run `mpremote run main.py` --- it should now complete without hanging and read close to 1.65V both times.
 <!-- ------ -->
 ---
+All edits are in place across both repos. Now let me answer your four items.
+
+**1\. voltage\_reference\_lm358 --- done, and what's next**
+
+Both bench-test runs passed (0.10% and 0.23% change, well under the 2% tolerance), so I've moved it into a new "Circuits --- built & bench-tested" section in [README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/README.md#L100) alongside `psu_pico_rail` (which you also confirmed as built), with the pass numbers recorded. The old "designed, not yet built" framing is now split off for the circuits that are still just netlists.
+
+You can return the LM358, both divider resistors, and the wires to inventory. I checked the actual dependency edges in [general\_purpose\_circuit\_dependency.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/docs/general_purpose_circuit_dependency.md) --- `REF` only feeds tier2 nodes (`VM`, `AM`, `FREQC`, `TIA`), and none of those have netlists yet, so nothing currently buildable needs this breadboard to stay wired. The netlist/breadboard.md/smoke\_test.py are the durable record; rebuilding it later when a real tier2 circuit needs it as an input is cheap.
+
+`OSC` is a reasonable next pick --- it's the other tier1 node and doesn't depend on `REF` (they're siblings, both feeding tier2, not on each other). But it doesn't exist as a netlist yet at all, so "build OSC" is really "design OSC from scratch" (spice netlist, schematic, breadboard.md, main.py, smoke\_test.py, README, dependency-graph label). Want me to go ahead and design that circuit now, or did you want to look at something else first?
+
+**2\. Push button instead of countdown --- done**
+
+Replaced `voltage_reference_lm358/main.py`'s `COUNTDOWN_S`/`countdown()` with a `wait_for_button()` that polls a push button on GP15 (`Pin.PULL_UP`, active-low, other leg to GND) and blocks until pressed+released --- no time limit. Updated its `breadboard.md` and `README.md` to match, added a note to `pico/docs/inventory.md`'s Push Button row, and wrote up the reasoning in `docs/kb/repo_docs_conventions.md` as the new default for any script needing a mid-run physical pause. Good catch --- the 10s→13s bump you already had to make was exactly the symptom of a fixed countdown being the wrong tool here.
+
+**3\. CD4066B tester**
+
+Yes, it already exists: `measurement_tools/cd4066_switch_tester/`. It's designed to bring up one switch at a time (4 switches per chip × 10 chips = 40 checks) --- control pin on GP15, probe on GP26, toggles and prints closed/open readings. It hasn't been physically built/bench-tested yet though.
+
+**4\. README.md:100/121 --- fixed**
+
+Covered by the same edit as #1 --- the "designed, not yet built" section and its closing "none have been physically tested" line no longer include `psu_pico_rail` or `voltage_reference_lm358`.
+<!-- ------ -->
+---

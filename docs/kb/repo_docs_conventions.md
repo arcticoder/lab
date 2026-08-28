@@ -332,11 +332,54 @@ this comes up again:
 
 Rule for future lab scripts meant to run via `mpremote run`: never use
 `input()`. If the script needs the user to pause and physically change
-something, use a printed countdown (`time.sleep` in a loop, as in the
-`voltage_reference_lm358` fix) instead. Checked the rest of the repo
+something, don't reach for a printed countdown either — see the entry
+below (2026-08-27), which replaced `voltage_reference_lm358`'s countdown
+with a push button. Checked the rest of the repo
 (`grep -rl "input(" --include=main.py`) — `voltage_reference_lm358` was
 the only offender; `fuse_test_voltmeter` and `cd4066_switch_tester`'s
 `main.py` scripts stream output only and don't call `input()`.
+
+## A push button (GPIO, `Pin.PULL_UP`, active-low) replaced the fixed countdown as the "wait for the user" mechanism in scripts needing a mid-run physical action (2026-08-27)
+
+The `voltage_reference_lm358` countdown from the entry above
+(`COUNTDOWN_S = 10`) was itself found to be too short on real hardware:
+the user had to bump it to `13` after a too-fast unplug/replug of
+`R_load` briefly touched leads together mid-reading. A fixed countdown
+puts a hard time limit on a manual action (moving a resistor with bare
+hands, on a breadboard) that has no natural fixed duration — too short
+risks a mistimed/unsafe read, too long just wastes bench time, and either
+way it has to be re-guessed and re-tuned per script/per user. A GPIO read
+is not a keystroke: `mpremote run`'s raw-REPL streaming only blocks
+*stdin*, not the device's own peripherals, so polling a push button
+(`Pin(N, Pin.IN, Pin.PULL_UP)`, pressed = pin reads `0`) works fine and
+gives an unbounded, no-guesswork "I'm ready" signal instead. Applied to
+`voltage_reference_lm358/main.py`'s `wait_for_button()` (poll until
+pressed, debounce, poll until released) in place of the `countdown()`
+function; `breadboard.md`/`README.md` updated to describe wiring the
+button (one leg to a spare GPIO, the other to GND) instead of the old
+timing numbers. `pico/docs/inventory.md`'s Push Button row notes this use
+case. Rule for future scripts in either repo that need the user to pause
+mid-run for a physical action: wire a push button to a spare GPIO and
+poll it, rather than reintroducing a `time.sleep`-based countdown.
+
+## A bench-tested circuit's breadboard doesn't need to stay wired once its check passes — parts return to inventory unless a specific downstream circuit already needs them in place (2026-08-27)
+
+After `psu_pico_rail` and `voltage_reference_lm358` both passed their
+real-hardware checks, the question came up of whether to keep
+`voltage_reference_lm358` wired up for whatever gets built next.
+Resolved by reading the actual dependency edges in
+`general_purpose_circuit_dependency.md`: `REF --> tier2` points at tier2
+nodes (`VM`, `AM`, `FREQC`, `TIA`) that don't have netlists yet — nothing
+currently buildable consumes `REF`'s physical output today, so there's no
+reason to keep it on the breadboard. The spice netlist, `breadboard.md`,
+`smoke_test.py`, and the bench-test result recorded in `lab/README.md`
+are the durable record; the physical build is disposable and gets
+re-assembled from those whenever a real downstream circuit needs it as an
+input. `lab/README.md`'s circuits section was split into "built &
+bench-tested" (with a bench-tested date/result column) and "designed, not
+yet built" to track this distinction going forward — check the tier's
+outgoing edges in the dependency graph before deciding whether a
+just-tested circuit needs to stay assembled.
 
 ## A script's docstring/README referencing a component isn't the same as `breadboard.md` telling you to wire it — check both when a script assumes hardware exists (found 2026-08-26)
 

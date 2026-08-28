@@ -10,14 +10,19 @@ Hardware
 --------
   GP26 (ADC0) — probe lead, on LM358 pin 1 (buffered reference output)
   GND         — probe lead, shared with the LM358's own GND (pin 4)
+  GP15        — push button, other leg to GND, internal pull-up (ready signal)
 
-Each phase gives you a fixed countdown to add/remove R_load instead of
-waiting on a keypress: `mpremote run` executes this script over the raw
-REPL protocol, which streams device output back but never forwards your
+Each phase waits on the push button instead of a keypress or a fixed
+countdown: `mpremote run` executes this script over the raw REPL
+protocol, which streams device output back but never forwards your
 terminal's keystrokes to the device, so a blocking input() call here
 would hang forever (confirmed — see docs/kb/repo_docs_conventions.md's
 "mpremote run cannot forward host keystrokes" entry). Don't reintroduce
-input() in a script meant to run this way.
+input() in a script meant to run this way. A GPIO read isn't a keystroke,
+though, so a physical push button gives you an unbounded, no-guesswork
+"I'm ready" signal instead of a hardcoded timeout you have to pad out by
+trial and error (this one started at 10s and had to be bumped to 13s
+after a too-fast unplug/replug touched the leads together).
 
 Run from MicroPico (or rshell / mpremote), Pico connected to the PC by USB:
   mpremote run main.py
@@ -27,13 +32,15 @@ from machine import ADC, Pin
 import time
 
 ADC_PROBE = ADC(Pin(26))  # GP26 / ADC0, on LM358 pin 1
+BUTTON = Pin(15, Pin.IN, Pin.PULL_UP)  # GP15, other leg to GND; pressed = 0
 
 ADC_MAX = 65535  # 16-bit ADC full scale
 VREF = 3.3  # Pico ADC reference voltage
 SAMPLES = 20  # averaged per reading, to smooth ADC noise
 SAMPLE_INTERVAL_S = 0.05
 TOLERANCE = 0.02  # matches smoke_test.py's buffered-vs-unloaded tolerance
-COUNTDOWN_S = 10  # time given to move R_load between readings
+POLL_INTERVAL_S = 0.05
+DEBOUNCE_S = 0.05
 
 
 def raw_to_voltage(raw: int) -> float:
@@ -50,24 +57,27 @@ def stable_reading() -> float:
     return total / SAMPLES
 
 
-def countdown(seconds: int) -> None:
-    for s in range(seconds, 0, -1):
-        print(f"  ...{s}s")
-        time.sleep(1)
+def wait_for_button() -> None:
+    """Block until the button is pressed and released, however long that takes."""
+    while BUTTON.value() == 1:
+        time.sleep(POLL_INTERVAL_S)
+    time.sleep(DEBOUNCE_S)
+    while BUTTON.value() == 0:
+        time.sleep(POLL_INTERVAL_S)
 
 
 def main() -> None:
     print("voltage_reference_lm358 validation — probing GP26 (LM358 pin 1)")
     print()
 
-    print(f"Disconnect R_load (1kOhm) from pin 1 — {COUNTDOWN_S}s:")
-    countdown(COUNTDOWN_S)
+    print("Disconnect R_load (1kOhm) from pin 1, then press the button (GP15):")
+    wait_for_button()
     v_unloaded = stable_reading()
     print(f"unloaded: {v_unloaded:.3f}V")
     print()
 
-    print(f"Now connect R_load (1kOhm) between pin 1 and GND — {COUNTDOWN_S}s:")
-    countdown(COUNTDOWN_S)
+    print("Now connect R_load (1kOhm) between pin 1 and GND, then press the button:")
+    wait_for_button()
     v_loaded = stable_reading()
     print(f"loaded:   {v_loaded:.3f}V")
     print()

@@ -15,6 +15,7 @@ A 1kΩ/1kΩ divider off the [psu_pico_rail](../../power_supplies/psu_pico_rail/)
 |-----------|-------|----------|
 | LM358P | dual op-amp, DIP-8 | 1 |
 | Resistor | 1 kΩ | 2 (+1 optional, see step 6) |
+| Push Button | momentary, 4-pin | 1 (optional, see step 6) |
 | Dupont M-M jumper (red) | 12–20cm | 2 |
 | Dupont M-M jumper (black) | 12–20cm | 2 |
 
@@ -83,8 +84,11 @@ the divider instead of just testing the buffer under load.
 
 Insert `R_load` with one leg in the LM358 pin 1 row and the other leg in
 a GND rail row. `main.py` walks you through disconnecting/reconnecting
-it (as a fixed countdown, not a keypress prompt — see the README section
-above for why) while it takes ADC readings.
+it while it takes ADC readings, waiting on a push button rather than a
+keypress or a fixed countdown (see the README section above for why).
+Wire the button: one leg to Pico GP15, the other leg to a GND rail row —
+`main.py` uses GP15's internal pull-up, so no external resistor is
+needed. Press it once you've finished moving `R_load` for that phase.
 
 ---
 

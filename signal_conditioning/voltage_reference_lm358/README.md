@@ -95,10 +95,12 @@ plugged in over USB:
 mpremote run main.py
 ```
 
-It takes an averaged reading, then gives you a fixed 10-second countdown
-to disconnect/reconnect `R_load` between readings, instead of a
-keypress prompt — `mpremote run` streams the device's output back but
-never forwards your terminal's keystrokes to it, so a script run this
-way can't use `input()` to wait for you. It finishes by printing
-`PASS`/`FAIL` against the same ±2% tolerance `smoke_test.py` uses for
-the simulated buffered-vs-unloaded comparison.
+It takes an averaged reading, then waits on a push button (GP15, other
+leg to GND) instead of a keypress or a fixed countdown — `mpremote run`
+streams the device's output back but never forwards your terminal's
+keystrokes to it, so a script run this way can't use `input()` to wait
+for you, and a fixed countdown forces guessing how long moving a
+resistor by hand actually takes. Move `R_load`, then press the button
+when you're ready for that phase's reading; there's no time limit. It
+finishes by printing `PASS`/`FAIL` against the same ±2% tolerance
+`smoke_test.py` uses for the simulated buffered-vs-unloaded comparison.

@@ -97,7 +97,23 @@ Exits non-zero on any failed check.
 
 ---
 
-## Circuits (designed, not yet built)
+## Circuits — built & bench-tested
+
+Each of these has been physically assembled and confirmed against its
+`main.py`/`smoke_test.py` pass criteria on real hardware. Not committed
+to a breadboard permanently — once a circuit's bench check passes and
+nothing else currently under construction needs its wiring in place, its
+parts go back to inventory; the netlist/breadboard.md/smoke_test.py stay
+as the record for rebuilding it later.
+
+| Folder | Circuit | Tier | Bench-tested |
+|--------|---------|------|--------------|
+| `power_supplies/psu_pico_rail/` | Pico's own onboard 3.3V rail, ~100mA budget | interim bootstrap PSU | 2026-08 |
+| `signal_conditioning/voltage_reference_lm358/` | LM358 unity-gain buffer holds a resistor-divider reference steady under load | tier1 `REF` | 2026-08-27 — loaded reading within 0.23% of unloaded (±2% tolerance) |
+
+---
+
+## Circuits — designed, not yet built
 
 Build order runs top to bottom: the voltmeter has to exist — and its own
 fuse-free sanity check has to pass — before it's trustworthy for sorting
@@ -110,11 +126,9 @@ sequence this drives.
 | Folder | Circuit | Tier |
 |--------|---------|------|
 | `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe, streams voltage over USB; self-check, then bench-tests polyfuses before any of them go into a PSU | bootstrap / concurrent measurement tool (build first) |
-| `power_supplies/psu_pico_rail/` | Pico's own onboard 3.3V rail, ~100mA budget | interim bootstrap PSU (build/use now, while wire strippers are in transit) |
 | `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap, waiting on wire strippers) |
 | `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (waiting on wire strippers) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
-| `signal_conditioning/voltage_reference_lm358/` | LM358 unity-gain buffer holds a resistor-divider reference steady under load | tier1 `REF` |
 | `measurement_tools/cd4066_switch_tester/` | Pico-driven bring-up jig for one CD4066B analog switch — confirms it passes/blocks before trusting it in a later design | component validation (ahead of tier9 `MUX`) |
 
 Each of these has a SPICE netlist, a generated schematic, a breadboard
@@ -172,7 +186,7 @@ measurement_tools/
         README.md
 
 power_supplies/
-    psu_pico_rail/            Pico onboard 3.3V rail, ~100mA (interim, designed)
+    psu_pico_rail/            Pico onboard 3.3V rail, ~100mA (interim, built & bench-tested)
         psu_pico_rail.spice
         schematic.png         (generated, gitignored)
         breadboard.md
@@ -201,7 +215,7 @@ power_supplies/
         README.md
 
 signal_conditioning/
-    voltage_reference_lm358/  LM358 buffered voltage reference (designed, not built)
+    voltage_reference_lm358/  LM358 buffered voltage reference (built & bench-tested)
         voltage_reference_lm358.spice
         schematic.png         (generated, gitignored)
         breadboard.md

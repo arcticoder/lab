@@ -27,7 +27,7 @@ graph TD
 
     subgraph psu_system ["Power Supply System (Tiered by Load)"]
         subgraph psu_pico_rail_g ["Pico rail: 3.3V, ~100mA conservative budget (bootstrap, interim)"]
-            PSUPICO["Pico onboard 3V3(OUT) regulator (power_supplies/psu_pico_rail/)"]
+            PSUPICO["Pico onboard 3V3(OUT) regulator (power_supplies/psu_pico_rail/) — built & bench-tested 2026-08"]
         end
 
         subgraph psu_ultralow ["Ultra-Low v1: 1.5V, ~100mA, &lt;0.15W (Bootstrap)"]
@@ -73,7 +73,7 @@ graph TD
     end
 
     subgraph tier1 ["Tier 1: Foundational (Simplest, Low Cost)"]
-        REF["Precision Reference Voltage Generator (3.3V or 5V input) — see signal_conditioning/voltage_reference_lm358/"]
+        REF["Precision Reference Voltage Generator (3.3V or 5V input) — see signal_conditioning/voltage_reference_lm358/ — built & bench-tested 2026-08-27"]
         OSC["Precision Timing Oscillator (1.5–5V)"]
         SIMPGEN["Simple Function Generator (5–12V input)"]
     end
