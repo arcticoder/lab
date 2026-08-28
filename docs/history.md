@@ -3397,3 +3397,6 @@ Full write-up: [quickstart.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5
 I split the old file: `breadboard.md` was trying to be one doc for two fuse tiers, batches of 20, and a later PSU-demo stage all at once --- every table branched by tier, which is exactly why it read as noise while you're just trying to wire one fuse. I left `breadboard.md` in place (it's still correct for the 500 mA fuse / batch testing / PSU demo later) but added `quickstart.md` with zero branching, locked to your exact 1-battery-1-fuse case, and pointed both `breadboard.md` and the folder's `README.md` at it. Also fixed a stray typo in `main.py`'s docstring (said "10kOhm" where it's actually 10 Ω). Logged the doc-structure lesson in `lab/docs/kb/` for future sessions so this doesn't happen again on the next multi-tier circuit.
 <!-- ------ -->
 ---
+Bottom line: the quick reset isn't the documented full cool-down cycle — it looks like the fuse chattering at its trip threshold under the jig's normal (already 3x-rated) load, not a proper hard trip. To actually validate the fuse, do the deliberate short from quickstart.md, then time the recovery — it should hold tripped for the full ~2 minutes. I've added that caveat to quickstart.md for future runs and logged the reasoning in lab/docs/kb/repo_docs_conventions.md for future sessions.
+<!-- ------ -->
+---

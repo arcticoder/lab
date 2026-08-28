@@ -54,6 +54,17 @@ mpremote run main.py
   reading climbs back to ~1.4V, the terminal prints `*** fuse reset ***`,
   LED goes off.
 
+**A good fuse can also trip on its own, before you touch anything** — this
+10 Ω load already draws ~150 mA, 3x the fuse's 50 mA rating, so a fresh
+unit may self-trip within seconds of the battery going in. If that
+self-trip clears again almost immediately (sub-second, not the ~2 minute
+figure above) and keeps repeating, that's the fuse chattering right at its
+trip threshold under this marginal overload — not a full cool-down cycle,
+and not necessarily a bad unit. The real pass/fail check is still the
+deliberate short above: it should trip promptly, *stay* tripped once you
+let go, and take the full ~2 minutes to recover. If a fuse won't hold a
+trip for that long after a genuine short, that's a fail.
+
 ## Pass / fail
 
 - **Pass**: trips when shorted, fully resets after cooling, cold reading

@@ -644,3 +644,48 @@ case themselves. Don't retrofit this everywhere preemptively — do it when
 a circuit's `breadboard.md` actually has more than one branch a bench
 user has to track (as fuse_test_voltmeter's did with 2 tiers × 3 stages),
 not for single-path circuits that don't need it.
+
+## `fuse_test_voltmeter` RXEF005 real-hardware run: sub-second self-clearing trips + below-predicted resting voltage read as PTC chattering near the trip threshold, not a fault (2026-08-28)
+
+First real `mpremote run main.py` log on an actual RXEF005 (no deliberate
+short applied) showed two `*** FUSE TRIPPED ***` events that each cleared
+within 1–2 samples of the 0.2s `SAMPLE_INTERVAL_S` (first: 0.467V→0.210V
+then reset, ~0.4s tripped; second: 0.476V then reset, ~0.2s tripped) —
+nothing like the ~2 minute cool-down `breadboard.md`/`quickstart.md`
+document. The resting (non-tripped) voltage also sat at ~1.04V for most of
+the run, not the ~1.4V `quickstart.md`/SPICE predicts for a fresh 1.5V
+cell across a cold fuse.
+
+Working diagnosis (not independently instrumented/confirmed — no way to
+separately measure fuse temperature or exact battery voltage on this
+bench): both symptoms are consistent with the fuse chattering right at its
+trip threshold rather than doing a single clean trip-and-latch. This jig's
+own docs already establish that a plain 10 Ω load draws ~150mA on a 50mA
+fuse (3x rated, see the "cold reading" entry above) — enough for a good
+unit to self-trip from the resting load alone, with no short needed. If
+the post-trip holding current is only marginally below what's needed to
+keep the PTC element hot, it can partially cool, drop back into
+conduction, reheat, and re-trip on a ~sub-second-to-second thermal time
+constant — a real, documented PTC failure/near-threshold mode, distinct
+from the full-latch case where remaining current is negligible and actual
+room-temperature cooldown (the ~2 minute figure) is what's needed to
+reset. The below-1.4V resting reading fits the same story: a fuse that
+never truly returns to a cold baseline (still slightly warm/elevated in
+resistance between chatter cycles) would read low exactly like this
+without requiring the battery itself to be weak.
+
+Consequence for interpreting future logs against this jig: a trip that
+clears in under ~1s (a few samples at `SAMPLE_INTERVAL_S = 0.2`) without
+the user having deliberately shorted and then released the load resistor
+is *not* the same event as the documented short→trip→2min-cooldown→reset
+cycle in `breadboard.md`/`README.md`'s "Expected behaviour" sections —
+don't map log timestamps against the ~2 minute figure unless a deliberate
+short was actually applied and removed. The deliberate-short test remains
+the actual pass/fail signal (`breadboard.md` step 2 / `quickstart.md`
+"Pass / fail"): a fuse that won't hold a trip for the full ~2 minutes
+*after a genuine short* is a real fail; self-clearing chatter under the
+plain resting 3x-rated load is a separate, expected-per-docs phenomenon
+and shouldn't be read as a defect on its own. `quickstart.md` was updated
+2026-08-28 with a short paragraph covering this, since it only had the
+"may self-trip" half of the story (from `breadboard.md`) and nothing about
+the fast self-clearing case.
