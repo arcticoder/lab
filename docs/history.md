@@ -3423,3 +3423,17 @@ Fixed the actual bug: the switch's outer pins were both wired to power rails (pi
 README.md and history.md needed no changes (README only points at the other docs; history.md is append-only, not hand-edited per repo convention).
 <!-- ------ -->
 ---
+Two things stand out from the photo (I cropped/zoomed `breadboard.jpg`) that don't match what `quickstart.md`/`breadboard.md` describe:
+
+**1\. There's an extra switch that isn't in the design.** On the small red breadboard (where the fuse/resistor/battery loop lives), there's a white slide switch wired in series with the fuse --- in addition to the resistor (small axial component) and the yellow polyfuse. Neither `quickstart.md` nor `breadboard.md` calls for any switch in that loop; it's supposed to be a straight, always-connected series path: `battery → fuse → resistor → battery`. This switch has no wire to the Pico at all, so it can't affect the ARMED/DISARMED print --- it just makes/breaks the physical current path. That fully explains your DISARMED-labeled ~0.017V readings jumping to ~1.09V with no ARMED print in between: you were closing this switch, not the arm switch. (1.09V itself lines up with the quickstart's NiMH-battery note, not a fault --- worth checking your AA is alkaline vs. rechargeable if you want closer to 1.4V.)
+
+**2\. The actual arm switch (GP15/3V3) looks correctly wired per the *just-updated* 2-wire scheme** --- I can see only red (3V3) and blue (into GP15) going to it, matching this afternoon's fix commit (`811f190`) that dropped the old 3-wire GND+common+3V3 hookup. But if that's correctly wired, flipping it should have printed `-- ARMED --` at least once, and it never did in your whole log.
+
+Rather than guess further from a blurry photo, the fastest way to isolate this: with the battery still pulled (as it is now) and the script running, **touch a spare jumper directly from Pico 3V3 to GP15** (bypassing the switch entirely) and watch for `-- ARMED --`, then pull it and watch for `-- DISARMED --`.
+
+-   If that works → the switch itself or its pin ID is the problem (e.g. it's a 6-leg part and the "common" leg you picked isn't actually the one that moves --- worth double-checking with the direct-jumper test which leg is which by trial).
+-   If even the direct jumper never prints ARMED → something's off with GP15 itself (wrong physical pin, bad jumper, etc.), not the switch.
+
+Want me to walk through that test with you, or do you want to try it and report back what you see?
+<!-- ------ -->
+---
