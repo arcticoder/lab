@@ -853,3 +853,54 @@ meaningful contributor, consider whether `quickstart.md`/`breadboard.md`
 should explicitly warn against putting any user-added manual power switch
 in-loop (same rationale as the existing arm-switch design note) rather
 than only implicitly relying on the reader to generalize it themselves.
+
+## `fuse_test_voltmeter` open-circuit diagnostic result: battery chemistry hypothesis ruled out, user's own power switch is the remaining suspect (resolved 2026-08-28)
+
+The entry above's recommended diagnostic was run: GP26/GND jumpers moved
+straight onto the AA battery holder's leads (fuse, resistor, and the
+user's own in-loop power switch all bypassed), fresh battery, both
+DISARMED and ARMED. Result: a steady **~1.605–1.608V**, settling from an
+initial ~1.72V transient (contact-bounce as the jumpers were seated —
+expected, not a fault; it's the same "unsteady reading during DISARMED
+settling is expected" behavior the README already documents for the
+normal fuse-loop case, just observed here in the open-circuit variant
+instead).
+
+This confirms alkaline, decisively — not NiMH (which would read
+1.2–1.3V). ~1.6V is *higher* than the 1.5V nominal `quickstart.md`'s
+troubleshooting section originally described as the alkaline-confirming
+value, but that's expected: a fresh cell with literally nothing loading it
+(the Pico's ADC input draws negligible current) commonly rests somewhat
+above its 1.5V nominal — the 1.4V figure elsewhere in the docs already
+assumes the 10Ω *loaded* case, not open-circuit. `quickstart.md` was
+updated same-day to say "1.5–1.65V confirms alkaline" instead of "close to
+1.5V", so a future >1.5V open-circuit reading isn't misread as suspicious.
+
+Consequence: the battery-chemistry hypothesis from the two entries above
+is now ruled out as the explanation for the earlier ~1.09V *in-loop*
+reading (full battery → fuse → resistor → user's power switch path). With
+a ~1.6V source and only cold-fuse + 10Ω-load resistance, the loaded
+reading should track proportionally *above* the ~1.43V SPICE figure, not
+land at ~1.09V — so the gap is real series resistance somewhere in the
+loop that isn't accounted for in the netlist. The user's own
+manually-added power switch (see the entry above — wired in series in the
+actual power path, not signal-only like the GP15 arm switch) is the
+leading remaining suspect, stacked on top of the fuse's own cold
+resistance. Not yet isolated on its own (e.g. by comparing the loop
+reading with that switch jumpered/bypassed vs. in-circuit) — if a future
+session gets that comparison, record the result here. This is also a
+concrete data point for the still-open question the entry above raised:
+whether `quickstart.md`/`breadboard.md` should explicitly warn against
+adding any manual power switch into the battery loop.
+
+Also confirmed live via `mpremote connect /dev/ttyACM0 exec` while the
+battery was physically removed (holder leads open, GP26/GND jumpers still
+seated on them, both slide switches left "on"): the ADC read a **stable
+~0.017V** across 10 samples (raw ~320–352/65535), not noisy/floating
+garbage. Worth knowing for future sessions debugging a similarly
+"disconnected" node on this bench: a GP26-class input wired only to a
+short breadboard jumper stub, with no battery or other source attached,
+apparently settles to a low, repeatable value here rather than picking up
+ambient EMI — don't assume a small nonzero-but-stable reading on a
+nominally floating pin proves an unintended connection exists; on this
+bench it doesn't.

@@ -120,6 +120,8 @@ rest plausibly ordinary battery sag under the ~150 mA this load draws.
 There's no multimeter on this bench, but the Pico can substitute: with
 ARMED off, temporarily move the GP26/GND jumpers straight onto the battery
 holder's two leads (bypassing the fuse and resistor entirely) and read the
-open-circuit voltage directly — close to 1.5V confirms alkaline, close to
-1.2–1.3V means it's NiMH (or a partly-discharged cell), which explains a
-sub-1.4V resting reading on its own, independent of any wiring fault.
+open-circuit voltage directly — 1.5–1.65V confirms alkaline (a fresh cell
+with nothing loading it commonly rests a bit above the 1.5V nominal, so a
+reading like 1.6V here isn't a fault), close to 1.2–1.3V means it's NiMH
+(or a partly-discharged cell), which explains a sub-1.4V resting reading on
+its own, independent of any wiring fault.

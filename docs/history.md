@@ -3440,3 +3440,10 @@ Want me to walk through that test with you, or do you want to try it and report 
 **Summary for you**: waiting longer won't trip the fuse if current is below its threshold. Your steady ~1.09V reading (no chatter at all, unlike prior runs on this bench) points at low loop current --- likely a combination of the already-suspected battery chemistry issue plus your second power switch sitting in the actual current path adding its own contact resistance. Run the quickstart.md diagnostic (probe leads straight on the battery leads, bypassing everything else) to see the true open-circuit voltage, and let me know what you get --- I can add the confirmed answer back into the kb entry once you have it.
 <!-- ------ -->
 ---
+**Bottom line: your battery is fine, your wiring is fine.** The 1.6V reading confirms fresh alkaline --- nothing to fix there. The mystery that's still open is why the *full loop* (with your extra power switch) reads only ~1.09V instead of the ~1.5V that battery should produce under that load; that now points at your added switch's contact resistance rather than the battery.
+
+**Next step, if you want to chase it down:** with the battery back in and both switches in their normal test position, temporarily jumper straight across your power switch's two terminals (bypass it, not the fuse/resistor) and see if the reading jumps up. If it does, that switch is your answer.
+
+Updated `quickstart.md` (the 1.5V→1.5--1.65V range) and logged the full diagnostic in `lab/docs/kb/repo_docs_conventions.md` for future reference.
+<!-- ------ -->
+---
