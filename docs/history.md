@@ -3482,3 +3482,21 @@ That slow climb-then-plateau is the same shape seen in earlier sessions and refl
 I logged the full reasoning in [lab/docs/kb/repo\_docs\_conventions.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/kb/repo_docs_conventions.md) and updated the bench-tested row in [lab/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/README.md) to reflect the rewire and that the short test is still outstanding.
 <!-- ------ -->
 ---
+The docs are stale, not wrong for what they described --- but you're right that they don't cover what's on your bench now.
+
+**Why history.md:3480 called the earlier change "not a real short":** that entry (and kb:1013--1014) describes commit `a8de156`, which moved the fuse straight onto the power rail but explicitly left the 10Ω resistor in place. That commit's `breadboard.jpg` is still the one in the repo --- nothing since then has been committed. So neither doc is misreading the photo; they're accurately describing a state that predates the resistor's removal, which per your message just happened on the bench and hasn't been captured anywhere yet.
+
+**Is `battery+ → fuse → battery-` a real short?** Yes --- and it's actually a *more* aggressive short than the "deliberate short" test in `quickstart.md` ever calls for. That test bridges the resistor's two rows with a jumper while the fuse is still upstream, which leaves current limited only by (fuse cold-resistance + battery internal resistance + ~0Ω jumper). That is exactly your current permanent wiring. There's no longer any state this circuit can be in that *isn't* that short --- cold reading and short are now the same thing.
+
+**Is that enough current to blow an LED / trip the fuse?** Per the SPICE model, `Rfuse1_cold = 0.5Ω`. A fresh AA alkaline's internal resistance is roughly 0.1--0.3Ω. That puts loop current around 1.5V / ~0.7Ω ≈ **2A** --- about 40× the RXEF005's 50mA hold rating, and yes, wildly more than the ~15--20mA an LED wants. A bare AA cell across an LED with no resistor is a textbook fast way to kill one. So the fuse should trip near-instantly here, faster than the marginal "150mA, 3x overload, may take a few seconds" case documented for the resistor-loaded jig.
+
+**So if it isn't tripping, the likely explanation isn't "the fuse can't be tripped by an AA" --- it's that the jig can no longer *tell* you.** With the resistor gone, GP26's probe node and the GND node are the same physical node (both are just "the far leg of the fuse," wired straight to battery-). That node reads ~0V by definition whether the fuse is intact or tripped --- there's no longer a divider for the ADC to see across. `main.py`'s `LOW_VOLTAGE = 0.5` threshold would read that as a permanent trip state regardless of what the fuse is actually doing. The 10Ω resistor wasn't just a load in this design --- it's what creates the tap point the voltmeter depends on.
+
+Two things I'd want before going further:
+
+1.  What is `main.py` actually printing right now on this wiring --- flatlined near 0V, or something else?
+2.  If you want to test "does this fuse survive/trip a dead short," a resistor needs to go back in *somewhere* for the Pico to report it --- or swap in an actual multimeter/continuity check across just the fuse instead of this jig, since the jig's trip detection is built around that divider.
+
+I'll log this (the "removing the resistor breaks trip detection, not just adds load" point) in `lab/docs/kb/repo_docs_conventions.md` for future sessions unless you tell me otherwise --- it's a non-obvious gotcha in the circuit design that isn't derivable just from the code.
+<!-- ------ -->
+---
