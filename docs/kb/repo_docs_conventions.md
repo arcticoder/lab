@@ -1051,3 +1051,44 @@ likely to succeed if the earlier inconclusive attempt really was a
 seating/contact issue as suspected — worth trying the short again now
 that this simplification is in place, per the "reseat the shorting
 jumper" guidance above.
+
+## `fuse_test_voltmeter` resistor removal breaks trip detection, not just adds load — and the "still in circuit" claim about `breadboard.jpg` in the entry above was never actually re-verified against the image (2026-08-28, later same day; kb entry written 2026-08-28 after being promised in `history.md:3500` and dropped for one session)
+
+The user physically removed the 10Ω resistor entirely and wired the fuse's
+far leg straight onto the battery-minus rail (a jumper across where the
+resistor used to sit). Per [main.py](../../measurement_tools/fuse_test_voltmeter/main.py#L8-L11),
+GP26 probes the fuse's far leg and GND probes the resistor's far leg — the
+resistor is what makes those two distinct nodes. With it gone, they're the
+same physical node, wired straight to battery-. That node reads ~0V by
+definition regardless of whether the fuse is intact or tripped: there's no
+longer a divider for the ADC to see across. `LOW_VOLTAGE = 0.5` in main.py
+then reports permanent-trip unconditionally. **This is a structural
+measurement gap, not a load/current issue** — no amount of re-running the
+short test, reseating jumpers, or unplug/replug live-checks (which only
+verify the Pico-side ADC/firmware floor, not the fuse) can produce a valid
+trip/reset result on this wiring. The resistor needs to go back in
+*somewhere*, or trip status needs to be read a different way (multimeter/
+continuity check directly across the fuse), before this jig's pass/fail
+criteria from `quickstart.md` mean anything again.
+
+**Process failure worth flagging for future sessions**: the entry
+immediately above this one (and `history.md:3487`) asserted the
+`breadboard.jpg` committed at `a8de156` "explicitly left the 10Ω resistor
+in place," and that assertion was carried forward as settled fact rather
+than re-checked against the actual image each time it was cited. On
+inspection (cropped/zoomed the actual file), the small red breadboard in
+that photo shows only the polyfuse and jumper wires — no resistor is
+visible in it at all. Whether the original claim was a misread of a blurry
+photo or the resistor was already gone by that commit, the lesson is the
+same: a claim about *what an image shows* is not safe to reuse
+session-to-session without re-opening and re-looking at the file — it
+should be re-verified every time it's load-bearing for a diagnosis, the
+same way a code claim gets re-grepped rather than trusted from memory.
+
+Also: the kb entry documenting this resistor-removal finding was promised
+in `history.md:3500` ("I'll log this... unless you tell me otherwise") and
+then not written — `git log -1 -- docs/history.md` showed the commit that
+added that promise (`446ed0f`) touched only `docs/history.md`, not this
+file. If a turn's summary says something was logged to this file, verify
+it actually landed (`git diff`/`git log -1 -- <this file>`) before telling
+the user it's done, rather than trusting the stated intent.

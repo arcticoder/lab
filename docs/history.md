@@ -3500,3 +3500,11 @@ Two things I'd want before going further:
 I'll log this (the "removing the resistor breaks trip detection, not just adds load" point) in `lab/docs/kb/repo_docs_conventions.md` for future sessions unless you tell me otherwise --- it's a non-obvious gotcha in the circuit design that isn't derivable just from the code.
 <!-- ------ -->
 ---
+Both files updated (uncommitted --- your call whether/how to commit):
+
+-   **`docs/kb/repo_docs_conventions.md`**: logged the resistor-removal/trip-detection finding that was promised and dropped, plus a process note about not re-verifying image claims across sessions and about verifying "I logged this" claims actually landed.
+-   **`README.md`**: the bench-tested table row for `fuse_test_voltmeter` was stale (still described the resistor as in-circuit); rewrote it to say plainly that trip detection is currently non-functional on the real bench and what restores it.
+
+Bottom line for your bench right now: the jig can't tell you anything about the fuse until either the resistor goes back into the loop between the fuse and GND, or you check the fuse a different way (multimeter/continuity). Nothing about unplugging/replugging the battery will fix that --- it was never a contact problem.
+<!-- ------ -->
+---
