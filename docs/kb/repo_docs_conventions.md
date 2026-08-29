@@ -1092,3 +1092,35 @@ added that promise (`446ed0f`) touched only `docs/history.md`, not this
 file. If a turn's summary says something was logged to this file, verify
 it actually landed (`git diff`/`git log -1 -- <this file>`) before telling
 the user it's done, rather than trusting the stated intent.
+
+## Don't offer "get a multimeter" as an alternative to restoring the sense resistor — it's a false dichotomy that made the user (rightly) furious (2026-08-28)
+
+`history.md:3498` and `:3508` phrased the fix as an either/or: "the resistor
+goes back into the loop... or you check the fuse a different way
+(multimeter/continuity check)." That framing is wrong and cost an entire
+session's worth of goodwill. There is no "different way" that's actually
+different — the resistor-divider *is* the Pico-based continuity/trip
+check; suggesting an external multimeter implies the Pico jig can't do
+this on its own, which is false. The only real fix was ever "put the
+resistor back," full stop. Never present hardware the user doesn't have
+(multimeter, continuity tester) as an option when the existing jig, once
+correctly wired, already answers the question — that's asking them to buy
+a tool to route around a bug in advice, not in the circuit.
+
+**Also clarified this session**: bridging the resistor's two rows with a
+spare jumper (the deliberate-short step `quickstart.md`/`breadboard.md`
+already documented) already forces ~2A through just the fuse's cold
+resistance — a harder short than the passive ~150mA load, and *more*
+aggressive than what removing the resistor outright was ever trying to
+achieve. So there was never a tradeoff between "sensitive" and
+"aggressive" — bridging gives both, removal gives neither (it just reads
+0V forever, tripped or not). `quickstart.md` and `breadboard.md` now carry
+an explicit "resistor is the sensor, not a load — bridge it for a harder
+short, never remove it" callout up top so this doesn't need rediscovering
+a fourth time.
+
+If a future session finds the resistor missing from this jig again: that
+is the whole bug, restoring it is the whole fix, `main.py` needs no
+changes, and no additional tool is needed to answer "is the fuse
+tripping" — say so plainly instead of hedging toward external test
+equipment.

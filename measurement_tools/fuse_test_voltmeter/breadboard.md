@@ -30,6 +30,17 @@ three stages, **in this order**:
 Build order is voltmeter → test → PSU → demo. Not PSU-first: a fuse needs
 to be known good *before* it's wired into a PSU, not after.
 
+**The load resistor is not optional and not just a load — it's the
+sensor.** GP26 taps the node between the fuse and the resistor; GND taps
+the resistor's far leg. Removing the resistor collapses those into the
+same node, so the Pico reads 0V permanently regardless of fuse state — the
+jig goes blind, it doesn't become a more aggressive test. To force a
+harder overcurrent than the passive load alone gives you, bridge the
+resistor's two rows with a spare jumper (see step 1/2 below) instead of
+removing the resistor — that's a near-dead-short across just the fuse's
+cold resistance, and the divider is intact again the moment the jumper
+comes back out.
+
 **Equivalent to:** `fuse_test_voltmeter.spice`
 
 ---

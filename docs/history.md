@@ -3508,3 +3508,24 @@ Both files updated (uncommitted --- your call whether/how to commit):
 Bottom line for your bench right now: the jig can't tell you anything about the fuse until either the resistor goes back into the loop between the fuse and GND, or you check the fuse a different way (multimeter/continuity). Nothing about unplugging/replugging the battery will fix that --- it was never a contact problem.
 <!-- ------ -->
 ---
+This whole exchange from history.md is one long circle: the resistor *is* the Pico-based fuse tester --- GP26 taps the node between the fuse and the resistor, GND taps the resistor's far leg. That divider is what lets the Pico tell tripped (~0V) from intact (~1.4V). It was never a "multimeter" ask, and it was never a disposable load --- someone pulled it off the board mid-session chasing a harder short, and that's what destroyed the tester, not a missing tool.
+
+**You don't need new code.** `main.py` already does exactly "tell me if the fuse tripped" --- correctly --- the instant the resistor is back in the loop. Concretely, on your bench right now (per the last logged state: fuse's far leg wired straight to battery-, resistor set aside):
+
+1.  Slide the arm switch to **DISARMED**, pull the battery.
+2.  Find the wire currently running from the fuse's far leg straight to the battery-/GND rail --- that direct connection is what's shorting your sense node to ground and making every reading 0V regardless of fuse state. Remove it.
+3.  Take one of your 10Ω resistors: one leg into the same row as the fuse's far leg (this recreates the **probe node**), the other leg into a row wired to battery-/GND.
+4.  Confirm Pico GP26 is jumpered to the probe node, Pico GND to the resistor's far leg.
+5.  Battery back in, slide to **ARMED**. You should see a steady ~1.4V.
+6.  For the actual trip test --- still no multimeter, just the jig: seat a spare jumper across the **resistor's own two rows** (bridging it, not removing it). That drives ~1.5V through just the fuse's cold resistance plus the battery's internal resistance --- around 2A, ~40x the fuse's 50mA rating, a harder short than passive loading ever gave you. Reading should collapse toward 0V and print `*** FUSE TRIPPED ***` within about a second.
+7.  Pull that bridging jumper, wait ~2 min, reading should climb back to ~1.4V and print `*** fuse reset ***`.
+
+Step 6 is the aggressive short you were after --- it just never needed the resistor gone, only bridged during the test. Removing it outright doesn't make the short "more real," it just blinds the Pico.
+
+I'll harden the docs so this stops recurring.
+
+Updated `quickstart.md` and `breadboard.md` with hard "resistor is the sensor, not a load" callouts, and closed the loop in `lab/docs/kb/repo_docs_conventions.md` --- flagging the "get a multimeter" suggestion from earlier in the thread as a false dichotomy that shouldn't recur.
+
+No code changes needed --- `main.py` already does exactly "tell me if the fuse tripped" correctly. Restore the resistor per the 7 steps above, then use the jumper-bridge short (already in quickstart.md) for a decisive trip test --- that's harder than the passive load and doesn't need the resistor gone.
+<!-- ------ -->
+---

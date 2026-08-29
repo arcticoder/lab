@@ -27,6 +27,18 @@ path. A second, separate switch tells the Pico "I'm intentionally
 connecting/disconnecting the battery right now" so it doesn't mistake that
 for a real fuse trip.
 
+**The resistor is not a "load" you can pull out for a harder test — it's
+the sensor.** GP26 taps the node *between* the fuse and the resistor; GND
+taps the resistor's far leg. That divider is the only reason the Pico can
+tell tripped (~0V) from intact (~1.4V) apart. Wire the fuse's far leg
+straight to GND with the resistor removed and every reading is 0V forever,
+tripped or not — the jig goes blind, it doesn't get more sensitive. If you
+want a harder short than the passive ~150mA load, don't remove the
+resistor: bridge its two rows with a spare jumper instead (see "What you
+should see" below) — that's already a near-dead-short across just the
+fuse's cold resistance, around 2A, and the divider is intact again the
+instant you pull the jumper back out.
+
 ## Wire it
 
 1. Battery holder's **+** lead → one leg of the fuse.
