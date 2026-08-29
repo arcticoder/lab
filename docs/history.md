@@ -3411,3 +3411,15 @@ Everything checks out syntactically. Here's a summary of what changed and my ans
 I also logged this reasoning, plus the fact that two fuses now show the same low-baseline pattern (which weakens an earlier session's "still-warm PTC" hypothesis for the same symptom), in lab/docs/kb/repo_docs_conventions.md for future reference — it's flagged as unconfirmed until you actually run that open-circuit check.
 <!-- ------ -->
 ---
+Fixed the actual bug: the switch's outer pins were both wired to power rails (pin 1→GND, pin 3→3V3), even though the switch only ever bridges the common pin to *one* outer pin at a time --- so the second rail-wire was doing nothing but sitting one mechanical fault away from shorting 3V3 to GND, for no benefit.
+
+**Changes:**
+
+-   [main.py](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/measurement_tools/fuse_test_voltmeter/main.py) --- pin 3 no longer wired to GND; `ARM_SWITCH` now uses `Pin(15, Pin.IN, Pin.PULL_DOWN)` so the now-unconnected throw still reads a defined LOW (DISARMED) instead of floating.
+-   [quickstart.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/measurement_tools/fuse_test_voltmeter/quickstart.md) and [breadboard.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/measurement_tools/fuse_test_voltmeter/breadboard.md) --- pin 3 now "leave unconnected," jumper count for the switch dropped 3→2 (5→4 total).
+-   [pico/docs/inventory.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/pico/docs/inventory.md) Slide Switch row updated to match.
+-   [lab/docs/kb/repo\_docs\_conventions.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/docs/kb/repo_docs_conventions.md) --- added an entry explaining the correction and superseding the old "both throws driven" rationale, plus a general lesson: an SPDT throw + the target GPIO's internal pull is sufficient for a defined level in both positions; only wire a second rail if the pin needs an actively-driven level a pull can't provide.
+
+README.md and history.md needed no changes (README only points at the other docs; history.md is append-only, not hand-edited per repo convention).
+<!-- ------ -->
+---

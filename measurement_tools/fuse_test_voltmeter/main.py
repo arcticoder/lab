@@ -10,9 +10,11 @@ Hardware
                  load -> GND)
   GND         — probe lead, clipped to the load resistor's ground-side leg
   GP25        — onboard LED, lit while the fuse under test reads tripped
-  GP15        — arm switch common (SPDT slide switch): one throw wired to a
-                 Pico GND pin, the other to 3V3 (OUT). HIGH (3V3 throw) =
-                 ARMED, LOW (GND throw) = DISARMED.
+  GP15        — arm switch common (SPDT slide switch), internal pull-down
+                 enabled: one throw wired to 3V3 (OUT), the other throw left
+                 unconnected. HIGH (3V3 throw) = ARMED, LOW (pulled down,
+                 unconnected throw) = DISARMED. Only one throw is ever wired
+                 to a rail, so the switch can never bridge 3V3 to GND.
 
 What this measures
 -------------------
@@ -41,7 +43,9 @@ import time
 
 ADC_PROBE  = ADC(Pin(26))          # GP26 / ADC0, across the load resistor
 LED        = Pin(25, Pin.OUT)      # onboard LED, mirrors trip state
-ARM_SWITCH = Pin(15, Pin.IN)       # SPDT common: HIGH (3V3 throw) = armed
+ARM_SWITCH = Pin(15, Pin.IN, Pin.PULL_DOWN)  # SPDT common: HIGH (3V3 throw)
+                                    # = armed, LOW (unconnected throw, pulled
+                                    # down) = disarmed
 
 # ---------------------------------------------------------------------------
 # Constants

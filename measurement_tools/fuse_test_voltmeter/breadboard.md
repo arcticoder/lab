@@ -42,7 +42,7 @@ to be known good *before* it's wired into a PSU, not after.
 |-----------|-------|----------|
 | Raspberry Pi Pico | RP2040 | 1 |
 | Micro USB cable | data-capable, to PC | 1 |
-| Dupont M-M jumper | 22cm | 5 (2 probe, 3 arm switch) |
+| Dupont M-M jumper | 22cm | 4 (2 probe, 2 arm switch) |
 | Slide switch (SPDT) | — | 1 — arm/disarm signal to GP15, see "Wire the arm switch" below |
 | AA battery holder (single-cell) | — | 1 (RXEF005 jig, 1.5V) or 2 in series (RXEF050 jig, 3.0V) |
 | AA battery | fresh | 1–2, matching holder count above |
@@ -84,16 +84,21 @@ connection `main.py` prints to — no separate power source for the Pico.
 
 ### 0b. Wire the arm switch
 
-`main.py` reads GP15 as a digital input with no pull resistor, so it must
-be wired before any run of the script — an unconnected GP15 floats and
-produces unpredictable ARMED/DISARMED readings. Wire this once; it's
-reused across every stage below and isn't part of the battery power path.
+`main.py` reads GP15 as a digital input with its internal pull-down
+enabled, so only one switch throw needs to be wired to a rail — the other
+throw is left unconnected on purpose. Wiring both outer pins (one to GND,
+one to 3V3) would mean every slide of the switch connects GP15 straight to
+one rail while the other rail sits one throw away for no reason; this
+switch only ever bridges the common pin to a single outer pin at a time,
+so there's no scenario where that spare GND wire does anything useful.
+Wire this once; it's reused across every stage below and isn't part of the
+battery power path.
 
 | From | To | Wire |
 |------|----|------|
 | Switch pin 2 (middle/common) | Pico GP15 | Dupont M-M jumper |
-| Switch pin 1 | Pico GND (any pin) | Dupont M-M jumper |
-| Switch pin 3 | Pico 3V3(OUT) | Dupont M-M jumper |
+| Switch pin 1 | Pico 3V3(OUT) | Dupont M-M jumper |
+| Switch pin 3 | leave unconnected | — |
 
 Run `mpremote run main.py` and slide the switch — one direction prints
 `-- ARMED --`, the other `-- DISARMED --`. Note which physical direction

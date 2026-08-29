@@ -14,7 +14,7 @@ covers the general/batch procedure this one doesn't.)
 - 1× AA battery (fresh)
 - 1× 10 Ω resistor, 1/4 W (any one from the kit's resistor drawer)
 - 1× slide switch (SPDT) — arm/disarm signal, see step 6 below
-- 5× male-male jumper wires (2 for the probe, 3 for the switch)
+- 4× male-male jumper wires (2 for the probe, 2 for the switch)
 - 1× spare male-male jumper wire (or a bent solid-core jumper), kept aside
   for shorting the resistor later — don't wire this one in yet
 - Your 50 mA polyfuse
@@ -39,9 +39,14 @@ for a real fuse trip.
 6. Arm switch — this is a separate signal path, not part of the battery
    loop above:
    - Switch pin 2 (the middle/common pin) → Pico **GP15**.
-   - Switch pin 1 → a Pico **GND** pin (any one, doesn't need to be the
-     same physical pin as step 5).
-   - Switch pin 3 → Pico **3V3(OUT)**.
+   - Switch pin 1 → Pico **3V3(OUT)**.
+   - Switch pin 3 → leave unconnected. Don't wire it to GND — the switch
+     only ever bridges pin 2 to *one* outer pin at a time, so wiring both
+     outer pins to GND and 3V3 would let a single slide direction connect
+     GP15 to one rail while leaving the other rail dangling one pin away
+     for no reason; `main.py` uses GP15's internal pull-down to read a
+     defined LOW when pin 3 is selected, so the unconnected pin still gives
+     a clean DISARMED reading, not a floating one.
 
 That's it — two parts in series across the battery, Pico watching the
 midpoint, plus the arm switch off to the side. Leave the battery out of

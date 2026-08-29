@@ -761,6 +761,43 @@ left in the wrong position. Both `breadboard.md` and `quickstart.md` now
 call out sliding to ARMED once the circuit has settled, before the short
 step, but there's no code-side safeguard against forgetting it.
 
+## `fuse_test_voltmeter`'s arm switch: wiring both outer pins to GND *and* 3V3 was an unnecessary design — corrected to one throw + internal pull-down (2026-08-28)
+
+**Supersedes the wiring rationale in the entry above** ("common (pin 2) to
+GP15, one throw (pin 1) to GND, the other throw (pin 3) to 3V3(OUT)... no
+pull resistor needed"). The user caught that this design permanently wires
+both power rails onto the switch at once — the switch's own mechanism
+never bridges both outer pins to each other (it only ever connects the
+common pin to *one* outer pin at a time, per the `switch_pin_identifier`
+entry above confirming it's a standard SPDT-style part), so GND and 3V3
+are never directly shorted through it in steady state. But wiring GND to
+one outer pin bought nothing: the only two states that ever mattered were
+"common connected to 3V3" and "common connected to *not* 3V3," and a
+second rail sitting one throw away serves no purpose except being one
+mechanical fault (a bent contact, a worn/make-before-break slider bridging
+both outer pins momentarily during the slide) away from a real rail-to-rail
+short. There's also no benefit to burning a GND pin on a signal that
+doesn't need it.
+
+Fixed by dropping the GND wire entirely: pin 2 (common) → GP15, pin 1 →
+3V3(OUT), pin 3 → left unconnected. `main.py` now configures
+`Pin(15, Pin.IN, Pin.PULL_DOWN)` instead of the bare `Pin(15, Pin.IN)` from
+the previous entry, so the unconnected throw still reads a defined LOW
+(DISARMED) via the Pico's internal pull-down rather than floating — this
+preserves the original goal (never let GP15 float, see the
+`switch_pin_identifier` GND-reference entry above) without ever wiring a
+second rail onto the switch. Updated `main.py`, `quickstart.md`,
+`breadboard.md`, and `pico/docs/inventory.md`'s Slide Switch row to match;
+jumper count for the arm switch dropped from 3 to 2 accordingly.
+
+General lesson for any future switch-to-GPIO wiring in this repo: a single
+SPDT throw + the target GPIO's internal pull resistor is sufficient to get
+a defined level in both switch positions. Only wire a second rail onto a
+switch's other throw if the pin's role genuinely needs an actively-driven
+(not just pulled) level in both positions — e.g. driving a load that pulls
+more current than an internal pull resistor can source/sink, not a plain
+digital input like this one.
+
 ## `fuse_test_voltmeter`'s resistor-shorting instruction (hand-touching two bare leads) is unreliable — switched to a jumper seated in the breadboard rows instead (2026-08-28)
 
 The original short-test instruction in `quickstart.md`/`breadboard.md`
