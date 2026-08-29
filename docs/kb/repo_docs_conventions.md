@@ -904,3 +904,53 @@ apparently settles to a low, repeatable value here rather than picking up
 ambient EMI — don't assume a small nonzero-but-stable reading on a
 nominally floating pin proves an unintended connection exists; on this
 bench it doesn't.
+
+## `fuse_test_voltmeter` in-loop reading recovered to ~1.497V — the ~1.09V mystery from the entries above looks resolved (2026-08-28)
+
+A later run (`mpremote run main.py`, full loop: battery → fuse → 10Ω
+resistor, GP15 arm switch) showed a steady **~1.496–1.499V** in both the
+`-- DISARMED --` and `-- ARMED --` phases, with the arm switch toggling
+cleanly (both banner lines printed, unlike some earlier sessions where
+`-- ARMED --` never appeared at all). No short was applied in this run,
+so this is the cold/unloaded-by-short baseline only — the deliberate-short
+trip/reset check from `quickstart.md` was not exercised.
+
+This number lines up with the open-circuit finding two entries above: that
+same battery rests at ~1.6V open-circuit (not the 1.5V nominal the SPICE
+model assumes), so the loaded prediction scales up from ~1.43V to roughly
+1.6/1.5 × 1.43 ≈ **1.53V** — ~1.497V observed is a close match, well
+within plausible cold-fuse/contact-resistance variance. That closes the
+gap that the "user's own power switch" entry above left open as the
+leading unresolved suspect for the earlier ~1.09V reading.
+
+The photo (`breadboard.jpg`) taken alongside this run shows only one
+switch in the whole build — a small slide switch on the main breadboard
+consistent with the 2-wire GP15 arm switch — with no second switch
+visible in series with the fuse/resistor loop on the small red
+breadboard. So the earlier "extra, undocumented power switch wired in
+series with the fuse" (see the entry several above this one, describing
+the breadboard photo where it was first spotted) appears to have been
+removed from the physical build at some point between that session and
+this one; nothing in the conversation log narrates the removal
+explicitly, so treat this as inferred from the photo, not confirmed by
+the user's own words. If a future session sees the ~1.09V-class low
+reading recur, re-check for a stray switch or connector in the power
+path before re-opening the battery-chemistry line of investigation, since
+that one is now fairly well exhausted (open-circuit ~1.6V confirmed
+alkaline twice).
+
+Also re-confirmed live (`mpremote exec`, battery physically unplugged,
+slide switch left "on"/armed): GP26 read a steady ~0.014–0.017V across 10
+samples — the same low, repeatable floor documented in the entry above,
+not new information, just reproduced on a later date with a different
+mpremote invocation style (inline `exec` script vs. the connect+exec form
+used previously).
+
+**Still open:** the deliberate-short trip/reset test from `quickstart.md`
+(bridge the resistor's two rows, expect `*** FUSE TRIPPED ***`, wait ~2
+min, expect `*** fuse reset ***`) has not been run since the reading
+recovered to ~1.497V. Until that passes, `fuse_test_voltmeter` should be
+described as "wiring/voltage confirmed" rather than "fully passes its own
+pass/fail criteria" — see `lab/README.md`'s built-&-bench-tested table,
+which was updated 2026-08-28 to say exactly that rather than claiming a
+full pass.

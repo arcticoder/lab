@@ -3447,3 +3447,15 @@ Want me to walk through that test with you, or do you want to try it and report 
 Updated `quickstart.md` (the 1.5V→1.5--1.65V range) and logged the full diagnostic in `lab/docs/kb/repo_docs_conventions.md` for future reference.
 <!-- ------ -->
 ---
+I checked the live board --- with the battery unplugged and the slide switch on (armed), GP26 read a steady ~0.014--0.017V, matching the same floor behavior seen in earlier sessions. Nothing anomalous.
+
+More importantly: your new log's ~1.497V steady reading in both DISARMED and ARMED (with the battery in-circuit) resolves the earlier ~1.09V mystery --- it lines up almost exactly with the SPICE prediction once scaled to this battery's actual ~1.6V open-circuit voltage (rather than the 1.5V nominal assumed originally). The breadboard photo also shows only one switch now (the GP15 arm switch); the extra undocumented power switch that was flagged a few sessions back as the leading suspect isn't visible in this build anymore.
+
+I've updated:
+
+-   [lab/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/README.md) --- moved `fuse_test_voltmeter` from "designed, not yet built" into "built & bench-tested," noting the voltage/arm-switch confirmation but flagging the trip/reset short test as still pending.
+-   [lab/docs/kb/repo\_docs\_conventions.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/kb/repo_docs_conventions.md) --- logged the resolution for future sessions, including that the switch removal is inferred from the photo, not something you stated explicitly.
+
+**Next step**: you haven't run the deliberate-short test yet in this round (bridge the resistor's two breadboard rows with a spare jumper, expect `*** FUSE TRIPPED ***`, then ~2 min later `*** fuse reset ***`). That's the last thing needed to call this fuse a pass per `quickstart.md`.
+<!-- ------ -->
+---

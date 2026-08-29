@@ -111,6 +111,7 @@ as the record for rebuilding it later.
 | `power_supplies/psu_pico_rail/` | Pico's own onboard 3.3V rail, ~100mA budget | interim bootstrap PSU | 2026-08 |
 | `signal_conditioning/voltage_reference_lm358/` | LM358 unity-gain buffer holds a resistor-divider reference steady under load | tier1 `REF` | 2026-08-27 — loaded reading within 0.23% of unloaded (±2% tolerance) |
 | `measurement_tools/cd4066_switch_tester/` | Pico-driven bring-up jig for one CD4066B analog switch — confirms it passes/blocks before trusting it in a later design | component validation (ahead of tier9 `MUX`) | 2026-08-28 — switch 1 (I/O A pin 1 / I/O B pin 2 / control pin 13) PASS on all 10 CD4066BCN units; switches 2–4 per chip not yet individually tested |
+| `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe across a battery→fuse→resistor loop; arm switch (GP15) gates trip/reset detection so battery connect/disconnect isn't misread as a trip | bootstrap / concurrent measurement tool | 2026-08-28 — arm switch toggles ARMED/DISARMED correctly, loaded reading steady ~1.497V (matches SPICE prediction once scaled to this cell's actual ~1.6V open-circuit voltage); deliberate-short trip/reset pass/fail check from `quickstart.md` not yet run |
 
 ---
 
@@ -126,14 +127,15 @@ sequence this drives.
 
 | Folder | Circuit | Tier |
 |--------|---------|------|
-| `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe, streams voltage over USB; self-check, then bench-tests polyfuses before any of them go into a PSU | bootstrap / concurrent measurement tool (build first) |
 | `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap, waiting on wire strippers) |
 | `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (waiting on wire strippers) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
 
 Each of these has a SPICE netlist, a generated schematic, a breadboard
 wiring guide, and a `smoke_test.py`, but none have been physically tested
-on with real components yet. Everything else in
+on with real components yet — they're waiting on `fuse_test_voltmeter`
+(now built & bench-tested above) to finish sorting a good polyfuse first.
+Everything else in
 `docs/general_purpose_circuit_dependency.md` /
 `docs/spacetime_circuits_dependency.md` (safety monitoring, most of tiers
 1–9) hasn't been worked out to netlist stage at all — folders for those
@@ -169,7 +171,7 @@ will show up here as they get one.
 
 ```
 measurement_tools/
-    fuse_test_voltmeter/     Pico ADC voltmeter, validates polyfuses via USB (designed, not built)
+    fuse_test_voltmeter/     Pico ADC voltmeter, validates polyfuses via USB (built & bench-tested; trip/reset short test still pending)
         fuse_test_voltmeter.spice
         schematic.png         (generated, gitignored)
         breadboard.md
