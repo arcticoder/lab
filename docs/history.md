@@ -3437,3 +3437,6 @@ Rather than guess further from a blurry photo, the fastest way to isolate this: 
 Want me to walk through that test with you, or do you want to try it and report back what you see?
 <!-- ------ -->
 ---
+**Summary for you**: waiting longer won't trip the fuse if current is below its threshold. Your steady ~1.09V reading (no chatter at all, unlike prior runs on this bench) points at low loop current --- likely a combination of the already-suspected battery chemistry issue plus your second power switch sitting in the actual current path adding its own contact resistance. Run the quickstart.md diagnostic (probe leads straight on the battery leads, bypassing everything else) to see the true open-circuit voltage, and let me know what you get --- I can add the confirmed answer back into the kb entry once you have it.
+<!-- ------ -->
+---

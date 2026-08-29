@@ -815,3 +815,41 @@ technique in place of hand-touching. If a future circuit here has a
 similar "deliberately short two nodes by hand" step, prefer the
 same jumper-in-breadboard-rows approach over hand contact from the start
 rather than waiting for a reliability complaint.
+
+## `fuse_test_voltmeter` bench setup grew a second slide switch *in the battery power path itself* — a new candidate confound distinct from the still-open battery-chemistry hypothesis (2026-08-28)
+
+Neither `quickstart.md`/`breadboard.md` nor the two "sub-1.4V resting
+voltage" kb entries above account for this: the user's physical bench now
+has **two** slide switches, not one. GP15's arm/disarm switch is still
+signal-only as designed (confirmed live via `mpremote connect /dev/ttyACM0
+exec` — reads 0 with battery out, matches the physical position). The
+second switch is the user's own addition, wired in series in the actual
+battery → fuse → resistor loop, added deliberately so power doesn't reach
+the circuit the instant the battery is seated (fine-grained control over
+when the test starts). This is exactly the kind of thing the arm-switch
+design rationale two entries above warned against doing *to that switch*
+("putting it in the power path would have added the switch's own contact
+resistance to the very loop whose current/voltage this jig exists to
+characterize") — except here it's a second, separate switch the user
+added on their own initiative, so that warning never reached them.
+
+A run with both switches "on" and current flowing showed a steady,
+non-chattering ~1.09V→1.085V resting reading, no trip/reset events at all
+over ~26s. That's notably *more* stable/lower-current-looking than the
+two prior logged runs (which at least self-tripped and chattered near
+threshold) — consistent with additional series resistance (this switch's
+contacts, on top of whatever the battery-chemistry hypothesis already
+predicts) pushing the loop current further below the fuse's trip
+threshold, not just closer to it.
+
+Not yet confirmed which factor dominates (recommended next step, given to
+the user: with ARMED off, move the GP26/GND probe jumpers directly onto
+the battery holder's leads — bypassing fuse, resistor, *and* this power
+switch — and read open-circuit voltage; this isolates battery chemistry
+from switch/wiring resistance, and was already the standing diagnostic
+from the entry above, still applicable here). If a future session gets
+that result: record it here, and if the power switch turns out to be a
+meaningful contributor, consider whether `quickstart.md`/`breadboard.md`
+should explicitly warn against putting any user-added manual power switch
+in-loop (same rationale as the existing arm-switch design note) rather
+than only implicitly relying on the reader to generalize it themselves.
