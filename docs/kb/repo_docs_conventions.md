@@ -1124,3 +1124,48 @@ is the whole bug, restoring it is the whole fix, `main.py` needs no
 changes, and no additional tool is needed to answer "is the fuse
 tripping" — say so plainly instead of hedging toward external test
 equipment.
+
+## `fuse_test_voltmeter` first real TRIPPED→reset cycles with the resistor genuinely restored: recovery is fast (~15–25s) and plateaus below the confirmed baseline, not instant and not necessarily a fail yet (2026-08-28, later same day)
+
+With the resistor back in place per the entry above and a shorting jumper
+seated alongside it (bridging its two rows, per `quickstart.md`), the user
+got two genuine `*** FUSE TRIPPED ***` → `*** fuse reset ***` cycles in one
+`mpremote run main.py` log — the first time this jig has logged an actual
+short-then-recover sequence rather than a false negative (wrong rows, see
+two entries above) or a structural gap (resistor missing, see entry
+above). Both cycles: reading held at ~0.016–0.02V while the jumper was
+seated (indistinguishable from this jig's established no-source floor,
+~0.014–0.018V — expected, since bridging the resistor pulls GP26 toward
+GND directly regardless of the fuse's own state, per the "resistor is the
+sensor" callout in `quickstart.md`), then on jumper removal `*** fuse
+reset ***` printed immediately followed by a real, sample-by-sample climb
+— 0.927V→1.096V over ~100 samples and 1.053V→~1.098V over ~90 samples
+(both ~0.2s/sample) — not an instant square jump. The user's framing
+("miracle superfuse that heals itself instantly") is the second time a
+fast recovery has read as suspicious on this bench; the entries above
+already cover cases where no short actually landed at all, this is the
+first case with a real short and a real (if fast) recovery.
+
+Two things distinguish this from a full documented trip-and-latch: the
+recovery took ~15–25s, not the ~2 minute figure `quickstart.md`/`README.md`
+give for a genuine latch-and-cool; and both plateaus (~1.096V, ~1.098V)
+sit noticeably below this jig's own confirmed-good baseline with the same
+alkaline battery (~1.497V, see the "resolved" entry above; ~1.4–1.5V
+observed across three separate cold-baseline runs that same day). Working
+read: the fuse warmed under the ~2A short enough to cross `LOW_VOLTAGE =
+0.5` but didn't fully latch into a high-Z open state — a partial/marginal
+trip, not the clean full trip the ~2 minute recovery figure assumes.
+Not yet isolated whether the sub-baseline plateau is the fuse still
+partway through cooling (would keep climbing given more idle time) or a
+separate marginal-contact issue independent of the fuse (this bench has
+hit stray series resistance before — see the "user's own power switch"
+entry above, later resolved as unrelated). Recommended next step: after
+the next reset, leave the circuit untouched for the full ~2 minutes and
+see whether the reading keeps climbing toward ~1.4–1.5V (fuse still
+recovering, consistent with a genuine-if-slow trip) or flatlines near
+~1.09V (points to wiring/contact resistance, not the fuse). If a future
+session gets that result, record it here — this determines whether
+`quickstart.md`'s "if a fuse won't hold a trip for the full ~2 minutes,
+that's a fail" criterion actually applies to this unit yet, or whether the
+fast-recovery pattern needs to be re-tested with a wiring confound ruled
+out first.

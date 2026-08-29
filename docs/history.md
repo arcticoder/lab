@@ -3529,3 +3529,6 @@ Updated `quickstart.md` and `breadboard.md` with hard "resistor is the sensor, n
 No code changes needed --- `main.py` already does exactly "tell me if the fuse tripped" correctly. Restore the resistor per the 7 steps above, then use the jumper-bridge short (already in quickstart.md) for a decisive trip test --- that's harder than the passive load and doesn't need the resistor gone.
 <!-- ------ -->
 ---
+Logged this cycle to `docs/kb/repo_docs_conventions.md` for future sessions on this circuit. Short version for you: let the next reset sit untouched for the full ~2 minutes and see if it keeps climbing toward ~1.4--1.5V or flatlines around ~1.09V --- that tells you whether this is a genuinely slow-but-real trip or a separate wiring gremlin before you call the fuse a fail.
+<!-- ------ -->
+---
