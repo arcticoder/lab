@@ -1003,3 +1003,51 @@ broken conductor) over the breadboard rows. Until this passes,
 `fuse_test_voltmeter`'s pass/fail criteria per its own `quickstart.md`
 remain unmet — don't upgrade the `lab/README.md` bench-tested note past
 "wiring/voltage confirmed" on the basis of this run.
+
+## `fuse_test_voltmeter` rewire (fuse moved straight onto the power rail, extra jumper/power wire removed) — baseline re-confirmed, short test still not attempted (2026-08-28, later same day)
+
+User removed the jumper and the additional power wire that had been
+routing to the fuse and instead seated the fuse's leg directly in the
+power rail (`breadboard.jpg` updated to match). This is a wiring
+simplification, not the shorting-jumper fix recommended in the entry
+immediately above — no short was applied in this run either; the
+resistor was still in circuit, untouched.
+
+Sequence: DISARMED + battery out → battery in → `mpremote run main.py` →
+switch to ARMED partway through. Logged output: `-- DISARMED --` settled
+around 1.33–1.34V, dipped to ~0.95–1.2V for a handful of samples right at
+the switch-flip transition (consistent with physical handling/contact
+noise from flipping the slide switch, not a new symptom), then
+`-- ARMED --` began at 0.954V and climbed smoothly over ~150 samples
+(~30s at the 0.2s sample interval) to a **~1.384–1.386V plateau**, still
+inching upward at the last logged samples. No `TRIPPED`/`reset` message
+printed anywhere in the log.
+
+This is the same slow-climb-then-plateau shape documented in the
+deliberate-short-attempt entry above (there it topped out ~1.401–1.404V)
+and is consistent with ordinary battery-settling behavior after
+insertion/handling, not a short and not a fault — see that entry's
+reasoning for why a real short would collapse the reading near-instantly
+instead. The ~1.384–1.386V plateau itself sits a bit below both the
+~1.497V "resolved" baseline and the ~1.401–1.404V unshorted-attempt
+plateau from the entries above; the spread across all three runs
+(1.36–1.50V) is within the contact-resistance/battery-settling variance
+already established for this jig, not evidence the rewire changed
+anything electrically.
+
+Also re-confirmed live (`mpremote exec` against `/dev/ttyACM0`, battery
+physically unplugged, arm switch left "on"): GP26 steady at
+**~0.016–0.018V** across 5 samples, matching the established no-source
+floor exactly — the Pico-side wiring/firmware is unaffected by the fuse
+rewire.
+
+**Still open, unchanged from the entry above**: the deliberate-short
+trip/reset test has still not been exercised on this build — this run
+didn't touch the resistor or attempt a bridge at all, it only confirmed
+the cold baseline survived the fuse-to-rail simplification. Moving the
+fuse directly onto the rail does remove one jumper's worth of contact
+resistance from the loop, which may make a subsequent short attempt more
+likely to succeed if the earlier inconclusive attempt really was a
+seating/contact issue as suspected — worth trying the short again now
+that this simplification is in place, per the "reseat the shorting
+jumper" guidance above.

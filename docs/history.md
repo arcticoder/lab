@@ -3471,3 +3471,14 @@ I also checked the board live just now (`mpremote` --- it's still on `/dev/ttyAC
 I've added a troubleshooting section to [quickstart.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/measurement_tools/fuse_test_voltmeter/quickstart.md) for this exact symptom, logged the full diagnostic reasoning in `lab/docs/kb/repo_docs_conventions.md` for future sessions, and updated the `lab/README.md` bench-tested table to reflect that the short test was attempted but inconclusive rather than not yet run.
 <!-- ------ -->
 ---
+I checked the live board and read the log --- here's what it shows.
+
+**Live check** (`mpremote exec`, battery unplugged, switch "on"): GP26 reads a steady ~0.016--0.018V, matching the established no-source floor from earlier sessions. Pico-side wiring/firmware is unaffected by the rewire.
+
+**Your log**: DISARMED settled ~1.33--1.34V, dipped to ~0.95--1.2V for a few samples right at the switch-flip (just contact noise from physically flipping the switch), then ARMED climbed smoothly from 0.954V up to a ~1.384--1.386V plateau over ~30s, still fine. No `TRIPPED`/`reset` message anywhere --- expected, since no short was applied in this run, only the fuse-to-rail rewiring.
+
+That slow climb-then-plateau is the same shape seen in earlier sessions and reflects ordinary battery settling, not a fault --- a real short collapses the reading almost instantly instead. So: **the rewire didn't break anything**, but this run was a baseline check, not the actual deliberate-short pass/fail test from quickstart.md --- that's still pending. Since removing that extra jumper/wire takes one contact point out of the loop, it's worth retrying the short now (bridge the resistor's two rows with a jumper) --- the earlier inconclusive short attempt was suspected to be a seating/contact issue, and this simplification may fix that.
+
+I logged the full reasoning in [lab/docs/kb/repo\_docs\_conventions.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/kb/repo_docs_conventions.md) and updated the bench-tested row in [lab/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/README.md) to reflect the rewire and that the short test is still outstanding.
+<!-- ------ -->
+---
