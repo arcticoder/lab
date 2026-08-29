@@ -954,3 +954,52 @@ described as "wiring/voltage confirmed" rather than "fully passes its own
 pass/fail criteria" — see `lab/README.md`'s built-&-bench-tested table,
 which was updated 2026-08-28 to say exactly that rather than claiming a
 full pass.
+
+## `fuse_test_voltmeter` deliberate-short attempt (2026-08-28, later same day): resistor physically removed + jumper installed, but the loop never showed a short at all
+
+User removed the 10Ω resistor entirely and seated a jumper across the same
+two breadboard rows it had occupied (the intended equivalent of shorting
+it — see the "hand-touching two bare leads" kb entry above, which is why a
+seated jumper was used instead of hand contact). Sequence: DISARMED +
+battery out → battery in → `mpremote run main.py` → switch to ARMED.
+Logged output (`mpremote run main.py`, ~107 samples over ~21s): a smooth
+monotonic climb from 1.360V → 1.386V during `-- DISARMED --`, continuing
+to climb after `-- ARMED --` up to a 1.401–1.404V plateau. **No trip
+message ever printed, and the reading never dropped below ~1.36V.**
+
+This is diagnostic, not just "short didn't trip yet": a genuine 0Ω bridge
+across the probe/ground nodes forces the ADC-probe voltage toward 0V
+*immediately* via Ohm's law, before the fuse's PTC element has any time to
+heat up and go high-Z — the collapse is supposed to be near-instant and is
+independent of whether the fuse has tripped yet. The logged values instead
+sit squarely in the normal *unshorted* cold-reading range this same
+`quickstart.md` documents (~1.4V, see the entry above), with a shape (slow
+climb then plateau) that looks like ordinary battery-settling after
+insertion, not a shorted node. Conclusion: **the shorting jumper was not
+actually completing a low-resistance bridge between the two rows during
+this run** — most likely seated in the wrong rows (off by one from where
+the resistor's legs actually landed) or making poor/partial contact,
+rather than any deliberate-short logic problem in `main.py` or a fuse
+fault. This is a *different* failure mode from the resistance-based
+"~1.0–1.1V" confound investigated in the entries above (that was about a
+loaded-but-real path with extra series resistance; this is about a
+shorting path that doesn't appear to exist electrically at all).
+
+Also re-confirmed live during this session, after the user removed the
+battery again and left the arm switch "on" (`mpremote connect /dev/ttyACM0
+exec`, 10 samples): steady **~0.017V**, matching the established
+no-source floor from the entries above exactly. This isolates the fault
+to the shorting jumper specifically — the Pico-side GP26/GND/GP15 wiring
+and firmware are behaving exactly as previously validated, both before and
+after the anomalous run.
+
+**Recommended next step for a future session or the user**: reseat the
+shorting jumper, double-checking it lands in the *exact* two rows the
+resistor's legs occupied (not an adjacent row), with battery in and
+switch ARMED; expect a near-instant collapse toward 0V and `*** FUSE
+TRIPPED ***` within a second or two of seating it, not a gradual change.
+If it still doesn't collapse, suspect the jumper wire itself (bad crimp/
+broken conductor) over the breadboard rows. Until this passes,
+`fuse_test_voltmeter`'s pass/fail criteria per its own `quickstart.md`
+remain unmet — don't upgrade the `lab/README.md` bench-tested note past
+"wiring/voltage confirmed" on the basis of this run.

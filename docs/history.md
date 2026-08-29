@@ -3459,3 +3459,15 @@ I've updated:
 **Next step**: you haven't run the deliberate-short test yet in this round (bridge the resistor's two breadboard rows with a spare jumper, expect `*** FUSE TRIPPED ***`, then ~2 min later `*** fuse reset ***`). That's the last thing needed to call this fuse a pass per `quickstart.md`.
 <!-- ------ -->
 ---
+What the log shows
+------------------
+
+The deliberate-short attempt didn't actually short anything. With the resistor removed and a jumper across its two rows, battery in, and the switch ARMED, a genuine short should collapse the reading toward 0V within a second or two --- Ohm's law acts instantly, it doesn't wait for the fuse to heat up. Instead the log shows a smooth climb from 1.360V up to a 1.401--1.404V plateau, right in the normal *unshorted* cold-reading range, and no `TRIPPED` message ever printed across the whole ~21-second run.
+
+I also checked the board live just now (`mpremote` --- it's still on `/dev/ttyACM0`, battery out, switch on): it reads a steady ~0.017V, exactly matching the established no-signal floor from earlier sessions. So the Pico-side wiring and firmware are behaving correctly, both before and after that run --- the fault is isolated to the shorting jumper itself, not a fuse problem and not a regression in the circuit.
+
+**Next step**: pull that jumper and reseat it, double-checking both ends land in the *exact* two rows the resistor's legs occupied (an off-by-one row leaves both sides untouched by each other). With battery in and switch ARMED, a proper short should collapse the reading and print `*** FUSE TRIPPED ***` almost immediately. If a freshly reseated jumper still doesn't do that, try swapping in a different jumper wire.
+
+I've added a troubleshooting section to [quickstart.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/measurement_tools/fuse_test_voltmeter/quickstart.md) for this exact symptom, logged the full diagnostic reasoning in `lab/docs/kb/repo_docs_conventions.md` for future sessions, and updated the `lab/README.md` bench-tested table to reflect that the short test was attempted but inconclusive rather than not yet run.
+<!-- ------ -->
+---

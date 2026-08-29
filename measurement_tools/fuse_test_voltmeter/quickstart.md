@@ -125,3 +125,17 @@ with nothing loading it commonly rests a bit above the 1.5V nominal, so a
 reading like 1.6V here isn't a fault), close to 1.2–1.3V means it's NiMH
 (or a partly-discharged cell), which explains a sub-1.4V resting reading on
 its own, independent of any wiring fault.
+
+## If shorting the resistor doesn't trip anything
+
+A genuine short should collapse the reading toward 0V within a second or
+two of seating the jumper — it doesn't wait for the fuse to heat up, Ohm's
+law does it immediately. If instead the reading stays up near the normal
+~1.4V cold value (climbing or steady, no collapse, no `TRIPPED` message)
+no matter how long you leave the jumper in, the jumper almost certainly
+isn't making a real connection — not a fuse problem. Pull it and reseat it,
+double-checking both ends land in the *exact* two rows the resistor's legs
+occupy (an off-by-one row is easy to miss and leaves both rows electrically
+untouched by each other). If a freshly reseated jumper still doesn't
+collapse the reading, try a different jumper wire — the one you're using
+may have a broken conductor despite looking intact.
