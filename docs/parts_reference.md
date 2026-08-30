@@ -214,3 +214,32 @@ holder above for the `psu_medlow` protection tier (2A fast-blow +
 polyfuse backup, per
 [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)'s
 `PROTMEDLOW` node).
+
+---
+
+## Metal film resistor kit (1W, 1%)
+
+20 ordered 2026-08-30, assorted values. See
+[orders.md](orders.md#metal-film-resistor-kit-1w-1). Axial metal film,
+1% tolerance, 1W power rating (vs. the SunFounder Thales kit's 1/4W
+stock). Listing's value range: 0.1Ω, 10Ω, 22Ω, 47Ω, 100Ω, 330Ω, 1kΩ,
+4.7kΩ, 10kΩ, 22kΩ, 47kΩ, up to 2.2MΩ — exact per-value quantities within
+the 20-piece assortment aren't specified by the listing; confirm the
+actual per-value count once received. The 0.1Ω value is the one this
+order was placed for: intended to replace the jumper-wire-chain shunt in
+[ammeter_1ohm](../measurement_tools/ammeter_1ohm/) with an actual
+resistor once it arrives.
+
+---
+
+## PT334-6C photodiode
+
+10 ordered 2026-08-30, 5mm package. See
+[orders.md](orders.md#pt334-6c-photodiode-5mm). Silicon PIN photodiode,
+typically used reverse-biased in a transimpedance amplifier front-end
+(anode to GND, cathode through a feedback resistor/op-amp to a positive
+rail) — candidate component for a future photodetector/light-sensing
+circuit; no tier assignment yet. Pin identification: the longer lead is
+the anode, matching standard photodiode/LED lead convention — confirm
+against the physical part once received, since some photodiode packages
+reverse this convention relative to LEDs.

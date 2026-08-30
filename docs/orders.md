@@ -189,3 +189,34 @@ the converted `.md` files are tracked).
   here; re-verify the actual order/tracking details against the AliExpress
   order history rather than the URL in this note once the item ships.
 - Ordered: 2026-08-25.
+
+### Metal film resistor kit (1W, 1%)
+
+- Listing: "20pcs 1W Metal film resistor 1% 0.1R-2.2M 10R 22R 47R 100R
+  330R 1K 4.7K 10K 22K 47K 1" —
+  https://www.aliexpress.com/item/1005001652734632.html
+- 20 ordered, assorted values from the listing's range, notably including
+  **0.1Ω** — not previously stocked (the SunFounder Thales kit's resistor
+  assortment bottoms out at 10Ω, per
+  [pico/docs/inventory.md](../../pico/docs/inventory.md)).
+- Also 1W-rated, above the Thales kit's 1/4W (0.25W) ceiling.
+- Supports: replacing the jumper-wire-chain shunt currently used in
+  [measurement_tools/ammeter_1ohm](../measurement_tools/ammeter_1ohm/)
+  (see
+  [measurement_tools/resistance_measurement](../measurement_tools/resistance_measurement/)
+  for how that chain was characterized at ~1.005Ω in the absence of a
+  0.1Ω part) with an actual 0.1Ω resistor once received. See
+  [parts_reference.md](parts_reference.md#metal-film-resistor-kit-1w-1).
+- Ordered: 2026-08-30.
+
+### PT334-6C photodiode (5mm)
+
+- Listing: "10pcs/lot PT334-6C 5MM photodiodes photodiode new original In
+  Stock" — https://www.aliexpress.com/item/1005007386609423.html
+- 10 ordered.
+- Not yet assigned to a tier in
+  [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
+  or [spacetime_circuits_dependency.md](spacetime_circuits_dependency.md) —
+  candidate for a future light-sensing/photodetector interface circuit.
+  See [parts_reference.md](parts_reference.md#pt334-6c-photodiode).
+- Ordered: 2026-08-30.

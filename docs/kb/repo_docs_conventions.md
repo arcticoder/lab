@@ -1169,3 +1169,174 @@ session gets that result, record it here — this determines whether
 that's a fail" criterion actually applies to this unit yet, or whether the
 fast-recovery pattern needs to be re-tested with a wiring confound ruled
 out first.
+
+## `fuse_test_voltmeter`'s open trip/reset question was bypassed, not resolved — the user built current-measuring `ammeter_10ohm`/`ammeter_1ohm` instead and validated both fuse batches that way (2026-08-30)
+
+Every entry above this one traces one long debugging thread on
+`fuse_test_voltmeter`'s voltage-probe approach to detecting a polyfuse
+trip, ending with the resistor-removal structural gap (still unfixed) and
+an open question about whether a fast-but-real trip/reset cycle should
+count as a pass. None of that thread was actually closed out. Instead, the
+user built two new, separate jigs —
+[measurement_tools/ammeter_10ohm/](../../measurement_tools/ammeter_10ohm/)
+and
+[measurement_tools/ammeter_1ohm/](../../measurement_tools/ammeter_1ohm/) —
+that measure loop **current** directly through a shunt resistor, with a
+slide switch wired in parallel with the shunt as a hands-free shorting
+jumper, rather than inferring a trip from a probe-node voltage collapsing.
+Both jigs were used to bench-test all 40 polyfuses in
+[pico/docs/inventory.md](../../../pico/docs/inventory.md) (20× RXEF005 via
+`ammeter_10ohm`, 20× RXEF050 via `ammeter_1ohm`) — all 40 units PASS
+(confirmed trip on short, confirmed reset on short removal).
+
+Consequence for future sessions: `fuse_test_voltmeter`'s own structural
+bug (resistor removed, probe/GND nodes collapsed to one node — see the
+"resistor removal breaks trip detection" entry above) is **still
+unfixed** and its own pass/fail criteria from `quickstart.md` have still
+never actually passed on that specific build. Don't treat the ammeter
+jigs' PASS results as evidence that `fuse_test_voltmeter` itself got
+fixed — they're a completely independent measurement approach on
+different hardware. If a future session is asked to actually fix
+`fuse_test_voltmeter`, that's still open work; it's just no longer
+*blocking* anything, since polyfuse validation now has a working path
+that doesn't depend on it. `lab/README.md`'s built-and-bench-tested table
+was updated to say this explicitly on both rows.
+
+## Working explanation for the "fuse self-heals instantly" symptom: thermal latch requires enough post-trip current to stay hot, and 1.5V doesn't supply it (2026-08-30)
+
+Using `ammeter_10ohm` to actually watch current (not just a probe
+voltage) through an RXEF005 during a deliberate short-then-release cycle
+gave a physical explanation for a symptom that's been read as suspicious
+throughout the `fuse_test_voltmeter` debugging thread above ("miracle
+superfuse that heals itself instantly," sub-second/sub-~2-minute
+recoveries): a polyfuse's high-resistance tripped state only *stays*
+latched if enough current keeps flowing through it post-trip to sustain
+self-heating (`I²R`) above the polymer's transition temperature. At the
+lab's actual 1.5V single-cell supply, a tripped fuse in series with a
+10Ω-class load can only pass on the order of hundreds of microamps to
+low-single-digit milliamps — nowhere near enough `I²R` to hold the
+element hot — so it cools and un-trips within roughly a second, not the
+several-minutes figure usually associated with polyfuses. That figure
+implicitly assumes a supply voltage (5V, 12V) high enough to keep pushing
+enough leakage/holding current through the tripped device to sustain the
+latch. This reframes every "impossibly fast reset" observation in the
+`fuse_test_voltmeter` thread above as expected PTC behavior at this
+specific (very low) supply voltage, not a sign the fuse never really
+tripped — full writeup with the numeric reasoning is in
+`measurement_tools/ammeter_10ohm/README.md` (end-user-facing, since it's
+a real physics explanation worth keeping there, not just a process note).
+
+One inconsistency worth flagging for a future session that needs the
+exact numbers: the user's own reasoning behind this finding cited the
+RXEF005's trip threshold as ~100mA, but every other doc in this repo
+(`pico/docs/inventory.md`, `fuse_test_voltmeter`'s own SPICE/README) is
+built around the RXEF005 being a **50mA**-rated device — that's also
+literally what "005" encodes in Littelfuse's RXEF part-numbering scheme.
+Not corrected in the end-user README (the qualitative conclusion — 1.5V
+can't sustain the latch — holds regardless of which exact threshold
+number is right, and the actual bench result, all 20 units passing, isn't
+in question), but don't propagate "100mA" as this device's rated trip
+current in future work without re-deriving it; treat 50mA as the
+documented spec until someone explicitly re-measures the actual trip
+point.
+
+## `resistance_measurement`: measuring an unknown low resistance with only a Pico ADC and one known resistor (2026-08-30)
+
+New pattern worth reusing whenever a future circuit here needs to
+characterize an unknown low-value resistance (a shunt candidate, a cable,
+a suspect component) without a multimeter on the bench: a simple
+voltage-divider with a known reference resistor on the high side and the
+unknown resistance on the low side, read by a single Pico ADC pin at the
+midpoint. `R_x = R_ref * (V_out / (V_in - V_out))`, solved from the
+standard divider equation. Built in
+[measurement_tools/resistance_measurement/](../../measurement_tools/resistance_measurement/)
+specifically because
+[ammeter_1ohm](../../measurement_tools/ammeter_1ohm/) needed a ~1Ω-class
+shunt and no 0.1Ω resistor was in stock yet (now on order — see
+`pico/docs/inventory.md`'s "On Order" section, 2026-08-30 metal film
+resistor kit); a chain of jumper wires was used as the improvised shunt,
+and this jig measured it at ~1.005Ω. `R_ref = 10Ω` keeps worst-case
+current (a dead short on `R_x`) to ~330mA through the Pico's 3V3 rail —
+safe without any additional current limiting — which is a reusable
+sizing rule: pick `R_ref` large enough that `V_in / R_ref` alone is a
+safe short-circuit current for whatever's driving the divider, independent
+of what `R_x` turns out to be.
+
+## Low-side current sensing: keep any series protection element (diode, switch) off the sensed leg, not just off the ADC probe leg (2026-08-30)
+
+`ammeter_1ohm`'s 1N5817 reverse-polarity diode is deliberately wired on
+the **high side** (battery positive → diode → fuse), while the current
+shunt sits on the **low side** (fuse → shunt → GND), with the ADC probe
+at the fuse/shunt junction. This isn't arbitrary: any series element's
+own voltage drop shows up in a low-side sensing circuit's ADC reading only
+if that element sits between the probe node and the shunt itself. Putting
+the diode in series with the shunt (either side of it) would have added a
+fixed ~0.35–0.45V offset to every current reading that would then need to
+be characterized and subtracted before the `V/R` math means anything;
+putting it upstream of the entire fuse+shunt leg (as built) means the
+diode's drop is invisible to the measurement — it just reduces the total
+voltage available to the fuse+shunt loop, which the ammeter doesn't need
+to know about to correctly report current through the shunt. General
+rule for any future low-side-sensing circuit here: identify the exact two
+nodes the ADC measures between, and keep every other series component
+(protection diodes, switches, connectors) outside that specific span,
+even if they're still logically "in series with the shunt" from a
+whole-loop perspective.
+
+## `psu_ultralow_v1` marked "built & bench-tested" in `lab/README.md` on component-level validation only — no assembled-PSU demo was performed (2026-08-30)
+
+Per explicit user instruction, `psu_ultralow_v1`'s row moved from
+"designed, not yet built" to "built & bench-tested" in `lab/README.md`
+once its RXEF005 polyfuse passed validation via `ammeter_10ohm` (see the
+entries above) and its AA battery holder was confirmed ready in
+`pico/docs/inventory.md`. This is **not** the same thing as the
+test-vs-demo distinction `fuse_test_voltmeter/README.md` establishes
+elsewhere in this repo (bench-test the bare component, *then* build the
+actual PSU and re-probe it as its own separate demo step) — no assembled
+`psu_ultralow_v1` unit was built or re-probed as a finished PSU here. The
+bench-tested table row's note says this explicitly ("component-level
+validation... has not been separately re-probed as its own demo build")
+so a future session doesn't read the table entry as claiming more than
+what was actually done. If a future session is asked to actually build
+and demo this PSU as an assembled unit, that's still open work, distinct
+from what "built & bench-tested" records here.
+
+## New AA-battery PSU tiers (`psu_3xaa`, `psu_4xaa`) inserted between `psu_low` and `psu_medlow` in the dependency graph (2026-08-30)
+
+Added
+[power_supplies/psu_3xaa/](../../power_supplies/psu_3xaa/) (4.5V) and
+[power_supplies/psu_4xaa/](../../power_supplies/psu_4xaa/) (6.0V) as a
+straightforward extension of the existing AA-series progression
+(`psu_ultralow_v1` 1×AA → `psu_low_v2` 2×AA), reusing the exact same
+protection stack (RXEF050 500mA polyfuse + 1N5817 Schottky) as
+`psu_low_v2` rather than inventing a new one — both fit the "designed,
+not yet built" category, same as `psu_low_v2`/`psu_medlow_usbc`. The
+mermaid `graph TD` in
+[general_purpose_circuit_dependency.md](../general_purpose_circuit_dependency.md)
+got two new subgraphs (`psu_3aa`, `psu_4aa`) spliced into the existing
+`psu_ultralow -->|upgrade to| psu_low` chain
+(`psu_low --> psu_3aa --> psu_4aa --> psu_medlow`), plus matching
+`POLYFUSE -.required.->` edges and `style` lines — per the "pure mermaid,
+no prose" convention at the top of this file, no explanatory prose was
+added outside the diagram itself.
+
+Also added
+[power_supplies/psu_medlow_lm317/](../../power_supplies/psu_medlow_lm317/)
+as an alternative `psu_medlow`-tier implementation (the SFE Breadboard
+Power Supply Kit — LM317 adjustable regulator, switch-selectable 3.3V/5V,
+fed from a DC barrel jack) alongside the existing `psu_medlow_usbc`
+(fuse+bypass only, since a USB-C adapter is already regulated). This one
+is a kit that's only been ordered, not received or built — its
+`breadboard.md` derives the standard LM317 feedback-resistor math
+(`R1=240Ω` fixed, `R2` switched between 390Ω and 390Ω+330Ω for 3.3V/5V)
+from the kit's own BOM rather than from a confirmed reading of the actual
+PCB traces, and says so explicitly. If a future session gets the physical
+kit in hand, verify that math against the real board before trusting it,
+same treatment as the 3296 trimpot's "confirm once received" caveat
+elsewhere in this repo. No `.spice`/`smoke_test.py` for this one — per
+user instruction, no netlist was requested for the kit, only inclusion in
+the dependency graph and matching README/breadboard.md docs. A new
+`PSUMEDLOWLM317` node was added inside the existing `psu_medlow` subgraph
+with a dotted `-.alternative.->` edge to `PSUMEDLOW`, matching the
+existing `POLYSWITCH -.alternative.->` pattern used elsewhere in the same
+file for other alternative-implementation edges.

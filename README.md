@@ -49,6 +49,8 @@ ngspice -b measurement_tools/cd4066_switch_tester/cd4066_switch_tester.spice
 ngspice -b power_supplies/psu_pico_rail/psu_pico_rail.spice
 ngspice -b power_supplies/psu_ultralow_v1/psu_ultralow_v1.spice
 ngspice -b power_supplies/psu_low_v2/psu_low_v2.spice
+ngspice -b power_supplies/psu_3xaa/psu_3xaa.spice
+ngspice -b power_supplies/psu_4xaa/psu_4xaa.spice
 ngspice -b power_supplies/psu_medlow_usbc/psu_medlow_usbc.spice
 ngspice -b signal_conditioning/voltage_reference_lm358/voltage_reference_lm358.spice
 ```
@@ -78,6 +80,8 @@ reuses.
 python measurement_tools/cd4066_switch_tester/smoke_test.py
 python measurement_tools/fuse_test_voltmeter/smoke_test.py
 python power_supplies/psu_low_v2/smoke_test.py
+python power_supplies/psu_3xaa/smoke_test.py
+python power_supplies/psu_4xaa/smoke_test.py
 python power_supplies/psu_medlow_usbc/smoke_test.py
 python power_supplies/psu_pico_rail/smoke_test.py
 python power_supplies/psu_ultralow_v1/smoke_test.py
@@ -111,7 +115,11 @@ as the record for rebuilding it later.
 | `power_supplies/psu_pico_rail/` | Pico's own onboard 3.3V rail, ~100mA budget | interim bootstrap PSU | 2026-08 |
 | `signal_conditioning/voltage_reference_lm358/` | LM358 unity-gain buffer holds a resistor-divider reference steady under load | tier1 `REF` | 2026-08-27 — loaded reading within 0.23% of unloaded (±2% tolerance) |
 | `measurement_tools/cd4066_switch_tester/` | Pico-driven bring-up jig for one CD4066B analog switch — confirms it passes/blocks before trusting it in a later design | component validation (ahead of tier9 `MUX`) | 2026-08-28 — switch 1 (I/O A pin 1 / I/O B pin 2 / control pin 13) PASS on all 10 CD4066BCN units; switches 2–4 per chip not yet individually tested |
-| `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe across a battery→fuse→resistor loop; arm switch (GP15) gates trip/reset detection so battery connect/disconnect isn't misread as a trip | bootstrap / concurrent measurement tool | 2026-08-28 — **bench wiring has since diverged from this design and trip detection is currently non-functional**: the 10Ω resistor was physically removed and the fuse wired straight onto the power rail, which collapses the probe (GP26) and GND nodes into one — the jig now reads ~0V regardless of whether the fuse is tripped, since there's no longer a divider to read across (see `docs/kb/repo_docs_conventions.md` "resistor removal breaks trip detection"). Prior to the removal: arm switch toggled ARMED/DISARMED correctly, loaded reading was steady ~1.36–1.50V across runs (matches SPICE prediction scaled to this cell's ~1.6V open-circuit voltage). The deliberate-short trip/reset pass/fail check from `quickstart.md` has never actually passed on this build. **To resume testing**: put a resistor back in the loop between the fuse and GND (restoring the probe tap point), or check the fuse with a multimeter/continuity tester instead of this jig |
+| `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe across a battery→fuse→resistor loop; arm switch (GP15) gates trip/reset detection so battery connect/disconnect isn't misread as a trip | bootstrap / concurrent measurement tool | 2026-08-28 — **bench wiring has since diverged from this design and trip detection is currently non-functional**: the 10Ω resistor was physically removed and the fuse wired straight onto the power rail, which collapses the probe (GP26) and GND nodes into one — the jig now reads ~0V regardless of whether the fuse is tripped, since there's no longer a divider to read across (see `docs/kb/repo_docs_conventions.md` "resistor removal breaks trip detection"). Prior to the removal: arm switch toggled ARMED/DISARMED correctly, loaded reading was steady ~1.36–1.50V across runs (matches SPICE prediction scaled to this cell's ~1.6V open-circuit voltage). The deliberate-short trip/reset pass/fail check from `quickstart.md` has never actually passed on this build. **This no longer blocks polyfuse validation**: both fuse batches have since been sorted good/bad by the `ammeter_10ohm`/`ammeter_1ohm` jigs below instead, which measure current directly rather than inferring a trip from a voltage probe. Fixing this jig's own wiring gap is optional going forward, not a prerequisite for anything currently planned |
+| `measurement_tools/ammeter_10ohm/` | Pico reads current (not just voltage) through a polyfuse under test, via a 10Ω shunt + slide-switch shorting jumper | polyfuse validation (bootstrap tier) | 2026-08-30 — all 20 RXEF005 (50mA) polyfuses PASS (trip + reset confirmed per unit) |
+| `measurement_tools/ammeter_1ohm/` | Same approach as `ammeter_10ohm` scaled for 500mA: ~1Ω jumper-chain shunt (see `resistance_measurement/`) + 1N5817 reverse-polarity diode on the high side | polyfuse validation (`psu_low` tier) | 2026-08-30 — all 20 RXEF050 (500mA) polyfuses PASS (trip + reset confirmed per unit) |
+| `measurement_tools/resistance_measurement/` | Voltage-divider jig (known 10Ω reference vs. unknown leg) for measuring a low-value resistance without a multimeter | supporting tool for `ammeter_1ohm` | 2026-08-30 — jumper-wire chain measured at ~1.005Ω, stable across repeated readings |
+| `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap) | 2026-08-30 — component-level validation complete: RXEF005 polyfuse PASS via `ammeter_10ohm/` (all 20 units), AA battery holder ready per `pico/docs/inventory.md`. The assembled PSU itself has not been separately re-probed as its own demo build (see `fuse_test_voltmeter/README.md`'s test-vs-demo distinction) |
 
 ---
 
@@ -127,15 +135,19 @@ sequence this drives.
 
 | Folder | Circuit | Tier |
 |--------|---------|------|
-| `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap, waiting on wire strippers) |
-| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (waiting on wire strippers) |
+| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (waiting on wire strippers; RXEF050 polyfuse itself is validated — see `ammeter_1ohm/` above) |
+| `power_supplies/psu_3xaa/` | 3×AA + Schottky + 500 mA polyfuse | `psu_system` (between `psu_low` and `psu_4xaa`) |
+| `power_supplies/psu_4xaa/` | 4×AA + Schottky + 500 mA polyfuse | `psu_system` (top of the plain-AA-series progression) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
+| `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit on order, not yet built) |
 
-Each of these has a SPICE netlist, a generated schematic, a breadboard
-wiring guide, and a `smoke_test.py`, but none have been physically tested
-on with real components yet — they're waiting on `fuse_test_voltmeter`
-(now built & bench-tested above) to finish sorting a good polyfuse first.
-Everything else in
+Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
+of its own — see its own README) has a SPICE netlist, a generated
+schematic, a breadboard wiring guide, and a `smoke_test.py`, but none have
+been physically assembled with real components yet. The polyfuses they
+depend on are no longer the blocker — both batches passed validation via
+`ammeter_10ohm`/`ammeter_1ohm` above — so what remains is just the
+physical build. Everything else in
 `docs/general_purpose_circuit_dependency.md` /
 `docs/spacetime_circuits_dependency.md` (safety monitoring, most of tiers
 1–9) hasn't been worked out to netlist stage at all — folders for those
@@ -187,6 +199,21 @@ measurement_tools/
         smoke_test.py
         README.md
 
+    ammeter_10ohm/           10Ω-shunt current-based polyfuse tester (built & bench-tested)
+        main.py
+        breadboard.jpg
+        README.md
+
+    ammeter_1ohm/            ~1Ω-shunt version for 500mA polyfuses (built & bench-tested)
+        main.py
+        breadboard.jpg
+        README.md
+
+    resistance_measurement/  voltage-divider jig for measuring an unknown low resistance (built & bench-tested)
+        main.py
+        breadboard.jpg
+        README.md
+
 power_supplies/
     psu_pico_rail/            Pico onboard 3.3V rail, ~100mA (interim, built & bench-tested)
         psu_pico_rail.spice
@@ -195,7 +222,7 @@ power_supplies/
         smoke_test.py
         README.md
 
-    psu_ultralow_v1/         single AA + 50 mA polyfuse (designed, not built)
+    psu_ultralow_v1/         single AA + 50 mA polyfuse (built & bench-tested — component-level)
         psu_ultralow_v1.spice
         schematic.png         (generated, gitignored)
         breadboard.md
@@ -209,11 +236,29 @@ power_supplies/
         smoke_test.py
         README.md
 
+    psu_3xaa/                 3xAA + Schottky + 500 mA polyfuse (designed, not built)
+        psu_3xaa.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        smoke_test.py
+        README.md
+
+    psu_4xaa/                 4xAA + Schottky + 500 mA polyfuse (designed, not built)
+        psu_4xaa.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        smoke_test.py
+        README.md
+
     psu_medlow_usbc/          5V USB-C + 500 mA polyfuse + bypass cap (designed, not built)
         psu_medlow_usbc.spice
         schematic.png         (generated, gitignored)
         breadboard.md
         smoke_test.py
+        README.md
+
+    psu_medlow_lm317/         SFE breadboard PSU kit, LM317 3.3V/5V-selectable (on order, not built)
+        breadboard.md
         README.md
 
 signal_conditioning/

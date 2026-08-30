@@ -1,0 +1,38 @@
+* psu_4xaa — 4x AA battery (series) + 1N5817 Schottky + 500 mA polyfuse
+*
+* Circuit topology:
+*   4x AA cell in series (6.0V) -> Dschottky -> Rfuse (500 mA polyfuse,
+*     cold state) -> Rload -> GND
+*
+* Spec target: 6.0V, <300 mA, ~1.6W (docs/general_purpose_circuit_dependency.md,
+* psu_system subgraph — top of the plain-AA-series progression, one cell up
+* from psu_3xaa, upgrade path continues to psu_medlow's 5V/12V external
+* supplies for anything needing more current than 4 AA cells can sanely give)
+*
+* Schottky (1N5817) protects against reverse-polarity wiring; adds ~0.35V
+* drop at this current. Polyfuse (RXEF050) approximated by cold-state
+* resistance, same model as psu_low_v2/psu_medlow_usbc/psu_3xaa.
+*
+* Load swept from 5 to 50 ohm to show the V/I curve either side of the
+* nominal design point (Rload = 20 ohm).
+
+Vbatt1  1 0 DC 1.5
+Vbatt2  2 1 DC 1.5             ; second cell stacked on the first
+Vbatt3  3 2 DC 1.5             ; third cell stacked on the second
+Vbatt4  4 3 DC 1.5             ; fourth cell stacked on the third
+Dschottky 4 5 D_1N5817
+Rfuse   5 6 0.5                ; 500 mA polyfuse, cold-state resistance
+Rload   6 0 20                 ; nominal load
+
+.model D_1N5817 D(IS=1e-6 RS=0.03 N=1.05 BV=20 IBV=1e-3)
+
+.control
+op
+print v(4) v(5) v(6) i(Vbatt4)
+
+dc Rload 5 50 5
+print v(6)
+quit
+.endc
+
+.end

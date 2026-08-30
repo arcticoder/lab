@@ -30,18 +30,29 @@ graph TD
             PSUPICO["Pico onboard 3V3(OUT) regulator (power_supplies/psu_pico_rail/) — built & bench-tested 2026-08"]
         end
 
-        subgraph psu_ultralow ["Ultra-Low v1: 1.5V, ~100mA, &lt;0.15W (Bootstrap)"]
+        subgraph psu_ultralow ["Ultra-Low v1: 1.5V, ~100mA, &lt;0.15W (Bootstrap) — power_supplies/psu_ultralow_v1/ — built & bench-tested 2026-08-30"]
             PSUUL["Single AA Battery (Alkaline) — Version 1"]
-            PROTUL["Polyfuse (50mA, slow-blow)"]
+            PROTUL["Polyfuse (50mA, slow-blow) — all 20 RXEF005 units validated PASS via measurement_tools/ammeter_10ohm/"]
         end
         
-        subgraph psu_low ["Low (v2 Upgrade): 3.0V, &lt;300mA, ~0.9W"]
+        subgraph psu_low ["Low (v2 Upgrade): 3.0V, &lt;300mA, ~0.9W — power_supplies/psu_low_v2/"]
             PSULOW["2xAA Battery Holder in Series"]
-            PROTLOW["Polyfuse (500mA) + Series Schottky Diode"]
+            PROTLOW["Polyfuse (500mA) + Series Schottky Diode — all 20 RXEF050 units validated PASS via measurement_tools/ammeter_1ohm/"]
+        end
+
+        subgraph psu_3aa ["4.5V, &lt;300mA, ~1.2W — power_supplies/psu_3xaa/"]
+            PSU3AA["3xAA Battery Holder in Series"]
+            PROT3AA["Polyfuse (500mA) + Series Schottky Diode"]
+        end
+
+        subgraph psu_4aa ["6.0V, &lt;300mA, ~1.6W — power_supplies/psu_4xaa/"]
+            PSU4AA["4xAA Battery Holder in Series"]
+            PROT4AA["Polyfuse (500mA) + Series Schottky Diode"]
         end
         
         subgraph psu_medlow ["Medium: 5V USB + Regulator OR 12V, 1–3A, 5–36W"]
             PSUMEDLOW["USB Wall Adapter (5V 3A) OR 12V Sabrent USB-C Adapter"]
+            PSUMEDLOWLM317["SFE Breadboard Power Supply Kit (LM317 adjustable, 3.3V/5V-selectable) — power_supplies/psu_medlow_lm317/ — on order, not yet built"]
             PROTMEDLOW["Fuse (2A fast-blow) + Polyfuse (500mA backup) for 12V path"]
         end
         
@@ -130,6 +141,9 @@ graph TD
 
     %% PSU upgrade path
     psu_ultralow -->|upgrade to| psu_low
+    psu_low -->|upgrade to| psu_3aa
+    psu_3aa -->|upgrade to| psu_4aa
+    psu_4aa -->|upgrade to| psu_medlow
     
     %% PSU system feeds safety and tier 1
     psu_system --> safety
@@ -141,11 +155,14 @@ graph TD
     FUSE -.required.-> psu_medhigh
     POLYFUSE -.required.-> psu_ultralow
     POLYFUSE -.required.-> psu_low
+    POLYFUSE -.required.-> psu_3aa
+    POLYFUSE -.required.-> psu_4aa
     POLYFUSE -.required.-> psu_medlow
     ACTIVELIM -.required.-> psu_medhigh
     ACTIVELIM -.required.-> psu_high
     POLYSWITCH -.alternative.-> psu_low
     POLYSWITCH -.alternative.-> psu_medlow
+    PSUMEDLOWLM317 -.alternative.-> PSUMEDLOW
     
     %% Safety circuits depend on Tier 1 fundamentals
     REF --> safety
@@ -246,6 +263,8 @@ graph TD
     style psu_pico_rail_g fill:#fff9c4,stroke:#f9a825,stroke-width:2px
     style psu_ultralow fill:#e0f2f1,stroke:#00897b,stroke-width:2px
     style psu_low fill:#a5d6a7,stroke:#2e7d32,stroke-width:2px
+    style psu_3aa fill:#96d19a,stroke:#2e7d32,stroke-width:2px
+    style psu_4aa fill:#8ac98e,stroke:#2e7d32,stroke-width:2px
     style psu_medlow fill:#81c784,stroke:#2e7d32,stroke-width:2px
     style psu_medhigh fill:#66bb6a,stroke:#1b5e20,stroke-width:2px
     style psu_high fill:#4caf50

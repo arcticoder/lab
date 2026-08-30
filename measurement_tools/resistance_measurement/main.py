@@ -1,16 +1,23 @@
 import machine
 import time
 
+# Voltage-divider resistance meter: 3V3 -> R_REF -> GP26 (ADC0) -> R_x -> GND.
+# R_x is whatever unknown resistance is wired into the divider's lower leg
+# (built to measure a jumper-wire chain being used as a low-value current
+# shunt for ammeter_1ohm/ — see README.md for the full circuit and math).
+# Solving the divider for the unknown leg: R_x = R_REF * (V_out / (V_in - V_out))
+
 # ADC Setup
 adc = machine.ADC(26)  # GPIO 26 = ADC0
 
 # CONFIGURATION: Set this to the exact value of your known upper resistor in Ohms
-R_REF = 10.0  
+R_REF = 10.0
 
 # Supply voltage on 3V3 pin (typically ~3.3V, measure with ADC if necessary)
-V_IN = 3.3  
+V_IN = 3.3
 
 def read_voltage(samples=50):
+    # Averaging cuts down ADC noise before it gets divided into R_x below
     total_raw = 0
     for _ in range(samples):
         total_raw += adc.read_u16()

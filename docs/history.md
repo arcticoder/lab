@@ -3532,3 +3532,22 @@ No code changes needed --- `main.py` already does exactly "tell me if the fuse t
 Logged this cycle to `docs/kb/repo_docs_conventions.md` for future sessions on this circuit. Short version for you: let the next reset sit untouched for the full ~2 minutes and see if it keeps climbing toward ~1.4--1.5V or flatlines around ~1.09V --- that tells you whether this is a genuinely slow-but-real trip or a separate wiring gremlin before you call the fuse a fail.
 <!-- ------ -->
 ---
+Everything's in place. Summary of what I did across both repos:
+
+**pico repo:**
+
+-   Marked both polyfuse rows (RXEF005 50mA, RXEF050 500mA) as validated PASS (all 40 units) via the new ammeter tools, superseding the broken `fuse_test_voltmeter` approach.
+-   Added the two new AliExpress orders (0.1Ω metal-film resistor kit, PT334-6C photodiodes) to the "On Order" table.
+
+**lab repo:**
+
+-   **New docs**: READMEs for `ammeter_10ohm` (includes the thermal-latch explanation for why the fuse "heals" so fast at 1.5V), `ammeter_1ohm` (includes the diode-placement rationale), and `resistance_measurement` (plus clarifying comments in its `main.py`).
+-   **New PSU tiers**: `psu_3xaa` and `psu_4xaa` (README, breadboard.md, spice netlist, smoke\_test.py --- all verified passing), spliced into the dependency graph between `psu_low` and `psu_medlow`.
+-   **New kit doc**: `psu_medlow_lm317` for the SFE kit (README + breadboard.md deriving the LM317 3.3V/5V feedback-resistor math from the BOM; no netlist, as requested), added to the dependency graph as an alternative to `psu_medlow_usbc`.
+-   **lab/README.md**: added the three new measurement tools and `psu_ultralow_v1` to the bench-tested table (with an honest note that "completed" reflects component-level validation, not an assembled-PSU demo), updated the fuse\_test\_voltmeter row to note it's no longer blocking, updated command lists and the repo-structure tree.
+-   **orders.md / parts\_reference.md**: full listing entries for the two new AliExpress parts.
+-   **kb/repo\_docs\_conventions.md**: seven new entries for future LLM sessions only --- covering the ammeter-tools-bypass-not-fix of the fuse\_test\_voltmeter saga, the thermal-latch physics finding (and a flagged 50mA-vs-100mA inconsistency in the trip-threshold reasoning), the resistance-measurement technique as a reusable pattern, the low-side-sensing/diode-placement design rule, and the scope caveat on `psu_ultralow_v1`'s "completed" status.
+
+All 9 repo smoke tests (including the 2 new ones) pass.
+<!-- ------ -->
+---
