@@ -3551,3 +3551,27 @@ Everything's in place. Summary of what I did across both repos:
 All 9 repo smoke tests (including the 2 new ones) pass.
 <!-- ------ -->
 ---
+r order so I gotta plan ahead
+
+Priority-ranked, based on what's actually blocking or missing across both repos (I checked current stock + the AliExpress pipeline already in flight --- NE555, TL431A, metal-film resistors, and the photodiodes are already on order, so I skipped those):
+
+**1\. A cheap oscilloscope/logic analyzer** --- this is the single gap that's been open since the very first design conversation in `docs/history.md` (the `concurrent_meas_tools` "SCOPE" node) and it's the reason a bunch of recent work has been ADC-polling Python scripts standing in for a scope. Two options, different tradeoffs:
+
+-   **8ch 24MHz USB logic analyzer (~$5-8)**: cheapest, covers digital timing (CD4066 switching, NE555 astable output, frequency counter validation) --- exactly what tier2 needs next.
+-   **DSO138 DIY solder kit (~$15-25)**: also captures analog waveforms (RC filter response, oscillator shape), but it's a soldering project in itself, not instant-on.
+
+Given you already have the iron and the patience for soldering kits, I'd lean DSO138, but the logic analyzer alone would already unblock the frequency-counter/NE555 work once that ships.
+
+**2\. Inductor assortment kit (~$5-8)** --- you have zero inductors anywhere in inventory. That's a hard blocker on `INDBRIDGE` and any future LC filter/oscillator circuit, not just an inconvenience.
+
+**3\. Capacitor assortment (ceramic pF--nF range + a small electrolytic kit, ~$5-10 combined)** --- current cap stock is only 100nF/10nF ×10 each, no electrolytics. Cheap, and unblocks both precision-oscillator tuning and general PSU bulk-cap needs beyond what's bundled in the LM317 kit.
+
+**4\. Fresh NTC thermistor pack (~$2-3)** --- the one unit currently in inventory is flagged "suspect faulty." Blocks `THERM`/`TEMPCOMP` otherwise.
+
+**Lower priority / optional:** a basic DMM (~$10-15) --- not a blocker (the Pico-ADC jigs have been working), but useful purely as an independent cross-check on readings like `resistance_measurement`'s ~1.005Ω or the LM317 kit's actual output once built.
+
+One thing to check before the LM317 kit arrives, not an AliExpress item: confirm you've got a spare 9V or 12V barrel-jack wall adapter on hand --- the kit doesn't include one, and it needs headroom above whichever output voltage you select.
+
+Want me to hold off on any doc changes until you've actually placed orders, same as last time --- just tell me what you bought and I'll log it in `orders.md`/`parts_reference.md`/`inventory.md`?
+<!-- ------ -->
+---
