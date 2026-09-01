@@ -209,6 +209,76 @@ the converted `.md` files are tracked).
   [parts_reference.md](parts_reference.md#metal-film-resistor-kit-1w-1).
 - Ordered: 2026-08-30.
 
+### Color-ring inductor assortment (0307, 1/4W)
+
+- Listing: "12values Color Ring Inductor Assortment 0307 1/4W 0.25W 0410
+  1/2W 0510 1W 1UH 10UH 100UH Inductors Inductors Assorted Set Kit" —
+  https://www.aliexpress.com/item/32988801481.html (variant selected:
+  "0307-120PCS-1lot").
+- 120 ordered (12 values × 10pcs). The listing title bundles three
+  different package sizes (0307 1/4W, 0410 1/2W, 0510 1W) under one
+  product; the selected variant is the 0307 1/4W size only. Values: 1µH,
+  10µH, 22µH, 33µH, 47µH, 100µH, 150µH, 220µH, 330µH, 470µH, 560µH, 1mH.
+  Axial, color-ring-coded, epoxy-coated. Rated dielectric withstand 250V
+  AC rms, operating temperature −25 to 85°C.
+- Supports: tier3 `INDBRIDGE` (inductance bridge) directly, and any
+  future filter/oscillator tank-circuit use. See
+  [parts_reference.md](parts_reference.md#color-ring-inductor-assortment-0307-14w).
+- Ordered: 2026-08-30.
+
+### Multilayer ceramic capacitor assortment (50V)
+
+- Listing: "300pcs 10Value 50V 10pF 20pF 30pF 47pF 56pF 68pF 100pF 1nF
+  10nF 100nF Multilayer Ceramic Capacitor Assortment Monolithic Kit Box" —
+  https://www.aliexpress.com/item/1005004741548166.html. **No specific
+  variant was given for this item** (unlike the other two orders in this
+  batch) — the listing may not have a selectable variant at all (a single
+  fixed 10-value/300pc box), but that isn't confirmed; check the actual
+  AliExpress order history once it ships rather than assuming.
+- 300 ordered (10 values × 30pcs). Values: 10pF, 20pF, 30pF, 47pF, 56pF,
+  68pF, 100pF, 1nF, 10nF, 100nF. Through-hole/in-line MLCC, 50V rated,
+  10% tolerance, 5.08mm lead pitch.
+- **Discrepancy in the listing itself:** the structured "Specifications"
+  block states operating temperature −40 to 80°C, but the free-text
+  product description states −25°C to 185°C for the same part. Don't
+  trust either figure as confirmed until a datasheet or physical
+  markings are available — flagged rather than picking one.
+- Supports: tier3 `CAPBRIDGE` (capacitance bridge) directly, plus general
+  bypass/decoupling and NE555-timing (tier1 `OSC`) use once received. See
+  [parts_reference.md](parts_reference.md#multilayer-ceramic-capacitor-assortment-50v).
+- Ordered: 2026-08-30.
+
+### Aluminum electrolytic capacitor kit (16V/25V/50V)
+
+- Listing: "120pcs Electrolytic Capacitor 16V 25V 50V Aluminum
+  Electrolytic Capacitor Kit 12 Values 1uF-470uF DIP Electrolyte
+  Capacitors". **The user-supplied URL for this item was a literal
+  placeholder (`https://www.aliexpress.com/item/???.html`) — the real
+  item ID was never provided.** Per the "don't guess a URL" convention
+  (see [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)),
+  no URL is recorded here; re-derive it from the AliExpress order history
+  once the item ships rather than trusting any link that might get
+  attached to this entry later.
+- 120 ordered (12 values × 10pcs), brand YTDMEN, radial-lead DIP-style,
+  ±20% tolerance:
+  1. 50V 1µF
+  2. 50V 2.2µF
+  3. 50V 3.3µF
+  4. 50V 4.7µF
+  5. 50V 10µF
+  6. 25V 22µF
+  7. 25V 33µF
+  8. 25V 47µF
+  9. 16V 100µF
+  10. 16V 220µF
+  11. 16V 330µF
+  12. 16V 470µF
+- Supports: general PSU output/bulk filtering (`psu_medlow_lm317`,
+  `psu_medlow_usbc`) and future tier3 `CAPBRIDGE` use at higher
+  capacitance than the ceramic kit above covers. See
+  [parts_reference.md](parts_reference.md#aluminum-electrolytic-capacitor-kit-1665025050v).
+- Ordered: 2026-08-30.
+
 ### PT334-6C photodiode (5mm)
 
 - Listing: "10pcs/lot PT334-6C 5MM photodiodes photodiode new original In

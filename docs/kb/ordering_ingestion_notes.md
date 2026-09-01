@@ -115,3 +115,55 @@ caveat should be removed only once the user confirms the batch (or specific
 units) have actually been tested — don't assume "received" implies "known
 good" for these part classes. Single-item non-consumable parts (e.g. the AA
 battery holder) don't need this caveat.
+
+## A listing's own spec block can contradict its own description text — don't silently pick one (found 2026-08-30, ceramic capacitor assortment)
+
+The "300pcs 10Value 50V ... Multilayer Ceramic Capacitor Assortment"
+listing's structured "Specifications" field states operating temperature
+−40 to 80°C, while its free-text product description states "Operating
+temperature range: -25° C-185° C" for the same part. This is a different
+failure mode than the previously-logged "bundled part numbers"/"OCR
+slip"/"listing adjective contradicts package convention" cases — here
+two *first-party* fields within the same listing disagree with each
+other, so there's no obvious "trust the more authoritative source"
+default (both are equally "the listing's own words"). Logged both
+figures side by side in `parts_reference.md` and `orders.md` with an
+explicit "unresolved" flag rather than guessing which one is real;
+resolve only once a datasheet or the physical part's markings settle it.
+General lesson: when transcribing a listing, diff the structured spec
+table against the prose description for the same attribute before
+writing either into the docs as fact — they're generated/written
+independently on AliExpress and silently drift apart often enough to be
+a recurring category, not a one-off.
+
+## A user-supplied order URL can be a literal unfilled placeholder, not just a copy/paste mismatch (found 2026-08-30, electrolytic capacitor kit)
+
+The earlier "two unrelated items, same URL" entry above covers a *wrong*
+URL pasted for an item. This is a step further: for the "120pcs
+Electrolytic Capacitor ... Kit" item, the message contained
+`https://www.aliexpress.com/item/???.html` — the item-ID segment itself
+was left as a literal `???`, meaning no real URL was ever supplied for
+this item at all (not even a mismatched one). Handled the same way the
+prior entry recommends: don't invent or guess a plausible-looking item
+ID to fill the gap (this would produce a URL that looks legitimate but
+points at an unrelated or nonexistent listing), and don't silently drop
+the fact that it's missing either. Recorded the omission explicitly in
+both `orders.md` and `parts_reference.md` so a future session doesn't
+mistake the absence of a URL for an oversight in transcription and try
+to "fix" it by guessing one.
+
+## The user's order date wasn't stated in the order text itself, and a first guess at it can be wrong even when framed as a low-effort default (2026-08-30)
+
+When ingesting the inductor/ceramic-cap/electrolytic-cap batch, the
+user's message gave full listing text for all three items but no order
+date. Asking "today's date, or a different date?" got "Different date"
+selected back with no date actually supplied in that same answer — the
+option's label alone came back, not free text — so a second, more
+specific question ("what is the actual date") was needed to get
+2026-08-30 (matching the same-day resistor-kit/photodiode order already
+in `orders.md`). Lesson: when a multiple-choice clarifying question
+includes an option like "different value" that implies the user will
+type something, don't assume the returned answer contains that
+free-text value — check whether the answer is just the option's own
+label before proceeding, and re-ask more narrowly (e.g. list plausible
+concrete dates as the options) if so.

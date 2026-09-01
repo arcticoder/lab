@@ -243,3 +243,78 @@ circuit; no tier assignment yet. Pin identification: the longer lead is
 the anode, matching standard photodiode/LED lead convention — confirm
 against the physical part once received, since some photodiode packages
 reverse this convention relative to LEDs.
+
+---
+
+## Color-ring inductor assortment (0307, 1/4W)
+
+120 ordered 2026-08-30, not yet received. See
+[orders.md](orders.md#color-ring-inductor-assortment-0307-14w). Axial,
+color-ring-coded, epoxy-coated, 0307 package (1/4W/0.25W) — the listing
+also offers 0410 (1/2W) and 0510 (1W) packages under the same title, but
+those variants were **not** selected. 12 values × 10pcs: 1µH, 10µH, 22µH,
+33µH, 47µH, 100µH, 150µH, 220µH, 330µH, 470µH, 560µH, 1mH. Rated
+dielectric withstand 250V AC rms, operating temperature −25 to 85°C.
+Read the color-ring code the same way as resistor color bands (the
+listing gives no photo of the actual band-to-value mapping) — verify
+against a multimeter's inductance mode or an LCR-adjacent bridge circuit
+once [INDBRIDGE](general_purpose_circuit_dependency.md) exists, rather
+than trusting the band colors alone, since misprinted/faded bands on
+cheap bulk assortments are a known failure mode for color-coded passives.
+First candidate use: tier3 `INDBRIDGE` (inductance bridge) directly, or
+any future RF/filter/oscillator tank-circuit design.
+
+---
+
+## Multilayer ceramic capacitor assortment (50V)
+
+300 ordered 2026-08-30, not yet received. See
+[orders.md](orders.md#multilayer-ceramic-capacitor-assortment-50v).
+Through-hole/in-line MLCC, 50V rated, 10% tolerance, 5.08mm lead pitch.
+10 values × 30pcs: 10pF, 20pF, 30pF, 47pF, 56pF, 68pF, 100pF, 1nF, 10nF,
+100nF. **Operating temperature is unresolved** — the listing's own
+structured spec field says −40 to 80°C while its free-text description
+says −25°C to 185°C for the same part; treat both as unconfirmed until a
+datasheet or physical part marking settles it, and don't silently pick
+one when referencing this part elsewhere. Ceramic capacitors have no
+polarity — either lead can go to either node. First candidate use: tier3
+`CAPBRIDGE` (capacitance bridge) directly, general bypass/decoupling
+across any circuit here, and NE555 timing capacitors (tier1 `OSC`) once
+the [NE555 timer](#ne555-timer) above is received and built.
+
+---
+
+## Aluminum electrolytic capacitor kit (16V/25V/50V)
+
+120 ordered 2026-08-30, not yet received. See
+[orders.md](orders.md#aluminum-electrolytic-capacitor-kit-1665025050v) —
+**that entry's listing URL is unresolved** (the user supplied a literal
+`???` placeholder instead of a real item ID); don't trust any URL that
+might later get attached to this part without re-verifying against the
+actual AliExpress order history. Brand YTDMEN, radial-lead DIP-style,
+±20% tolerance. 12 values × 10pcs, by voltage/capacitance:
+
+| # | Voltage | Capacitance |
+|---|---------|-------------|
+| 1 | 50V | 1µF |
+| 2 | 50V | 2.2µF |
+| 3 | 50V | 3.3µF |
+| 4 | 50V | 4.7µF |
+| 5 | 50V | 10µF |
+| 6 | 25V | 22µF |
+| 7 | 25V | 33µF |
+| 8 | 25V | 47µF |
+| 9 | 16V | 100µF |
+| 10 | 16V | 220µF |
+| 11 | 16V | 330µF |
+| 12 | 16V | 470µF |
+
+**Polarized — orientation matters.** Long lead = positive; the can body
+is marked with a stripe (usually with `−` symbols) on the negative side.
+Per the listing's own manual text: solder at 350–380°C for ≤3 seconds
+per joint (prolonged heat can damage the electrolyte), keep the working
+voltage at or below 80% of the rated voltage for the selected value, and
+mount vertically with pin spacing matched to the pad spacing. First
+candidate use: bulk output filtering for `psu_medlow_lm317`/
+`psu_medlow_usbc`, and higher-capacitance tier3 `CAPBRIDGE` work beyond
+what the ceramic kit above covers.

@@ -3575,3 +3575,14 @@ One thing to check before the LM317 kit arrives, not an AliExpress item: confirm
 Want me to hold off on any doc changes until you've actually placed orders, same as last time --- just tell me what you bought and I'll log it in `orders.md`/`parts_reference.md`/`inventory.md`?
 <!-- ------ -->
 ---
+Both repos show the expected changes, correctly separated. I have not committed anything --- let me know if you'd like these committed in each repo.
+
+**Summary of what was added** (all as "on order 2026-08-30, not yet received"):
+
+-   **`lab/docs/orders.md`** and **`lab/docs/parts_reference.md`**: full entries for the 0307 1/4W color-ring inductor assortment (120pcs, 12 values), the 50V ceramic capacitor assortment (300pcs, 10 values), and the 16/25/50V electrolytic capacitor kit (120pcs, 12 values, with a full voltage/capacitance table and polarity/soldering notes).
+-   **`pico/docs/inventory.md`**: matching rows added to the "On Order (AliExpress)" table.
+-   **`lab/docs/kb/ordering_ingestion_notes.md`** (LLM-only): logged two new discoveries --- the ceramic-cap listing's spec-block-vs-description-text temperature contradiction (-40--80°C vs -25--185°C, left unresolved rather than guessed), and the electrolytic-cap listing's literal `???` placeholder URL (no real URL exists yet, don't invent one). Also noted a process quirk: the AskUserQuestion "different date" option returned its own label instead of free text, requiring a follow-up question to actually get the order date.
+
+No changes were needed in `lab/README.md` or `pico/README.md` --- neither mirrors per-part order data.
+<!-- ------ -->
+---
