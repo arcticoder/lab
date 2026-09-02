@@ -3641,3 +3641,12 @@ Built it. Summary:
 Not yet done: physical bench build/validation --- this is design + simulation only, nothing's been assembled on the breadboard yet.
 <!-- ------ -->
 ---
+Updated the design to run from `psu_4xaa` (4× AA, 6.0V raw) instead of the USB-C supply:
+
+-   **Supply choice**: `psu_3xaa` (4.5V) was ruled out --- its own smoke test shows it sags to ~4.02V under load, below the NE555's 4.5V minimum. `psu_4xaa` (6.0V raw, sags to ~5.51V at its own heavier nominal-load test point) is the first AA tier that clears the minimum with real margin, so I modeled the circuit at a conservative 5.5V.
+-   Frequency and duty cycle are independent of VCC (only depend on Ra/Rb/C), so the timing numbers are unchanged: ~649Hz/50% duty at Rb=10k up to ~2.7kHz/57% duty at Rb=2k. Only the comparator thresholds inside the behavioral model and the Ra safety margins were rescaled for 5.5V.
+-   Updated `ne555_astable.spice`, `smoke_test.py` (still 8/8 passing, 10/10 across the repo), `breadboard.md`, and `README.md` to wire from `psu_4xaa` and document the 12V-as-fallback path you mentioned (noted in both, no new folder built since you haven't asked for that yet).
+
+Nothing committed --- nothing was committed by me this session; there's a prior commit already on the branch from earlier work, and these latest edits sit as uncommitted changes on top of it for you to review.
+<!-- ------ -->
+---

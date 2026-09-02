@@ -8,11 +8,17 @@ validated the CD4066B batch), and the tier1 `OSC` node in
 [docs/general_purpose_circuit_dependency.md](../../docs/general_purpose_circuit_dependency.md).
 `OSC` unlocks tier2 `FREQC`, plus `SIMPLECNT`, `TUNINGFK`, and eventually
 `LOCKIN` downstream — and doubles as a basic `SIMPGEN` (Simple Function
-Generator), since a 555 astable run from a 5V rail *is* one.
+Generator), since a 555 astable run from a several-volt rail *is* one.
 
-Powered from [psu_medlow_usbc](../../power_supplies/psu_medlow_usbc/) — a
-clean regulated 5V sits right at the boundary between `OSC`'s "1.5–5V"
-spec and `SIMPGEN`'s "5–12V" spec, covering both roles with one build.
+Powered from [psu_4xaa](../../power_supplies/psu_4xaa/) (4x AA in series,
+6.0V raw) rather than a wall adapter — the AA-battery tier was preferred
+over building `psu_medlow_usbc` for this circuit. The NE555 needs ≥4.5V;
+`psu_3xaa` (4.5V raw) was ruled out because its own smoke test shows it
+sags to ~4.02V under load, under that minimum, so `psu_4xaa` is the first
+AA tier that actually clears it, with real margin. If it ever proves
+insufficient on the real bench, the next step up is a 12V supply (not yet
+its own folder — see `docs/parts_reference.md`'s `psu_medlow` node), not
+another AA tier.
 
 ---
 
@@ -33,8 +39,7 @@ Follow **[breadboard.md](breadboard.md)** for the physical wiring. Short
 version:
 
 1. Power the NE555 (pin 8 VCC, pin 1 GND) from
-   [psu_medlow_usbc](../../power_supplies/psu_medlow_usbc/); tie pin 4
-   (Reset) to VCC.
+   [psu_4xaa](../../power_supplies/psu_4xaa/); tie pin 4 (Reset) to VCC.
 2. Timing network: 1kΩ resistor (Ra) from VCC to pin 7 (Discharge); 3296
    trimpot (Rb, 0–10kΩ) from pin 7 to pins 2+6 (Trigger+Threshold, tied
    together); 100nF capacitor (C) from pins 2+6 to GND.
@@ -51,11 +56,14 @@ ngspice -b oscillators/ne555_astable/ne555_astable.spice
 ```
 
 ```
-freq_lo = 6.501190e+02      # Rb=10k (full CW): ~650Hz, ~50% duty
-duty_lo = 4.955083e-01
-freq_hi = 2.738373e+03      # Rb=2k: ~2.7kHz, ~57% duty
-duty_hi = 5.673385e-01
+freq_lo = 6.493506e+02      # Rb=10k (full CW): ~649Hz, ~50% duty
+duty_lo = 4.954545e-01
+freq_hi = 2.730893e+03      # Rb=2k: ~2.7kHz, ~57% duty
+duty_hi = 5.685197e-01
 ```
+
+Frequency and duty cycle only depend on Ra, Rb, and C — not on VCC — so
+these numbers are the same regardless of which supply powers the chip.
 
 The netlist models the NE555 with a behavioral macromodel — not a vendor
 transistor-level part — valid specifically for astable operation (see the

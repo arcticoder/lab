@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "tools"))
 from ngspice_runner import get_op_values
 
 SPICE_FILE = os.path.join(os.path.dirname(__file__), "ne555_astable.spice")
-VCC = 5.0
+VCC = 5.5  # psu_4xaa under this circuit's light load - see netlist header comment
 RA = 1000.0
 RON_DISCHARGE = 50.0  # typical saturated discharge-transistor on-resistance
 C = 100e-9

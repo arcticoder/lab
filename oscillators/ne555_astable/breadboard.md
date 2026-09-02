@@ -19,7 +19,7 @@ wave output.
 | 3296 trimming potentiometer | 10 kΩ | 1 |
 | Ceramic capacitor | 100 nF | 1 |
 | Ceramic capacitor | 10 nF | 1 |
-| USB-C breakout (from [psu_medlow_usbc](../../power_supplies/psu_medlow_usbc/)) | 5V | 1 |
+| 4x AA battery holders + cells (from [psu_4xaa](../../power_supplies/psu_4xaa/)) | 6.0V raw | 1 |
 | Dupont M-M jumper | assorted | ~8 |
 
 ---
@@ -41,14 +41,20 @@ Pin 1 is the corner nearest the notch/dot at the end of the DIP-8 package.
 
 ### 1. Power the chip
 
-Build [psu_medlow_usbc](../../power_supplies/psu_medlow_usbc/) first if you
-haven't already (USB-C breakout + 500mA polyfuse + 100nF bypass, 5V out).
+Build [psu_4xaa](../../power_supplies/psu_4xaa/) first if you haven't
+already (4x AA in series + 1N5817 Schottky + 500mA polyfuse, 6.0V raw).
+This is the AA-battery tier — the NE555 needs ≥4.5V, and psu_3xaa's 4.5V
+sags to ~4.02V under load (below that minimum, per its own smoke test),
+so psu_4xaa is the first AA tier that actually clears it, with margin.
+If it ever proves insufficient on the real bench, the next step up is a
+12V supply (not yet its own folder — see `docs/parts_reference.md`
+`psu_medlow` node), not another AA tier.
 
 | From | To | Wire |
 |------|----|------|
-| psu_medlow_usbc output (+) | NE555 pin 8 (VCC) | Red Dupont jumper |
-| psu_medlow_usbc output (+) | NE555 pin 4 (Reset) | Red Dupont jumper (keeps the chip enabled) |
-| psu_medlow_usbc GND (−) | NE555 pin 1 (GND) | Black Dupont jumper |
+| psu_4xaa output (+) | NE555 pin 8 (VCC) | Red Dupont jumper |
+| psu_4xaa output (+) | NE555 pin 4 (Reset) | Red Dupont jumper (keeps the chip enabled) |
+| psu_4xaa GND (−) | NE555 pin 1 (GND) | Black Dupont jumper |
 
 ### 2. Wire the timing network
 

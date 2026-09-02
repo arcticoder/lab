@@ -7,6 +7,18 @@ ne555_astable — NE555 astable square-wave oscillator, adjustable via trimpot
 *   modeled electrically below - see NE555_ASTABLE subckt note).
 *   f = 1.44 / ((Ra + 2*Rb) * C), duty D = (Ra + Rb) / (Ra + 2*Rb)
 *
+* VCC = 5.5V models power_supplies/psu_4xaa/ (4x AA in series, 6.0V raw,
+* Schottky + polyfuse drop) under this circuit's light (~5mA) load - a
+* deliberately conservative pick vs. psu_4xaa's own documented 5.51V
+* figure, which is measured at its much heavier ~275mA nominal-load point
+* (higher current means more Schottky/fuse drop, so this circuit's real
+* draw will sag less, not more, than that number). psu_3xaa (4.5V raw)
+* was ruled out: its own smoke test shows it sags to ~4.02V under load,
+* under the NE555's 4.5V datasheet minimum - psu_4xaa is the first AA
+* tier that clears it with real margin. If it ever proves insufficient in
+* practice, the next tier up is a 12V supply (docs/parts_reference.md
+* `psu_medlow` node), not yet built as its own folder.
+*
 * Rb is the 3296 10k trimpot (lab/docs/parts_reference.md#3296-trimming-
 * potentiometer) wired as a glitch-safe 2-terminal rheostat (wiper tied to
 * the unused outer pin - see breadboard.md). Two settings are simulated
@@ -20,7 +32,7 @@ ne555_astable — NE555 astable square-wave oscillator, adjustable via trimpot
 * level model: it exploits the fact that, with TRIG and THRESH tied
 * together (astable mode only), the chip's internal flip-flop collapses
 * to a single Schmitt-trigger comparator with fixed trip points at Vcc/3
-* and 2*Vcc/3 (hardcoded here at 5V supply: 1.667V / 3.333V - rescale
+* and 2*Vcc/3 (hardcoded here at 5.5V supply: 1.833V / 3.667V - rescale
 * both if VCC changes). The discharge transistor is modeled as an ideal
 * switch (Ron=50, matching a typical saturated NPN Vce_sat/Ic at these
 * currents) from DISCH to GND, closed whenever OUT is low. Pin 5 (CV) is
@@ -30,17 +42,17 @@ ne555_astable — NE555 astable square-wave oscillator, adjustable via trimpot
 * not pulled from the sim (ngspice's @Ra[i] probe returns a frozen DC-op
 * value, not a real transient trace, for this switch/B-source topology -
 * not worth fighting); it's bounded analytically instead
-* (Vcc/(Ra+Ron) ~= 4.8mA, see smoke_test.py), well under the NE555's
+* (Vcc/(Ra+Ron) ~= 5.2mA, see smoke_test.py), well under the NE555's
 * discharge-sink rating.
 .subckt NE555_ASTABLE VCC GND DISCH CT OUT
-Bout OUT 0 V = (V(OUT) > 2.5) ? (V(CT) > 3.333 ? 0 : 5) : (V(CT) < 1.667 ? 5 : 0)
+Bout OUT 0 V = (V(OUT) > 2.75) ? (V(CT) > 3.667 ? 0 : 5.5) : (V(CT) < 1.833 ? 5.5 : 0)
 Cout OUT 0 1p
-Boutn OUTN 0 V = 5 - V(OUT)
+Boutn OUTN 0 V = 5.5 - V(OUT)
 Sdis DISCH GND OUTN GND SWMOD
-.model SWMOD SW(Ron=50 Roff=1e9 Vt=2.5 Vh=0.1)
+.model SWMOD SW(Ron=50 Roff=1e9 Vt=2.75 Vh=0.1)
 .ends NE555_ASTABLE
 
-Vcc VCC 0 DC 5
+Vcc VCC 0 DC 5.5
 Ra  VCC P7  1k
 Rb  P7  CT  10k
 C1  CT  0   100n
@@ -49,9 +61,9 @@ X1  VCC 0 P7 CT OUT NE555_ASTABLE
 .control
 * --- Rb = 10k (full CW): lowest frequency, most-square duty ---
 tran 1u 10m
-meas tran t1_lo WHEN v(out)=2.5 RISE=3
-meas tran t2_lo WHEN v(out)=2.5 RISE=4
-meas tran thigh_lo TRIG v(out) VAL=2.5 RISE=3 TARG v(out) VAL=2.5 FALL=3
+meas tran t1_lo WHEN v(out)=2.75 RISE=3
+meas tran t2_lo WHEN v(out)=2.75 RISE=4
+meas tran thigh_lo TRIG v(out) VAL=2.75 RISE=3 TARG v(out) VAL=2.75 FALL=3
 meas tran vct_max_lo MAX v(ct)
 let period_lo = t2_lo - t1_lo
 let freq_lo = 1/period_lo
@@ -63,9 +75,9 @@ print vct_max_lo
 * --- Rb = 2k: upper end of recommended trim range ---
 alter Rb = 2k
 tran 1u 10m
-meas tran t1_hi WHEN v(out)=2.5 RISE=3
-meas tran t2_hi WHEN v(out)=2.5 RISE=4
-meas tran thigh_hi TRIG v(out) VAL=2.5 RISE=3 TARG v(out) VAL=2.5 FALL=3
+meas tran t1_hi WHEN v(out)=2.75 RISE=3
+meas tran t2_hi WHEN v(out)=2.75 RISE=4
+meas tran thigh_hi TRIG v(out) VAL=2.75 RISE=3 TARG v(out) VAL=2.75 FALL=3
 meas tran vct_max_hi MAX v(ct)
 let period_hi = t2_hi - t1_hi
 let freq_hi = 1/period_hi
