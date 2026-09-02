@@ -126,9 +126,7 @@ the converted `.md` files are tracked).
   as unverified marketing copy until the physical part confirms actual
   wiper behavior. See
   [parts_reference.md](parts_reference.md#3296-trimming-potentiometer).
-- Supports: tier1 `OSC`/reference-adjustment use (calibration trim), per
-  [spacetime_lab_budget.md](spacetime_lab_budget.md)'s "Trim
-  Potentiometers" line.
+- Supports: tier1 `OSC`/reference-adjustment use (calibration trim).
 - Ordered: 2026-08-25.
 
 ### Panel-mount fuse holder (6×30mm)

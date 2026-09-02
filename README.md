@@ -172,10 +172,10 @@ will show up here as they get one.
   Needed any time you run one of this repo's `main.py` scripts against
   real hardware instead of just simulating.
 - See `docs/orders.md` for what's actually been ordered/received from
-  AliExpress against the `spacetime_lab_budget.md` estimates, and
-  `docs/parts_reference.md` for pinouts/specs on those parts. Physical part
-  counts are also mirrored into the sibling `pico/` repo's
-  `pico/docs/inventory.md`, the shared master inventory across both repos.
+  AliExpress, and `docs/parts_reference.md` for pinouts/specs on those
+  parts. Physical part counts are also mirrored into the sibling `pico/`
+  repo's `pico/docs/inventory.md`, the shared master inventory across both
+  repos.
 
 ---
 
@@ -272,9 +272,8 @@ signal_conditioning/
 
 docs/
     history.md                                  design conversation log
-    general_purpose_circuit_dependency.md       general-purpose tier graph (PSU, protection, tiers 1-4/6/9)
+    general_purpose_circuit_dependency.md       general-purpose tier graph (PSU, protection, tiers 1-4/6/9, scope/logic-analyzer tiers M0-M5)
     spacetime_circuits_dependency.md            spacetime-specific tier graph (tiers 5/7/8)
-    spacetime_lab_budget.md                     parts list & budget estimate
     orders.md                                   AliExpress order log (received / on order)
     parts_reference.md                          pinouts & specs for ordered parts without a datasheet on file
     manuals/                                    converted (markitdown) part manuals; source PDFs gitignored

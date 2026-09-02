@@ -1340,3 +1340,60 @@ the dependency graph and matching README/breadboard.md docs. A new
 with a dotted `-.alternative.->` edge to `PSUMEDLOW`, matching the
 existing `POLYSWITCH -.alternative.->` pattern used elsewhere in the same
 file for other alternative-implementation edges.
+
+## Scope/logic-analyzer tiers M0–M5 added to `concurrent_meas_tools` (2026-09-01), replacing the single `SCOPE` node
+
+The old `SCOPE["Real-Time Oscilloscope or Equivalent"]` node (the one
+`history.md` calls out as the long-standing gap forcing ADC-polling
+scripts to stand in for a scope) was replaced with a nested `scope_tiers`
+subgraph of six tier nodes (`SCOPEPICO`/M0 through `SCOPEBENCH`/M5),
+mirroring the PSU tier-ladder pattern (`psu_ultralow -->|upgrade to|
+psu_low --> ...`) via `SCOPEPC -->|upgrade to| SCOPEUSBSER -->|upgrade
+to| SCOPELA -->|upgrade to| SCOPEDSO -->|upgrade to| SCOPEBENCH`. First
+draft put the tier writeup in a prose section after the ```mermaid
+fence — caught and reverted before being left in the repo, since that
+directly violates the "pure mermaid, no prose" convention (top of this
+file): all the tier detail (specs, what it unlocks, cost, purchased vs.
+on-hand) now lives in each node's own bracketed label text instead, per
+that convention's existing rule of "the fix is to edit the label text in
+place, no separate paragraph."
+
+Tier assignment logic, for a future session extending this ladder: **M0
+(Pico MicroPython, $0, on hand)** and **M1 (desktop PC onboard sound
+card, $0, on hand)** are already-owned capabilities getting formalized as
+tiers, not purchases — M0 reuses the measured noise-floor figure from
+`measurement_tools/gpio_analog_sensing/` (std-dev <5 counts/<0.25mV with
+a 100nF filter) rather than a spec-sheet number, and M1 is scoped
+strictly to AC/audio-band (20Hz-20kHz) since the sound card's AC coupling
+can't read DC — it only supersedes the smartphone-based `AUDIOSC`
+bootstrap node within that band, not generally. **M2 (USB-serial
+bit-banged GPIO, ~$1-2)** is deliberately framed as a cross-check
+channel, not a capture instrument — still software-timed like M0/M1, its
+only advantage is being a second, PC-hosted, Pico-independent digital
+line. **M3 (8ch 24MHz USB logic analyzer, ~$5-8)** is the first tier with
+real hardware-timed sampling/triggering, which is the actual gap
+`history.md`'s priority list flagged. **M4 (DSO138 kit, ~$15-25)** is the
+first tier with true analog waveform capture (not just digital edges or
+audio-band signal) — kept as a distinct tier from M3 rather than folded
+together because digital timing (M3) and analog waveform shape (M4) are
+different capabilities the existing tier1-9/safety graph needs
+separately. **M5 (bench-grade mixed-signal, cost TBD)** is intentionally
+left unpriced/unspecified — it's a placeholder for "revisit once tier7/8
+RF/HV-pulse work outgrows M3/M4," not a purchase to plan around yet, per
+the user's explicit instruction to postpone purchases until they're
+definitely needed. `spacetime_circuits_dependency.md`'s `GENERAL` stub
+node and intro paragraph were updated to mention "scope/logic-analyzer
+tiers M0-M5" alongside the existing PSU/protection/tier callouts, since
+`SCOPEBENCH -.required.-> SPACETIME` is the only cross-file edge this
+addition introduced.
+
+Also deleted `docs/spacetime_lab_budget.md` in the same session (explicit
+user instruction — "no point in keeping that updated, I was just curious
+at one point"). It had three live referrers beyond `history.md` (which
+was left alone, append-only-log treatment as usual): `lab/README.md`
+(repo-structure tree + one prose mention), `docs/orders.md` (one
+citation on the 3296 trimpot entry), `docs/parts_reference.md` (one
+citation on the LM358 entry) — all three were edited to remove the
+dangling reference rather than leaving a dead link. Before deleting a doc
+like this, grep the whole repo for its filename, not just check whether
+the user named specific referrers.

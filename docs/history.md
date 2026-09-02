@@ -3586,3 +3586,21 @@ Both repos show the expected changes, correctly separated. I have not committed 
 No changes were needed in `lab/README.md` or `pico/README.md` --- neither mirrors per-part order data.
 <!-- ------ -->
 ---
+Both tasks are done. Summary:
+
+**Task 1 --- scope/logic-analyzer tiers**: Replaced the single `SCOPE` node in `docs/general_purpose_circuit_dependency.md` with a six-tier ladder (M0--M5), mirroring the PSU tier pattern:
+
+-   **M0** Pico MicroPython ADC/GPIO (on hand, $0)
+-   **M1** Desktop PC (ROG Strix) onboard sound card as a 2-ch audio-band scope/function-gen (on hand, $0)
+-   **M2** Desktop PC + USB-serial bit-banged GPIO (~$1-2, not yet bought)
+-   **M3** 8ch 24MHz USB logic analyzer (~$5-8, not yet bought)
+-   **M4** DSO138 DIY analog scope kit (~$15-25, not yet bought)
+-   **M5** Bench-grade mixed-signal scope (cost TBD, only once spacetime RF/HV work outgrows M3/M4)
+
+Each tier's node label states what it can validate and its real constraints; edges wire them into the existing tier1-9/safety/PSU graph and into `spacetime_circuits_dependency.md`'s `GENERAL`/`SPACETIME` stubs. Both mermaid files were validated to render cleanly. No purchases were made --- all of M2--M5 stay "not yet purchased" per your instruction.
+
+**Task 2**: Deleted `docs/spacetime_lab_budget.md` and cleaned up its three live referrers in `README.md`, `docs/orders.md`, and `docs/parts_reference.md` (left `history.md` untouched, per the repo's append-only-log convention).
+
+I also caught myself breaking this repo's "pure mermaid, no prose" convention (I'd first added an explanatory section after the diagram) --- reverted that and pushed the detail into node labels instead, and logged the whole thing in `docs/kb/repo_docs_conventions.md` for future sessions.
+<!-- ------ -->
+---

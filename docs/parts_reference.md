@@ -72,9 +72,8 @@ Standard pinout:
 Single-supply capable (input range includes GND), which is why it shows up
 as the go-to cheap op-amp for battery-powered analog frontends. Candidate
 for tier2 voltmeter/ammeter frontends and tier4 differential amp — though
-`spacetime_lab_budget.md` calls out precision op-amps (OPA2277, TL072) as
-the preferred choice where noise/offset actually matters; LM358 is the
-budget/bring-up substitute.
+precision op-amps (OPA2277, TL072) are the preferred choice where
+noise/offset actually matters; LM358 is the budget/bring-up substitute.
 
 ---
 

@@ -4,7 +4,7 @@ Spacetime-research-specific circuits: gravitation/field sensor interfaces,
 high-voltage pulse generation, and calorimetric/energy measurement for
 electrogravitics (Biefeld-Brown effect) and Woodward-effect experiments.
 These build on the general-purpose foundation (PSU tiers, protection,
-safety monitoring, tiers 1–4/6/9) in
+safety monitoring, tiers 1–4/6/9, scope/logic-analyzer tiers M0–M5) in
 [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
 — see the `GENERAL` node below for exactly which upstream tiers feed in.
 
@@ -32,7 +32,7 @@ graph TD
         NOISEFIG["Noise Figure Measurement Circuit"]
     end
 
-    GENERAL["General-purpose foundation: PSU tiers (incl. psu_pico_rail), protection, safety monitoring, tiers 1-4/6/9 — see general_purpose_circuit_dependency.md"]
+    GENERAL["General-purpose foundation: PSU tiers (incl. psu_pico_rail), protection, safety monitoring, tiers 1-4/6/9, scope/logic-analyzer tiers M0-M5 — see general_purpose_circuit_dependency.md"]
 
     %% Upstream foundation feeds every spacetime-specific tier
     GENERAL --> tier5

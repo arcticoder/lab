@@ -125,7 +125,14 @@ graph TD
     end
 
     subgraph concurrent_meas_tools ["Validation & Test Tools (Use Alongside Build)"]
-        SCOPE["Real-Time Oscilloscope or Equivalent"]
+        subgraph scope_tiers ["Scope/Logic-Analyzer Tiers, by Fidelity & Cost (don't buy the next tier until it actually blocks a circuit)"]
+            SCOPEPICO["M0: Pico MicroPython — RP2040 12-bit ADC (0-3.3V only, software-timed via machine.ADC; measured noise floor &lt;5 counts/&lt;0.25mV with 100nF filter, see measurement_tools/gpio_analog_sensing/) + GPIO edge timing via ticks_us() in an ISR (sub-kHz to low-kHz reliable; PIO could go faster but nothing here programs it) — $0, on hand"]
+            SCOPEPC["M1: Desktop PC (ROG Strix) onboard sound card as 2-ch AC-coupled scope+function-gen (Audacity/PulseView soundcard driver), 20Hz-20kHz, 16/24-bit — $0, on hand; needs a DC-blocking/attenuator buffer in front of line-in (AC-coupled, can't read DC); supersedes AUDIOSC in-band only"]
+            SCOPEUSBSER["M2: Desktop PC + USB-serial adapter (CH340/FTDI), pyserial-bit-banged RTS/DTR — second PC-hosted digital channel independent of the Pico, cross-check only (still software-timed, ~100Hz-1kHz), not a capture instrument — ~$1-2, not yet purchased"]
+            SCOPELA["M3: 8ch 24MHz USB Logic Analyzer + sigrok/PulseView — first tier with real hardware-timed sampling + triggering + I2C/SPI/UART decode — ~$5-8, not yet purchased"]
+            SCOPEDSO["M4: DSO138 DIY analog scope kit, 200kHz/1MSa/s single-channel — first tier that captures actual analog waveform shape, not just edges; solder-it-yourself — ~$15-25, not yet purchased"]
+            SCOPEBENCH["M5: Bench-grade mixed-signal scope/instrument — cost TBD, price only once tier7/8 RF/HV-pulse/lock-in work needs bandwidth or simultaneous analog+digital capture beyond M3/M4"]
+        end
         PRECBOX["Precision Decade Box"]
         LOADBANK["Resistive Load Bank"]
         NOISEGEN["Precision Noise Source"]
@@ -204,10 +211,17 @@ graph TD
     SIMPGEN --> tier2
     
     %% Bootstrap feeds into concurrent measurement tools
-    PASSVM -.alternative.-> SCOPE
-    SIMPLECNT -.alternative.-> SCOPE
-    AUDIOSC -.alternative.-> SCOPE
+    PASSVM -.alternative.-> SCOPEPICO
+    SIMPLECNT -.alternative.-> SCOPEPICO
+    AUDIOSC -.superseded by.-> SCOPEPC
     TUNINGFK -.calibration.-> TESTSIG
+
+    %% Scope/logic-analyzer tier progression (mirrors the PSU upgrade chain)
+    SCOPEPICO -.parallel, independent channel.-> SCOPEPC
+    SCOPEPC -->|upgrade to| SCOPEUSBSER
+    SCOPEUSBSER -->|upgrade to| SCOPELA
+    SCOPELA -->|upgrade to| SCOPEDSO
+    SCOPEDSO -->|upgrade to| SCOPEBENCH
 
     %% Tier 2 supports tier 3
     VM --> tier3
@@ -242,9 +256,19 @@ graph TD
     REF --> REFGEN2
 
     %% Concurrent measurement tools connect to build process
-    SCOPE -.validation.-> tier2
-    SCOPE -.validation.-> tier3
-    SCOPE -.validation.-> tier4
+    SCOPEPICO -.validation.-> tier1
+    SCOPEPICO -.validation.-> tier2
+    SCOPEPICO -.validation.-> safety
+    SCOPEPC -.validation, AC/audio-band only.-> tier1
+    SCOPEUSBSER -.independent x-check.-> SCOPEPICO
+    SCOPELA -.validation.-> tier2
+    SCOPELA -.validation.-> tier3
+    SCOPELA -.validation.-> MUX
+    SCOPEDSO -.validation.-> tier1
+    SCOPEDSO -.validation.-> tier4
+    SCOPEDSO -.ripple/noise check.-> psu_medlow
+    SCOPEDSO -.ripple/noise check.-> psu_medhigh
+    SCOPEBENCH -.required.-> SPACETIME
     PRECBOX -.calibration.-> tier3
     THERMOAMP -.validation.-> SPACETIME
     LOADBANK -.testing.-> SPACETIME
@@ -277,6 +301,7 @@ graph TD
     style tier6 fill:#f1f8e9
     style tier9 fill:#e0f2f1
     style concurrent_meas_tools fill:#fff9c4
+    style scope_tiers fill:#fff59d,stroke:#f57f17,stroke-width:2px
     style SPACETIME fill:#f8bbd0,stroke:#ad1457,stroke-width:2px
     style PICOADC fill:#eeeeee,stroke:#616161,stroke-width:1px
     style PICOBTN fill:#eeeeee,stroke:#616161,stroke-width:1px
