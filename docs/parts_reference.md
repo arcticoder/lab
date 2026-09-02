@@ -144,7 +144,7 @@ thin/low-current rated only.
 
 ## 3296 trimming potentiometer
 
-10 ordered 2026-08-25 (10kΩ variant), not yet received. See
+10 received 2026-09-01 (10kΩ variant). See
 [orders.md](orders.md#3296w-trimming-potentiometer).
 
 Standard 3-pin cermet trimmer, top-adjust screw wiper. The listing calls
@@ -190,7 +190,7 @@ and tier2 `FREQC` (as a gate-time generator for a frequency counter).
 
 ## TL431A precision shunt reference
 
-5 ordered 2026-08-25, TO-92 package. See
+5 received 2026-09-01, TO-92 package; untested. See
 [orders.md](orders.md#tl431a-precision-shunt-reference-to-92). 3-terminal
 adjustable shunt regulator/reference: Cathode, Anode, Reference. Internal
 bandgap reference is 2.495V between Ref and Anode; feeding back a

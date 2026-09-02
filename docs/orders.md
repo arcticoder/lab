@@ -155,7 +155,7 @@ the converted `.md` files are tracked).
   wiper behavior. See
   [parts_reference.md](parts_reference.md#3296-trimming-potentiometer).
 - Supports: tier1 `OSC`/reference-adjustment use (calibration trim).
-- Ordered: 2026-08-25.
+- Ordered: 2026-08-25. Received: 2026-09-01.
 
 ### TL431A precision shunt reference (TO-92)
 
@@ -165,7 +165,7 @@ the converted `.md` files are tracked).
   precise alternative to the resistor-divider + LM358 buffer approach in
   [voltage_reference_lm358](../signal_conditioning/voltage_reference_lm358/).
   See [parts_reference.md](parts_reference.md#tl431a-precision-shunt-reference).
-- Ordered: 2026-08-25.
+- Ordered: 2026-08-25. Received: 2026-09-01.
 
 ### 18-in-1 wire stripper/crimper pliers
 

@@ -3613,3 +3613,16 @@ All three components are now marked received (2026-09-01) and moved out of "on o
 Left uncommitted per your choice --- the diffs are ready for you to review and commit whenever you like.
 <!-- ------ -->
 ---
+Inventory updated (3296 trimpot ×10 and TL431A ×5 moved from "on order" to "received" in `pico/docs/inventory.md`, `lab/docs/orders.md`, and `lab/docs/parts_reference.md`).
+
+For what to build next: the **NE555 astable oscillator (tier1 `OSC`)** is the clear fit --- you already have the NE555 batch (10, untested) and now the 3296 10kΩ trimpot to make its RC timing adjustable, plus 100nF/10nF caps and resistors on hand for the network. Both parts' existing notes in `parts_reference.md` already flagged this exact pairing. It's a good next build because:
+
+-   It doubles as the first per-unit validation of the NE555 batch (mirrors how `cd4066_switch_tester` validated that IC batch).
+-   `OSC` unlocks several things downstream in the dependency graph: tier2 (`FREQC`, feeding a frequency counter), `SIMPLECNT`, `TUNINGFK`, and eventually `LOCKIN` --- more than any other buildable node right now.
+-   It's also a straight path to `SIMPGEN` (Simple Function Generator, tier1) since a 555 astable run at 5--12V *is* a basic square-wave generator --- that's the line you had selected.
+
+The TL431A is a secondary option --- it's a candidate upgrade to the `REF` you already built with the LM358, not a new capability, so lower priority than the 555 build.
+
+Want me to scaffold the 555 oscillator circuit (spice netlist, breadboard.md, README.md, smoke\_test.py per the repo convention) under `lab/signal_conditioning/` or a new oscillators category?
+<!-- ------ -->
+---
