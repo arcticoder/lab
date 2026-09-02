@@ -161,7 +161,7 @@ divider ratio.
 
 ## Panel-mount fuse holder (6×30mm)
 
-1 ordered 2026-08-25, not yet received. See
+1 received 2026-09-01. See
 [orders.md](orders.md#panel-mount-fuse-holder-6x30mm). EGBO brand, panel
 opening 12/14mm, rated 10A/250V max, accepts standard 6×30mm glass tube
 fuses (also fits 5×20mm per the listing, though the selected variant is
@@ -172,7 +172,8 @@ sized for 6×30mm). Pairs with the 2A glass tube fuse below for the
 
 ## NE555 timer
 
-10 ordered 2026-08-25, DIP-8 package. See
+10 received 2026-09-01, DIP-8 package; untested/not yet validated per-unit
+(bulk IC batch, no per-unit test jig built yet). See
 [orders.md](orders.md#ne555-timer-ic-dip-8). Standard NE555 pinout:
 
 | Pin | Function | Pin | Function |
@@ -206,7 +207,11 @@ external pull-up resistor.
 
 ## Glass tube fuses (6×30mm)
 
-10 ordered 2026-08-25, 2A fast-blow variant, 250V rated. See
+10 received 2026-09-01, 2A fast-blow variant, 250V rated; untested/not yet
+validated per-unit (bulk consumable-fuse batch, no per-unit test jig built
+yet — distinct from the polyfuse tester in
+[measurement_tools/fuse_test_voltmeter/](../measurement_tools/fuse_test_voltmeter/),
+which tests resettable PTC polyfuses, not glass cartridge fuses). See
 [orders.md](orders.md#glass-tube-fuses-6x30mm-250v). Same listing offers
 0.1A–30A variants; 2A was the selected SKU. Pairs with the panel-mount
 holder above for the `psu_medlow` protection tier (2A fast-blow +
@@ -279,7 +284,8 @@ one when referencing this part elsewhere. Ceramic capacitors have no
 polarity — either lead can go to either node. First candidate use: tier3
 `CAPBRIDGE` (capacitance bridge) directly, general bypass/decoupling
 across any circuit here, and NE555 timing capacitors (tier1 `OSC`) once
-the [NE555 timer](#ne555-timer) above is received and built.
+the [NE555 timer](#ne555-timer) above (received, not yet built into a
+circuit) gets its `OSC` design built.
 
 ---
 

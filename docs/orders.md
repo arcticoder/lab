@@ -109,6 +109,34 @@ the converted `.md` files are tracked).
   the physical silkscreen now that it's on hand.
 - Logged received: 2026-08-24.
 
+### Panel-mount fuse holder (6×30mm)
+
+- 1 received. EGBO brand, panel opening 12/14mm, rated 10A/250V. See
+  [parts_reference.md](parts_reference.md#panel-mount-fuse-holder). Pairs
+  with the 2A glass tube fuses below for the `psu_medlow` protection tier —
+  neither has a circuit built against it yet.
+- Logged received: 2026-09-01.
+
+### NE555 timer IC (DIP-8)
+
+- 10 received, DIP-8 package. See
+  [parts_reference.md](parts_reference.md#ne555-timer) for pinout. Not yet
+  validated per-unit (bulk IC batch, no test jig built yet) — run each
+  through a bring-up check before trusting it in tier1 `OSC` or tier2
+  `FREQC`.
+- Logged received: 2026-09-01.
+
+### Glass tube fuses, 6×30mm 250V
+
+- 10 received, all 2A fast-blow. See
+  [parts_reference.md](parts_reference.md#glass-tube-fuses-6x30mm). Not yet
+  validated per-unit (bulk consumable-fuse batch, no test jig built yet —
+  distinct from the polyfuse tester in
+  [measurement_tools/fuse_test_voltmeter/](../measurement_tools/fuse_test_voltmeter/),
+  which tests resettable PTC polyfuses, not glass cartridge fuses). Pairs
+  with the panel-mount holder above for `psu_medlow`.
+- Logged received: 2026-09-01.
+
 ---
 
 ## On order (placed, not yet received)
@@ -129,27 +157,6 @@ the converted `.md` files are tracked).
 - Supports: tier1 `OSC`/reference-adjustment use (calibration trim).
 - Ordered: 2026-08-25.
 
-### Panel-mount fuse holder (6×30mm)
-
-- Listing: "EGBO 1~10PCS 5×20mm & 6×30mm Glass Fuse Holders (EGBO,
-  1~10PCS): Panel Mount Socket for Fuse Panels" (variant selected:
-  "6X30mm 1PCS").
-- 1 ordered. Panel-mount socket, opening 12/14mm, rated 10A/250V.
-- Supports: `psu_medlow` protection tier, paired with the 2A glass fuse
-  below. See
-  [parts_reference.md](parts_reference.md#panel-mount-fuse-holder).
-- Ordered: 2026-08-25.
-
-### NE555 timer IC (DIP-8)
-
-- Listing: "10-100PCS NE555 555 DIP-8 IC Timers NEW GOOD QUALITY
-  PRECISION TIMERS" (variant selected: "DIP-10PCS").
-- 10 ordered, DIP-8 package.
-- Supports: tier1 `OSC` (precision timing oscillator) and tier2 `FREQC`
-  (basic frequency counter, typically 555-gated). See
-  [parts_reference.md](parts_reference.md#ne555-timer).
-- Ordered: 2026-08-25.
-
 ### TL431A precision shunt reference (TO-92)
 
 - Listing: "5piece TL431A TL431 TO-92".
@@ -158,17 +165,6 @@ the converted `.md` files are tracked).
   precise alternative to the resistor-divider + LM358 buffer approach in
   [voltage_reference_lm358](../signal_conditioning/voltage_reference_lm358/).
   See [parts_reference.md](parts_reference.md#tl431a-precision-shunt-reference).
-- Ordered: 2026-08-25.
-
-### Glass tube fuses, 6×30mm 250V
-
-- Listing: "Hzy 10pcs multimeter Fuse Quick Fast Blow Fuse Glass Tube
-  thermo Fuses 6*30mm 250V 1A/2A/3A/4A/5A/6A/7A/8A/10A/15A/20A/25A/30A"
-  (variant selected: "2A").
-- 10 ordered (lot of 10 per the listing's unit type), all 2A fast-blow.
-- Supports: `psu_medlow` protection tier, paired with the panel-mount
-  holder above. See
-  [parts_reference.md](parts_reference.md#glass-tube-fuses-6x30mm).
 - Ordered: 2026-08-25.
 
 ### 18-in-1 wire stripper/crimper pliers

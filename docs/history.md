@@ -3604,3 +3604,12 @@ Each tier's node label states what it can validate and its real constraints; edg
 I also caught myself breaking this repo's "pure mermaid, no prose" convention (I'd first added an explanatory section after the diagram) --- reverted that and pushed the detail into node labels instead, and logged the whole thing in `docs/kb/repo_docs_conventions.md` for future sessions.
 <!-- ------ -->
 ---
+All three components are now marked received (2026-09-01) and moved out of "on order" status:
+
+-   **`pico/docs/inventory.md`** --- moved to the "Prototyping, Analog ICs & Test Equipment" table
+-   **`lab/docs/orders.md`** --- moved from "On order" to "Received" section
+-   **`lab/docs/parts_reference.md`** --- "ordered, not yet received" → "received", plus untested/no-test-jig-yet caveats added for the NE555 (bulk IC batch) and glass tube fuses (bulk consumable batch), per the repo's existing "received ≠ validated" convention for bulk parts
+
+Left uncommitted per your choice --- the diffs are ready for you to review and commit whenever you like.
+<!-- ------ -->
+---
