@@ -1,0 +1,77 @@
+ne555_astable — NE555 astable square-wave oscillator, adjustable via trimpot
+*
+* Topology (standard 555 astable, pins 2 and 6 tied together):
+*   VCC --Ra(1k)--> P7 (discharge, pin 7) --Rb(3296 trimpot, 0-10k)--> CT (pins 2/6)
+*   CT --C(100nF)--> GND
+*   Pin 4 (reset) tied to VCC, pin 5 (CV) decoupled with 10nF to GND (not
+*   modeled electrically below - see NE555_ASTABLE subckt note).
+*   f = 1.44 / ((Ra + 2*Rb) * C), duty D = (Ra + Rb) / (Ra + 2*Rb)
+*
+* Rb is the 3296 10k trimpot (lab/docs/parts_reference.md#3296-trimming-
+* potentiometer) wired as a glitch-safe 2-terminal rheostat (wiper tied to
+* the unused outer pin - see breadboard.md). Two settings are simulated
+* below to bound the recommended usable trim range:
+*   Rb=10k (full CW)  -> lowest frequency, most-square output (~50% duty)
+*   Rb=2k              -> upper end of the *recommended* range; duty skews
+*                         further from 50% as Rb is turned down further
+*                         still (see README.md "Expected behaviour")
+*
+* NE555_ASTABLE below is a behavioral macromodel, NOT a vendor transistor-
+* level model: it exploits the fact that, with TRIG and THRESH tied
+* together (astable mode only), the chip's internal flip-flop collapses
+* to a single Schmitt-trigger comparator with fixed trip points at Vcc/3
+* and 2*Vcc/3 (hardcoded here at 5V supply: 1.667V / 3.333V - rescale
+* both if VCC changes). The discharge transistor is modeled as an ideal
+* switch (Ron=50, matching a typical saturated NPN Vce_sat/Ic at these
+* currents) from DISCH to GND, closed whenever OUT is low. Pin 5 (CV) is
+* not exposed - real hardware leaves it at its internal default (~2/3 Vcc)
+* via the 10nF decoupling cap, matching the fixed 2*Vcc/3 threshold used
+* here. Discharge-pin current through Ra during the discharge phase is
+* not pulled from the sim (ngspice's @Ra[i] probe returns a frozen DC-op
+* value, not a real transient trace, for this switch/B-source topology -
+* not worth fighting); it's bounded analytically instead
+* (Vcc/(Ra+Ron) ~= 4.8mA, see smoke_test.py), well under the NE555's
+* discharge-sink rating.
+.subckt NE555_ASTABLE VCC GND DISCH CT OUT
+Bout OUT 0 V = (V(OUT) > 2.5) ? (V(CT) > 3.333 ? 0 : 5) : (V(CT) < 1.667 ? 5 : 0)
+Cout OUT 0 1p
+Boutn OUTN 0 V = 5 - V(OUT)
+Sdis DISCH GND OUTN GND SWMOD
+.model SWMOD SW(Ron=50 Roff=1e9 Vt=2.5 Vh=0.1)
+.ends NE555_ASTABLE
+
+Vcc VCC 0 DC 5
+Ra  VCC P7  1k
+Rb  P7  CT  10k
+C1  CT  0   100n
+X1  VCC 0 P7 CT OUT NE555_ASTABLE
+
+.control
+* --- Rb = 10k (full CW): lowest frequency, most-square duty ---
+tran 1u 10m
+meas tran t1_lo WHEN v(out)=2.5 RISE=3
+meas tran t2_lo WHEN v(out)=2.5 RISE=4
+meas tran thigh_lo TRIG v(out) VAL=2.5 RISE=3 TARG v(out) VAL=2.5 FALL=3
+meas tran vct_max_lo MAX v(ct)
+let period_lo = t2_lo - t1_lo
+let freq_lo = 1/period_lo
+let duty_lo = thigh_lo/period_lo
+print freq_lo
+print duty_lo
+print vct_max_lo
+
+* --- Rb = 2k: upper end of recommended trim range ---
+alter Rb = 2k
+tran 1u 10m
+meas tran t1_hi WHEN v(out)=2.5 RISE=3
+meas tran t2_hi WHEN v(out)=2.5 RISE=4
+meas tran thigh_hi TRIG v(out) VAL=2.5 RISE=3 TARG v(out) VAL=2.5 FALL=3
+meas tran vct_max_hi MAX v(ct)
+let period_hi = t2_hi - t1_hi
+let freq_hi = 1/period_hi
+let duty_hi = thigh_hi/period_hi
+print freq_hi
+print duty_hi
+print vct_max_hi
+.endc
+.end

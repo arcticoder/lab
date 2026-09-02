@@ -183,8 +183,12 @@ sized for 6×30mm). Pairs with the 2A glass tube fuse below for the
 | 3 | Output | 6 | Threshold |
 | 4 | Reset | 5 | Control Voltage |
 
-Supply 4.5–16V typical. Candidate for tier1 `OSC` (astable configuration)
-and tier2 `FREQC` (as a gate-time generator for a frequency counter).
+Supply 4.5–16V typical. Astable configuration designed & simulated
+2026-09-01 in `oscillators/ne555_astable/` (tier1 `OSC`, 5V rail, 1kΩ Ra +
+3296 10kΩ trimpot as Rb + 100nF timing cap — ~686Hz–2.9kHz recommended
+trim range), not yet bench-built/validated on real hardware. Also a
+candidate for tier2 `FREQC` (as a gate-time generator for a frequency
+counter).
 
 ---
 
@@ -283,9 +287,12 @@ datasheet or physical part marking settles it, and don't silently pick
 one when referencing this part elsewhere. Ceramic capacitors have no
 polarity — either lead can go to either node. First candidate use: tier3
 `CAPBRIDGE` (capacitance bridge) directly, general bypass/decoupling
-across any circuit here, and NE555 timing capacitors (tier1 `OSC`) once
-the [NE555 timer](#ne555-timer) above (received, not yet built into a
-circuit) gets its `OSC` design built.
+across any circuit here, and NE555 timing capacitors (tier1 `OSC`) — the
+100nF/10nF SunFounder-kit ceramic caps (already on hand, not this ordered
+assortment) cover the [NE555 timer](#ne555-timer)'s `OSC` design in
+`oscillators/ne555_astable/` (designed & simulated 2026-09-01, not yet
+bench-built), so this assortment isn't actually needed for that use once
+it arrives.
 
 ---
 

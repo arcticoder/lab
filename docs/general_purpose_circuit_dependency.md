@@ -85,7 +85,7 @@ graph TD
 
     subgraph tier1 ["Tier 1: Foundational (Simplest, Low Cost)"]
         REF["Precision Reference Voltage Generator (3.3V or 5V input) — see signal_conditioning/voltage_reference_lm358/ — built & bench-tested 2026-08-27"]
-        OSC["Precision Timing Oscillator (1.5–5V)"]
+        OSC["Precision Timing Oscillator (1.5–5V) — see oscillators/ne555_astable/ — designed & simulated 2026-09-01, not yet bench-built"]
         SIMPGEN["Simple Function Generator (5–12V input)"]
     end
 

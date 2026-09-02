@@ -3626,3 +3626,18 @@ The TL431A is a secondary option --- it's a candidate upgrade to the `REF` you a
 Want me to scaffold the 555 oscillator circuit (spice netlist, breadboard.md, README.md, smoke\_test.py per the repo convention) under `lab/signal_conditioning/` or a new oscillators category?
 <!-- ------ -->
 ---
+Built it. Summary:
+
+**Design** --- `lab/oscillators/ne555_astable/`: NE555 astable, powered from `psu_medlow_usbc` (5V, already covers both `OSC`'s 1.5--5V spec and `SIMPGEN`'s 5--12V floor). Ra=1kΩ fixed (from kit, keeps discharge-pin current to ~4.8mA), Rb=3296 10kΩ trimpot wired as a glitch-safe 2-terminal rheostat, C=100nF timing cap + 10nF CV decoupling cap (both already on hand, no new orders needed). That puts the tunable range at ~686Hz--2.9kHz recommended (up to a mechanical ceiling of ~14.4kHz with duty skewing further from 50% as Rb is turned down) --- sitting inside the desktop soundcard scope's 20Hz--20kHz band, so you can verify actual frequency there before `FREQC` exists.
+
+**Files created**: `ne555_astable.spice`, `breadboard.md`, `README.md`, `smoke_test.py`, plus a generated (gitignored) `schematic.png`.
+
+**Simulation**: ngspice needed a real dynamic model to show oscillation (not just an op-point), so I wrote a small behavioral macromodel of the 555's internal flip-flop --- valid specifically for astable mode. It converges to freq/duty within ~5% of the textbook formulas at both simulated trimpot settings.
+
+**Smoke test**: 8 checks (capacitor never exceeds VCC, Ra/discharge-pin dissipation margins, frequency and duty match the 555 astable formula at both Rb settings within 15%, frequency actually moves with the trimpot) --- all pass, and it's picked up automatically by `tools/run_all_smoke_tests.py` (10/10 passing repo-wide).
+
+**Docs updated**: `lab/README.md` (new `oscillators/` category + commands), `docs/general_purpose_circuit_dependency.md` and `docs/parts_reference.md` (OSC node marked designed & simulated, not yet bench-built), `pico/docs/inventory.md` (NE555 and trimpot entries point at the new design). Also wrote `docs/kb/spice_behavioral_modeling_notes.md` documenting the ngspice gotchas I hit (missing-title-line footgun, hysteresis-via-self-referencing-B-source technique, switch polarity inversion, and a broken `@R[i]` current probe) so a future session building `FREQC`/`SIMPLECNT`/`TUNINGFK` doesn't rediscover them.
+
+Not yet done: physical bench build/validation --- this is design + simulation only, nothing's been assembled on the breadboard yet.
+<!-- ------ -->
+---

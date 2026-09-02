@@ -14,9 +14,10 @@ Each circuit gets its own top-level folder with a SPICE netlist, a
 generated schematic, and a breadboard wiring guide. Power supplies are
 grouped under `power_supplies/`; measurement/test tools are grouped under
 `measurement_tools/`; signal-conditioning building blocks (references,
-amplifiers) are grouped under `signal_conditioning/`; other circuit
-categories (safety monitoring, etc.) get their own top-level folders as
-they're built.
+amplifiers) are grouped under `signal_conditioning/`; timing/waveform
+generators are grouped under `oscillators/`; other circuit categories
+(safety monitoring, etc.) get their own top-level folders as they're
+built.
 
 ---
 
@@ -53,6 +54,7 @@ ngspice -b power_supplies/psu_3xaa/psu_3xaa.spice
 ngspice -b power_supplies/psu_4xaa/psu_4xaa.spice
 ngspice -b power_supplies/psu_medlow_usbc/psu_medlow_usbc.spice
 ngspice -b signal_conditioning/voltage_reference_lm358/voltage_reference_lm358.spice
+ngspice -b oscillators/ne555_astable/ne555_astable.spice
 ```
 
 Run from the repo root. Each netlist prints an operating point at its
@@ -86,6 +88,7 @@ python power_supplies/psu_medlow_usbc/smoke_test.py
 python power_supplies/psu_pico_rail/smoke_test.py
 python power_supplies/psu_ultralow_v1/smoke_test.py
 python signal_conditioning/voltage_reference_lm358/smoke_test.py
+python oscillators/ne555_astable/smoke_test.py
 ```
 
 Or run all of them at once with `tools/run_all_smoke_tests.py`, which
