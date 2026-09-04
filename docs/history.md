@@ -3677,3 +3677,25 @@ One thing I flagged but didn't touch: `power_supplies/psu_medlow_lm317/README.md
 All kb/history notes for future sessions are written; nothing has been committed to git in either repo yet --- let me know if you want me to commit these.
 <!-- ------ -->
 ---
+Fair --- here's a list built directly off unfilled nodes in both graphs, not a priority judgment call.
+
+**Gaps in `general_purpose_circuit_dependency.md` / `spacetime_circuits_dependency.md` with no on-hand part that satisfies them:**
+
+| # | Item | Node(s) it fills | Why nothing on hand covers it |
+| --- |  --- |  --- |  --- |
+| 1 | Hall effect sensor, linear analog output (e.g. 49E/A3144, 5-10pk) | tier5 `HALLAMP` | No magnetic-field sensor of any kind in inventory. |
+| --- |  --- |  --- |  --- |
+| 2 | ADXL335 analog 3-axis accelerometer breakout | tier5 `ACCELIF` | No acceleration/gravitation sensor in inventory. |
+| 3 | TL082 or LF353 JFET-input dual op-amp, DIP-8 (5-10pk) | tier5 `EPFIELD`, tier5 `CHGAMP` | LM358 is bipolar-input (~20-100nA bias current) --- wrong device class for a high-impedance electrometer/charge-amp front end; both nodes need JFET/CMOS input bias current. |
+| 4 | Piezo disc element (unpackaged, 5-10pk) | tier5 `CHGAMP` | `CHGAMP` needs a charge-output transducer to actually drive; nothing generates a charge signal in inventory. Pairs with item 3. |
+| 5 | Logic-level N-ch MOSFET, e.g. IRLZ44N (5-10pk) | tier7 `HVPULSE`; protection `ACTIVELIM` (required by `psu_medhigh`, `psu_high`) | No switching MOSFET of any kind on hand --- S8050/S8550 in inventory are small-signal BJTs, not suited to either HV pulsing or active current limiting. |
+| 6 | 74HC86 quad XOR gate, DIP-14 (5-10pk) | tier4 `PHASED` → feeds tier6 `LOCKIN` | No logic gate IC on hand except 74HC595 (shift register); XOR is the standard phase-detector primitive. |
+| 7 | 10kΩ NTC thermistor (5-10pk) | safety `THERM` → feeds tier2 | Existing thermistor in `pico/docs/inventory.md` is flagged "suspect faulty" --- this node currently has no trustworthy sensor behind it. |
+
+Items 1-4 point straight at `spacetime_circuits_dependency.md` tier5, which right now is the only tier in either graph with *zero* buildable nodes --- everything else in tier1-4/6/9 has at least a partial on-hand path. Items 5-7 close general-purpose gaps: 5 unlocks the only unaddressed protection node (`ACTIVELIM`) and a tier7 node, 6 unlocks `PHASED`, 7 replaces a flagged-bad part blocking `THERM`.
+
+Seven items at typical AliExpress small-lot pricing (~$1-3 each) clears $10 easily. I don't have live pricing --- you'll need to confirm actual listing costs before checkout, same as past orders in `orders.md`.
+
+Want me to hold this as a draft entry in `orders.md`/`parts_reference.md` once you've picked variants and it's actually placed, same as prior batches?
+<!-- ------ -->
+---
