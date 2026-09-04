@@ -3650,3 +3650,30 @@ Updated the design to run from `psu_4xaa` (4× AA, 6.0V raw) instead of the USB-
 Nothing committed --- nothing was committed by me this session; there's a prior commit already on the branch from earlier work, and these latest edits sit as uncommitted changes on top of it for you to review.
 <!-- ------ -->
 ---
+Logged four received-item corrections across `pico/docs/inventory.md`, `lab/docs/orders.md`, and `lab/docs/parts_reference.md`:
+
+-   **18-in-1 wire stripper/crimper pliers** and **PT334-6C photodiode ×10**: moved from "on order" to received (2026-09-03).
+-   **Metal film resistor kit**: corrected a real error, not just a status flip. The earlier entry said "20 ordered, assorted values, notably including 0.1Ω" --- actually two separate 20-unit selections were made from the listing's value menu (0.1Ω ×20, 1Ω ×20; 40 resistors total, no other values). Fixed in all three files plus a new `docs/kb/ordering_ingestion_notes.md` entry on the "assortment listing ≠ random assortment shipped" failure mode.
+-   Also fixed a pre-existing inconsistency while in `orders.md`: the 3296W trimpot and TL431A had "Received: 2026-09-01" appended in place back on 2026-09-01 but were never moved out from under the "on order" heading --- moved them into the Received section now.
+-   Flagged, not fixed: `power_supplies/psu_medlow_lm317/README.md` claims the SFE Breadboard Power Supply Kit is "on order," but no matching entry exists anywhere in `orders.md` or either inventory (it's a RobotShop item, not AliExpress, which may be why). Left as an open question for you rather than guessing at an order date.
+
+**Next-purchase recommendation:** nothing is strictly blocking right now --- three tier1/tier2/tier3 builds are unlocked with parts already on hand and no new order needed: bench-building the already-simulated NE555 `OSC`, a tier2 `TIA` (PT334-6C + LM358P, just arrived), and a tier3 `OHMMETER` (4-wire Kelvin, using the new 0.1Ω/1Ω precision resistors as references). The three AliExpress orders already in flight (inductor assortment, ceramic cap assortment, electrolytic cap kit) will unlock `CAPBRIDGE`/`INDBRIDGE` once they land. If you want one more cheap purchase to queue up: the `SCOPELA` tier (8ch 24MHz USB logic analyzer, ~$5-8, not yet purchased) is the best next buy --- it's the first scope/logic-analyzer tier with real hardware-timed sampling instead of Pico software polling, and it's the validation tool the diagram already earmarks for the oscillator you're about to bench-build plus everything downstream that needs real timing (`FREQC`, tier3, `MUX`). Toward spacetime specifically, tier5 sensor interfaces (`HALLAMP`, `ACCELIF`, `EPFIELD`, `CHGAMP`) have no on-hand front-end hardware yet — a Hall effect sensor and a low-cost MEMS accelerometer breakout are the cheapest entry points there, but that's further out than the tier1-3 work above.
+<!-- ------ -->
+---
+All corrections are logged. Summary:
+
+**1-4: Inventory corrected** across `pico/docs/inventory.md`, `lab/docs/orders.md`, and `lab/docs/parts_reference.md`:
+
+-   18-in-1 wire stripper → moved to received (Tools table)
+-   PT334-6C photodiode ×10 → moved to received
+-   Metal film resistors: **corrected**, not just moved --- the docs previously said "20 ordered, assorted values, notably including 0.1Ω," but that was wrong. It's actually two separate 20-unit selections from the listing's value menu: 20× 0.1Ω and 20× 1Ω, 40 resistors total, no other values. Fixed everywhere and logged as a new failure-mode pattern in `lab/docs/kb/ordering_ingestion_notes.md` ("assortment listing ≠ random assortment shipped").
+
+While in `orders.md` I also fixed a pre-existing drift: the 3296W trimpot and TL431A had been marked received back on 2026-09-01 but were still sitting under the "on order" heading.
+
+One thing I flagged but didn't touch: `power_supplies/psu_medlow_lm317/README.md` claims that LM317 kit is "on order," but there's no matching entry in `orders.md` or either inventory --- it's a RobotShop item, not AliExpress, which may be why it slipped through. Worth confirming whether that order actually exists.
+
+**5\. What to buy next:** Nothing is actually blocking you right now --- three builds are unlocked with parts already on hand: bench-building the already-simulated NE555 `OSC`, a `TIA` (photodiode + LM358, just arrived), and an `OHMMETER` (4-wire Kelvin, using the new precision 0.1Ω/1Ω resistors). Your three in-flight orders (inductors, ceramic caps, electrolytic caps) will unlock `CAPBRIDGE`/`INDBRIDGE` once they land. If you want one cheap purchase to queue: an 8ch 24MHz USB logic analyzer (`SCOPELA` tier, ~$5-8) is the best next buy --- first tier with real hardware-timed sampling, and the diagram already earmarks it for validating the oscillator plus everything downstream needing real timing. For spacetime tier5 sensor work specifically (Hall effect, accelerometer, field probe), nothing's on hand yet, but that's further out than the tier1-3 work above.
+
+All kb/history notes for future sessions are written; nothing has been committed to git in either repo yet --- let me know if you want me to commit these.
+<!-- ------ -->
+---

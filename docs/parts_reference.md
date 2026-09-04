@@ -227,30 +227,35 @@ polyfuse backup, per
 
 ## Metal film resistor kit (1W, 1%)
 
-20 ordered 2026-08-30, assorted values. See
+40 received 2026-09-03 (ordered 2026-08-30). See
 [orders.md](orders.md#metal-film-resistor-kit-1w-1). Axial metal film,
 1% tolerance, 1W power rating (vs. the SunFounder Thales kit's 1/4W
-stock). Listing's value range: 0.1Ω, 10Ω, 22Ω, 47Ω, 100Ω, 330Ω, 1kΩ,
-4.7kΩ, 10kΩ, 22kΩ, 47kΩ, up to 2.2MΩ — exact per-value quantities within
-the 20-piece assortment aren't specified by the listing; confirm the
-actual per-value count once received. The 0.1Ω value is the one this
-order was placed for: intended to replace the jumper-wire-chain shunt in
+stock). **Not an assortment pull** — the listing lets the buyer pick
+specific values from its range (0.1Ω, 10Ω, 22Ω, 47Ω, 100Ω, 330Ω, 1kΩ,
+4.7kΩ, 10kΩ, 22kΩ, 47kΩ, up to 2.2MΩ), and two values were specifically
+selected at 20 units each: **0.1Ω** and **1Ω**, 40 pieces total, no other
+values received. (An earlier version of this entry described a single
+20-piece "assorted" pull including 0.1Ω — that was wrong on both count
+and framing; corrected here and in
+[orders.md](orders.md#metal-film-resistor-kit-1w-1).) The 0.1Ω value
+replaces the jumper-wire-chain shunt in
 [ammeter_1ohm](../measurement_tools/ammeter_1ohm/) with an actual
-resistor once it arrives.
+resistor. The 1Ω value has no assigned use yet — candidate reference
+resistor for a tier3 `OHMMETER` (4-wire Kelvin) build.
 
 ---
 
 ## PT334-6C photodiode
 
-10 ordered 2026-08-30, 5mm package. See
+10 received 2026-09-03 (ordered 2026-08-30), 5mm package, untested. See
 [orders.md](orders.md#pt334-6c-photodiode-5mm). Silicon PIN photodiode,
 typically used reverse-biased in a transimpedance amplifier front-end
 (anode to GND, cathode through a feedback resistor/op-amp to a positive
-rail) — candidate component for a future photodetector/light-sensing
-circuit; no tier assignment yet. Pin identification: the longer lead is
-the anode, matching standard photodiode/LED lead convention — confirm
-against the physical part once received, since some photodiode packages
-reverse this convention relative to LEDs.
+rail) — candidate for a tier2 `TIA` build alongside the on-hand LM358P.
+Pin identification: the longer lead is the anode, matching standard
+photodiode/LED lead convention — confirm against the physical part
+before wiring, since some photodiode packages reverse this convention
+relative to LEDs.
 
 ---
 

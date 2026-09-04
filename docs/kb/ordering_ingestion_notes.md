@@ -167,3 +167,49 @@ type something, don't assume the returned answer contains that
 free-text value — check whether the answer is just the option's own
 label before proceeding, and re-ask more narrowly (e.g. list plausible
 concrete dates as the options) if so.
+
+## An "assortment" listing can mean the buyer picked specific values, not that a random assortment shipped (found 2026-09-03, metal film resistor kit)
+
+The "20pcs 1W Metal film resistor" listing had previously been logged
+(2026-08-30) as "20 ordered, assorted values… notably including 0.1Ω" —
+phrasing that implied a single 20-piece grab-bag across the listing's
+value range. What actually happened: the listing lets the buyer select
+specific values, and the user made **two separate 20-unit selections**
+from it (0.1Ω ×20, 1Ω ×20 — 40 resistors total, no other values). This
+is a distinct failure mode from the other listing-ambiguity entries in
+this file (bundled part-number variants, OCR slips, contradicting spec
+fields, placeholder URLs) — here the ingesting session correctly copied
+the listing's value-range text but wrongly assumed "assortment" meant
+"random assortment shipped" rather than "buyer selects from this menu."
+Corrected in `orders.md`, `parts_reference.md`, and
+`pico/docs/inventory.md` once the user clarified. General lesson: when a
+listing's title/description offers a value range with no explicit random
+assortment language ("random", "mixed", a fixed per-value count table),
+don't assume the seller picks values — ask whether the buyer selected
+specific values instead, especially before writing a specific per-value
+quantity or "not previously stocked" claim into the docs.
+
+## Items can sit "received" in prose while still filed under an "on order" heading
+
+Found 2026-09-03: the 3296W trimpot and TL431A entries in `orders.md`
+had gained a "Received: 2026-09-01" note (added in commit `de0a9d7`) but
+were never physically moved out from under the `## On order (placed, not
+yet received)` heading — so the file's own section header contradicted
+its content for over two days across several more commits. Nothing
+downstream broke because `pico/docs/inventory.md` (the actual
+received-parts source of truth) had these correct the whole time, but a
+future session skimming `orders.md` by heading alone would misreport
+their status. Moved them into `## Received` while fixing an unrelated
+batch of received items in the same file (2026-09-03) — worth a quick
+`grep -n "^## \|^### "` sanity pass over `orders.md` any time an item's
+received-status is being edited in place, not just appended to.
+
+## `psu_medlow_lm317/README.md` claims "on order" for the SFE Breadboard Power Supply Kit, but no matching entry exists in `orders.md` or either inventory
+
+Found 2026-09-03, not resolved. The kit is a RobotShop item (not
+AliExpress, unlike everything actually tracked in `orders.md`), which may
+be why it was never logged there — but that means its claimed "on order"
+status is unverifiable from the docs alone. Flagged to the user rather
+than silently trusting or silently correcting the README's claim; if a
+future session needs to know whether `psu_medlow_lm317` is actually
+buildable soon, ask the user rather than trusting that status line.
