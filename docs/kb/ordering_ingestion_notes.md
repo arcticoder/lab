@@ -251,6 +251,27 @@ general sensor family, actually satisfies that gap's specific circuit
 requirement — check the electrical characteristics against what the tier
 node needs.
 
+## "CY7C68013A board" is not a component you'd add to the SCOPELA logic analyzer — it IS the SCOPELA logic analyzer (2026-09-04)
+
+The cheap "8ch 24MHz USB logic analyzer" clones (~$5-8) referenced
+throughout `docs/history.md` and `general_purpose_circuit_dependency.md`
+(the `SCOPELA` tier) are, near-universally, boards built around the
+Cypress **CY7C68013A** (EZ-USB FX2LP) microcontroller — that chip's USB
+interface plus the `fx2lafw` open-source firmware (bundled with
+`sigrok`/`PulseView`, package `sigrok-firmware-fx2lafw` on
+Debian/Ubuntu) is exactly what makes these boards work as
+hardware-timed logic analyzers, and is why they're supported
+out-of-the-box by PulseView with zero vendor software. So a listing
+titled "CY7C68013A 24MHz 8-channel logic analyzer" or similar *is* the
+`SCOPELA` purchase, not a sub-part needed to build one. Most listings
+ship with an 8-wire Dupont test-clip cable included; if not, the
+existing M-M/M-F Dupont jumper stock in `pico/docs/inventory.md`
+covers it. Check whether the board is USB-A dongle-style (plugs
+straight into a port, no cable needed) or has its own Micro-USB port
+(would need a second Micro-USB cable, since the one already in
+inventory is earmarked for the Pico) before assuming no cable is
+needed.
+
 ## `psu_medlow_lm317/README.md` claims "on order" for the SFE Breadboard Power Supply Kit, but no matching entry exists in `orders.md` or either inventory
 
 Found 2026-09-03, not resolved. The kit is a RobotShop item (not

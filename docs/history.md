@@ -3725,3 +3725,14 @@ All 7 gaps from the `docs/history.md` gap-analysis are now closed once GY-521 sh
 4.  Tier7 (RF mixer/sweep gen) and tier8 (calorimetric/energy measurement) remain completely unaddressed but aren't blocking anything currently planned --- no rush there.
 <!-- ------ -->
 ---
+**Yes** --- buying a board listed as "CY7C68013A" *is* buying the item at [history.md:3723](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/history.md#L3723). The cheap 8ch/24MHz USB logic analyzer clones (~$5-8) referenced there are built around the Cypress CY7C68013A (EZ-USB FX2LP) chip, and that's exactly the hardware `sigrok`'s `fx2lafw` firmware and PulseView support out of the box --- it's not a component you'd add to something else, it's the whole analyzer.
+
+What you'd want alongside it, if the listing doesn't already include it:
+
+-   **Test-clip/jumper cable**: most listings bundle an 8-wire Dupont cable with the board. If yours doesn't, you already have M-M and M-F Dupont jumpers in [pico/docs/inventory.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/pico/docs/inventory.md) that'll cover it.
+-   **USB cable**: check whether the board is dongle-style (USB-A plugs straight into the PC, nothing else needed) or has its own port (often Micro-USB) --- if the latter, get a second Micro-USB cable since the one in inventory is earmarked for the Pico.
+-   **Software only, no purchase**: `sigrok` + `PulseView`, with the `sigrok-firmware-fx2lafw` package (uploads the `fx2lafw` firmware to the chip on first plug via `fxload`). No vendor software or license needed.
+
+Nothing else is required to unblock the tier2/tier3 validation this was flagged for. I logged this identification (CY7C68013A = the SCOPELA hardware) in [lab/docs/kb/ordering\_ingestion\_notes.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/kb/ordering_ingestion_notes.md) so future sessions don't second-guess it.
+<!-- ------ -->
+---
