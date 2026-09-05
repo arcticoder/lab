@@ -326,7 +326,140 @@ actual AliExpress order history. Brand YTDMEN, radial-lead DIP-style,
 | 11 | 16V | 330µF |
 | 12 | 16V | 470µF |
 
-**Polarized — orientation matters.** Long lead = positive; the can body
+**Polarized — orientation matters.**
+
+---
+
+## TL082 JFET-input dual op-amp
+
+10 ordered 2026-09-03, DIP-8, not yet received. See
+[orders.md](orders.md#tl082-jfet-input-dual-op-amp-dip-8). Same physical
+pinout convention as the on-hand LM358:
+
+| Pin | Function |
+|---|---|
+| 1 | Output 1 |
+| 2 | Inverting input 1 (−) |
+| 3 | Non-inverting input 1 (+) |
+| 4 | V− |
+| 5 | Non-inverting input 2 (+) |
+| 6 | Inverting input 2 (−) |
+| 7 | Output 2 |
+| 8 | V+ |
+
+Unlike LM358 (bipolar-input, ~20–100nA bias current), TL082 is
+JFET-input with bias current in the low pA range — the device class
+tier5 `EPFIELD` (electric field probe) and `CHGAMP` (charge amplifier)
+actually need, since both front-ends present a very high source
+impedance to the op-amp's input. Typically needs a dual (split) supply
+or a mid-rail bias network for single-supply use, unlike LM358's
+single-supply-friendly input range down to GND — confirm the specific
+TL082 variant's input common-mode range against its datasheet before
+wiring a single-supply front end.
+
+---
+
+## MF52AT NTC thermistor (10kΩ)
+
+10 ordered 2026-09-03, not yet received. See
+[orders.md](orders.md#mf52at-ntc-thermistor-10k). 2-lead bead
+thermistor, no polarity. R25 = 10kΩ ±1%, B(25/50) = 3950K ±1%, operating
+range −55–125°C, black modified-phenolic body, nickel-tin-plated leads.
+**Caveat:** the listing's own spec sheet's worked example decodes a
+different part (`104` EIA code = 100kΩ) than the 10kΩ (`103` code)
+variant actually ordered — treat only the tolerance/B-value/temperature-
+range figures as trustworthy for this specific part, not the R25 value
+in the sheet's example. Fills the safety `THERM` gap; the existing
+thermistor in `pico/docs/inventory.md` is flagged "suspect faulty."
+
+---
+
+## KY-003 A3144 Hall sensor breakout module
+
+1 ordered 2026-09-03, not yet received. See
+[orders.md](orders.md#ky-003-a3144-hall-sensor-breakout-module). 3-pin header
+module wrapping an A3144 Hall-switch IC plus onboard pull-up:
+
+| Pin | Function |
+|---|---|
+| 1 | GND |
+| 2 | 3V3 |
+| 3 | GPIO (digital output) |
+
+**This is a digital switch-output sensor, not a linear analog one** —
+the A3144 die's own datasheet describes its output as "a digital
+voltage signal." Output is open-collector-style, active-low near a
+sufficient magnetic field (turn-on ~7–23mT typ, release ~5–17.5mT typ),
+so it reads as a simple presence/proximity digital input on a Pico
+GPIO — no amplifier stage needed. Fills the tier5 `HALLAMP` gap only
+partially: it does not exercise an actual Hall-amplifier design, since
+there's nothing analog to amplify. A linear/analog Hall element (e.g. a
+49E) would still be needed if the `HALLAMP` op-amp circuit itself is
+still wanted as a build target.
+
+---
+
+## IRLZ44N logic-level MOSFET
+
+1 ordered 2026-09-03, TO-220, not yet received. See
+[orders.md](orders.md#irlz44n-logic-level-n-channel-mosfet-to-220).
+Standard TO-220 pinout, tab facing away, pins left to right:
+
+| Pin | Function |
+|---|---|
+| 1 | Gate |
+| 2 | Drain (also the metal tab) |
+| 3 | Source |
+
+Logic-level N-channel MOSFET — gate threshold voltage low enough (~1–2V
+typ) to switch fully on from a 3.3V Pico GPIO directly, unlike a
+standard-level MOSFET that needs a ~10V gate drive. Typical ratings:
+Vds 55V, Id ~47A (heatsink-dependent), Rds(on) low-mΩ range at Vgs=5V.
+Fills the tier7 `HVPULSE` and protection `ACTIVELIM` gap — no switching
+MOSFET of any kind was previously on hand.
+
+---
+
+## Piezo element, 12mm disc
+
+20 ordered 2026-09-03, not yet received. See
+[orders.md](orders.md#piezo-element-12mm-disc). 2-terminal ceramic disc
+element (brass or copper backing plate + piezoceramic layer), no fixed
+polarity convention like a diode — used either as a driven
+buzzer/actuator or, wired into a charge-amplifier front end, as a
+charge-output transducer (mechanical flex/vibration → small charge
+signal). Fills the tier5 `CHGAMP` gap: nothing else in inventory
+generates a charge signal for that node to actually amplify. No
+diameter-specific capacitance or resonant-frequency spec is available
+from the listing — measure or look up once the physical part is on
+hand.
+
+---
+
+## SN74HC86N quad 2-input XOR gate
+
+1 ordered 2026-09-03, DIP-14, not yet received. See
+[orders.md](orders.md#sn74hc86n-quad-2-input-xor-gate). Standard 74HC86
+pinout (verify against the specific manufacturer's datasheet before
+building, same caveat as the CD4066B entry above):
+
+| Pin | Function | Pin | Function |
+|---|---|---|---|
+| 1 | 1A | 8 | 3Y |
+| 2 | 1B | 9 | 3A |
+| 3 | 1Y | 10 | 3B |
+| 4 | 2A | 11 | 4Y |
+| 5 | 2B | 12 | 4A |
+| 6 | 2Y | 13 | 4B |
+| 7 | GND | 14 | VCC |
+
+Four independent 2-input XOR gates. Fills the tier4 `PHASED` gap: XOR is
+the standard phase-detector primitive (output duty cycle proportional
+to phase difference between two same-frequency square waves), which
+feeds tier6 `LOCKIN`. **Listing's own variant string had a truncated
+package suffix ("DIP-1")** — treated as DIP-14 until the physical part
+confirms otherwise; see the caveat in
+[orders.md](orders.md#sn74hc86n-quad-2-input-xor-gate). Long lead = positive; the can body
 is marked with a stripe (usually with `−` symbols) on the negative side.
 Per the listing's own manual text: solder at 350–380°C for ≤3 seconds
 per joint (prolonged heat can damage the electrolyte), keep the working

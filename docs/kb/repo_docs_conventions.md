@@ -4,6 +4,26 @@ Audience: future LLM sessions working in this repo (or the sibling `pico/`
 repo). Process/structural notes about how the docs here are organized —
 not useful to the end user, who already knows this stuff first-hand.
 
+## Don't name a specific fringe/exotic-physics theory in current-state docs (established 2026-09-04)
+
+`README.md` and `spacetime_circuits_dependency.md` used to name specific
+candidate theories (electrogravitics, the Biefeld-Brown effect,
+Woodward-effect propulsion) as the driving research goal. The user
+corrected this explicitly: the actual goal is "a road to faster than
+light travel," full stop — the user doesn't care which specific theory
+gets tested, and doesn't want any of those specific terms appearing
+anywhere in either repo's current-state docs (README, dependency graphs,
+this kb file's own prose). Rewrote both to describe the goal generically
+("spacetime research… experiments aimed at faster-than-light travel,
+with no fixed commitment to any one specific theory or approach") instead
+of naming a theory. The one exception is `docs/history.md` in both repos
+— append-only per the entry below, so old references to those terms stay
+there untouched as a historical record; this policy applies only to docs
+that describe *current* framing. When adding new spacetime-tier circuits
+or docs, describe them by circuit function (sensor interface, HV pulse,
+calorimetric measurement) rather than by which specific theory they'd
+support.
+
 ## `spacetime_circuits_dependency.md` / `general_purpose_circuit_dependency.md` are pure mermaid, no prose (one exception — see the 2026-08-24 split entry below)
 
 Each file's body is a single mermaid `graph TD` block — no prose legend or
@@ -107,8 +127,8 @@ split) — don't try to reconstruct exact cross-tier edges from the stub
 nodes alone. Deciding which tier goes in which file: tier5 (sensor
 interfaces: Hall/field-probe/LVDT/accelerometer/charge amps) and tier7/8
 (HV pulse, calorimetric/energy) went to the spacetime file because they're
-explicitly framed around gravitation/field sensing and Woodward/lifter
-work in their node labels; tiers 1–4/6/9 stayed general-purpose because
+explicitly framed around gravitation/field sensing and high-voltage
+actuation work in their node labels; tiers 1–4/6/9 stayed general-purpose because
 nothing in their labels is spacetime-specific (voltmeters, ammeters,
 bridges, lock-in amps, DAQ — useful for literally any lab bench). This
 also means the "pure mermaid, no prose" convention (above) now has one

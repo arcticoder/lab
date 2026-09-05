@@ -3,7 +3,8 @@
 Test and measurement circuits for a physics lab bench, built bottom-up from
 a bootstrap PSU through the tiers laid out in
 [docs/general_purpose_circuit_dependency.md](docs/general_purpose_circuit_dependency.md).
-Spacetime research (electrogravitics, the Biefeld-Brown effect) is the
+Spacetime research — experiments aimed at faster-than-light travel, with
+no fixed commitment to any one specific theory or approach — is the
 current driving objective and gets its own tier graph in
 [docs/spacetime_circuits_dependency.md](docs/spacetime_circuits_dependency.md),
 but the general-purpose foundation underneath it — PSU tiers, protection,

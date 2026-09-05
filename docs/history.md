@@ -3699,3 +3699,29 @@ Seven items at typical AliExpress small-lot pricing (~$1-3 each) clears $10 easi
 Want me to hold this as a draft entry in `orders.md`/`parts_reference.md` once you've picked variants and it's actually placed, same as prior batches?
 <!-- ------ -->
 ---
+All anchors now match their target headings correctly. Everything is done. Here's a summary:
+
+Order ingestion
+---------------
+
+Added the 2026-09-03 batch (TL082, MF52AT 10kΩ thermistor, KY-003/A3144 Hall module, IRLZ44N, 12mm piezo, SN74HC86N) to `pico/docs/inventory.md`, `lab/docs/orders.md`, and `lab/docs/parts_reference.md`, cross-linked and anchor-checked. Two things worth knowing:
+
+-   The **Hall sensor module is digital switch-output**, not the linear-analog part the tier5 `HALLAMP` gap called for --- it covers a simpler presence/proximity read, not the op-amp amplifier circuit as originally scoped.
+-   The **thermistor listing's own datasheet describes a 100kΩ example** (`104` code) even though you selected 10kΩ (`103`) --- noted so the R25 figure isn't taken at face value.
+
+Fringe-science cleanup
+----------------------
+
+Removed "electrogravitics," "Biefeld-Brown," and "Woodward-effect" from `lab/README.md`, `lab/docs/spacetime_circuits_dependency.md`, and both repos' `docs/kb/repo_docs_conventions.md`, replacing with generic "faster-than-light travel, no fixed theory" framing. Left both `docs/history.md` files untouched --- they're append-only historical logs per existing convention, so old references there stay as a record. Saved this as a durable memory so it doesn't regress in future sessions.
+
+What's next to order
+--------------------
+
+All 7 gaps from the `docs/history.md` gap-analysis are now closed once GY-521 ships (6 via this batch, the 7th --- accelerometer --- via your cart item). Next up, in priority order:
+
+1.  **Finish the GY-521 purchase** --- the last open gap item.
+2.  **8ch 24MHz USB logic analyzer** (~$5-8, "SCOPELA" tier) --- this was already flagged as the best next buy before this batch and still is: it's the first tier with real hardware-timed sampling/triggering, needed to properly validate tier2/tier3 circuits and the CD4066 `MUX` beyond what the Pico's software-timed ADC can confirm.
+3.  **LVDT transducer** --- the only tier5 node still with zero hardware behind it (`LVDTAMP`), but pricier/more niche than anything above; lower priority.
+4.  Tier7 (RF mixer/sweep gen) and tier8 (calorimetric/energy measurement) remain completely unaddressed but aren't blocking anything currently planned --- no rush there.
+<!-- ------ -->
+---

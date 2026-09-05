@@ -204,6 +204,53 @@ batch of received items in the same file (2026-09-03) — worth a quick
 `grep -n "^## \|^### "` sanity pass over `orders.md` any time an item's
 received-status is being edited in place, not just appended to.
 
+## A listing can be missing its selected-variant line entirely, not just be ambiguous about it (found 2026-09-03, KY-003 Hall sensor module)
+
+All the earlier "bundled part-number variants" entries in this file cover
+a listing whose title strings together options, resolved by a `>
+selected variant` line the user includes. In the 2026-09-03 batch (TL082,
+MF52AT thermistor, KY-003 Hall module, IRLZ44N, piezo, SN74HC86N), five
+of six items had that line; the KY-003 listing simply didn't — no
+quantity/variant text at all, not even an ambiguous one. Resolved by
+asking the user directly (`AskUserQuestion`) rather than guessing a
+plausible pack size; got "1 unit." General lesson: don't assume every
+item in a batch message follows the same transcription pattern as its
+neighbors — check each one individually for a selection line before
+assuming a value can be read off the listing title/spec.
+
+## Order date can require the same "returned answer is just the option's own label" re-ask as before (2026-09-03 batch, again)
+
+Same failure mode as the 2026-08-30 entry above, recurring: asking "today,
+or a different date?" as a multiple-choice question got "A different
+date" back with no date value attached — the option's label alone, not
+free text. A second, narrower question listing concrete candidate dates
+(2026-09-02/03/04) got the actual answer (2026-09-03). This is evidently
+a recurring interaction-pattern gotcha with this style of clarifying
+question, not a one-off — default to listing concrete date options up
+front rather than an "or a different date" escape hatch, when the
+question is specifically about a date.
+
+## A gap-analysis list from `docs/history.md` can get fully closed in one batch — cross-reference gap items by number when ingesting an order that fills them
+
+The 2026-09-03 batch (TL082, MF52AT thermistor, KY-003 Hall module,
+IRLZ44N, piezo, SN74HC86N) closes 6 of the 7 gap items from the
+~2026-09-01 gap-analysis table in `docs/history.md` (lines ~3684–3697) —
+only item 2 (ADXL335 accelerometer) remains, and the user is substituting
+a GY-521 (MPU6050 breakout) for it instead of the originally-suggested
+part. When an order this clearly maps to a known gap list, cite the gap
+item number in `orders.md`/`parts_reference.md` rather than just
+describing the tier node — makes it easy for a future session to check
+whether the whole known-gaps list has been closed without re-deriving the
+mapping from scratch. One substitution is not a straight swap: the
+ordered KY-003/A3144 Hall module is a **digital switch-output** sensor,
+while the gap explicitly asked for **linear analog output** — it doesn't
+actually unlock the tier5 `HALLAMP` op-amp-amplifier circuit as
+originally scoped, just a simpler presence/switch use case. Don't assume
+an order that name-matches a gap's suggested part number, or even its
+general sensor family, actually satisfies that gap's specific circuit
+requirement — check the electrical characteristics against what the tier
+node needs.
+
 ## `psu_medlow_lm317/README.md` claims "on order" for the SFE Breadboard Power Supply Kit, but no matching entry exists in `orders.md` or either inventory
 
 Found 2026-09-03, not resolved. The kit is a RobotShop item (not

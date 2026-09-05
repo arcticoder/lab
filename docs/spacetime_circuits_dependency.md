@@ -1,8 +1,11 @@
 # Spacetime Research Circuit Dependencies & Build Order
 
 Spacetime-research-specific circuits: gravitation/field sensor interfaces,
-high-voltage pulse generation, and calorimetric/energy measurement for
-electrogravitics (Biefeld-Brown effect) and Woodward-effect experiments.
+high-voltage pulse generation, and calorimetric/energy measurement, in
+support of experiments toward faster-than-light travel. The specific
+theory under test isn't fixed — this tier graph covers the
+sensing/actuation/measurement building blocks any such experiment needs,
+independent of which approach is being tested.
 These build on the general-purpose foundation (PSU tiers, protection,
 safety monitoring, tiers 1–4/6/9, scope/logic-analyzer tiers M0–M5) in
 [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
