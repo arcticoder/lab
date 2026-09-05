@@ -3745,3 +3745,11 @@ All in the `lab` repo (no `pico` changes needed, since item 3 turned out correct
 Also logged the reasoning behind fix #2 in `lab/docs/kb/repo_docs_conventions.md` (new dated entry under the existing smoke\_test convention section) so a future session knows why that check exists and applies the same pattern --- static "presence unconfirmed" assertions in `smoke_test.py` --- to any circuit where a BOM part's function is assumed rather than verified.
 <!-- ------ -->
 ---
+All four items are addressed:
+
+1.  **README.md:33** now points to `oscillators/ne555_astable/ne555_astable.spice` instead of the early `psu_ultralow_v1` example (schematic already regenerated per your terminal output).
+2.  Investigated the ngspice output directly --- confirmed by diffing against `psu_ultralow_v1` (plain R/D/V netlist, no warnings at all) that the `gmin`/source-stepping failures are specific to `ne555_astable`'s behavioral comparator/switch model, but are followed by `Transient op finished successfully` each time and match the expected 555 formulas, so they're benign. `No compatibility mode selected!` is ngspice's generic startup banner (prints on every run regardless of netlist). The two "Initial Transient Solution" blocks are by design --- the netlist runs two separate `tran` sweeps (Rb=10k, then Rb=2k). Wrote a short explanation into `ne555_astable/README.md` (end-user-facing) plus a deeper technical writeup in `docs/kb/spice_behavioral_modeling_notes.md` (LLM-only), with a pointer from the top-level README.
+3.  Added `breadboard.jpg` (which exists but wasn't listed) to the Files tables and repo-structure tree for `fuse_test_voltmeter`, `cd4066_switch_tester`, and `voltage_reference_lm358`, and noted it in the "built & bench-tested" section's record-keeping sentence.
+4.  Shrunk the sprawling `fuse_test_voltmeter` table row down to one line, and moved the detailed bench-status narrative into a new "Current bench status" section in `measurement_tools/fuse_test_voltmeter/README.md`.
+<!-- ------ -->
+---

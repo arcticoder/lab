@@ -24,6 +24,7 @@ within its ~100mA budget.
 | `cd4066_switch_tester.spice` | ngspice netlist — I/O B voltage, switch closed vs. open |
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `breadboard.md` | Step-by-step wiring guide |
+| `breadboard.jpg` | Photo of the actual bench jig |
 | `main.py` | MicroPython — toggles the control pin, reads GP26, prints a PASS/FAIL verdict, and exits |
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 

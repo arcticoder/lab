@@ -30,7 +30,7 @@ artifact, regenerated on demand:
 
 ```bash
 # from the repo root
-python tools/spice_to_schematic.py power_supplies/psu_ultralow_v1/psu_ultralow_v1.spice
+python tools/spice_to_schematic.py oscillators/ne555_astable/ne555_astable.spice
 ```
 
 Output is written as `schematic.png` in the same directory as the `.spice`
@@ -60,6 +60,12 @@ ngspice -b oscillators/ne555_astable/ne555_astable.spice
 
 Run from the repo root. Each netlist prints an operating point at its
 nominal load, then sweeps the load resistor to show the V/I curve.
+
+`oscillators/ne555_astable/` (and any future circuit using a behavioral
+macromodel rather than plain R/C/V/D elements) prints `gmin`/source-
+stepping warnings during startup — expected for that kind of model, not a
+sign the result is wrong; see that circuit's own README § Simulate for
+why.
 
 ---
 
@@ -112,14 +118,16 @@ Each of these has been physically assembled and confirmed against its
 to a breadboard permanently — once a circuit's bench check passes and
 nothing else currently under construction needs its wiring in place, its
 parts go back to inventory; the netlist/breadboard.md/smoke_test.py stay
-as the record for rebuilding it later.
+as the record for rebuilding it later, along with a `breadboard.jpg`
+photo of the as-built jig where one was taken (see each circuit's own
+`README.md` § Files).
 
 | Folder | Circuit | Tier | Bench-tested |
 |--------|---------|------|--------------|
 | `power_supplies/psu_pico_rail/` | Pico's own onboard 3.3V rail, ~100mA budget | interim bootstrap PSU | 2026-08 |
 | `signal_conditioning/voltage_reference_lm358/` | LM358 unity-gain buffer holds a resistor-divider reference steady under load | tier1 `REF` | 2026-08-27 — loaded reading within 0.23% of unloaded (±2% tolerance) |
 | `measurement_tools/cd4066_switch_tester/` | Pico-driven bring-up jig for one CD4066B analog switch — confirms it passes/blocks before trusting it in a later design | component validation (ahead of tier9 `MUX`) | 2026-08-28 — switch 1 (I/O A pin 1 / I/O B pin 2 / control pin 13) PASS on all 10 CD4066BCN units; switches 2–4 per chip not yet individually tested |
-| `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe across a battery→fuse→resistor loop; arm switch (GP15) gates trip/reset detection so battery connect/disconnect isn't misread as a trip | bootstrap / concurrent measurement tool | 2026-08-28 — **bench wiring has since diverged from this design and trip detection is currently non-functional**: the 10Ω resistor was physically removed and the fuse wired straight onto the power rail, which collapses the probe (GP26) and GND nodes into one — the jig now reads ~0V regardless of whether the fuse is tripped, since there's no longer a divider to read across (see `docs/kb/repo_docs_conventions.md` "resistor removal breaks trip detection"). Prior to the removal: arm switch toggled ARMED/DISARMED correctly, loaded reading was steady ~1.36–1.50V across runs (matches SPICE prediction scaled to this cell's ~1.6V open-circuit voltage). The deliberate-short trip/reset pass/fail check from `quickstart.md` has never actually passed on this build. **This no longer blocks polyfuse validation**: both fuse batches have since been sorted good/bad by the `ammeter_10ohm`/`ammeter_1ohm` jigs below instead, which measure current directly rather than inferring a trip from a voltage probe. Fixing this jig's own wiring gap is optional going forward, not a prerequisite for anything currently planned |
+| `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe across a battery→fuse→resistor loop; arm switch (GP15) gates trip/reset detection so battery connect/disconnect isn't misread as a trip | bootstrap / concurrent measurement tool | 2026-08-28 — **bench wiring has since diverged and trip detection is currently non-functional** (no longer a blocker — polyfuses are now sorted via `ammeter_10ohm`/`ammeter_1ohm` below instead); see this circuit's own README § Current bench status for the full detail |
 | `measurement_tools/ammeter_10ohm/` | Pico reads current (not just voltage) through a polyfuse under test, via a 10Ω shunt + slide-switch shorting jumper | polyfuse validation (bootstrap tier) | 2026-08-30 — all 20 RXEF005 (50mA) polyfuses PASS (trip + reset confirmed per unit) |
 | `measurement_tools/ammeter_1ohm/` | Same approach as `ammeter_10ohm` scaled for 500mA: ~1Ω jumper-chain shunt (see `resistance_measurement/`) + 1N5817 reverse-polarity diode on the high side | polyfuse validation (`psu_low` tier) | 2026-08-30 — all 20 RXEF050 (500mA) polyfuses PASS (trip + reset confirmed per unit) |
 | `measurement_tools/resistance_measurement/` | Voltage-divider jig (known 10Ω reference vs. unknown leg) for measuring a low-value resistance without a multimeter | supporting tool for `ammeter_1ohm` | 2026-08-30 — jumper-wire chain measured at ~1.005Ω, stable across repeated readings |
@@ -191,6 +199,7 @@ measurement_tools/
         fuse_test_voltmeter.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        breadboard.jpg
         main.py
         smoke_test.py
         README.md
@@ -199,6 +208,7 @@ measurement_tools/
         cd4066_switch_tester.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        breadboard.jpg
         main.py
         smoke_test.py
         README.md
@@ -270,6 +280,7 @@ signal_conditioning/
         voltage_reference_lm358.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        breadboard.jpg
         main.py
         smoke_test.py
         README.md

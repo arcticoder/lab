@@ -69,6 +69,23 @@ The netlist models the NE555 with a behavioral macromodel — not a vendor
 transistor-level part — valid specifically for astable operation (see the
 netlist's header comment for what it does and doesn't capture).
 
+**Startup warnings are expected, not a fault.** Running this netlist
+prints `Warning: Dynamic gmin stepping failed` / `True gmin stepping
+failed` / `source stepping failed` twice (once per `tran` run — the
+netlist sweeps two trimpot settings, see the netlist's `.control`
+section), followed by `Note: Transient op started` /
+`Transient op finished successfully`. Those three stepping methods are
+ngspice's usual ways of finding a DC bias point, and they struggle with
+this circuit's discontinuous behavioral comparator/switch; ngspice falls
+back to solving the initial point directly in the time domain instead,
+which succeeds every time here and produces the frequency/duty numbers
+above matching the standard 555 formulas. The `Note: No compatibility
+mode selected!` line is unrelated — ngspice prints it on every run in
+this repo regardless of netlist — and the two separate "Initial Transient
+Solution" blocks are the two `tran` runs (Rb=10k, then Rb=2k after
+`alter`), not a repeated/duplicated analysis. Nothing here indicates a
+problem with the model or the result.
+
 ---
 
 ## Expected behaviour

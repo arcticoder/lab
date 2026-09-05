@@ -44,6 +44,7 @@ channel, one job.
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `quickstart.md` | Just one fuse, one battery, in front of you right now — the direct build, no tiers/batch framing |
 | `breadboard.md` | Full self-check → test → demo procedure (500 mA tier, batches of fuses, PSU demo) |
+| `breadboard.jpg` | Photo of the actual bench jig |
 | `main.py` | MicroPython — reads GP26, prints voltage over USB serial, flags trip/reset |
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 
@@ -113,6 +114,31 @@ trusted — see `main.py`'s docstring. This exists because the battery
 itself has to be physically connected/disconnected by hand mid-test, and
 without an explicit signal the expected zero-volt reading during that
 action reads identically to a real trip.
+
+---
+
+## Current bench status (as of 2026-08-28)
+
+**Bench wiring has diverged from the design above, and trip detection is
+currently non-functional.** The 10Ω resistor was physically removed and
+the fuse wired straight onto the power rail, which collapses the probe
+(GP26) and GND nodes into one node — the jig now reads ~0V regardless of
+whether the fuse is tripped, since there's no longer a divider to read
+across.
+
+Prior to that removal, the jig worked as designed: the arm switch toggled
+ARMED/DISARMED correctly, and the loaded reading was steady ~1.36–1.50V
+across runs (matching the SPICE prediction, scaled to this cell's ~1.6V
+open-circuit voltage). The deliberate-short trip/reset pass/fail check
+from `quickstart.md` has never actually passed on this specific build.
+
+**This no longer blocks polyfuse validation.** Both fuse batches have
+since been sorted good/bad by the
+[ammeter_10ohm](../ammeter_10ohm/)/[ammeter_1ohm](../ammeter_1ohm/) jigs
+instead, which measure current directly rather than inferring a trip
+from a voltage probe. Restoring the resistor (or reading trip status a
+different way) is optional going forward, not a prerequisite for
+anything currently planned.
 
 ---
 

@@ -74,6 +74,56 @@ If a future netlist genuinely needs a real simulated transient current
 through a plain resistor, verify `@R[i]` against a known-good hand
 calculation before trusting it, rather than assuming the probe works.
 
+## Bias-point stepping (`gmin`/source stepping) warnings on this netlist are expected, not a regression to chase
+
+Running `ne555_astable.spice` prints, twice:
+
+```
+Note: Starting dynamic gmin stepping
+Warning: Dynamic gmin stepping failed
+Note: Starting true gmin stepping
+Warning: True gmin stepping failed
+Note: Starting source stepping
+Warning: source stepping failed
+Note: Transient op started
+Note: Transient op finished successfully
+```
+
+Confirmed by comparison against `psu_ultralow_v1.spice` (plain R/D/V
+elements only, no behavioral sources): that netlist shows *none* of these
+stepping attempts or warnings at all. So the failures are specific to
+this netlist's `NE555_ASTABLE` subckt — its self-referencing `Bout`
+ternary comparator and the `SW` voltage-controlled switch are both
+discontinuous around their trip points, which is exactly the shape of
+circuit gmin-stepping/source-stepping (both DC-continuation strategies
+for finding an initial bias point) handle poorly. That's fine here
+because this netlist only ever runs `tran` (no `.op`/`.dc` on its own) —
+ngspice has a fourth strategy, "Transient op" (solving the initial point
+by time-domain relaxation instead of DC continuation), which is what
+actually succeeds each time (`Transient op finished successfully`), and
+the resulting `freq_lo`/`duty_lo`/`freq_hi`/`duty_hi` measurements match
+the analytic 555 astable formulas in the netlist header. Treat these
+three-stepping-methods-fail-then-transient-op-succeeds warnings as
+diagnostic noise specific to behavioral B-source/switch topologies, not
+a sign the result is wrong — but if a *future* behavioral netlist prints
+the stepping warnings *without* the subsequent `Transient op finished
+successfully` line, that's a real unconverged bias point and the result
+should not be trusted.
+
+The two repeated "Initial Transient Solution" blocks are likewise
+expected: this netlist runs `tran` twice on purpose (Rb=10k, then
+`alter Rb = 2k`, then `tran` again — see the netlist's `.control`
+section), and each `tran` invocation gets its own bias-point/stepping
+attempt and its own "Initial Transient Solution" printout. Not a
+duplicated analysis, and not something to collapse into one run — the
+whole point is bounding both ends of the recommended trim range.
+
+`Note: No compatibility mode selected!` is unrelated to any of the above
+— it's ngspice's standard startup banner (no `.options`
+HSPICE/PSPICE-style compatibility mode requested) and appears on every
+single ngspice invocation in this repo, `psu_ultralow_v1.spice` included.
+Purely informational, never a fault signal.
+
 ## `.meas ... TRIG <vec>=<val> ... TARG <vec>=<val>` syntax needs `VAL=`, not `=`, once both TRIG and TARG are present
 
 `meas tran thigh TRIG v(out)=2.5 RISE=3 TARG v(out)=2.5 FALL=3` fails
