@@ -163,6 +163,35 @@ row rather than leaving it unstated. When adding a new circuit, check
 its own `breadboard.md` parts list the same way before deciding whether a
 resistor power-dissipation check belongs in its `smoke_test.py`.
 
+## `smoke_test.py` must also check that the netlist models the *whole* circuit, not just that its own numbers are internally consistent (found 2026-09-05, `psu_medlow_usbc`)
+
+`psu_medlow_usbc`'s smoke/functional checks all passed green while the
+physical build was incomplete: the "TYPE-C Female Test Board" breakout
+(`pico/docs/inventory.md`) is passive (traces only, no PD controller IC),
+and the netlist's `Vusb 1 0 DC 5.0` simply *assumes* VBUS is already
+present rather than modeling USB-C CC1/CC2 sink termination or PD
+negotiation — so the checks were only ever verifying "if VBUS shows up,
+the fuse+bypass math is right," not "this circuit powers on from a real
+USB-C source." A PD-only charger with no legacy 5V fallback may output
+nothing at all without CC1/CC2 termination (5.1kΩ pull-downs), and
+whether this specific breakout board has those wired was never confirmed
+(`docs/parts_reference.md` § USB-C 16-pin test breakout board already
+hedged this — "verify values with a meter" — but nothing downstream
+propagated that hedge into a check that would actually fail).
+
+Fix applied: added a static (non-simulated) `PD_SINK_TERMINATION_CONFIRMED
+= False` check to `smoke_test.py` that fails until someone physically
+confirms the termination — plus matching "Status: incomplete / unverified"
+callouts in `README.md` and `breadboard.md`, and a `NOT MODELED:` comment
+in the `.spice` file. Generalizes: when a circuit's physical BOM has a
+component whose *presence* (not just its value) is unconfirmed and load-
+bearing for the circuit to function at all — a breakout board that may or
+may not carry termination/logic it's assumed to have, e.g. — encode that
+as a static assertion in `smoke_test.py` that fails until verified,
+rather than letting the simulated checks report green on an assumption
+the netlist can't actually test. Don't wait for someone to notice the
+prose caveat; make the test suite red.
+
 ## `psu_pico_rail` is an interim/low-current PSU tier, not a replacement for the AA/USB-C tiers
 
 Added 2026-08-24 alongside `power_supplies/psu_pico_rail/` (the Pico's own

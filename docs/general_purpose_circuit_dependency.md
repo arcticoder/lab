@@ -52,7 +52,7 @@ graph TD
         
         subgraph psu_medlow ["Medium: 5V USB + Regulator OR 12V, 1–3A, 5–36W"]
             PSUMEDLOW["USB Wall Adapter (5V 3A) OR 12V Sabrent USB-C Adapter"]
-            PSUMEDLOWLM317["SFE Breadboard Power Supply Kit (LM317 adjustable, 3.3V/5V-selectable) — power_supplies/psu_medlow_lm317/ — on order, not yet built"]
+            PSUMEDLOWLM317["SFE Breadboard Power Supply Kit (LM317 adjustable, 3.3V/5V-selectable) — power_supplies/psu_medlow_lm317/ — not yet ordered, not yet built"]
             PROTMEDLOW["Fuse (2A fast-blow) + Polyfuse (500mA backup) for 12V path"]
         end
         

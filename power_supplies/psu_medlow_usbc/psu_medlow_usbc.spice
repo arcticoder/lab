@@ -10,6 +10,12 @@
 *
 * Load swept from 5 to 50 ohm to show behaviour around the 500 mA fuse
 * threshold (Rload = 10 ohm -> ~500 mA, right at the trip point by design).
+*
+* NOT MODELED: USB-C CC1/CC2 sink termination and PD negotiation. Vusb=5.0
+* here assumes VBUS is already present. Whether the physical breakout
+* board (passive, no PD controller IC) actually gets a source to drive
+* VBUS is unverified -- see README.md "Status" before treating this as a
+* complete circuit.
 
 Vusb    1 0 DC 5.0
 Rfuse   1 2 0.5                ; 500 mA polyfuse, cold-state resistance

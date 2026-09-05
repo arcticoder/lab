@@ -9,9 +9,9 @@ implementation of the `psu_medlow` tier alongside
 because a USB-C adapter already regulates to 5V; this one does its own
 regulation from a raw DC input, at the cost of extra parts to solder.
 
-**Status: on order, not yet built.** No physical unit has been assembled or
-tested — see [breadboard.md](breadboard.md) for the caveat on the exact
-voltage-select switch wiring.
+**Status: not yet ordered, not yet built.** No physical unit has been
+acquired, assembled, or tested — see [breadboard.md](breadboard.md) for the
+caveat on the exact voltage-select switch wiring.
 
 Spec: 3.3V or 5V (switch-selected), up to 1.5A (LM317 TO-220 max, though the
 kit's own trace width/heatsinking may limit sustained current well below

@@ -3736,3 +3736,12 @@ What you'd want alongside it, if the listing doesn't already include it:
 Nothing else is required to unblock the tier2/tier3 validation this was flagged for. I logged this identification (CY7C68013A = the SCOPELA hardware) in [lab/docs/kb/ordering\_ingestion\_notes.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/kb/ordering_ingestion_notes.md) so future sessions don't second-guess it.
 <!-- ------ -->
 ---
+All in the `lab` repo (no `pico` changes needed, since item 3 turned out correct as-is). Summary of what changed:
+
+1.  **psu\_medlow\_lm317** --- "Status" corrected from "on order, not yet built" to "not yet ordered, not yet built" (README + dependency graph node label).
+2.  **psu\_medlow\_usbc** --- added an "incomplete/unverified" status to README.md and a warning to breadboard.md explaining the USB-C breakout is passive with no PD controller, so VBUS may never come up without confirmed CC1/CC2 termination or an added PD sink controller IC + buck converter; flagged the modeling gap in the `.spice` file; and added a new static check to `smoke_test.py` (`PD_SINK_TERMINATION_CONFIRMED = False`) that now fails on purpose until the termination is physically verified --- confirmed it actually fails via `tools/run_all_smoke_tests.py`.
+3.  **pico/README.md:128** --- checked out; `calibration_guide.md`, `noise_measurement.md`, `drift_measurement.md` do exist under `measurement_tools/gpio_analog_sensing/docs/`, tracked in git and non-empty, so per your answer no change was made.
+
+Also logged the reasoning behind fix #2 in `lab/docs/kb/repo_docs_conventions.md` (new dated entry under the existing smoke\_test convention section) so a future session knows why that check exists and applies the same pattern --- static "presence unconfirmed" assertions in `smoke_test.py` --- to any circuit where a BOM part's function is assumed rather than verified.
+<!-- ------ -->
+---
