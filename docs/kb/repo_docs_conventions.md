@@ -1446,3 +1446,56 @@ citation on the LM358 entry) — all three were edited to remove the
 dangling reference rather than leaving a dead link. Before deleting a doc
 like this, grep the whole repo for its filename, not just check whether
 the user named specific referrers.
+
+## The user doesn't own or use a multimeter — every "confirm with a multimeter" doc instruction needs a Pico-circuit substitute, not a caveat (found 2026-09-05)
+
+`cd4066_switch_tester/README.md`'s troubleshooting checklist (items 1 and
+4, added 2026-08-28) told the reader to "confirm with a multimeter" for
+two continuity checks (VSS pin 6 → GND, and power-rail continuity across a
+possibly-split breadboard). The user pointed out they don't use a
+multimeter at all — every voltage/current/resistance measurement on this
+bench already goes through a Pico circuit with output routed to console/
+log (same "Pico-as-instrument" philosophy as `fuse_test_voltmeter`'s own
+"There's no multimeter in the loop" validation section). Fixed by naming
+[resistance_measurement](../../measurement_tools/resistance_measurement/)
+specifically in both checklist items instead of the word "multimeter":
+its `R_x` leg and GND return get clipped directly onto the same two nodes
+a multimeter's continuity probe would touch (pin 6 + Pico GND for item 1;
+the two suspect rail segments for item 4), non-invasively and in parallel
+with whatever's already wired — a near-0Ω reading is continuity, "Circuit
+Open" is a break. This works because `resistance_measurement` already
+exists in the repo for exactly this "measure an unknown resistance
+without a multimeter" purpose (it was originally built to characterize a
+jumper-wire chain for `ammeter_1ohm`'s shunt) — no new circuit was needed.
+
+General rule for any future doc edit here: when text says "check/confirm
+with a multimeter," don't just soften the wording — replace it with a
+specific existing circuit in `measurement_tools/` (or say what a new one
+would need to measure) that produces the same console-loggable result.
+The three circuits available for this today: `fuse_test_voltmeter`
+(voltage across two points), `ammeter_1ohm`/`ammeter_10ohm` (current
+through a shunt), `resistance_measurement` (resistance/continuity of an
+unknown two-terminal element via a known-resistor divider). If a future
+check needs something none of these three actually measure (e.g. AC
+frequency, capacitance), that's a gap to name explicitly rather than
+reflexively pointing at `resistance_measurement` because it's the closest
+existing fit.
+
+## GitHub repo description/topics for `arcticoder/lab` and `arcticoder/pico` were empty until 2026-09-05
+
+Both repos had `""` for `description` and `null` for `repositoryTopics`
+(checked via `gh repo view OWNER/REPO --json description,repositoryTopics`)
+until the user asked to populate them. Set via `gh repo edit OWNER/REPO
+--description "..." --add-topic foo --add-topic bar` (repeatable
+`--add-topic`, not a single comma-joined string). `lab`'s description/
+topics describe it as physics-lab test/measurement circuits (SPICE,
+breadboard, smoke-tested); `pico`'s describe it as the general-purpose
+sibling repo (MicroPython, SPICE, breadboard, no lab-specific framing) —
+matching the one-directional `lab/` → `pico/` relationship already
+documented above (general-purpose infra lives in `pico/`, physics-bench-
+specific framing stays in `lab/`). Per the "no fringe-science terms" rule
+at the top of this file, neither repo's topics/description name a specific
+theory or mention faster-than-light travel — topics are all
+generic/technical (`raspberry-pi-pico`, `ngspice`, `circuit-design`, etc.).
+If asked to update these again, keep that same split rather than drifting
+lab-specific framing into `pico`'s metadata or vice versa.

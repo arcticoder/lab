@@ -106,9 +106,16 @@ rails, check these in order — swapping the control wire, the VDD wire, or
 the chip itself does **not** rule out any of the items below, since none
 of those swaps touch them:
 
-1. **VSS (pin 6) → GND continuity.** Confirm with a multimeter that pin 6
-   is actually at the same potential as the Pico's own GND, not just that
-   a wire is present.
+1. **VSS (pin 6) → GND continuity.** No multimeter on this bench — use
+   [resistance_measurement](../resistance_measurement/) instead, clipped
+   onto the same two points a multimeter's continuity check would touch:
+   its `R_x` leg (the `R_ref`/ADC0 divider midpoint) onto pin 6, and its
+   GND return onto the Pico's own GND pin, without disturbing the existing
+   pin-6-to-GND wire. Then run that jig's `main.py`. A near-0Ω reading
+   confirms pin 6 is genuinely joined to GND; "Circuit Open" (or a
+   kΩ-range reading) means it isn't, wire present or not — on this jig,
+   nothing else ties pin 6 to GND, so there's no other path to
+   mask a broken one.
 2. **The two 10kΩ bias resistors and their breadboard rows.** Confirm
    each resistor leg is in the row `breadboard.md` says it should be, not
    an adjacent row.
@@ -120,4 +127,9 @@ of those swaps touch them:
    GND jumper from `psu_pico_rail` lands on a different rail segment than
    the bias resistors or the VSS jumper, everything downstream floats
    regardless of how correct each individual wire looks in isolation.
-   Check with a multimeter across the rail, not just by eye.
+   Check with [resistance_measurement](../resistance_measurement/) the
+   same way as item 1 above — clip its `R_x` leg to the rail segment the
+   bias resistors/VSS jumper sit on, and its GND return to the *other*
+   rail segment, the one `psu_pico_rail`'s GND jumper actually lands on.
+   Near-0Ω means the two segments are electrically joined; "Circuit Open"
+   confirms they aren't, even if a wire visually appears to bridge them.

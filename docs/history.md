@@ -3753,3 +3753,14 @@ All four items are addressed:
 4.  Shrunk the sprawling `fuse_test_voltmeter` table row down to one line, and moved the detailed bench-status narrative into a new "Current bench status" section in `measurement_tools/fuse_test_voltmeter/README.md`.
 <!-- ------ -->
 ---
+Good, that confirms the changes are correctly scoped: lab has both the README fix and its kb update; pico has only its kb pointer entry.
+
+Summary of what I did:
+
+**GitHub metadata (tasks 1--4):** Set descriptions and topics for both `arcticoder/lab` and `arcticoder/pico` via `gh repo edit`, verified with `gh repo view`. Kept `lab`'s framing physics-lab-specific (test/measurement, SPICE, breadboard) and `pico`'s general-purpose (no lab-specific language), consistent with the existing one-directional doc-linking convention between the repos. No fringe-science terms or FTL language went into either.
+
+**cd4066\_switch\_tester README (task 5):** Replaced both "confirm with a multimeter" instructions with concrete steps using [`resistance_measurement`](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/measurement_tools/resistance_measurement/README.md) --- it already exists in the repo for exactly this purpose (measuring an unknown two-terminal resistance without a multimeter). For each check, its `R_x` leg and GND return get clipped onto the same two nodes a multimeter's continuity probe would touch, non-invasively; near-0Ω confirms continuity, "Circuit Open" confirms a break.
+
+**KB updates:** Documented both discoveries in `lab/docs/kb/repo_docs_conventions.md` (the "no multimeter on this bench" pattern, and the GitHub metadata population), with a short cross-reference pointer added to `pico/docs/kb/repo_docs_conventions.md`.
+<!-- ------ -->
+---
