@@ -1499,3 +1499,46 @@ theory or mention faster-than-light travel — topics are all
 generic/technical (`raspberry-pi-pico`, `ngspice`, `circuit-design`, etc.).
 If asked to update these again, keep that same split rather than drifting
 lab-specific framing into `pico`'s metadata or vice versa.
+
+## `*-arcticoder.md` suffix marks a human-facing TODO checklist, distinct from any future LLM-facing TODO file (established 2026-09-05)
+
+Added `docs/general_purpose_circuit_dependency-arcticoder.md` and
+`docs/spacetime_circuits_dependency-arcticoder.md` as running build/buy/
+verify checklists for the user, one per dependency-graph file, modeled on
+the format of `arcticoder/aqei-bridge`'s `docs/TODO.md` /
+`docs/TODO-backlog.md` / `docs/TODO-BLOCKED.md` (checkbox items grouped by
+readiness/blocker, most-actionable first) but condensed into a single file
+per graph rather than that repo's four-way split, since the user asked for
+exactly one file per dependency doc. The `-arcticoder` suffix is
+deliberate and should be preserved on any future edits: it signals "a
+human works through this list," as opposed to a hypothetical future
+`*-llm.md` or similarly-named file that would hold tasks meant for an LLM
+session to execute directly. Do not merge the two kinds of TODO content
+into one file if that second kind of file is ever created.
+
+Content rule inherited from the "pure mermaid, no prose" convention above:
+these checklists live in their own sibling files, not inside the `.md`
+dependency graphs themselves — a node's build status still belongs in
+that node's own bracketed label text in the mermaid file (e.g. "not yet
+built"), and the arcticoder checklist only adds the *next concrete action*
+on top of that status. When a checklist item is completed, remove it from
+the arcticoder file (or fold it into another item for context) rather than
+checking the box and leaving it — these files track remaining work only,
+mirroring how `aqei-bridge/docs/TODO.md` stays drained to just open items
+with completed work moved to `TODO-completed.md`. There is no
+`TODO-completed.md` equivalent here: `README.md`'s "built & bench-tested"
+table and `docs/history.md` already serve that role, so completed items
+just get deleted from the arcticoder checklist instead of archived a
+second time.
+
+Sourcing the actual checklist content required cross-referencing three
+places at once: `README.md`'s "built & bench-tested" / "designed, not yet
+built" tables (what's physically done), `docs/orders.md`'s "Received" vs.
+"On order" section headers (what's on hand vs. still in transit — the
+section a part sits under is the authoritative signal, not narrative text
+elsewhere describing it as e.g. "just arrived"), and `docs/history.md`'s
+most recent entries (for the latest gap-analysis priority order and any
+status corrections not yet reflected in the other two files, e.g.
+`psu_medlow_lm317`'s order status being walked back from "on order" to
+"not yet ordered"). All three can disagree with each other during an
+in-progress session — trust whichever was written most recently.

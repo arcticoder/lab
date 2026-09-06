@@ -3764,3 +3764,15 @@ Summary of what I did:
 **KB updates:** Documented both discoveries in `lab/docs/kb/repo_docs_conventions.md` (the "no multimeter on this bench" pattern, and the GitHub metadata population), with a short cross-reference pointer added to `pico/docs/kb/repo_docs_conventions.md`.
 <!-- ------ -->
 ---
+I've created both TODO checklists and documented the convention. Summary:
+
+**New files** (in `lab/docs/`):
+
+-   `general_purpose_circuit_dependency-arcticoder.md` --- checklist covering: 5 items ready to build now with parts on hand (NE555 astable, a new TIA, a new OHMMETER, `psu_low_v2`, `psu_3xaa`/`psu_4xaa`), per-unit validation gaps (NE555 batch, Schottky diodes, remaining CD4066 switches, glass fuses), open correctness issues (`psu_medlow_usbc`'s unverified PD termination, `psu_medlow_lm317`'s ambiguous order status, `psu_ultralow_v1`'s missing full-PSU demo), items blocked on parts already in transit (`CAPBRIDGE`/`INDBRIDGE`), the next recommended buy (USB logic analyzer), and a compact backlog for everything with zero design work yet.
+-   `spacetime_circuits_dependency-arcticoder.md` --- same treatment for tiers 5/7/8: what unlocks once the 2026-09-03 parts batch (TL082, KY-003 Hall, IRLZ44N, piezo) arrives, what still needs buying beyond that (linear Hall sensor, accelerometer, LVDT), and the fully-unaddressed tier7/tier8 backlog.
+
+Both exclude already-completed work and cross-link to each other rather than duplicating shared items (e.g., IRLZ44N appears in both since it fills gaps in each graph).
+
+**Updates**: `lab/README.md`'s docs tree now lists both new files; `lab/docs/kb/repo_docs_conventions.md` got a new dated entry (LLM-only) explaining the `-arcticoder.md` naming convention, why it's a single file per graph rather than aqei-bridge's four-way TODO split, the "delete when done, don't archive" rule, and where the sourcing data lives across `README.md`/`orders.md`/`history.md`.
+<!-- ------ -->
+---
