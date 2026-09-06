@@ -288,9 +288,13 @@ signal_conditioning/
 docs/
     history.md                                  design conversation log
     general_purpose_circuit_dependency.md       general-purpose tier graph (PSU, protection, tiers 1-4/6/9, scope/logic-analyzer tiers M0-M5)
-    general_purpose_circuit_dependency-arcticoder.md  human TODO checklist for the graph above
+    general_purpose_circuit_dependency-arcticoder.md          human TODO: active queue for the graph above
+    general_purpose_circuit_dependency-arcticoder-BLOCKED.md  human TODO: items waiting on a shipment
+    general_purpose_circuit_dependency-arcticoder-backlog.md  human TODO: undesigned long-tail backlog
     spacetime_circuits_dependency.md            spacetime-specific tier graph (tiers 5/7/8)
-    spacetime_circuits_dependency-arcticoder.md human TODO checklist for the graph above
+    spacetime_circuits_dependency-arcticoder.md          human TODO: active queue for the graph above
+    spacetime_circuits_dependency-arcticoder-BLOCKED.md  human TODO: items waiting on a shipment
+    spacetime_circuits_dependency-arcticoder-backlog.md  human TODO: undesigned long-tail backlog
     orders.md                                   AliExpress order log (received / on order)
     parts_reference.md                          pinouts & specs for ordered parts without a datasheet on file
     manuals/                                    converted (markitdown) part manuals; source PDFs gitignored

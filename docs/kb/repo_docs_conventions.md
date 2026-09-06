@@ -1500,36 +1500,52 @@ generic/technical (`raspberry-pi-pico`, `ngspice`, `circuit-design`, etc.).
 If asked to update these again, keep that same split rather than drifting
 lab-specific framing into `pico`'s metadata or vice versa.
 
-## `*-arcticoder.md` suffix marks a human-facing TODO checklist, distinct from any future LLM-facing TODO file (established 2026-09-05)
+## `*-arcticoder*.md` suffix marks a human-facing TODO checklist, distinct from any future LLM-facing TODO file (established 2026-09-05, corrected same day)
 
-Added `docs/general_purpose_circuit_dependency-arcticoder.md` and
-`docs/spacetime_circuits_dependency-arcticoder.md` as running build/buy/
-verify checklists for the user, one per dependency-graph file, modeled on
-the format of `arcticoder/aqei-bridge`'s `docs/TODO.md` /
-`docs/TODO-backlog.md` / `docs/TODO-BLOCKED.md` (checkbox items grouped by
-readiness/blocker, most-actionable first) but condensed into a single file
-per graph rather than that repo's four-way split, since the user asked for
-exactly one file per dependency doc. The `-arcticoder` suffix is
-deliberate and should be preserved on any future edits: it signals "a
-human works through this list," as opposed to a hypothetical future
-`*-llm.md` or similarly-named file that would hold tasks meant for an LLM
-session to execute directly. Do not merge the two kinds of TODO content
-into one file if that second kind of file is ever created.
+Added six files — three per dependency graph, mirroring
+`arcticoder/aqei-bridge`'s `docs/TODO.md` / `docs/TODO-backlog.md` /
+`docs/TODO-BLOCKED.md` split as literally as this repo's content allows:
+
+- `general_purpose_circuit_dependency-arcticoder.md` (active queue,
+  ~ `TODO.md`) / `-arcticoder-BLOCKED.md` (~ `TODO-BLOCKED.md`, "Still
+  Blocked" + "Unblocked (resolved)" sections) / `-arcticoder-backlog.md`
+  (~ `TODO-backlog.md`, undesigned long-tail, promote up when actionable)
+- Same three-file pattern for `spacetime_circuits_dependency*`.
+
+**First attempt at this (same day) collapsed all three sections into one
+file per graph with headers instead of separate files — the user rejected
+it explicitly ("doesn't resemble this even slightly") and it had to be
+redone as six files.** The lesson: when a user points at an existing
+multi-file template and says "follow this format," match the *file
+boundaries*, not just the content grouping — a single file with `##`
+section headers standing in for what the template does as separate files
+is not the same format even if the prose content is equivalent chapter for
+chapter. If asked to extend this template further (e.g. a third dependency
+graph gets added later), replicate the same three-file split again rather
+than reverting to one file per graph.
+
+There is deliberately no fourth `-completed` file per graph: the task that
+created these files explicitly said not to include already-completed
+work, and `README.md`'s "built & bench-tested" table plus `docs/history.md`
+already serve the role `TODO-completed.md` plays in aqei-bridge. When a
+checklist item is completed, delete it from whichever of the three files
+it's in (don't check the box and leave it, and don't create a completed
+archive here) — active queue, BLOCKED, and backlog all track *remaining*
+work only.
+
+The `-arcticoder` marker itself is deliberate and should be preserved on
+any future edits: it signals "a human works through this list," as
+opposed to a hypothetical future `*-llm.md` or similarly-named file that
+would hold tasks meant for an LLM session to execute directly. Do not
+merge the two kinds of TODO content into one file if that second kind of
+file is ever created.
 
 Content rule inherited from the "pure mermaid, no prose" convention above:
 these checklists live in their own sibling files, not inside the `.md`
 dependency graphs themselves — a node's build status still belongs in
 that node's own bracketed label text in the mermaid file (e.g. "not yet
-built"), and the arcticoder checklist only adds the *next concrete action*
-on top of that status. When a checklist item is completed, remove it from
-the arcticoder file (or fold it into another item for context) rather than
-checking the box and leaving it — these files track remaining work only,
-mirroring how `aqei-bridge/docs/TODO.md` stays drained to just open items
-with completed work moved to `TODO-completed.md`. There is no
-`TODO-completed.md` equivalent here: `README.md`'s "built & bench-tested"
-table and `docs/history.md` already serve that role, so completed items
-just get deleted from the arcticoder checklist instead of archived a
-second time.
+built"), and the arcticoder checklists only add the *next concrete
+action* on top of that status.
 
 Sourcing the actual checklist content required cross-referencing three
 places at once: `README.md`'s "built & bench-tested" / "designed, not yet

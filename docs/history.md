@@ -3776,3 +3776,16 @@ Both exclude already-completed work and cross-link to each other rather than dup
 **Updates**: `lab/README.md`'s docs tree now lists both new files; `lab/docs/kb/repo_docs_conventions.md` got a new dated entry (LLM-only) explaining the `-arcticoder.md` naming convention, why it's a single file per graph rather than aqei-bridge's four-way TODO split, the "delete when done, don't archive" rule, and where the sourcing data lives across `README.md`/`orders.md`/`history.md`.
 <!-- ------ -->
 ---
+Redone properly as six files --- three per dependency graph, mirroring aqei-bridge's actual file split rather than faking it with section headers in one file:
+
+**`general_purpose_circuit_dependency-arcticoder*.md`**
+
+-   `.md` (active queue) --- ready-to-build items, validation gaps, open correctness issues, next buy
+-   `-BLOCKED.md` --- items waiting on a shipment, with "Blocked on:" reasons + an "Unblocked (resolved)" section
+-   `-backlog.md` --- the undesigned long-tail, tier by tier
+
+**`spacetime_circuits_dependency-arcticoder*.md`** --- same three-way split for tiers 5/7/8.
+
+Updated `README.md`'s docs tree to list all six, and rewrote the KB entry to record what actually happened (including the false start) so a future session doesn't repeat the collapse-into-one-file mistake.
+<!-- ------ -->
+---

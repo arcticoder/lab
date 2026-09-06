@@ -1,22 +1,24 @@
-# TODO — General-Purpose Circuit Build-Out (for arcticoder)
+# TODO: General-Purpose Circuit Build-Out — Active Queue (for arcticoder)
 
-Human task list for realizing the tiers laid out in
-[general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md).
-This file tracks *build/buy/verify* actions, not proofs or code — it's the
-same kind of running checklist as `aqei-bridge/docs/TODO.md`, just for a
-physics bench instead of a Lean project. Companion file:
-[spacetime_circuits_dependency-arcticoder.md](spacetime_circuits_dependency-arcticoder.md)
-for tier5/7/8 (spacetime-specific) items.
-
-This is a human-facing checklist — for a future LLM chat's own working
-notes on this repo, see `docs/kb/` instead (not this file).
-
-Already-built circuits (see `README.md` § "Circuits — built & bench-tested")
-are omitted below except where a gap in that build still needs closing.
+> Blocked items (waiting on a shipment) are in
+> [general_purpose_circuit_dependency-arcticoder-BLOCKED.md](general_purpose_circuit_dependency-arcticoder-BLOCKED.md).
+> Long-term/undesigned backlog is in
+> [general_purpose_circuit_dependency-arcticoder-backlog.md](general_purpose_circuit_dependency-arcticoder-backlog.md).
+> Completed circuits are tracked in `README.md`'s "built & bench-tested"
+> table and `docs/history.md` — there's no separate completed-TODO file
+> here.
+>
+> This tracks the tiers in
+> [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md).
+> Companion track:
+> [spacetime_circuits_dependency-arcticoder.md](spacetime_circuits_dependency-arcticoder.md).
+>
+> Human-facing checklist — a future LLM chat's own working notes on this
+> repo belong in `docs/kb/`, not here.
 
 ---
 
-## Ready to build now — parts already on hand
+## Ready to build now — parts on hand
 
 - [ ] **`oscillators/ne555_astable` (tier1 `OSC`) — bench-build it.** Design
       is simulated but never physically assembled. NE555 (10 on hand),
@@ -80,16 +82,7 @@ are omitted below except where a gap in that build still needs closing.
       replaced its role for polyfuse sorting, so this is optional cleanup,
       not a blocker.
 
-## Waiting on parts already on order (placed 2026-08-30, not yet received)
-
-- [ ] **`CAPBRIDGE` (tier3, capacitance bridge)** — blocked on the
-      multilayer ceramic capacitor assortment and the aluminum
-      electrolytic capacitor kit. Build once both arrive.
-- [ ] **`INDBRIDGE` (tier3, inductance bridge)** — blocked on the
-      color-ring inductor assortment (12 values, 0307 1/4W). Build once it
-      arrives.
-
-## Next parts to buy (priority order, general-purpose scope only)
+## Next parts to buy
 
 - [ ] **8ch 24MHz USB logic analyzer** (`SCOPELA` tier, ~$5–8, built
       around the CY7C68013A / EZ-USB FX2LP chip — `sigrok`'s `fx2lafw`
@@ -99,38 +92,6 @@ are omitted below except where a gap in that build still needs closing.
       what the Pico's software-timed ADC can confirm. Check whether the
       listing bundles an 8-wire test-clip cable and a USB cable (dongle
       vs. separate port) before assuming nothing else is needed.
-
-## Backlog — not yet designed at all
-
-Nothing below has a netlist, folder, or sourced part yet. Grouped by tier
-from the dependency graph; check the graph itself for how each connects.
-
-- [ ] **Safety monitoring subgraph** — all 15 nodes (`THERM` — needs a
-      replacement 10kΩ NTC thermistor, on order via MF52AT batch, not yet
-      received; `LEAKDET`, `GFCI`, `ESDMON`, `INSMON`, `ARCDECT`,
-      `OVERCUR`, `OVERVOLT`, `TEMPCOIL`, `EMSTOP`, `PSUHEALTH`,
-      `FUSESTAT`, `RFRAD`, `VACPRES`, `SMOKDET`) are undesigned.
-- [ ] **Protection, active** — `ACTIVELIM` (MOSFET + sense resistor +
-      controller) is undesigned; IRLZ44N MOSFET is on order (not yet
-      received) to fill this gap — see
-      [spacetime_circuits_dependency-arcticoder.md](spacetime_circuits_dependency-arcticoder.md)
-      for the tier7 `HVPULSE` use of the same part.
-- [ ] **`psu_medhigh` / `psu_high`** — no fuse/limiter circuit built
-      around the Lenovo 65W adapter (on hand) or any industrial supply.
-- [ ] **Bootstrap tier** — `LEDIND`, `SIMPLECNT`, `TUNINGFK`, `AUDIOSC`,
-      `CRTSC` all undesigned (`PASSVM` is done via `fuse_test_voltmeter`).
-- [ ] **Tier 2** — `VM`, `AM`, `FREQC` undesigned as dedicated circuits
-      (distinct from the bootstrap ammeter jigs).
-- [ ] **Tier 4** — `IA`, `DA`, `PHASED` (SN74HC86N XOR gate on order, not
-      yet received), `DEMOD` undesigned.
-- [ ] **Tier 6** — `LOCKIN`, `AAF`, `TIMEINT`, `JITTER` undesigned.
-- [ ] **Tier 9** — `SAMHOLD`, `ADCDRV`, `REFGEN2` undesigned (`MUX`
-      partially covered by `cd4066_switch_tester` component validation,
-      but the actual multiplexer circuit isn't built).
-- [ ] **Concurrent measurement tools** — `SCOPEUSBSER`, `SCOPEDSO`,
-      `SCOPEBENCH`, `PRECBOX`, `LOADBANK`, `NOISEGEN`, `TESTSIG`,
-      `THERMOAMP` all undesigned/unsourced (`SCOPELA` is the next buy,
-      above).
 - [ ] *(optional upgrade, not blocking)* **Tier 1 `REF`** — TL431A
       precision shunt reference (5 on hand, untested) could replace or
       supplement the resistor-divider + LM358 buffer for better precision.
