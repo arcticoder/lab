@@ -3789,3 +3789,6 @@ Redone properly as six files --- three per dependency graph, mirroring aqei-brid
 Updated `README.md`'s docs tree to list all six, and rewrote the KB entry to record what actually happened (including the false start) so a future session doesn't repeat the collapse-into-one-file mistake.
 <!-- ------ -->
 ---
+Created one file: `/home/echo_/Code/python/lab/docs/TODO-arcticoder.md`. It has three open items tied to what came out of the last work session (order decision on `psu_medlow_lm317`, multimeter check on the USB-C breakout's CC pins, and the follow-up decision if that check comes back negative). No backlog/completed/blocked files created yet --- the note at the top says those only get added when there's actually overflow to put in them.
+<!-- ------ -->
+---
