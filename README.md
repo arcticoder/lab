@@ -291,6 +291,7 @@ docs/
     general_purpose_circuit_dependency.md       general-purpose tier graph (PSU, protection, tiers 1-4/6/9, scope/logic-analyzer tiers M0-M5)
     spacetime_circuits_dependency.md            spacetime-specific tier graph (tiers 5/7/8)
     TODO-arcticoder.md                          human TODO: single active/blocked/backlog checklist for both graphs above, plus personal action items
+    TODO-completed.md                           dated audit trail of TODO-arcticoder.md items once done — moved here, not deleted
     inventory.md                                master component inventory (moved from pico/docs/inventory.md 2026-09-07)
     orders.md                                   AliExpress order log (received / on order)
     parts_reference.md                          pinouts & specs for ordered parts without a datasheet on file

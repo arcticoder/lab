@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "."
+		},
+		{
+			"path": "../../asciimath/aqei-bridge"
 		}
 	],
 	"settings": {}

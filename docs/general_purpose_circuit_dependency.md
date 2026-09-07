@@ -85,7 +85,7 @@ graph TD
 
     subgraph tier1 ["Tier 1: Foundational (Simplest, Low Cost)"]
         REF["Precision Reference Voltage Generator (3.3V or 5V input) — see signal_conditioning/voltage_reference_lm358/ — built & bench-tested 2026-08-27"]
-        OSC["Precision Timing Oscillator (1.5–5V) — see oscillators/ne555_astable/ — designed & simulated 2026-09-01, not yet bench-built"]
+        OSC["Precision Timing Oscillator (1.5–5V) — see oscillators/ne555_astable/"]
         SIMPGEN["Simple Function Generator (5–12V input)"]
     end
 
@@ -280,7 +280,7 @@ graph TD
     PICOADC["pico/measurement_tools/gpio_analog_sensing/"] -.optional alternative.-> ADCDRV
     PICOBTN["pico/buttons/gpio_button_timing/, gpio_interrupt_button/"] -.optional alternative.-> SIMPLECNT
     PICOLED["pico/leds/gpio_led_basic/"] -.optional alternative.-> LEDIND
-    PICOPWM["pico/leds/gpio_pwm_led/ (planned)"] -.optional alternative.-> SIMPGEN
+    PICOPWM["pico/leds/gpio_pwm_led/"] -.optional alternative.-> SIMPGEN
 
     style safety fill:#ffcccc,stroke:#cc0000,stroke-width:3px,color:#000
     style psu_system fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px

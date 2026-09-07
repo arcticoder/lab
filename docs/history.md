@@ -3832,3 +3832,15 @@ All 8 items (with sub-items) are done. Summary:
 Also added KB entries documenting all of this for future sessions, and updated my own memory (troubleshooting must be concrete artifacts, not prose; circuits get framed by what they do, not what they replace).
 <!-- ------ -->
 ---
+All six items are done:
+
+1.  **general\_purpose\_circuit\_dependency.md:88** --- confirmed the "designed & simulated / not yet bench-built" status is captured in TODO-arcticoder.md and docs/history.md, then trimmed the diagram label to just the folder pointer.
+2.  **Line 283** --- removed the redundant "(planned)" from PICOPWM.
+3.  Saved the ordering-authority handoff to kb (future sessions will know Claude now sequences TODO-arcticoder.md, not the user's own initiative).
+4.  Created **lab/docs/TODO-completed.md** (mirroring aqei-bridge's format) and rewrote TODO-arcticoder.md's instructions to move finished items there instead of deleting them; added it to README's repo-structure listing and documented the convention in kb.
+5.  Moved `ne555_astable` out of "Ready to build now" into a new "Blocked --- waiting on a bench validation" section, since it depends on `psu_4xaa`'s own unfinished bench-test.
+6.  Promoted `psu_4xaa`'s bench-test to the first bullet in "Ready to build now" and added an explicit top-to-bottom/first-bullet-first ordering rule to the file's header so this kind of burial doesn't recur.
+
+All non-end-user process notes (why these changes were made, the new conventions) went into `lab/docs/kb/repo_docs_conventions.md`; end-user-visible changes went into `TODO-arcticoder.md`, the new `TODO-completed.md`, and `README.md`.
+<!-- ------ -->
+---

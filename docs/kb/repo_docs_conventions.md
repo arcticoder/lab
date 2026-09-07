@@ -1854,3 +1854,87 @@ automatically — if `lab/docs/inventory.md` moves again, or the
 relationship between the two repos changes, that stub needs a matching
 update, and it's easy to forget precisely because it's rarely opened
 once `lab/` is actually cloned alongside `pico/`.
+
+## `TODO-arcticoder.md` is now the sole ordering authority — Claude picks what's next, not the user's own initiative (established 2026-09-07)
+
+Before this date, the user had been independently choosing what to build
+next based on what seemed like the logical progression (e.g. picking
+"4xAA PSU, then ne555_astable" on their own initiative) rather than
+consulting `TODO-arcticoder.md` section-by-section. The user explicitly
+handed ordering control to Claude as of this date and said this
+instruction is now baked into their personal prompt template, so it will
+recur across future sessions without being repeated in full each time —
+treat any session opening with language like "I'm switching to using
+TODO-arcticoder.md as my sole guide" as a re-statement of this same
+standing instruction, not a new decision to re-litigate.
+
+Practical consequence: `TODO-arcticoder.md` itself now opens with an
+explicit "work top-to-bottom, one section at a time" rule (added this
+same date) — whichever section is first to still have an unchecked item
+is next, and within that section the first bullet is next. This means
+**section and bullet order inside the file is itself part of the
+prioritization** — burying a genuinely-ready task under a later heading,
+or leaving it lower within its own section, means the user won't do it
+next even if it's technically actionable. When closing out or adding
+items, actively re-sort rather than just appending: a "ready to build"
+item that turns out to be blocked on something (see the next entry)
+needs to physically move to a "Blocked" section, not just get a note
+added while staying in place — the user reads top-to-bottom and stops at
+the first thing in the first section, without reading ahead for caveats.
+
+## A "ready to build" TODO item can be blocked by another item in the same file, not just by an external shipment (established 2026-09-07, `ne555_astable`/`psu_4xaa`)
+
+`TODO-arcticoder.md` previously had only one flavor of "Blocked" section
+(waiting on a part shipment). The user caught a case that doesn't fit
+that mold: `oscillators/ne555_astable`'s bench-build task sat under
+"Ready to build now," but its own README already documents that it's
+powered from `power_supplies/psu_4xaa` specifically because `psu_3xaa`
+sags under its minimum voltage — and `psu_4xaa`'s own bench-test/
+validation task was *also* on the list, unfinished, just sorted lower
+down. So `ne555_astable` was never actually ready — it was blocked on a
+sibling TODO item, not on a part in transit.
+
+Added a second section, "Blocked — waiting on a bench validation"
+(distinct from "Blocked — waiting on a shipment"), and moved
+`ne555_astable` there with an explicit "Blocked on: `power_supplies/
+psu_4xaa` bench-test" pointer back to the top of "Ready to build now"
+(where `psu_4xaa`'s task was promoted to the first bullet, per the
+top-to-bottom ordering rule in the entry above). General lesson: when
+scanning `TODO-arcticoder.md` for reordering or closing out an item,
+check whether a "ready" circuit's own README names a specific power
+supply / upstream dependency, and cross-check that dependency's own TODO
+status before trusting the "ready to build now" placement — a circuit
+can be fully designed and even physically mid-assembled while still
+being blocked on something else in the same file.
+
+## Completed TODO items move to `TODO-completed.md`, not deleted (established 2026-09-07, mirrors `aqei-bridge`)
+
+`TODO-arcticoder.md` previously instructed deleting a completed item
+outright once `README.md`'s "built & bench-tested" table captured the
+circuit's real-world status. The user reversed this explicitly: deleted
+items are too easy to lose track of, and there's no way to later confirm
+"was X actually done, or never started" without digging through git
+history / `docs/history.md`. The new convention, modeled on the sibling
+`aqei-bridge` repo's `docs/TODO-completed.md` /
+`docs/TODO-BLOCKED.md` (the user added `aqei-bridge` as a permanent
+workspace folder specifically so this format would be visible as a
+reference): move a finished item out of `TODO-arcticoder.md` into
+[TODO-completed.md](../TODO-completed.md) under a `## YYYY-MM-DD` heading
+for the closure date, as a short bullet, rather than deleting it.
+
+This is a distinct record from `README.md`'s "built & bench-tested"
+table / `docs/history.md`: those describe a *circuit's* real-world
+status (has it been assembled, has its smoke test passed), while
+`TODO-completed.md` describes the *TODO item's* lifecycle (was it on the
+active list, and when did it come off, and via which session). Don't
+treat one as making the other redundant, and don't backfill
+`TODO-completed.md` with items that were deleted under the old
+(pre-2026-09-07) convention — there's no reliable way to reconstruct
+exactly when those closed, so the file starts empty from this date
+forward rather than trying to be a complete history.
+
+`aqei-bridge` (`/home/echo_/Code/asciimath/aqei-bridge`) is now a
+permanent additional working directory for this reason — check its
+`docs/TODO-completed.md` / `docs/TODO-BLOCKED.md` again if
+`TODO-arcticoder.md`'s conventions need to evolve further, rather than
+inventing a new format from scratch.

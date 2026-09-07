@@ -12,10 +12,25 @@ consolidated back into this one file 2026-09-06 per explicit request; see
 [kb/repo_docs_conventions.md](kb/repo_docs_conventions.md) if a future
 session is tempted to re-split it.
 
-Completed circuits are tracked in `README.md`'s "built & bench-tested"
-table and `docs/history.md` — there's no separate completed-TODO section
-here; when an item below is done, delete it rather than checking the box
-and leaving it.
+**Work this file top-to-bottom, one section at a time.** Whichever
+section below is first to still have an unchecked item is what to do
+next, and within that section the first bullet is the most important —
+if something is buried further down or in a later section, it isn't next
+regardless of how ready-feeling it seems. This replaces going on your own
+initiative to pick what feels like the next logical build; as of
+2026-09-07 Claude has full control over ordering, so any re-ordering
+needed (e.g. a "ready to build" item turning out to be blocked on another
+item elsewhere in this file) should happen here, not by you second-guessing
+the order yourself.
+
+Completed circuits' bench-test status is tracked in `README.md`'s "built &
+bench-tested" table and `docs/history.md`. For the TODO items on *this*
+list specifically: when one is done, move it to
+[TODO-completed.md](TODO-completed.md) (dated entry) instead of deleting
+it — the audit trail makes it easy to confirm something was actually done
+and avoid re-proposing/duplicating it later, mirroring the convention
+in the sibling `aqei-bridge` repo's `docs/TODO-completed.md` /
+`docs/TODO-BLOCKED.md`.
 
 > A future LLM chat's own working notes on this repo belong in `docs/kb/`,
 > not here.
@@ -24,9 +39,13 @@ and leaving it.
 
 ## Ready to build now — parts on hand
 
-- [ ] **`oscillators/ne555_astable` (tier1 `OSC`) — bench-build it.**
-      Design simulated, now mid-build (breadboard.md/README.md updated
-      2026-09-06 with explicit Pico-probe wiring for output validation).
+- [ ] **`power_supplies/psu_4xaa` — bench-test the build in progress.**
+      Physically assembled as of 2026-09-06 (including an optional power
+      switch, now documented in its own `breadboard.md`); the 2×10kΩ
+      divider + Pico-ADC validation in `README.md` § Validation still
+      needs to actually be run and its result recorded here / in
+      `README.md`'s bench-tested table. **Do this first** — it also
+      unblocks the `ne555_astable` build below (see "Blocked").
 - [ ] **New `TIA` build (tier2, transimpedance amplifier).** PT334-6C
       photodiode (10 on hand) + LM358P (spares available beyond the one
       used in `voltage_reference_lm358`). No folder exists yet — create
@@ -43,12 +62,6 @@ and leaving it.
 - [ ] **`power_supplies/psu_3xaa` — confirm and assemble.** Likely shares
       the same AA-holder lead-termination step as `psu_low_v2` above —
       verify that assumption once `psu_low_v2` is built.
-- [ ] **`power_supplies/psu_4xaa` — bench-test the build in progress.**
-      Physically assembled as of 2026-09-06 (including an optional power
-      switch, now documented in its own `breadboard.md`); the 2×10kΩ
-      divider + Pico-ADC validation in `README.md` § Validation still
-      needs to actually be run and its result recorded here / in
-      `README.md`'s bench-tested table.
 
 ## Needs a validation step before the part can be trusted
 
@@ -96,6 +109,19 @@ and leaving it.
       its original design — the ammeter jigs (`ammeter_10ohm`/`ammeter_1ohm`)
       replaced its role for polyfuse sorting, so this is optional cleanup,
       not a blocker.
+
+## Blocked — waiting on a bench validation
+
+- [ ] **`oscillators/ne555_astable` (tier1 `OSC`) — bench-build it.**
+      Blocked on: `power_supplies/psu_4xaa` bench-test (top of "Ready to
+      build now" above). Design simulated, mid-build
+      (breadboard.md/README.md updated 2026-09-06 with explicit
+      Pico-probe wiring for output validation), but its power source
+      isn't confirmed yet — the NE555 needs ≥4.5V, `psu_3xaa` (4.5V raw)
+      sags to ~4.02V under load per its own smoke test (under that
+      minimum), so `psu_4xaa` is the first AA tier that actually clears
+      it with margin, and it hasn't been bench-validated yet either (see
+      `oscillators/ne555_astable/README.md`).
 
 ## Blocked — waiting on a shipment
 
