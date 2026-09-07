@@ -3818,3 +3818,17 @@ Worth checking before re-testing:
 I also fixed two doc gaps that contributed to this: `psu_4xaa/README.md` now warns explicitly not to run `resistance_measurement/main.py` unmodified, and calls out the Pico→PSU ground wire as required (it was already in the diagram, just easy to miss mid-build --- same gap you hit). Details of both, plus next-step suggestions, are logged in `lab/docs/kb/repo_docs_conventions.md` for future reference. `lab/README.md`'s circuits table already correctly lists `psu_4xaa` as "designed, not built" --- leaving that as-is until a re-test lands closer to ~2.75 V.
 <!-- ------ -->
 ---
+All 8 items (with sub-items) are done. Summary:
+
+1.  **Wrong-script complaint** --- created `psu_4xaa/gp26_raw_voltage.py` (prints raw GP26 voltage only, no resistance math) and rewrote `psu_4xaa/README.md` to point straight at it instead of the old "adapt `resistance_measurement`, but don't run it unmodified" hedge.
+2.  **vscode-webview links** --- confirmed they only ever appear in `history.md` (left alone, append-only), added a KB rule so no future doc ever writes one again.
+3.  **10 kΩ resistor confirmation** --- folded into the new Troubleshooting section: already visually confirmed via `breadboard.jpg`, with an optional out-of-circuit re-check method.
+4.  **inventory.md move** --- moved to `lab/docs/inventory.md`; `pico/docs/inventory.md` is now a one-line pointer (your choice from the options), all ~20 cross-repo references updated.
+5.  **Cancelled inductor assortment** --- `inventory.md` gained a "Cancelled / needs replacement" table, `orders.md` a "Cancelled" section, `parts_reference.md` flagged accordingly; `TODO-arcticoder.md` updated with a concrete replacement/checkout task including the $10 shipping-minimum reminder.
+6.  **psu\_4xaa continuity troubleshooting** --- new `README.md` § Troubleshooting with a per-segment wiring table (battery joints, Schottky both directions, polyfuse), explicit "disconnect the battery pack first" safety note, and a diode-nonlinearity caveat. 6.1/6.1.1. **"Multimeter" framing** --- `resistance_measurement` reworded as a general-purpose instrument (not "without a multimeter"); swept the term out of every doc repo-wide (verified clean via grep), including one instance in `pico/`.
+7.  **Battery open-circuit voltage** --- reuses the existing 2×10kΩ divider (re-clipped to Holder 1(+)), explains why `fuse_test_voltmeter` doesn't apply here.
+8.  **Raw-voltage script** --- `gp26_raw_voltage.py`, referenced throughout.
+
+Also added KB entries documenting all of this for future sessions, and updated my own memory (troubleshooting must be concrete artifacts, not prose; circuits get framed by what they do, not what they replace).
+<!-- ------ -->
+---

@@ -54,6 +54,6 @@ circuit. It is also unrelated to the 10 Ω load resistor used in
 [fuse_test_voltmeter](../../measurement_tools/fuse_test_voltmeter/)'s
 bench fuse-test jig (different circuit, different purpose — that jig
 validates the bare polyfuse *before* it goes into this PSU). See
-[README.md](README.md) § Validation without a multimeter for how to
+[README.md](README.md) § Validation for how to
 actually check this circuit once built (probe across the fuse leads with
 a Pico ADC pin — no load resistor needed).

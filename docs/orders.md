@@ -4,9 +4,10 @@ Running log of components ordered for the lab build. Each entry
 cross-references which subsystem in
 [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
 or [spacetime_circuits_dependency.md](spacetime_circuits_dependency.md) it
-supports. Physical part counts are mirrored into the sibling `pico/` repo's
-[`pico/docs/inventory.md`](../../pico/docs/inventory.md), which is the
-shared master inventory across both repos — update both files together.
+supports. Physical part counts are mirrored into
+[`inventory.md`](inventory.md), the master inventory (also referenced by
+the sibling `pico/` repo via a pointer at `pico/docs/inventory.md`) —
+update both files together.
 
 Datasheets/manuals for these parts, where available, are converted to
 Markdown under [docs/manuals/](manuals/) (the source PDFs are gitignored;
@@ -49,8 +50,8 @@ the converted `.md` files are tracked).
 - 20 received, for `psu_low` reverse-polarity protection.
 - Not yet validated per-unit — check forward drop (~0.35–0.45V) on each
   before wiring into `psu_low_v2`; see
-  [psu_low_v2/README.md](../power_supplies/psu_low_v2/README.md#validation-without-a-multimeter)
-  for the Pico-probe procedure used to check it without a multimeter.
+  [psu_low_v2/README.md](../power_supplies/psu_low_v2/README.md#validation)
+  for the Pico-ADC probe procedure used to check it.
 - Manual: [schottky-rectifier-diodes-in5817-1a20v-do-41.md](manuals/schottky-rectifier-diodes-in5817-1a20v-do-41.md)
   (source PDF is scanned/image-only with no text layer — listing
   description used instead, see the manual file for the caveat).
@@ -160,7 +161,7 @@ the converted `.md` files are tracked).
 ### 18-in-1 wire stripper/crimper pliers
 
 - 1 received. Not an electrical component — a tool; logged in
-  [pico/docs/inventory.md](../../pico/docs/inventory.md) Tools table, not
+  [inventory.md](inventory.md) Tools table, not
   here. Resolves the wire-stripper dependency that was blocking AA
   battery holder lead termination for `psu_ultralow_v1`/`psu_low_v2` (see
   [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)).
@@ -187,7 +188,7 @@ the converted `.md` files are tracked).
   been corrected.
 - 0.1Ω (20 received): not previously stocked (the SunFounder Thales kit's
   resistor assortment bottoms out at 10Ω, per
-  [pico/docs/inventory.md](../../pico/docs/inventory.md)). Also 1W-rated,
+  [inventory.md](inventory.md)). Also 1W-rated,
   above the Thales kit's 1/4W (0.25W) ceiling. Supports replacing the
   jumper-wire-chain shunt currently used in
   [measurement_tools/ammeter_1ohm](../measurement_tools/ammeter_1ohm/)
@@ -211,10 +212,21 @@ the converted `.md` files are tracked).
 
 ---
 
-## On order (placed, not yet received)
+## Cancelled
 
 ### Color-ring inductor assortment (0307, 1/4W)
 
+- Ordered 2026-08-30 (see full listing/spec detail below, carried over
+  from the "On order" entry this replaces). **Cancelled by
+  AliExpress/the seller 2026-09-07** over a shipping issue, before it
+  shipped — refund in progress, expected within 2 business days of
+  cancellation. Not received, and no longer counted as "on order."
+- No replacement sourced yet — see
+  [TODO-arcticoder.md](TODO-arcticoder.md) § "Next parts to buy" and
+  [inventory.md](inventory.md) § "Cancelled / needs replacement". Once a
+  replacement is ordered, log it as a new entry here (new listing URL,
+  new order date) rather than editing this one in place — this entry is
+  the record of what was originally ordered and why it didn't arrive.
 - Listing: "12values Color Ring Inductor Assortment 0307 1/4W 0.25W 0410
   1/2W 0510 1W 1UH 10UH 100UH Inductors Inductors Assorted Set Kit" —
   https://www.aliexpress.com/item/32988801481.html (variant selected:
@@ -228,7 +240,10 @@ the converted `.md` files are tracked).
 - Supports: tier3 `INDBRIDGE` (inductance bridge) directly, and any
   future filter/oscillator tank-circuit use. See
   [parts_reference.md](parts_reference.md#color-ring-inductor-assortment-0307-14w).
-- Ordered: 2026-08-30.
+
+---
+
+## On order (placed, not yet received)
 
 ### Multilayer ceramic capacitor assortment (50V)
 
@@ -308,7 +323,7 @@ the converted `.md` files are tracked).
   "10K 10pcs" — https://www.aliexpress.com/item/1005009419869430.html
 - 10 ordered, 10kΩ value. Fills the safety `THERM` gap identified in
   `docs/history.md` (item 7 of the same gap-analysis entry): the existing
-  thermistor in `pico/docs/inventory.md` is flagged "suspect faulty."
+  thermistor in `inventory.md` is flagged "suspect faulty."
 - **The listing's own spec sheet describes a different value than what
   was ordered**: the pasted datasheet text's worked example is model
   `MF52A₁104F3950`, where the `104` EIA code decodes to 10×10⁴ = 100kΩ —

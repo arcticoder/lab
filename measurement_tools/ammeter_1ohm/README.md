@@ -7,7 +7,7 @@ calibrated jumper-wire chain, since no 0.1Ω resistor was on hand — see
 actual resistance was measured), plus a 1N5817 Schottky diode for
 reverse-polarity protection. Built to bench-test the 20 RXEF050 (0.5A /
 500mA) polyfuses in
-[pico/docs/inventory.md](../../../pico/docs/inventory.md).
+[docs/inventory.md](../../docs/inventory.md).
 
 **Result: all 20 RXEF050 polyfuses PASS.** Each unit was swapped into the
 same jig, one at a time, and confirmed to trip when shorted and recover
@@ -35,7 +35,7 @@ At 500mA, a 10Ω shunt would drop 5V — more than the whole battery pack
 supplies. The shunt has to be small enough that its own voltage drop
 doesn't starve the rest of the circuit. With no 0.1Ω resistor in stock
 (on order from AliExpress — see
-[pico/docs/inventory.md](../../../pico/docs/inventory.md) § On Order), a
+[docs/inventory.md](../../docs/inventory.md) § On Order), a
 short chain of jumper wires was measured instead
 ([resistance_measurement](../resistance_measurement/) found it to be
 **~1.005Ω**) and used as the shunt. At ~1Ω, 1mV measured across the shunt

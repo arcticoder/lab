@@ -129,7 +129,7 @@ chemistry before suspecting wiring: 1.4V assumes a fresh 1.5V alkaline
 cell. A NiMH rechargeable AA is 1.2V nominal, and 1.2V through this same
 10 Ω/cold-fuse math lands around 1.14V — already most of the gap, with the
 rest plausibly ordinary battery sag under the ~150 mA this load draws.
-There's no multimeter on this bench, but the Pico can substitute: with
+The Pico is the instrument on this bench: with
 ARMED off, temporarily move the GP26/GND jumpers straight onto the battery
 holder's two leads (bypassing the fuse and resistor entirely) and read the
 open-circuit voltage directly — 1.5–1.65V confirms alkaline (a fresh cell

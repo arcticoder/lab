@@ -73,7 +73,7 @@ No new parts beyond what's already in the psu_ultralow_v1 / psu_low_v2
 parts lists — the same 10 Ω value is reused for both fuse ratings instead
 of ordering a dedicated value. **Wattage matters here**: the RXEF050 jig (3.0V across
 10 Ω, cold) dissipates ~0.82W total — a single kit resistor (1/4W /
-0.25W, see `pico/docs/inventory.md`; the kit has no higher-wattage part)
+0.25W, see `../../docs/inventory.md`; the kit has no higher-wattage part)
 would run at over 3x its rating and can overheat, drift, or fail open,
 which would read as a false trip. The kit-only fix is a **2-series ×
 2-parallel bank of four 10 Ω 1/4W resistors** (two 20 Ω series branches in

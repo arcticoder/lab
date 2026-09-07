@@ -1741,3 +1741,116 @@ powered. Two separate problems, not one:
    `breadboard.md` but a follow-on check (validation, demo) lives in
    `README.md` instead, don't assume a diagram in the second file is
    enough on its own; call out anything load-bearing in prose too.
+
+## Never write `vscode-webview://` links into any doc, including `history.md` (found 2026-09-07)
+
+A prior session's `history.md` entries (around 2026-09-06,
+~line 3799-3818 as of this writing) linked to files using
+`vscode-webview://<session-id>/...` URIs — these only resolve inside that
+specific IDE webview instance at the time they were generated; the user
+confirmed they show "Unable to open/resolve resource" every time, in any
+later session. Per the append-only-log convention elsewhere in this file,
+those specific already-committed `history.md` entries were **not**
+rewritten (same treatment as other stale-but-historical content there) —
+but no future entry, in `history.md` or anywhere else, should ever use
+this URI scheme. When linking to a file for a human reader, use a plain
+relative path (`power_supplies/psu_4xaa/README.md#validation`) exactly
+like every other cross-reference in this repo already does — never
+anything IDE-session-specific.
+
+## `resistance_measurement` generalized from a one-off shunt-characterization jig to a reusable continuity/troubleshooting probe (2026-09-07)
+
+Originally framed narrowly ("measure the jumper-chain shunt for
+`ammeter_1ohm`"), and worded as "measure an unknown resistance without a
+multimeter" — a framing the user explicitly rejected (see the "doesn't
+own or use a multimeter" entry above): the circuit *is* the measurement
+instrument here, not a workaround for lacking one, and describing it by
+what's absent undersold what it actually does (a specific, digitally
+loggable number, better suited to this bench than a handheld meter's
+momentary display). Reworded `README.md`'s intro to describe it
+positively, and added an explicit "Reuse: continuity/troubleshooting
+checks on another circuit" section generalizing the existing
+`R_ref`-known/`R_x`-unknown divider technique to *any* two-terminal node
+pair, not just the original jumper chain — this is not a new circuit,
+just documentation catching up to what the topology already supported.
+
+Two things worth preserving if this gets reused again: (1) a circuit
+being probed this way must have its own power source disconnected first
+(battery pulled, PSU unplugged) — `resistance_measurement` drives the
+node pair from the Pico's own 3V3 rail, and a second live source at the
+same nodes fights it, producing meaningless readings and a possible
+back-feed into the Pico's rail; (2) the computed "Ω" reading is only a
+true linear resistance across an actual resistive part (wire, fuse,
+switch contact) — across a diode (e.g. the 1N5817 Schottky used
+throughout this repo's PSU tiers), the reading still usefully
+distinguishes forward-biased/conducting from reverse-biased/blocked, but
+isn't a real ohmic value, and documentation reusing this technique on a
+diode should say so rather than imply a resistance measurement.
+
+First concrete reuse: `psu_4xaa/README.md`'s new "Troubleshooting"
+section (below) uses this to continuity-check the 4-cell AA chain,
+Schottky, and polyfuse with the battery pack disconnected.
+
+## `psu_4xaa` troubleshooting made concrete: a new `gp26_raw_voltage.py` script, plus a `README.md` § Troubleshooting with per-segment wiring/expected values (2026-09-07)
+
+The prior session's `history.md` entry (2026-09-06, the "no --- don't
+mark it built yet" one referenced above) left three follow-up
+instructions vague enough to be unactionable on their own: "confirm the
+two 10 kΩ resistors are actually 10 kΩ," "check continuity... using
+`resistance_measurement` in its actual intended mode," and "re-read GP26
+with a script that prints raw voltage only." The user correctly pushed
+back that they'd followed the *existing* README instruction (adapt
+`resistance_measurement`'s averaging technique) and then been told that
+was the wrong script — the fault was in the instruction's ambiguity, not
+the user's execution, and per explicit standing instruction ("if a new
+script needs to be created, then create it") the fix is to actually build
+the missing pieces, not just describe them more carefully in prose.
+
+Created `power_supplies/psu_4xaa/gp26_raw_voltage.py` — the "print raw
+voltage only, no `R_x` math" script the old README text gestured at but
+never produced; it's now what `README.md`'s own § Validation points to
+instead of the old "adapt `resistance_measurement`, but don't run it
+unmodified" hedge. Added a `README.md` § Troubleshooting with an explicit
+per-segment table (each AA-holder joint, the Schottky both directions,
+the polyfuse) giving exactly what to clip `resistance_measurement`'s
+leads to and what reading counts as pass/fail, plus a battery
+open-circuit-voltage check that reuses the *same* 2×10 kΩ divider
+hardware already built for § Validation (just re-clipped from the
+polyfuse output to Holder 1(+) directly) rather than reaching for
+`fuse_test_voltmeter` — that circuit's jig is scoped to its own
+single-cell voltage range and has no divider in front of GP26, so it
+isn't safe to wire across this pack's ~6 V. General lesson: when a
+troubleshooting instruction says "use circuit X in its intended mode" or
+"write a script that does Y," a future session should treat that as a
+to-do, not a description already discharged by mentioning it — the user
+has flagged this exact gap (vague-instead-of-actionable troubleshooting
+steps) more than once now.
+
+## `pico/docs/inventory.md` moved to `lab/docs/inventory.md` (2026-09-07) — `pico/` keeps a one-line pointer, doesn't lose the file
+
+Per explicit user request (repo-switching friction from referencing
+inventory items while working in `lab/`). This crosses the "README
+cross-linking is one-directional: `lab/` → `pico/`, never back"
+convention documented above — `pico/`'s own generic circuit BOMs
+(`buttons/gpio_interrupt_button/bom.md`,
+`displays/gpio_i2c_lcd/bom.md`, `leds/gpio_pwm_led/bom.md`) and its own
+`README.md` reference the inventory too, unrelated to any `lab/`-specific
+work. Resolved (user's explicit choice, offered as options): move the
+real file to `lab/docs/inventory.md`, and leave `pico/docs/inventory.md`
+as a one-line pointer back to it — `pico/`'s own links still resolve to
+*a* file without requiring `lab/` to be cloned alongside it, they just
+land on a stub instead of the full content if `lab/` genuinely isn't
+present. Every other cross-reference to the old path, in both repos,
+across READMEs/breadboard.md/smoke_test.py/orders.md/parts_reference.md/
+this KB directory, was updated to the new relative path (see
+`git log` around this date for the full file list — same "grep the whole
+path string before considering a move done" discipline as the earlier
+`fuse_test_voltmeter` folder-move entry above). `docs/history.md` in both
+repos was deliberately left with old-path mentions in already-committed
+entries, per the append-only-log convention.
+
+The stub at `pico/docs/inventory.md` is **not** kept in sync
+automatically — if `lab/docs/inventory.md` moves again, or the
+relationship between the two repos changes, that stub needs a matching
+update, and it's easy to forget precisely because it's rarely opened
+once `lab/` is actually cloned alongside `pico/`.

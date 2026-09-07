@@ -75,8 +75,9 @@ and leaving it.
       VBUS may never come up without confirmed CC1/CC2 termination. Check
       termination using
       [measurement_tools/resistance_measurement](../measurement_tools/resistance_measurement/)
-      (clip its `R_x`/GND leads onto the two CC pins — no multimeter used
-      anywhere on this bench, see `kb/repo_docs_conventions.md`), or add a
+      (clip its `R_x`/GND leads onto the two CC pins — every measurement
+      on this bench goes through a Pico circuit, see
+      `kb/repo_docs_conventions.md`), or add a
       PD sink controller IC + buck converter, before trusting this
       circuit. `smoke_test.py` has a static
       `PD_SINK_TERMINATION_CONFIRMED = False` check that fails on purpose
@@ -103,8 +104,11 @@ and leaving it.
       electrolytic capacitor kit (16V/25V/50V, 12 values), both ordered
       2026-08-30, not yet received.
 - [ ] **`INDBRIDGE`** (tier3, inductance bridge). Blocked on: color-ring
-      inductor assortment (0307 1/4W, 12 values), ordered 2026-08-30, not
-      yet received.
+      inductor assortment (0307 1/4W, 12 values) — **original order
+      cancelled by AliExpress 2026-09-07** (shipping issue), refund
+      expected within 2 business days of cancellation. No replacement
+      sourced yet — see "Next parts to buy" below and
+      `docs/inventory.md`'s "Cancelled / needs replacement" table.
 - [ ] **`ACTIVELIM`** (protection, required by `psu_medhigh`/`psu_high`;
       also feeds spacetime tier7 `HVPULSE`). Blocked on: IRLZ44N
       logic-level MOSFET, ordered 2026-09-03, not yet received. No
@@ -135,6 +139,15 @@ and leaving it.
 
 ## Next parts to buy
 
+- [ ] **Color-ring inductor assortment, 0307 1/4W (12 values, 1µH-1mH)
+      replacement.** The original AliExpress order (120 units, ordered
+      2026-08-30) was cancelled by the seller/platform 2026-09-07 over a
+      shipping issue — refund in progress, not received. Find a
+      replacement listing (same 0307/1/4W package, ideally the same
+      1µH–1mH/12-value spread) and add it to cart. Blocks tier3
+      `INDBRIDGE`. **Reminder: cart minimum for shipping is $10** — adding
+      this alone likely won't clear that threshold, so check the rest of
+      the cart before assuming checkout is ready.
 - [ ] **8ch 24MHz USB logic analyzer** (`SCOPELA` tier, ~$5–8, built
       around the CY7C68013A / EZ-USB FX2LP chip — `sigrok`'s `fx2lafw`
       firmware supports it out of the box, no vendor software needed).
@@ -206,3 +219,7 @@ not for Claude to work from unprompted.
 - [ ] Decide whether to order the SFE Breadboard Power Supply Kit for
       `power_supplies/psu_medlow_lm317/` (see "Open correctness issues"
       above — currently not ordered).
+- [ ] Find and add a replacement color-ring inductor assortment to cart
+      (see "Next parts to buy" above), then check out once the cart
+      clears the $10 shipping minimum — the AliExpress refund for the
+      cancelled order doesn't complete this on its own.

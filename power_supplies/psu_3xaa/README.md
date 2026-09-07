@@ -61,7 +61,7 @@ At Rload = 15 Ω: **V_out ≈ 4.02 V, I ≈ 268 mA** — the Schottky costs abou
 
 ---
 
-## Validation without a multimeter
+## Validation
 
 Probe across the Schottky with a Pico ADC pin. Forward bias should read
 ~0.35 V drop; reversing the battery leads should read ~0 V across the load

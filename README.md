@@ -130,8 +130,8 @@ photo of the as-built jig where one was taken (see each circuit's own
 | `measurement_tools/fuse_test_voltmeter/` | Pico ADC probe across a battery→fuse→resistor loop; arm switch (GP15) gates trip/reset detection so battery connect/disconnect isn't misread as a trip | bootstrap / concurrent measurement tool | 2026-08-28 — **bench wiring has since diverged and trip detection is currently non-functional** (no longer a blocker — polyfuses are now sorted via `ammeter_10ohm`/`ammeter_1ohm` below instead); see this circuit's own README § Current bench status for the full detail |
 | `measurement_tools/ammeter_10ohm/` | Pico reads current (not just voltage) through a polyfuse under test, via a 10Ω shunt + slide-switch shorting jumper | polyfuse validation (bootstrap tier) | 2026-08-30 — all 20 RXEF005 (50mA) polyfuses PASS (trip + reset confirmed per unit) |
 | `measurement_tools/ammeter_1ohm/` | Same approach as `ammeter_10ohm` scaled for 500mA: ~1Ω jumper-chain shunt (see `resistance_measurement/`) + 1N5817 reverse-polarity diode on the high side | polyfuse validation (`psu_low` tier) | 2026-08-30 — all 20 RXEF050 (500mA) polyfuses PASS (trip + reset confirmed per unit) |
-| `measurement_tools/resistance_measurement/` | Voltage-divider jig (known 10Ω reference vs. unknown leg) for measuring a low-value resistance without a multimeter | supporting tool for `ammeter_1ohm` | 2026-08-30 — jumper-wire chain measured at ~1.005Ω, stable across repeated readings |
-| `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap) | 2026-08-30 — component-level validation complete: RXEF005 polyfuse PASS via `ammeter_10ohm/` (all 20 units), AA battery holder ready per `pico/docs/inventory.md`. The assembled PSU itself has not been separately re-probed as its own demo build (see `fuse_test_voltmeter/README.md`'s test-vs-demo distinction) |
+| `measurement_tools/resistance_measurement/` | Voltage-divider jig (known 10Ω reference vs. unknown leg) for measuring a low-value resistance or checking continuity between two nodes | supporting tool for `ammeter_1ohm`; reused for continuity/troubleshooting checks (e.g. `psu_4xaa`) | 2026-08-30 — jumper-wire chain measured at ~1.005Ω, stable across repeated readings |
+| `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap) | 2026-08-30 — component-level validation complete: RXEF005 polyfuse PASS via `ammeter_10ohm/` (all 20 units), AA battery holder ready per `docs/inventory.md`. The assembled PSU itself has not been separately re-probed as its own demo build (see `fuse_test_voltmeter/README.md`'s test-vs-demo distinction) |
 
 ---
 
@@ -184,10 +184,11 @@ will show up here as they get one.
   Needed any time you run one of this repo's `main.py` scripts against
   real hardware instead of just simulating.
 - See `docs/orders.md` for what's actually been ordered/received from
-  AliExpress, and `docs/parts_reference.md` for pinouts/specs on those
-  parts. Physical part counts are also mirrored into the sibling `pico/`
-  repo's `pico/docs/inventory.md`, the shared master inventory across both
-  repos.
+  AliExpress, `docs/parts_reference.md` for pinouts/specs on those parts,
+  and `docs/inventory.md` for the master parts/quantities list — shared
+  with the sibling `pico/` repo, which keeps a one-line pointer back to
+  this file at `pico/docs/inventory.md` rather than its own copy (see
+  `docs/kb/repo_docs_conventions.md`).
 
 ---
 
@@ -290,6 +291,7 @@ docs/
     general_purpose_circuit_dependency.md       general-purpose tier graph (PSU, protection, tiers 1-4/6/9, scope/logic-analyzer tiers M0-M5)
     spacetime_circuits_dependency.md            spacetime-specific tier graph (tiers 5/7/8)
     TODO-arcticoder.md                          human TODO: single active/blocked/backlog checklist for both graphs above, plus personal action items
+    inventory.md                                master component inventory (moved from pico/docs/inventory.md 2026-09-07)
     orders.md                                   AliExpress order log (received / on order)
     parts_reference.md                          pinouts & specs for ordered parts without a datasheet on file
     manuals/                                    converted (markitdown) part manuals; source PDFs gitignored

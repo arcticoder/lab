@@ -74,8 +74,8 @@ Output is LM358 pin 1 (same node as the feedback wire).
 
 ### 6. Optional: add `R_load` for `main.py`'s validation check
 
-Only needed if you're running `main.py`'s "validation without a
-multimeter" check (see [README.md](README.md)) — skip this for the
+Only needed if you're running `main.py`'s "Validation" check (see
+[README.md](README.md)) — skip this for the
 circuit itself.
 
 `R_load` is a **third** 1kΩ resistor, separate from R1 and R2 — don't

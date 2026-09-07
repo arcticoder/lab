@@ -62,7 +62,7 @@ rating and it will eventually trip (not modeled here).
 
 ---
 
-## Validation without a multimeter
+## Validation
 
 Probe across the polyfuse leads with a Pico ADC pin (GP26) referenced to
 ground — voltage drop across the fuse should be small (~50 mV) under normal

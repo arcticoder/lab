@@ -8,7 +8,7 @@ design (tier9 `MUX`, tier4 `DEMOD` in
 Same "validate the part before trusting it downstream" philosophy as
 [fuse_test_voltmeter](../fuse_test_voltmeter/), applied to an IC instead
 of a passive component — 10 CD4066BCN chips were received 2026-08-24
-(`pico/docs/inventory.md`), each with 4 independent switches, so there are
+(`docs/inventory.md`), each with 4 independent switches, so there are
 40 individual switches worth spot-checking, not just "the part."
 
 Powered from [psu_pico_rail](../../power_supplies/psu_pico_rail/) — this
@@ -106,9 +106,9 @@ rails, check these in order — swapping the control wire, the VDD wire, or
 the chip itself does **not** rule out any of the items below, since none
 of those swaps touch them:
 
-1. **VSS (pin 6) → GND continuity.** No multimeter on this bench — use
-   [resistance_measurement](../resistance_measurement/) instead, clipped
-   onto the same two points a multimeter's continuity check would touch:
+1. **VSS (pin 6) → GND continuity.** Check with
+   [resistance_measurement](../resistance_measurement/), clipped
+   onto the same two points a continuity check would touch:
    its `R_x` leg (the `R_ref`/ADC0 divider midpoint) onto pin 6, and its
    GND return onto the Pico's own GND pin, without disturbing the existing
    pin-6-to-GND wire. Then run that jig's `main.py`. A near-0Ω reading

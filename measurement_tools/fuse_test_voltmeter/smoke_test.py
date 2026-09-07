@@ -20,7 +20,7 @@ from ngspice_runner import get_op_values
 
 SPICE_FILE = os.path.join(os.path.dirname(__file__), "fuse_test_voltmeter.spice")
 RLOAD_OHM = 10.0
-RLOAD_UNIT_RATING_W = 0.25  # actual kit resistor rating (1/4W), see pico/docs/inventory.md
+RLOAD_UNIT_RATING_W = 0.25  # actual kit resistor rating (1/4W), see ../../docs/inventory.md
 LOW_VOLTAGE = 0.5  # must match main.py's trip threshold
 
 failures = []

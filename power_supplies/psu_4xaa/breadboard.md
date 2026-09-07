@@ -70,7 +70,7 @@ the ground rail:
 | Switch pin 1 | Ground rail | Black Dupont jumper |
 
 Switch pin 3 is left unconnected (per the slide-switch pinout note in
-`pico/docs/inventory.md` — pin 2 always connects to whichever outer pin
+`../../docs/inventory.md` — pin 2 always connects to whichever outer pin
 the slider is pushed toward). Sliding toward pin 1 closes the loop
 (PSU on); sliding toward the unconnected pin 3 opens it (PSU off). This
 switch is in the power path itself (unlike the signal-only arm switch in

@@ -14,7 +14,7 @@ one exists.
 | SYB-170 (received, 6-pack) | 170 | 35 × 47mm approx, 10mm thick | black variant received |
 | SYB-170 (received, 2-pack) | 170 | same as above | second listing, separate order; received 2026-08-24 |
 | MB-102 (received) | 400 (300 terminal-strip + 100 distribution-bar) | 8.5 × 5.5 × 1.0cm | [manual](manuals/400-tie-points-solderless-breadboard-_mb-102_-for-diy-electronics.md); received 2026-08-24 |
-| Full breadboard (existing inventory) | 830 | — | SunFounder Thales kit, see `pico/docs/inventory.md` |
+| Full breadboard (existing inventory) | 830 | — | SunFounder Thales kit, see `inventory.md` |
 
 MB-102 terminal strips: rows labeled a–e and f–j are connected horizontally
 within a row, split by the center DIP channel. Distribution bars (side
@@ -261,8 +261,17 @@ relative to LEDs.
 
 ## Color-ring inductor assortment (0307, 1/4W)
 
-120 ordered 2026-08-30, not yet received. See
-[orders.md](orders.md#color-ring-inductor-assortment-0307-14w). Axial,
+**Cancelled 2026-09-07** — the original 120-unit order (placed
+2026-08-30) was cancelled by AliExpress/the seller over a shipping issue
+before shipping; refund in progress. Not received, no longer "on order."
+A replacement listing hasn't been sourced yet — see
+[TODO-arcticoder.md](TODO-arcticoder.md) § "Next parts to buy". Everything
+below describes the *originally selected* spec and is the target to match
+(or the best available alternative) when sourcing a replacement — treat
+package/value-spread/quantity as negotiable if no listing matches exactly,
+not as a hard requirement to re-derive from scratch. See
+[orders.md](orders.md#color-ring-inductor-assortment-0307-14w) for the
+cancelled order's own record. Axial,
 color-ring-coded, epoxy-coated, 0307 package (1/4W/0.25W) — the listing
 also offers 0410 (1/2W) and 0510 (1W) packages under the same title, but
 those variants were **not** selected. 12 values × 10pcs: 1µH, 10µH, 22µH,
@@ -270,8 +279,8 @@ those variants were **not** selected. 12 values × 10pcs: 1µH, 10µH, 22µH,
 dielectric withstand 250V AC rms, operating temperature −25 to 85°C.
 Read the color-ring code the same way as resistor color bands (the
 listing gives no photo of the actual band-to-value mapping) — verify
-against a multimeter's inductance mode or an LCR-adjacent bridge circuit
-once [INDBRIDGE](general_purpose_circuit_dependency.md) exists, rather
+against an LCR-adjacent bridge circuit once
+[INDBRIDGE](general_purpose_circuit_dependency.md) exists, rather
 than trusting the band colors alone, since misprinted/faded bands on
 cheap bulk assortments are a known failure mode for color-coded passives.
 First candidate use: tier3 `INDBRIDGE` (inductance bridge) directly, or
@@ -370,7 +379,7 @@ different part (`104` EIA code = 100kΩ) than the 10kΩ (`103` code)
 variant actually ordered — treat only the tolerance/B-value/temperature-
 range figures as trustworthy for this specific part, not the R25 value
 in the sheet's example. Fills the safety `THERM` gap; the existing
-thermistor in `pico/docs/inventory.md` is flagged "suspect faulty."
+thermistor in `inventory.md` is flagged "suspect faulty."
 
 ---
 

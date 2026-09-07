@@ -144,8 +144,8 @@ anything currently planned.
 
 ## Validation
 
-There's no multimeter in the loop, so validation happens in three stages
-— each one has to pass before the next is meaningful.
+The Pico is the instrument for every stage below — validation happens in
+three stages, each one has to pass before the next is meaningful.
 
 ### 1. Confirming the voltmeter itself
 

@@ -4,7 +4,7 @@ A Raspberry Pi Pico reading actual current (not just voltage) through a
 polyfuse under test, via a 10Ω shunt resistor and a slide switch wired
 across the shunt as a hands-free shorting jumper. Built to bench-test the
 20 RXEF005 (0.05A / 50mA) polyfuses in
-[pico/docs/inventory.md](../../../pico/docs/inventory.md) after
+[docs/inventory.md](../../docs/inventory.md) after
 [fuse_test_voltmeter](../fuse_test_voltmeter/)'s voltage-only approach
 turned out to have a wiring gap that made its trip/reset detection
 unreliable — this tool measures the loop current directly instead of

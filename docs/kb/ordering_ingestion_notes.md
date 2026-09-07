@@ -3,8 +3,8 @@
 Audience: future LLM sessions working in this repo. Not linked from
 README/docs — process/meta observations from ingesting AliExpress order
 data into `docs/orders.md`, `docs/parts_reference.md`, `docs/manuals/`, and
-the sibling `pico/docs/inventory.md`. Not useful to the end user, who
-already knows this stuff first-hand.
+`docs/inventory.md`. Not useful to the end user, who already knows this
+stuff first-hand.
 
 ## gitignore behavior for manuals
 
@@ -43,14 +43,23 @@ selected variant/SKU string at order time (e.g. "RXEF050 0.5A 20pcs" or
 variant string*, not just the listing title — the title alone is
 ambiguous and will misidentify the part in a future session.
 
-## pico/docs/inventory.md is a separate git repo
+## `inventory.md` lives in this repo now, not `pico/` (moved 2026-09-07)
 
-`../pico` is a sibling repo, not a subdirectory of this one — changes to
-`pico/docs/inventory.md` need their own git add/commit in that repo, not
-this one. It's treated as the shared master parts inventory across both
-projects per explicit user instruction, even though most of its existing
-content (SunFounder Thales kit) predates and is unrelated to the spacetime
-lab build.
+Originally `pico/docs/inventory.md`, in the sibling `pico/` repo — a
+separate git repo, so every edit needed its own add/commit there, distinct
+from this repo's own commits. Moved to `docs/inventory.md` (this repo) per
+explicit user request: most of the day-to-day ordering/inventory work
+happens from `lab/`, and switching repos just to update quantities was
+friction with no upside. `pico/docs/inventory.md` is now a one-line
+pointer back to this file, kept so `pico/`'s own generic circuit BOMs
+(`buttons/gpio_interrupt_button/bom.md` etc.) still resolve a path without
+requiring `lab/` to be cloned alongside `pico/` — but note that pointer
+file is *not* kept in sync automatically; if `inventory.md`'s path or
+this repo's relationship to `pico/` changes again, check that stub too.
+Still the shared master parts inventory across both projects, even though
+most of its existing content (SunFounder Thales kit) predates and is
+unrelated to the spacetime lab build — that hasn't changed, only which
+repo owns the file.
 
 ## Photo-transcribed pinouts can contain OCR/transcription slips
 
@@ -66,7 +75,7 @@ characters that could be OCR confusions (D/U, O/0, B/8, etc.).
 
 ## Moving an item from "on order" to "received" touches 3 files, not 1
 
-When a physical part arrives, it needs updating in all of: `pico/docs/inventory.md`
+When a physical part arrives, it needs updating in all of: `lab/docs/inventory.md`
 (delete from the "On Order" table, add to/create the appropriate received-parts
 table), `lab/docs/orders.md` (delete the row from "On order", add a "Received"
 subsection entry with the received date), and `lab/docs/parts_reference.md`
@@ -182,7 +191,7 @@ fields, placeholder URLs) — here the ingesting session correctly copied
 the listing's value-range text but wrongly assumed "assortment" meant
 "random assortment shipped" rather than "buyer selects from this menu."
 Corrected in `orders.md`, `parts_reference.md`, and
-`pico/docs/inventory.md` once the user clarified. General lesson: when a
+`inventory.md` once the user clarified. General lesson: when a
 listing's title/description offers a value range with no explicit random
 assortment language ("random", "mixed", a fixed per-value count table),
 don't assume the seller picks values — ask whether the buyer selected
@@ -196,7 +205,7 @@ had gained a "Received: 2026-09-01" note (added in commit `de0a9d7`) but
 were never physically moved out from under the `## On order (placed, not
 yet received)` heading — so the file's own section header contradicted
 its content for over two days across several more commits. Nothing
-downstream broke because `pico/docs/inventory.md` (the actual
+downstream broke because `inventory.md` (the actual
 received-parts source of truth) had these correct the whole time, but a
 future session skimming `orders.md` by heading alone would misreport
 their status. Moved them into `## Received` while fixing an unrelated
@@ -265,7 +274,7 @@ out-of-the-box by PulseView with zero vendor software. So a listing
 titled "CY7C68013A 24MHz 8-channel logic analyzer" or similar *is* the
 `SCOPELA` purchase, not a sub-part needed to build one. Most listings
 ship with an 8-wire Dupont test-clip cable included; if not, the
-existing M-M/M-F Dupont jumper stock in `pico/docs/inventory.md`
+existing M-M/M-F Dupont jumper stock in `inventory.md`
 covers it. Check whether the board is USB-A dongle-style (plugs
 straight into a port, no cable needed) or has its own Micro-USB port
 (would need a second Micro-USB cable, since the one already in

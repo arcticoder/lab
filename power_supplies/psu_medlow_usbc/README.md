@@ -7,7 +7,7 @@ below.
 
 **Status: incomplete / unverified — do not assume this powers on as
 drawn.** The USB-C breakout in the parts list (`TYPE-C Female Test Board`,
-see [pico/docs/inventory.md](../../../pico/docs/inventory.md)) is a
+see [docs/inventory.md](../../docs/inventory.md)) is a
 **passive** breakout — it only routes the receptacle's pins (`CC2, D+, D-,
 SBU1, SBU2, CC1, VBUS, GND`) out to 2.54mm pads; it has no PD controller
 IC. A USB-C *source* only drives VBUS once it sees a valid sink

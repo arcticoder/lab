@@ -22,7 +22,7 @@ own ~1.65mA).
 | `breadboard.md` | Step-by-step wiring |
 | `breadboard.jpg` | Photo of the actual bench jig |
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
-| `main.py` | MicroPython — runs the "Validation without a multimeter" check below on real hardware |
+| `main.py` | MicroPython — runs the "Validation" check below on real hardware |
 
 ---
 
@@ -77,7 +77,7 @@ divider ratio much higher without checking the specific part's datasheet.
 
 ---
 
-## Validation without a multimeter
+## Validation
 
 Probe the output (pin 1) with a Pico ADC pin, with and without `R_load`
 (a *third*, separate 1kΩ resistor — not R1 or R2 from the divider)

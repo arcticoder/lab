@@ -30,7 +30,7 @@ EXPECTED_VOUT = 4.76  # V, at nominal Rload=10ohm per README "Expected behaviour
 TOLERANCE = 0.10
 FUSE_RATING_A = 0.5
 
-# The "TYPE-C Female Test Board" (pico/docs/inventory.md) is a passive
+# The "TYPE-C Female Test Board" (../../docs/inventory.md) is a passive
 # breakout with no PD controller IC. Flip this to True only once the CC1/
 # CC2 sink termination (5.1k pull-downs, or a PD sink controller IC) has
 # been physically confirmed present — see README.md "Status".

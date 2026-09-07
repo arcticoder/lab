@@ -1,8 +1,8 @@
 """
 voltage_reference_lm358/main.py
 --------------------------------
-Pico ADC probe implementing README.md's "Validation without a
-multimeter" check: read the LM358 buffered reference (pin 1) with and
+Pico ADC probe implementing README.md's "Validation" check: read the
+LM358 buffered reference (pin 1) with and
 without R_load (a separate 1kOhm resistor, not R1/R2 from the divider)
 connected, and confirm the reading barely moves.
 
