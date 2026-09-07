@@ -3844,3 +3844,20 @@ All six items are done:
 All non-end-user process notes (why these changes were made, the new conventions) went into `lab/docs/kb/repo_docs_conventions.md`; end-user-visible changes went into `TODO-arcticoder.md`, the new `TODO-completed.md`, and `README.md`.
 <!-- ------ -->
 ---
+Summary
+-------
+
+Root cause of your 0.017 V reading: the battery pack was pulled out for the Validation test, so the divider genuinely had no power reaching it --- that's expected, not a fault. **Reinsert all 4 AA cells, confirm the switch is ON, and re-run the check** --- you should now land near ~2.75 V.
+
+What I changed:
+
+1.  **Moved the raw-voltage script** to [`measurement_tools/raw_voltage_probe/main.py`](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/measurement_tools/raw_voltage_probe/main.py) (new [README](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/measurement_tools/raw_voltage_probe/README.md)) so it's reusable by future circuits instead of being fused to `psu_4xaa`. Fixed its stale "built for Troubleshooting" comment and hardcoded print message along the way.
+2.  **[psu\_4xaa/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/power_supplies/psu_4xaa/README.md)**: updated all script references to the new path, added an explicit "battery pack must be installed and powered" prerequisite to § Validation, and added a **step 0** to § Troubleshooting that catches exactly the situation you hit (near-0V = no power, not a wiring fault) before the continuity-check steps.
+3.  **[resistance\_measurement/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/measurement_tools/resistance_measurement/README.md)**: added a clarifying paragraph under § Circuit explaining that continuity-checking (your 3.1 confusion) uses the same hardware/math with no discrete `R_x` component --- didn't split it into two directories since `main.py` already handles both cases identically.
+4.  **[docs/TODO-arcticoder.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/docs/TODO-arcticoder.md)**: rewrote the top item to state the concrete next action (reinsert cells, rerun, compare).
+5.  Renamed your photo to `power_supplies/psu_4xaa/validation_breadboard.jpg` and referenced it in the Files table.
+6.  Updated `lab/README.md`'s tool table/tree, and logged all of this in `docs/kb/repo_docs_conventions.md` for future sessions.
+
+No AliExpress order is newly urgent from this work --- nothing here needed new parts.
+<!-- ------ -->
+---

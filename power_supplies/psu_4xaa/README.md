@@ -19,7 +19,13 @@ Spec: 6.0 V, <300 mA, ~1.6 W. See
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `breadboard.md` | Step-by-step breadboard wiring |
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
-| `gp26_raw_voltage.py` | MicroPython — prints averaged raw GP26 voltage only, no resistance math. Used for every check in § Validation and § Troubleshooting below |
+| `validation_breadboard.jpg` | Photo of the 2×10 kΩ divider build used for § Validation |
+
+Every check in § Validation and § Troubleshooting below reads GP26 with
+[`measurement_tools/raw_voltage_probe`](../../measurement_tools/raw_voltage_probe/)'s
+`main.py` — a plain averaged-voltage reader with no resistance math or
+divider assumptions baked in, reused here rather than duplicated because
+it's identical for any circuit that just needs "what does GP26 see."
 
 ---
 
@@ -96,9 +102,17 @@ At ~275 µA, this divider draws negligible current — it doesn't meaningfully
 load the PSU, and it's the *only* thing connected to the output for this
 check (no other load).
 
+**Before reading GP26, confirm the battery pack is actually installed and
+powering the circuit**: all 4 cells seated in their holders, and the
+power switch (if built per `breadboard.md` § 5) slid to the closed/ON
+position. With the divider wired correctly but no power reaching it, GP26
+reads ~0 V — which looks identical to a real fault but isn't one; see
+§ Troubleshooting's first step below if that happens.
+
 **Expected readings** — read GP26 with
-[`gp26_raw_voltage.py`](gp26_raw_voltage.py), which prints the averaged
-raw voltage directly (`avg_raw / 65535 * 3.3`), nothing else. Don't use
+[`raw_voltage_probe`](../../measurement_tools/raw_voltage_probe/)'s
+`main.py`, which prints the averaged raw voltage directly
+(`avg_raw / 65535 * 3.3`), nothing else. Don't use
 [measurement_tools/resistance_measurement](../../measurement_tools/resistance_measurement/)'s
 `main.py` for this specific check even though it reads GP26 the same
 oversampled-average way: that script's printed "Resistance (R_x)" assumes
@@ -133,6 +147,17 @@ ground.
 If § Validation's divider reading doesn't land near the ~2.75 V target,
 work through these in order — each rules out one segment of the chain
 before moving to the next.
+
+### 0. Confirm the battery pack is actually installed and powered
+
+A ~0 V reading (not just "low," but at or near the Pico's own noise
+floor, well under a volt) with the divider otherwise wired as described
+in § Validation is most often simply **no power reaching the divider** —
+a cell missing from a holder, a holder lead not seated, or the power
+switch (if built) left open — not a wiring fault downstream. Reinsert all
+4 cells, confirm the switch (if present) is closed/ON, and re-run
+§ Validation before working through steps 1–3 below; they assume power
+*is* reaching the divider and something else is wrong.
 
 ### 1. Confirm the two 10 kΩ divider resistors are actually 10 kΩ
 
@@ -189,8 +214,8 @@ terminal), keeping the divider's bottom leg on the ground rail / Holder 4
 (−) as before. This still safely halves the pack's ~6 V down to GP26-safe
 territory, same reasoning as § Validation.
 
-Run [`gp26_raw_voltage.py`](gp26_raw_voltage.py) and compare the printed
-average against:
+Run [`raw_voltage_probe/main.py`](../../measurement_tools/raw_voltage_probe/)
+and compare the printed average against:
 
 - **~3.0 V** — fresh 4×AA alkaline pack (4 × 1.5 V / 2).
 - **~2.4 V** — 4×AA NiMH, or a partly-discharged alkaline pack (4 × 1.2 V

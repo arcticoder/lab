@@ -2,18 +2,20 @@ import machine
 import time
 
 # Raw GP26 voltage reader -- no resistance math, no divider assumptions.
-# Built for this circuit's README.md "Troubleshooting" section: whatever
-# external divider or node is wired to GP26/GND at the time (the PSU
-# output divider, the battery-direct divider, or reversed polarity), this
+# Whatever external divider or node is wired to GP26/GND at the time, this
 # just prints the averaged voltage Pico ADC0 actually sees. Compare the
-# printed average against the target listed in README.md for whichever
-# probe point is currently wired -- this script doesn't know which one
-# that is, so it has no PASS/FAIL of its own to report.
+# printed average against whatever target the calling circuit's own
+# README documents for the probe point currently wired -- this script
+# doesn't know which circuit or probe point it's being used for, so it
+# has no PASS/FAIL of its own to report. See this folder's README.md for
+# which circuits reuse it and why it's kept generic rather than folded
+# into resistance_measurement/ (known-R_ref math) or fuse_test_voltmeter/
+# (trip/reset detection).
 #
-# NEVER wire this to a node still carrying more than 3.3V directly --
-# GP26 (like every RP2040 GPIO) tops out at 3.3V. Only probe this PSU's
-# ~5.5-6V rail through the 2x10kOhm divider described in README.md, never
-# straight onto a raw PSU/battery node.
+# NEVER wire this to a node carrying more than 3.3V directly -- GP26
+# (like every RP2040 GPIO) tops out at 3.3V. Always probe through a
+# resistor divider sized for the source rail; never straight onto a raw
+# high-voltage node.
 
 adc = machine.ADC(26)  # GPIO 26 = ADC0
 V_IN = 3.3  # Pico's own 3V3 rail, used only to convert ADC counts to volts
@@ -38,4 +40,4 @@ for i in range(READINGS):
     time.sleep(0.2)
 
 print(f"Average over {READINGS} readings: {total / READINGS:.3f} V")
-print("Compare against the target for your current probe point in README.md's Troubleshooting section.")
+print("Compare against the target documented for your current probe point in the calling circuit's own README.")

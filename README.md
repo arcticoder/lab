@@ -131,6 +131,7 @@ photo of the as-built jig where one was taken (see each circuit's own
 | `measurement_tools/ammeter_10ohm/` | Pico reads current (not just voltage) through a polyfuse under test, via a 10Ω shunt + slide-switch shorting jumper | polyfuse validation (bootstrap tier) | 2026-08-30 — all 20 RXEF005 (50mA) polyfuses PASS (trip + reset confirmed per unit) |
 | `measurement_tools/ammeter_1ohm/` | Same approach as `ammeter_10ohm` scaled for 500mA: ~1Ω jumper-chain shunt (see `resistance_measurement/`) + 1N5817 reverse-polarity diode on the high side | polyfuse validation (`psu_low` tier) | 2026-08-30 — all 20 RXEF050 (500mA) polyfuses PASS (trip + reset confirmed per unit) |
 | `measurement_tools/resistance_measurement/` | Voltage-divider jig (known 10Ω reference vs. unknown leg) for measuring a low-value resistance or checking continuity between two nodes | supporting tool for `ammeter_1ohm`; reused for continuity/troubleshooting checks (e.g. `psu_4xaa`) | 2026-08-30 — jumper-wire chain measured at ~1.005Ω, stable across repeated readings |
+| `measurement_tools/raw_voltage_probe/` | Plain averaged-voltage reader at GP26 — no resistance math, no divider assumptions; the calling circuit's own README supplies the target | general-purpose probe, split out of `psu_4xaa` 2026-09-07 for reuse | 2026-09-07 — confirmed reading ~0V correctly with the `psu_4xaa` divider unpowered; a non-zero (~2.75V) target reading is still pending that circuit's own validation |
 | `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap) | 2026-08-30 — component-level validation complete: RXEF005 polyfuse PASS via `ammeter_10ohm/` (all 20 units), AA battery holder ready per `docs/inventory.md`. The assembled PSU itself has not been separately re-probed as its own demo build (see `fuse_test_voltmeter/README.md`'s test-vs-demo distinction) |
 
 ---
@@ -227,6 +228,10 @@ measurement_tools/
     resistance_measurement/  voltage-divider jig for measuring an unknown low resistance (built & bench-tested)
         main.py
         breadboard.jpg
+        README.md
+
+    raw_voltage_probe/       plain averaged-voltage reader at GP26, no divider math (built & bench-tested; reused by psu_4xaa)
+        main.py
         README.md
 
 power_supplies/

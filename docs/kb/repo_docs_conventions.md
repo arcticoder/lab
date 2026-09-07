@@ -1938,3 +1938,73 @@ permanent additional working directory for this reason — check its
 `docs/TODO-completed.md` / `docs/TODO-BLOCKED.md` again if
 `TODO-arcticoder.md`'s conventions need to evolve further, rather than
 inventing a new format from scratch.
+
+## `gp26_raw_voltage.py` moved out of `psu_4xaa/` into its own `measurement_tools/raw_voltage_probe/` (2026-09-07)
+
+The script created earlier the same day (see the "psu_4xaa troubleshooting
+made concrete" entry above) had no `psu_4xaa`-specific logic at all — it's
+a plain averaged-ADC-voltage-at-GP26 reader with no resistance math and no
+divider assumptions, identical to what any future circuit would need for
+a "what does GP26 actually see" check. The user pointed this out directly
+and asked for it to live in its own reusable directory rather than being
+fused to one circuit, same instinct as the general-purpose-repo-framing
+preference recorded elsewhere. Moved to
+`measurement_tools/raw_voltage_probe/main.py` (renamed to `main.py` to
+match every other tool folder's convention — `resistance_measurement`,
+`fuse_test_voltmeter`, `ammeter_10ohm`/`ammeter_1ohm` all use that
+filename, not a circuit-specific one) with its own `README.md` explaining
+how it differs from `resistance_measurement` (adds known-`R_ref` math) and
+`fuse_test_voltmeter` (adds trip/reset logic).
+
+Per the "moving a circuit into a category folder touches every
+cross-reference" entry above, this touched: `psu_4xaa/README.md` (file
+table, § Validation's script link + new power-source prerequisite note, §
+Troubleshooting's link and new step 0), `lab/README.md` (built &
+bench-tested table, repo-structure tree). `docs/history.md` was correctly
+left alone (append-only, describes the repo as it was that session).
+`docs/kb/repo_docs_conventions.md`'s own prior entry about the script's
+creation was also left alone rather than edited in place — this entry
+documents the subsequent move instead, so the chronological record shows
+both steps rather than rewriting history.
+
+## A ~0V divider reading is usually "no power reaching the divider," not a wiring fault — check this before deeper troubleshooting (established 2026-09-07)
+
+The user ran `psu_4xaa`'s § Validation check (2×10kΩ divider off the PSU
+output, expecting ~2.75V at GP26) and got ~0.017V — but had pulled the
+battery pack out of its holders first, on the assumption that was part of
+safely building the divider. With no power reaching the output, ~0V is
+exactly what the divider *should* read; it isn't evidence of a wiring
+fault, and sent the user down the § Troubleshooting continuity-check path
+(steps 1–3) for a problem that doesn't exist. Fixed by adding a step 0 to
+`psu_4xaa/README.md` § Troubleshooting ("confirm the battery pack is
+actually installed and powered") ahead of the existing per-segment
+continuity checks, plus an explicit prerequisite note in § Validation
+itself. General lesson for any future circuit's own Troubleshooting
+section that starts from a Pico-ADC divider reading: a reading pinned at
+or near the Pico's own noise floor (well under a volt, not just "lower
+than expected") is cheap to misdiagnose as a wiring fault when the far
+more common cause is simply that the circuit under test isn't powered —
+lead with a "confirm power is actually present" check before any
+continuity/component-level debugging.
+
+## `resistance_measurement`'s "unknown `R_x`" framing intentionally covers both real-resistance measurement and continuity-checking — not split into two tools (established 2026-09-07)
+
+The user asked, while troubleshooting `psu_4xaa`, whether
+`resistance_measurement/README.md`'s § Circuit (which frames `R_x` as "an
+unknown resistance" being solved for) needed to be split into two
+separate circuits/directories, since a continuity check (clipping onto
+two nodes on another circuit, expecting "near-0Ω" or "Circuit Open," not
+an actual ohms value to record) doesn't obviously fit that framing.
+Decided against splitting: `main.py`'s two special-case branches ("Short
+to GND or 0 Ohms" / "Circuit Open") already handle continuity-checking
+using the exact same hardware, wiring, and formula as real-resistance
+measurement — splitting would duplicate an identical circuit for zero
+functional gain, working against the general-purpose/reuse framing
+preference recorded elsewhere. Fixed instead by adding a clarifying
+paragraph directly under § Circuit's divider-equation block, making
+explicit that the diagram/equation describe the hardware, not every use
+case, and that continuity-checking has no discrete component in the
+`R_x` position at all — just two probed nodes. If a future session is
+tempted to split this tool again, re-read that paragraph and the existing
+§ "Reuse" section first; the "two use cases, one tool" framing is
+deliberate, not an oversight.

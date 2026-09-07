@@ -69,6 +69,20 @@ where `V_in` is the Pico's 3V3 rail and `V_out` is what GP26 reads at the
 R_ref/R_x junction. `main.py` averages 50 ADC samples per reading to cut
 down noise before doing this division.
 
+**This diagram describes the hardware, not every use case.** When this
+jig is clipped onto another circuit for a continuity check (§ "Reuse"
+below) instead of measuring a discrete unknown resistor, there's no
+physical component sitting in the `R_x` position — the "unknown
+resistance" is just whatever's electrically between the two probed nodes
+(a solid joint, an open break, or a forward/reverse-biased diode
+junction). The same formula and the same two special-case messages in
+`main.py` still apply without modification: "Short to GND or 0 Ohms"
+means the two nodes are joined (continuity confirmed), "Circuit Open"
+means they aren't. Only the printed `R_x` *number* is a true resistance
+value in the direct-measurement case — see "Why this is safe near 0Ω" and
+the diode caveat under "Reuse" below for what the reading means in each
+mode.
+
 ---
 
 ## Build
