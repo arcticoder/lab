@@ -60,8 +60,50 @@ At Rload = 20 Ω: **V_out ≈ 5.51 V, I ≈ 276 mA** — the Schottky costs abou
 
 ---
 
-## Validation without a multimeter
+## Validation
 
-Probe across the Schottky with a Pico ADC pin. Forward bias should read
-~0.35 V drop; reversing the battery leads should read ~0 V across the load
-(diode blocking).
+No multimeter, and no physical load resistor either (see
+[breadboard.md § Expected behavior](breadboard.md#expected-behavior) for
+why 20 Ω isn't something to build). The check instead uses a lightweight
+2:1 resistor divider so a Pico ADC pin can safely read this PSU's ~5.5 V
+output — GP26/ADC0 is limited to 0–3.3V (see
+`docs/general_purpose_circuit_dependency.md`'s `SCOPEPICO` node), so it
+can never be wired straight onto this rail.
+
+**Build:** two 10 kΩ resistors (from `pico/docs/inventory.md`) in series
+across the output, from output(+) to output(−)/ground rail, with the
+midpoint tapped off to GP26.
+
+```
+psu_4xaa output (+)
+      │
+   [10 kΩ]
+      │
+      ├──────► Pico GPIO 26 / ADC0 (Pin 31)
+      │
+   [10 kΩ]
+      │
+psu_4xaa output (−) / ground rail ──────► Pico GND (Pin 28)
+```
+
+At ~275 µA, this divider draws negligible current — it doesn't meaningfully
+load the PSU, and it's the *only* thing connected to the output for this
+check (no other load).
+
+**Expected readings** (read GP26 with the same ADC-averaging approach as
+[measurement_tools/resistance_measurement](../../measurement_tools/resistance_measurement/)):
+
+- Correct battery orientation: GP26 reads **~2.75 V** (half of the output
+  voltage). Expect the output itself to sit a little *above* the
+  documented ~5.51 V design figure — that number assumes the 276 mA drawn
+  by a 20 Ω load, and this divider's ~275 µA draws far less, so the
+  Schottky/fuse drops are smaller here.
+- Reversed battery leads: GP26 reads **~0 V** — the Schottky blocks, no
+  current reaches the divider.
+
+Don't probe directly across the Schottky's own leads with the Pico —
+doing that safely would mean moving Pico GND off the PSU's actual ground
+rail (onto the diode's cathode) just for that one reading, which is easy
+to get wrong and unnecessary here: the divider above already distinguishes
+"diode conducting" from "diode blocking" without ever re-referencing
+ground.

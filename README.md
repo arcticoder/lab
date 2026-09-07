@@ -147,11 +147,11 @@ sequence this drives.
 
 | Folder | Circuit | Tier |
 |--------|---------|------|
-| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (waiting on wire strippers; RXEF050 polyfuse itself is validated — see `ammeter_1ohm/` above) |
+| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (RXEF050 polyfuse validated — see `ammeter_1ohm/` above — and the wire-stripper blocker is resolved; not yet physically assembled) |
 | `power_supplies/psu_3xaa/` | 3×AA + Schottky + 500 mA polyfuse | `psu_system` (between `psu_low` and `psu_4xaa`) |
 | `power_supplies/psu_4xaa/` | 4×AA + Schottky + 500 mA polyfuse | `psu_system` (top of the plain-AA-series progression) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
-| `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit on order, not yet built) |
+| `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit **not yet ordered**, not yet built — see `docs/TODO-arcticoder.md`) |
 
 Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
@@ -271,7 +271,7 @@ power_supplies/
         smoke_test.py
         README.md
 
-    psu_medlow_lm317/         SFE breadboard PSU kit, LM317 3.3V/5V-selectable (on order, not built)
+    psu_medlow_lm317/         SFE breadboard PSU kit, LM317 3.3V/5V-selectable (not yet ordered, not built)
         breadboard.md
         README.md
 
@@ -288,13 +288,8 @@ signal_conditioning/
 docs/
     history.md                                  design conversation log
     general_purpose_circuit_dependency.md       general-purpose tier graph (PSU, protection, tiers 1-4/6/9, scope/logic-analyzer tiers M0-M5)
-    general_purpose_circuit_dependency-arcticoder.md          human TODO: active queue for the graph above
-    general_purpose_circuit_dependency-arcticoder-BLOCKED.md  human TODO: items waiting on a shipment
-    general_purpose_circuit_dependency-arcticoder-backlog.md  human TODO: undesigned long-tail backlog
     spacetime_circuits_dependency.md            spacetime-specific tier graph (tiers 5/7/8)
-    spacetime_circuits_dependency-arcticoder.md          human TODO: active queue for the graph above
-    spacetime_circuits_dependency-arcticoder-BLOCKED.md  human TODO: items waiting on a shipment
-    spacetime_circuits_dependency-arcticoder-backlog.md  human TODO: undesigned long-tail backlog
+    TODO-arcticoder.md                          human TODO: single active/blocked/backlog checklist for both graphs above, plus personal action items
     orders.md                                   AliExpress order log (received / on order)
     parts_reference.md                          pinouts & specs for ordered parts without a datasheet on file
     manuals/                                    converted (markitdown) part manuals; source PDFs gitignored

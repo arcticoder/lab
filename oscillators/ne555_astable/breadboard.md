@@ -20,7 +20,8 @@ wave output.
 | Ceramic capacitor | 100 nF | 1 |
 | Ceramic capacitor | 10 nF | 1 |
 | 4x AA battery holders + cells (from [psu_4xaa](../../power_supplies/psu_4xaa/)) | 6.0V raw | 1 |
-| Dupont M-M jumper | assorted | ~8 |
+| Metal film resistor (for output validation, § 4) | 10 kΩ | 2 |
+| Dupont M-M jumper | assorted | ~10 |
 
 ---
 
@@ -56,6 +57,18 @@ If it ever proves insufficient on the real bench, the next step up is a
 | psu_4xaa output (+) | NE555 pin 4 (Reset) | Red Dupont jumper (keeps the chip enabled) |
 | psu_4xaa GND (−) | NE555 pin 1 (GND) | Black Dupont jumper |
 
+No resistor is needed between psu_4xaa's output and pin 8 — the NE555
+draws only a few mA of quiescent supply current, and the 1kΩ Ra in the
+timing network (§2) already limits the one current-carrying path that
+actually needs limiting (the pin 7 discharge path, ~5.2mA at Vcc/(Ra+Ron)
+— see `smoke_test.py`'s "discharge-pin sink current" check and the
+netlist's header comment). Both are far under what psu_4xaa's 500mA
+polyfuse or the Schottky can supply, so wiring VCC straight to psu_4xaa's
+output (as in the table above) is correct as-is, if using [psu_4xaa's
+optional power switch](../../power_supplies/psu_4xaa/breadboard.md) —
+built here per its own breadboard.md — leave it ON before powering this
+circuit up.
+
 ### 2. Wire the timing network
 
 - 1kΩ resistor from NE555 pin 8 (VCC) to pin 7 (Discharge) — this is Ra.
@@ -78,12 +91,35 @@ If it ever proves insufficient on the real bench, the next step up is a
 
 ### 4. Take the output
 
-- NE555 pin 3 (Output) is the square wave. Probe it with a multimeter (DC
-  average will read roughly `duty% x Vcc`), a Pico ADC pin, or — since the
-  design targets the audio band — the desktop PC's onboard soundcard
-  line-in via a DC-blocking/attenuator buffer (see `SCOPEPC` in
-  `docs/general_purpose_circuit_dependency.md`) for an actual waveform and
-  frequency reading.
+NE555 pin 3 (Output) is the square wave, swinging ~0V to ~VCC (~5.5V).
+That's too high to wire straight onto any Pico pin — GP26/ADC0 (and every
+other Pico GPIO) is limited to 0–3.3V (see `SCOPEPICO` in
+`docs/general_purpose_circuit_dependency.md`). Bring it into range with
+the same 2:1 resistor-divider approach used for
+[psu_4xaa's own output validation](../../power_supplies/psu_4xaa/README.md#validation):
+
+| From | To | Wire |
+|------|----|------|
+| NE555 pin 3 (Output) | 10 kΩ resistor #1 | Dupont M-M jumper |
+| 10 kΩ resistor #1 / #2 junction | Pico GP26 (ADC0, Pin 31) | Dupont M-M jumper |
+| 10 kΩ resistor #2 | GND rail | Dupont M-M jumper |
+| psu_4xaa GND (−) / NE555 pin 1 | Pico GND (Pin 28) | Black Dupont jumper (shared ground reference — without this, GP26's reading is meaningless) |
+
+**What this confirms today:** GP26 toggling between ~0V and ~2.75V (half
+of pin 3's ~5.5V swing) proves this specific NE555 unit is actually
+oscillating in astable mode — enough for this circuit's stated purpose
+(first per-unit validation of the NE555 batch, see `README.md`).
+
+**What this doesn't give you yet:** an actual frequency/duty-cycle
+number. That needs either the tier2 `FREQC` frequency counter (not yet
+designed/built — see `docs/TODO-arcticoder.md`)
+or the `SCOPEPC` soundcard path, which itself still needs a
+DC-blocking/attenuator buffer circuit that doesn't exist yet either (see
+that node's own text in `docs/general_purpose_circuit_dependency.md`).
+Turning the trimpot and watching GP26's toggling rate change qualitatively
+is the only way to confirm the frequency *changes* until one of those two
+gets built — treat a precise Hz reading as a real gap, not something this
+divider quietly gives you.
 
 ### 5. Adjust the trimpot
 

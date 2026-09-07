@@ -1447,6 +1447,90 @@ dangling reference rather than leaving a dead link. Before deleting a doc
 like this, grep the whole repo for its filename, not just check whether
 the user named specific referrers.
 
+## Any signal from psu_4xaa/psu_3xaa's ~5.5–6V rail (or higher) must go through a divider before touching *any* Pico pin — GP26/ADC0 and every other GPIO cap out at 3.3V (found 2026-09-06)
+
+`psu_4xaa/README.md`'s old "Validation without a multimeter" section said
+to "probe across the Schottky with a Pico ADC pin," and
+`oscillators/ne555_astable/breadboard.md` said to probe the NE555's pin 3
+output (which swings ~0V to ~VCC, i.e. ~5.5V when powered from
+`psu_4xaa`) with a Pico ADC pin, a multimeter, or the soundcard. Both are
+unsafe as literally written: `general_purpose_circuit_dependency.md`'s
+own `SCOPEPICO` node documents the RP2040 ADC as "0-3.3V only," and that
+ceiling applies to every Pico GPIO, not just the ADC-capable ones — wiring
+a ~5.5V node straight onto GP26 (or any other pin) risks exceeding the
+pin's absolute maximum rating. This wasn't caught earlier because the
+lower-voltage circuits this repo's GP26-probe convention was built around
+(`resistance_measurement`, `ammeter_10ohm`/`ammeter_1ohm`,
+`cd4066_switch_tester`) are all powered from the Pico's own 3.3V rail or
+similarly low-voltage sources, so the convention never needed a divider
+before now — `psu_4xaa`/`psu_3xaa` and anything powered from them (like
+`ne555_astable`) are the first circuits in this repo's build-and-validate
+sequence that actually exceed 3.3V.
+
+Fixed by adding an explicit 2:1 resistor divider (two 10kΩ, on-hand kit
+parts) in front of GP26 in both `psu_4xaa/README.md` § Validation and
+`ne555_astable/breadboard.md` § 4 — halves the ~5.5V swing down to a safe
+~2.75V max, drawing only ~275µA (negligible load on either the PSU or the
+NE555's output stage). General rule for any future circuit here powered
+above 3.3V (the whole AA-series `psu_system` family from `psu_3xaa` up,
+`psu_medlow`, anything mains- or wall-adapter-derived): never route a
+node from that circuit straight to a Pico pin for validation — always
+check the expected voltage against 3.3V first, and insert a divider
+(matching this 2:1 pattern, or scaled further for higher rails) if it's
+anywhere close. This is a distinct hazard from the "no multimeter" rule
+below (which is about *how* to measure, not what's safe *to* measure) —
+both need checking independently for any new PSU-adjacent circuit.
+
+## `psu_4xaa.spice`'s `Rload = 20` (and the matching "20 Ω test load" language in `breadboard.md`) describes a simulated design point, not a physical part to build — same convention as `psu_ultralow_v1`, but stated ambiguously enough to cause real confusion (found 2026-09-06)
+
+The user had physically built `psu_4xaa` per its `breadboard.md` and got
+stuck on "wire the 20Ω test load" — a real problem, since
+`pico/docs/inventory.md` has no 20Ω resistor, and `psu_4xaa/smoke_test.py`
+already carries the comment "Rload is a simulated representative
+downstream load (no physical resistor in the parts list)," directly
+contradicting the breadboard.md prose that reads like a build instruction.
+The user's own guess (two 10Ω in series) would have been actively unsafe
+if followed: at the ~276mA nominal design current, two 10Ω 1/4W resistors
+in series each dissipate ~0.76W — three times their 0.25W rating.
+
+Fixed by rewording `breadboard.md`'s "Expected behavior" section to state
+explicitly that 20Ω is `Rload`'s simulated value, cross-referencing
+`psu_ultralow_v1/README.md`'s validation section as the established
+precedent for this exact pattern (a PSU's `.spice`/`smoke_test.py` models
+a representative load; nothing in the breadboard parts list builds one).
+`psu_4xaa`'s actual validation now uses the lightweight divider from the
+entry above instead, which draws only ~275µA — nowhere near the 276mA
+nominal design point, so it doesn't confirm the PSU can *deliver* that
+current, only that the Schottky is oriented correctly and the rail is
+live. If a future session needs to confirm the full-current operating
+point for real, that still needs an actual physical load sized correctly
+for its wattage (see the "2s2p bank" technique in the `fuse_test_voltmeter`
+entry above) — not yet done for any AA-tier PSU in this repo.
+
+**General lesson**: when a PSU's `.spice` netlist and `smoke_test.py`
+already flag `Rload` as simulated-only, grep every sibling `breadboard.md`/
+`README.md` for that same numeric value before trusting its prose is
+consistent — a "with an N Ω load..." sentence in an "Expected behavior"
+section reads as a build instruction to someone mid-build even when the
+author meant it purely descriptively, unless it's flagged as explicitly
+as `psu_ultralow_v1`'s already is.
+
+## `psu_4xaa` gained an optional power switch, wired directly in the battery return leg — a genuine power-path break, unlike `fuse_test_voltmeter`'s signal-only arm switch (2026-09-06)
+
+The user added a slide switch to their physical `psu_4xaa` build (visible
+in `breadboard.jpg`) that wasn't in the original `breadboard.md` — "I like
+having a power switch for my PSUs." Documented as an optional § 5 in
+`power_supplies/psu_4xaa/breadboard.md`: switch common (pin 2) in series
+between holder 4 (−) and the ground rail, pin 1 to the ground rail, pin 3
+left unconnected. Unlike the `fuse_test_voltmeter` arm switch (GP15,
+signal-only, deliberately *not* in the power path — see that entry
+above), this switch's whole purpose *is* to interrupt the power path, so
+the "don't put a switch in the sense loop" caution from that entry doesn't
+apply here — there's no sense loop, just an on/off break. If the user adds
+the same switch to other AA-tier PSUs (`psu_low_v2`, `psu_3xaa`) later,
+replicate this same placement (return leg, not the positive rail) rather
+than re-deriving it.
+
 ## The user doesn't own or use a multimeter — every "confirm with a multimeter" doc instruction needs a Pico-circuit substitute, not a caveat (found 2026-09-05)
 
 `cd4066_switch_tester/README.md`'s troubleshooting checklist (items 1 and
@@ -1558,3 +1642,37 @@ status corrections not yet reflected in the other two files, e.g.
 `psu_medlow_lm317`'s order status being walked back from "on order" to
 "not yet ordered"). All three can disagree with each other during an
 in-progress session — trust whichever was written most recently.
+
+## The six-file `*-arcticoder*.md` split (entry above) was reversed back to one `docs/TODO-arcticoder.md` the very next day (2026-09-06) — don't re-split without being asked again
+
+This directly contradicts the entry immediately above, which records the
+user rejecting a collapsed single-file version and demanding the six-file
+aqei-bridge-style split. One day later, the user asked the opposite: "you've
+left all TODO items strewn throughout [three of the six files] ... perhaps
+finish what I asked you to do by having just the one TODO file rather than
+3+ files." The two requests aren't actually the same axis of complaint —
+the 2026-09-05 rejection was about collapsing *within* one dependency
+graph's three stages (active/BLOCKED/backlog) into `##` headers in one
+file; the 2026-09-06 request was about having the checklist scattered
+*across* both dependency graphs (general-purpose and spacetime) at all,
+regardless of how each graph's own stages are organized. Resolved by
+merging all six files (both graphs × active/BLOCKED/backlog) plus the
+original personal-items `TODO-arcticoder.md` into a single
+`docs/TODO-arcticoder.md`, with `##` section headers for each stage
+(Ready to build / Needs validation / Open issues / Blocked / Next parts to
+buy / Backlog / Personal items) — deliberately the same "one file, headers
+for sections" shape the user rejected in the 2026-09-05 entry above, but
+this time it's what was explicitly asked for, not a substitution offered
+in place of a literal multi-file request.
+
+Lesson: a structural preference stated once (six files, matching a named
+external template) is not a permanent constraint if the user's next
+session asks for something that conflicts with it — the most recent
+explicit instruction wins, even over a documented, deliberately-reasoned
+past decision in this very file. Don't cite the 2026-09-05 entry as a
+reason to resist or second-guess a later, clearer instruction to
+consolidate; do flag the reversal (as this entry does) so a future session
+understands why the file count changed twice in two days, rather than
+assuming one of the two sessions made a mistake. If asked to split this
+back out again in the future, ask which axis is meant (per-graph sections,
+per-stage files, or both) rather than assuming either prior shape.
