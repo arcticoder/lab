@@ -3803,3 +3803,18 @@ All seven items are addressed. Summary of what changed and why:
 7.  **TODO sprawl** --- merged all six `*-arcticoder*.md` files plus the old personal `TODO-arcticoder.md` into a single [docs/TODO-arcticoder.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/docs/TODO-arcticoder.md), sectioned by stage. Deleted the six now-redundant files and fixed every cross-reference.
 <!-- ------ -->
 ---
+No --- don't mark it built yet. Two separate problems with that run:
+
+**1\. Wrong script.** [resistance\_measurement/main.py](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/measurement_tools/resistance_measurement/main.py) assumes a completely different circuit: an *unknown* resistor forming a divider against a *known* 10 Ω reference, powered from the Pico's own 3V3 rail. Your `psu_4xaa` validation divider is two *known* 10 kΩ resistors powered by the PSU's own output --- nothing for that script's `R_x = R_REF * (V_out / (V_in - V_out))` formula to solve for, so the "Measured Resistance" numbers (0.051 Ω / 0.454 Ω) are meaningless here. Only "Measured Voltage" is a real reading, since that part is just a plain ADC-to-volts conversion regardless of what's attached to GP26.
+
+**2\. Even the real number doesn't validate.** Per [README.md's Validation section](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/power_supplies/psu_4xaa/README.md#validation), correct polarity should read GP26 ≈ **2.75 V** (half the PSU's ~5.5 V output). Reversed polarity should read ≈ **0 V** (Schottky blocks). Your powered reading was **0.143 V** --- nowhere near 2.75 V, and not a clean 0 V either. Something in the physical build isn't delivering expected voltage to the divider. The divider itself is clearly present (0.017 V → 0.143 V is a real change when power comes on), but the PSU's actual output hasn't been confirmed in range.
+
+Worth checking before re-testing:
+
+-   Confirm the two "10 kΩ" resistors are actually 10 kΩ, and check continuity through the 4-cell series chain + Schottky + polyfuse --- using `resistance_measurement` in its *actual* intended mode this time (clip its R\_x leg + GND directly across each suspect node pair, not wired into the psu\_4xaa divider).
+-   Probe the battery pack's open-circuit voltage directly (bypassing the Schottky/fuse) to rule out weak/miswired cells.
+-   Re-read GP26 with a script that prints raw voltage only --- no resistance formula --- so the number is directly comparable to the ~2.75 V target.
+
+I also fixed two doc gaps that contributed to this: `psu_4xaa/README.md` now warns explicitly not to run `resistance_measurement/main.py` unmodified, and calls out the Pico→PSU ground wire as required (it was already in the diagram, just easy to miss mid-build --- same gap you hit). Details of both, plus next-step suggestions, are logged in `lab/docs/kb/repo_docs_conventions.md` for future reference. `lab/README.md`'s circuits table already correctly lists `psu_4xaa` as "designed, not built" --- leaving that as-is until a re-test lands closer to ~2.75 V.
+<!-- ------ -->
+---

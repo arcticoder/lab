@@ -86,12 +86,27 @@ psu_4xaa output (+)
 psu_4xaa output (−) / ground rail ──────► Pico GND (Pin 28)
 ```
 
+The Pico GND wire on the last line is **required**, not optional — GP26's
+ADC reading is only meaningful relative to the Pico's own ground. Without
+it the Pico and the PSU don't share a reference and GP26 reads garbage
+regardless of how correctly the two 10 kΩ resistors are wired.
+
 At ~275 µA, this divider draws negligible current — it doesn't meaningfully
 load the PSU, and it's the *only* thing connected to the output for this
 check (no other load).
 
-**Expected readings** (read GP26 with the same ADC-averaging approach as
-[measurement_tools/resistance_measurement](../../measurement_tools/resistance_measurement/)):
+**Expected readings** — read GP26 with the same *averaging technique*
+[measurement_tools/resistance_measurement](../../measurement_tools/resistance_measurement/)
+uses (oversample and average before converting to volts). Don't run that
+script unmodified: its printed "Resistance (R_x)" assumes a different
+circuit entirely — an unknown resistor forming a divider against a known
+10 kΩ reference, fed from the Pico's own 3V3 rail. This divider is fed by
+the PSU's own output through two *known* 10 kΩ resistors, with nothing
+unknown to solve for, so that script's resistance formula is meaningless
+here. Only the raw GP26 voltage matters — write or adapt a script that
+prints that number directly (`avg_raw / 65535 * 3.3`, no `R_x` math), or
+just read the "Measured Voltage" column of `resistance_measurement`'s
+output and ignore the resistance figure next to it:
 
 - Correct battery orientation: GP26 reads **~2.75 V** (half of the output
   voltage). Expect the output itself to sit a little *above* the

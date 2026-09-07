@@ -1676,3 +1676,68 @@ understands why the file count changed twice in two days, rather than
 assuming one of the two sessions made a mistake. If asked to split this
 back out again in the future, ask which axis is meant (per-graph sections,
 per-stage files, or both) rather than assuming either prior shape.
+
+## `psu_4xaa` real-hardware validation run (2026-09-06): wrong script run, and the raw voltage doesn't validate either — still "designed, not built"
+
+The user built `psu_4xaa`'s validation divider (two 10 kΩ resistors,
+midpoint to GP26) and ran `measurement_tools/resistance_measurement/main.py`
+against it (`mpremote run main.py` from inside that folder), reading
+~0.017 V / ~0.051 Ω with the pack disconnected and ~0.143 V / ~0.454 Ω
+powered. Two separate problems, not one:
+
+1. **Wrong tool, ambiguous doc pointer.** `psu_4xaa/README.md`'s
+   Validation section said to read GP26 "with the same ADC-averaging
+   approach as `measurement_tools/resistance_measurement`" — meant as
+   "reuse the oversample-and-average *technique*," but read (reasonably)
+   as "run that script." `resistance_measurement/main.py` assumes a
+   completely different circuit: an *unknown* resistor forming a divider
+   against a *known* 10 Ω reference, fed from the Pico's own 3V3 rail (see
+   the "measuring an unknown low resistance" entry above). `psu_4xaa`'s
+   divider has two *known* 10 kΩ resistors and is fed by the PSU's own
+   output, not 3V3 — nothing for that script's `R_x = R_REF * (V_out /
+   (V_in - V_out))` formula to solve for, so its printed "Resistance"
+   column is meaningless here. Its "Measured Voltage" column is still a
+   real, correctly-computed GP26 voltage regardless of circuit (`main.py`
+   does a plain `avg_raw/65535*3.3` ADC conversion, independent of the
+   R_x math printed alongside it) — that part of the output is trustworthy.
+   Fixed `psu_4xaa/README.md`'s Validation section (2026-09-06) to say
+   this explicitly and to stop pointing at the script itself.
+
+2. **The trustworthy number still doesn't validate.** Expected GP26 ≈
+   2.75 V for correct polarity (half of the PSU's ~5.5 V output through a
+   1:1 divider) or ≈ 0 V for reversed polarity (Schottky blocks). The
+   actual powered reading, ~0.143 V, matches neither — it's much closer to
+   the "reversed/blocked" ~0 V case than to ~2.75 V, but isn't a clean
+   match for that either. This is not just the wrong-script confusion;
+   even the correct raw-voltage number says something in the physical
+   build isn't delivering the expected output. Don't mark `psu_4xaa` built
+   (`lab/README.md`'s circuits table already has it correctly as "designed,
+   not built") on the strength of this run — the divider circuit itself
+   was confirmed present (something changes between power-off and
+   power-on), but the PSU's actual output voltage has not been confirmed
+   in range.
+   Untested next steps for whoever picks this back up: verify the two
+   "10 kΩ" resistors are actually 10 kΩ and verify continuity along the
+   4-cell series chain + Schottky + polyfuse, using `resistance_measurement`
+   in its *actual* intended mode this time (clip its own R_x leg + GND
+   return across each suspect node pair) rather than repeating the
+   mismatched-circuit run above; also worth open-circuit-probing the
+   battery pack directly (bypassing Schottky/fuse) the way the
+   `fuse_test_voltmeter` battery-chemistry entry above describes, in case
+   the cells themselves are weak/miswired.
+
+3. **Ground wire.** The user also reported the circuit "didn't start
+   working at all" until they added a wire from the PSU's ground rail to
+   Pico GND. That connection *was* already in `README.md`'s Validation
+   ASCII diagram (last line, "Pico GND (Pin 28)") — it just wasn't
+   restated as an explicit step anywhere `breadboard.md` itself covers,
+   and the diagram alone was easy to miss mid-build. Same class of gap as
+   the `RloadB`/`voltage_reference_lm358` entry above (a doc references a
+   connection in one place but not in the step-by-step a bench user
+   actually follows). Added an explicit "this wire is required, not
+   optional" callout directly under the diagram in `README.md`
+   (2026-09-06) rather than moving the diagram itself — general lesson
+   still holds: when a circuit's physical build steps live in
+   `breadboard.md` but a follow-on check (validation, demo) lives in
+   `README.md` instead, don't assume a diagram in the second file is
+   enough on its own; call out anything load-bearing in prose too.
