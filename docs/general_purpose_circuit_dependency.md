@@ -26,18 +26,25 @@ graph TD
     end
 
     subgraph psu_system ["Power Supply System (Tiered by Load)"]
+        %% Build/bench-test status for nodes in this subgraph is tracked in
+        %% README.md's "Circuits — built & bench-tested" table and
+        %% docs/history.md, not displayed here — see docs/kb/repo_docs_conventions.md.
         subgraph psu_pico_rail_g ["Pico rail: 3.3V, ~100mA conservative budget (bootstrap, interim)"]
-            PSUPICO["Pico onboard 3V3(OUT) regulator (power_supplies/psu_pico_rail/) — built & bench-tested 2026-08"]
+            %% status: built & bench-tested 2026-08
+            PSUPICO["Pico onboard 3V3(OUT) regulator (power_supplies/psu_pico_rail/)"]
         end
 
-        subgraph psu_ultralow ["Ultra-Low v1: 1.5V, ~100mA, &lt;0.15W (Bootstrap) — power_supplies/psu_ultralow_v1/ — built & bench-tested 2026-08-30"]
+        %% status: psu_ultralow_v1 built & bench-tested 2026-08-30
+        subgraph psu_ultralow ["Ultra-Low v1: 1.5V, ~100mA, &lt;0.15W (Bootstrap) — power_supplies/psu_ultralow_v1/"]
             PSUUL["Single AA Battery (Alkaline) — Version 1"]
-            PROTUL["Polyfuse (50mA, slow-blow) — all 20 RXEF005 units validated PASS via measurement_tools/ammeter_10ohm/"]
+            %% status: all 20 RXEF005 units validated PASS 2026-08-30
+            PROTUL["Polyfuse (50mA, slow-blow) — see measurement_tools/ammeter_10ohm/"]
         end
         
         subgraph psu_low ["Low (v2 Upgrade): 3.0V, &lt;300mA, ~0.9W — power_supplies/psu_low_v2/"]
             PSULOW["2xAA Battery Holder in Series"]
-            PROTLOW["Polyfuse (500mA) + Series Schottky Diode — all 20 RXEF050 units validated PASS via measurement_tools/ammeter_1ohm/"]
+            %% status: all 20 RXEF050 units validated PASS 2026-08-30
+            PROTLOW["Polyfuse (500mA) + Series Schottky Diode — see measurement_tools/ammeter_1ohm/"]
         end
 
         subgraph psu_3aa ["4.5V, &lt;300mA, ~1.2W — power_supplies/psu_3xaa/"]
@@ -52,7 +59,9 @@ graph TD
         
         subgraph psu_medlow ["Medium: 5V USB + Regulator OR 12V, 1–3A, 5–36W"]
             PSUMEDLOW["USB Wall Adapter (5V 3A) OR 12V Sabrent USB-C Adapter"]
-            PSUMEDLOWLM317["SFE Breadboard Power Supply Kit (LM317 adjustable, 3.3V/5V-selectable) — power_supplies/psu_medlow_lm317/ — not yet ordered, not yet built"]
+            %% status: not yet ordered, not yet built — see TODO-arcticoder.md
+            %% "Open correctness issues to resolve" and kb/ordering_ingestion_notes.md
+            PSUMEDLOWLM317["SFE Breadboard Power Supply Kit (LM317 adjustable, 3.3V/5V-selectable) — power_supplies/psu_medlow_lm317/"]
             PROTMEDLOW["Fuse (2A fast-blow) + Polyfuse (500mA backup) for 12V path"]
         end
         
@@ -84,7 +93,8 @@ graph TD
     end
 
     subgraph tier1 ["Tier 1: Foundational (Simplest, Low Cost)"]
-        REF["Precision Reference Voltage Generator (3.3V or 5V input) — see signal_conditioning/voltage_reference_lm358/ — built & bench-tested 2026-08-27"]
+        %% status: built & bench-tested 2026-08-27
+        REF["Precision Reference Voltage Generator (3.3V or 5V input) — see signal_conditioning/voltage_reference_lm358/"]
         OSC["Precision Timing Oscillator (1.5–5V) — see oscillators/ne555_astable/"]
         SIMPGEN["Simple Function Generator (5–12V input)"]
     end

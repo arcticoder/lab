@@ -3861,3 +3861,16 @@ What I changed:
 No AliExpress order is newly urgent from this work --- nothing here needed new parts.
 <!-- ------ -->
 ---
+That remaining hit is just the kb file's own historical description, which is correct as-is. Everything else is clean. Here's a summary of what changed:
+
+**1\. `general_purpose_circuit_dependency.md`** --- stripped all dated build-status text ("built & bench-tested 2026-08-27", "validated PASS", "not yet ordered, not yet built") out of node/subgraph labels. The status now lives in invisible `%%` comments right above each node, plus is already tracked in `README.md`'s bench-tested table and `docs/history.md`.
+
+**2 & 3. TODO-arcticoder.md intro** --- trimmed the meta-process paragraphs (ordering authority, the TODO-completed.md rationale, the "notes belong in kb/" blockquote) out of the human-facing file; that content now lives in a new `docs/kb/todo_list_conventions.md`.
+
+**5\. Reordered TODO-arcticoder.md** --- merged the old "Next parts to buy" and "Personal action items" sections (previously buried at lines 170--255, past everything else) into a new **"Next AliExpress order --- action needed"** section right at the top, since ordering has real shipping lead time and was never actually getting reached under the top-to-bottom workflow. "Backlog" stays at the bottom --- genuinely nothing is time-sensitive there.
+
+**4\. Cart contents logged**: added a new "In cart (not yet checked out)" section to `orders.md` for the CY7C68013A logic analyzer and GY-521 accelerometer, and surfaced the **$0.31-short-of-free-shipping** blocker plus both items at the very top of TODO-arcticoder.md, per your instruction to put any pending order first.
+
+All new discoveries (the mermaid-comment status convention, the new "in cart" lifecycle stage, the TODO reordering rationale) are recorded in `docs/kb/` for future sessions, not in the user-facing docs.
+<!-- ------ -->
+---

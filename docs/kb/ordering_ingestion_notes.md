@@ -281,6 +281,28 @@ straight into a port, no cable needed) or has its own Micro-USB port
 inventory is earmarked for the Pico) before assuming no cable is
 needed.
 
+## `orders.md` gained a fourth lifecycle stage, "In cart (not yet checked out)" — distinct from "On order" (found 2026-09-09)
+
+Until now `orders.md` only tracked three states: Received, Cancelled, and
+On order (placed, not yet received) — nothing between "not yet in any
+cart" and "actually placed." The user reported items sitting in an
+AliExpress cart (CY7C68013A logic analyzer, GY-521 accelerometer) that
+hadn't been checked out yet, plus a concrete blocker (checkout is $0.31
+short of the $10 free-shipping minimum) — genuinely different from "On
+order," which by this file's own convention means the order has already
+been placed with a real order date. Added a new `## In cart (not yet
+checked out)` section, positioned first (before "Received"), matching
+cart's position as the earliest lifecycle stage. Entries in this section
+use "Added to cart: <date>" instead of "Ordered: <date>," and move to "On
+order" once checkout actually happens (same pattern as the existing
+"On order" → "Received" migration described in the entry below — update
+`orders.md`, `TODO-arcticoder.md`, and eventually `parts_reference.md`/
+`inventory.md` together at each stage transition, not just at checkout).
+Don't add a `parts_reference.md` entry for a cart-stage item — that file's
+convention (per the entry below) is populated once a part is actually
+ordered/received, and a cart isn't a commitment (items can silently drop
+out of a cart, quantities can change at checkout).
+
 ## `psu_medlow_lm317/README.md` claims "on order" for the SFE Breadboard Power Supply Kit, but no matching entry exists in `orders.md` or either inventory
 
 Found 2026-09-03, not resolved. The kit is a RobotShop item (not

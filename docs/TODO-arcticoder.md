@@ -6,36 +6,68 @@ general-purpose tier graph
 and the spacetime-research tier graph
 ([spacetime_circuits_dependency.md](spacetime_circuits_dependency.md)), plus
 personal action items only you can do (ordering, physical verification on
-the bench, decisions). Previously split across six separate
-`*-arcticoder*.md` files (one active/BLOCKED/backlog trio per graph) —
-consolidated back into this one file 2026-09-06 per explicit request; see
-[kb/repo_docs_conventions.md](kb/repo_docs_conventions.md) if a future
-session is tempted to re-split it.
+the bench, decisions).
 
 **Work this file top-to-bottom, one section at a time.** Whichever
 section below is first to still have an unchecked item is what to do
-next, and within that section the first bullet is the most important —
-if something is buried further down or in a later section, it isn't next
-regardless of how ready-feeling it seems. This replaces going on your own
-initiative to pick what feels like the next logical build; as of
-2026-09-07 Claude has full control over ordering, so any re-ordering
-needed (e.g. a "ready to build" item turning out to be blocked on another
-item elsewhere in this file) should happen here, not by you second-guessing
-the order yourself.
+next, and within that section the first bullet is the most important.
 
 Completed circuits' bench-test status is tracked in `README.md`'s "built &
 bench-tested" table and `docs/history.md`. For the TODO items on *this*
 list specifically: when one is done, move it to
 [TODO-completed.md](TODO-completed.md) (dated entry) instead of deleting
-it — the audit trail makes it easy to confirm something was actually done
-and avoid re-proposing/duplicating it later, mirroring the convention
-in the sibling `aqei-bridge` repo's `docs/TODO-completed.md` /
-`docs/TODO-BLOCKED.md`.
-
-> A future LLM chat's own working notes on this repo belong in `docs/kb/`,
-> not here.
+it.
 
 ---
+
+## Next AliExpress order — action needed
+
+Ordering is time-sensitive (transit from China runs a few weeks), so this
+section stays at the top rather than after the bench-work sections —
+finding it buried past several pages of build tasks meant it kept getting
+skipped in practice.
+
+- [ ] **Check out the AliExpress cart — currently $0.31 short of the $10
+      free-shipping minimum.** Cart holds the two items below; add one
+      more small item (e.g. once a 49E Hall sensor or replacement
+      inductor listing is picked, below) to clear the threshold, then
+      check out.
+- [ ] **CY7C68013A / EZ-USB FX2LP USB logic analyzer board (`SCOPELA`
+      tier) — in cart as of 2026-09-09, not yet checked out.** Listing:
+      "EZ-USB FX2LP CY7C68013A USB Core Board Development Board USB Logic
+      Analyzer With I2C Serial SPI Interface Module Mini USB" — see
+      [orders.md](orders.md) § "In cart." `sigrok`'s `fx2lafw` firmware
+      supports it out of the box, no vendor software needed; first tier
+      with real hardware-timed sampling/triggering, needed to properly
+      validate tier2/tier3 circuits and the CD4066 `MUX` beyond what the
+      Pico's software-timed ADC can confirm. Check whether the listing
+      bundles an 8-wire test-clip cable and a USB cable before assuming
+      nothing else is needed.
+- [ ] **GY-521 (MPU6050) 3-axis gyro/accelerometer module — in cart as of
+      2026-09-09, not yet checked out.** Fills the tier5 `ACCELIF` gap
+      (substitutes for the originally-scoped ADXL335). Listing offers
+      1–10pcs with no variant selected yet — confirm quantity before
+      checkout. See [orders.md](orders.md) § "In cart."
+- [ ] **Color-ring inductor assortment, 0307 1/4W (12 values, 1µH-1mH)
+      replacement.** The original AliExpress order (120 units, ordered
+      2026-08-30) was cancelled by the seller/platform 2026-09-07 over a
+      shipping issue — refund in progress, not received. Find a
+      replacement listing (same 0307/1/4W package, ideally the same
+      1µH–1mH/12-value spread) and add it to the cart above. Blocks tier3
+      `INDBRIDGE`.
+- [ ] **Linear/analog Hall-effect sensor (e.g. 49E), 5–10pk** — the
+      KY-003/A3144 module already received only covers digital
+      switch-output; this is still needed for the `HALLAMP` op-amp
+      amplifier circuit as originally scoped.
+- [ ] Decide whether to order the SFE Breadboard Power Supply Kit for
+      `power_supplies/psu_medlow_lm317/` (see "Open correctness issues"
+      below — currently not ordered).
+- [ ] *(optional upgrade, not blocking)* **Tier 1 `REF`** — TL431A
+      precision shunt reference (5 on hand, untested) could replace or
+      supplement the resistor-divider + LM358 buffer for better precision.
+- [ ] **LVDT transducer** — the only tier5 node with zero hardware behind
+      it (`LVDTAMP`). Pricier/more niche than the items above; lower
+      priority but the last unaddressed tier5 sensor.
 
 ## Ready to build now — parts on hand
 
@@ -137,8 +169,8 @@ in the sibling `aqei-bridge` repo's `docs/TODO-completed.md` /
       inductor assortment (0307 1/4W, 12 values) — **original order
       cancelled by AliExpress 2026-09-07** (shipping issue), refund
       expected within 2 business days of cancellation. No replacement
-      sourced yet — see "Next parts to buy" below and
-      `docs/inventory.md`'s "Cancelled / needs replacement" table.
+      sourced yet — see "Next AliExpress order" at the top of this file
+      and `docs/inventory.md`'s "Cancelled / needs replacement" table.
 - [ ] **`ACTIVELIM`** (protection, required by `psu_medhigh`/`psu_high`;
       also feeds spacetime tier7 `HVPULSE`). Blocked on: IRLZ44N
       logic-level MOSFET, ordered 2026-09-03, not yet received. No
@@ -155,7 +187,8 @@ in the sibling `aqei-bridge` repo's `docs/TODO-completed.md` /
       arrives, but not fully. It's digital switch-output (a
       presence/proximity read), not the linear-analog Hall element the
       original op-amp-amplifier design needs — a genuinely linear part
-      (e.g. a 49E, see "Next parts to buy" below) is still needed.
+      (e.g. a 49E, see "Next AliExpress order" at the top of this file)
+      is still needed.
 - [ ] **`EPFIELD`** (tier5). Blocked on: TL082 JFET-input dual op-amp,
       ordered 2026-09-03, not yet received. LM358 (on hand) is
       bipolar-input — wrong device class for a high-impedance
@@ -166,41 +199,6 @@ in the sibling `aqei-bridge` repo's `docs/TODO-completed.md` /
 - [ ] **`HVPULSE`** (tier7). Blocked on: IRLZ44N logic-level MOSFET,
       ordered 2026-09-03, not yet received (same part as `ACTIVELIM`
       above).
-
-## Next parts to buy
-
-- [ ] **Color-ring inductor assortment, 0307 1/4W (12 values, 1µH-1mH)
-      replacement.** The original AliExpress order (120 units, ordered
-      2026-08-30) was cancelled by the seller/platform 2026-09-07 over a
-      shipping issue — refund in progress, not received. Find a
-      replacement listing (same 0307/1/4W package, ideally the same
-      1µH–1mH/12-value spread) and add it to cart. Blocks tier3
-      `INDBRIDGE`. **Reminder: cart minimum for shipping is $10** — adding
-      this alone likely won't clear that threshold, so check the rest of
-      the cart before assuming checkout is ready.
-- [ ] **8ch 24MHz USB logic analyzer** (`SCOPELA` tier, ~$5–8, built
-      around the CY7C68013A / EZ-USB FX2LP chip — `sigrok`'s `fx2lafw`
-      firmware supports it out of the box, no vendor software needed).
-      First tier with real hardware-timed sampling/triggering; needed to
-      properly validate tier2/tier3 circuits and the CD4066 `MUX` beyond
-      what the Pico's software-timed ADC can confirm. Check whether the
-      listing bundles an 8-wire test-clip cable and a USB cable (dongle
-      vs. separate port) before assuming nothing else is needed.
-- [ ] *(optional upgrade, not blocking)* **Tier 1 `REF`** — TL431A
-      precision shunt reference (5 on hand, untested) could replace or
-      supplement the resistor-divider + LM358 buffer for better precision.
-- [ ] **Linear/analog Hall-effect sensor (e.g. 49E), 5–10pk** — the
-      KY-003/A3144 module on order only covers digital switch-output; this
-      is still needed for the `HALLAMP` op-amp amplifier circuit as
-      originally scoped.
-- [ ] **ADXL335 analog 3-axis accelerometer breakout (or equivalent, e.g.
-      GY-521) — confirm/place the order.** This was identified as the
-      `ACCELIF` gap and was last known to be sitting in a shopping cart,
-      not a confirmed placed order — check whether it actually went
-      through, and place it if not.
-- [ ] **LVDT transducer** — the only tier5 node with zero hardware behind
-      it (`LVDTAMP`). Pricier/more niche than the items above; lower
-      priority but the last unaddressed tier5 sensor.
 
 ## Backlog — undesigned, long-tail
 
@@ -238,18 +236,5 @@ how each node connects before starting one.
       but the actual multiplexer circuit isn't built.
 - [ ] **Concurrent measurement tools**: `SCOPEUSBSER`, `SCOPEDSO`,
       `SCOPEBENCH`, `PRECBOX`, `LOADBANK`, `NOISEGEN`, `TESTSIG`,
-      `THERMOAMP` all undesigned/unsourced. (`SCOPELA` is the active-queue
-      next buy, above.)
-
-## Personal action items
-
-Things only you can do (ordering, physical verification, decisions) —
-not for Claude to work from unprompted.
-
-- [ ] Decide whether to order the SFE Breadboard Power Supply Kit for
-      `power_supplies/psu_medlow_lm317/` (see "Open correctness issues"
-      above — currently not ordered).
-- [ ] Find and add a replacement color-ring inductor assortment to cart
-      (see "Next parts to buy" above), then check out once the cart
-      clears the $10 shipping minimum — the AliExpress refund for the
-      cancelled order doesn't complete this on its own.
+      `THERMOAMP` all undesigned/unsourced. (`SCOPELA` is in the cart —
+      see "Next AliExpress order" at the top of this file.)

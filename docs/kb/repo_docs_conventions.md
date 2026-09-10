@@ -48,6 +48,40 @@ approach (already implemented in `measurement_tools/fuse_test_voltmeter/` and us
 sections) replaces the galvanometer build entirely — no separate circuit
 needs to be designed for this bootstrap node.
 
+## Build/bench-test status doesn't belong in a dependency-graph node's displayed label — use a `%%` comment above the node instead (established 2026-09-09)
+
+`general_purpose_circuit_dependency.md` used to embed dated build status
+directly in node/subgraph label text, e.g. `PSUPICO["...
+(power_supplies/psu_pico_rail/) — built & bench-tested 2026-08"]` or
+`REF["... — built & bench-tested 2026-08-27"]`. The user flagged this as
+clutter: that status is already tracked authoritatively in `README.md`'s
+"Circuits — built & bench-tested" table and `docs/history.md`, so
+repeating it (with its own copy of the date, subject to drifting out of
+sync) inside the dependency graph's node labels was pure duplication with
+no display benefit — the diagram exists to show dependency structure, not
+status.
+
+Fixed by stripping the status/date text out of every label and moving it
+to a `%%` comment on its own line immediately above the node/subgraph
+definition it describes (mermaid comments are not rendered, so the detail
+stays in the source file for a reader of the raw `.md`/kb context without
+cluttering the diagram itself). Example:
+
+```
+%% status: built & bench-tested 2026-08-27
+REF["Precision Reference Voltage Generator (3.3V or 5V input) — see signal_conditioning/voltage_reference_lm358/"]
+```
+
+This is a narrow, additive exception to the "pure mermaid, no prose"
+convention below (which is about full paragraphs, not single-line `%%`
+status annotations) — don't read it as license to add prose elsewhere in
+these files. Rule for future edits to either dependency-graph file: a
+node's label describes *what the circuit is and where it lives*
+(component values, folder path); *whether/when it was built* stays out of
+the label and, if worth noting at all in the graph file, goes in a `%%`
+comment above it — the durable source of truth for that status remains
+`README.md`'s bench-tested table and `docs/history.md`, not this file.
+
 ## README cross-linking is one-directional: `lab/` → `pico/`, never back
 
 `lab/README.md` is the workspace-home README (the `lab.code-workspace` file

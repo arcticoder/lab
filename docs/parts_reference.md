@@ -265,7 +265,7 @@ relative to LEDs.
 2026-08-30) was cancelled by AliExpress/the seller over a shipping issue
 before shipping; refund in progress. Not received, no longer "on order."
 A replacement listing hasn't been sourced yet — see
-[TODO-arcticoder.md](TODO-arcticoder.md) § "Next parts to buy". Everything
+[TODO-arcticoder.md](TODO-arcticoder.md) § "Next AliExpress order". Everything
 below describes the *originally selected* spec and is the target to match
 (or the best available alternative) when sourcing a replacement — treat
 package/value-spread/quantity as negotiable if no listing matches exactly,

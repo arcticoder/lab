@@ -15,6 +15,43 @@ the converted `.md` files are tracked).
 
 ---
 
+## In cart (not yet checked out)
+
+### EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
+
+- Listing: "EZ-USB FX2LP CY7C68013A USB Core Board Development Board USB
+  Logic Analyzer With I2C Serial SPI Interface Module Mini USB" — no
+  listing URL supplied yet.
+- This board *is* the `SCOPELA` tier purchase itself, not a sub-part of
+  it — see
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
+  "CY7C68013A board" entry. `sigrok`'s `fx2lafw` firmware supports it out
+  of the box. See [TODO-arcticoder.md](TODO-arcticoder.md) § "Next
+  AliExpress order."
+- Added to cart: 2026-09-09. Not yet checked out.
+
+### GY-521 (MPU6050) 3-axis gyro/accelerometer module
+
+- Listing: "1~10PCS EGBO GY-521 GY521 MPU 6050 MPU6050 MPU 6050 Module 3
+  Axis Analog Gyro Sensor + Accelerometer for arduino DIY KIT" — no
+  listing URL supplied yet. Quantity/variant not yet confirmed (listing
+  offers 1–10pcs) — resolve at checkout rather than assuming a count.
+- Substitutes for the originally-scoped ADXL335 to fill the tier5
+  `ACCELIF` gap — see
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
+  2026-09-03 gap-analysis cross-reference entry (this was the last of the
+  7 gap-analysis items still open). See
+  [TODO-arcticoder.md](TODO-arcticoder.md) § "Next AliExpress order."
+- Added to cart: 2026-09-09. Not yet checked out.
+
+**Cart total is $0.31 short of the $10 free-shipping minimum** as of
+2026-09-09 — needs at least one more small item added before checkout;
+see [TODO-arcticoder.md](TODO-arcticoder.md) § "Next AliExpress order"
+for candidates (49E Hall sensor, replacement color-ring inductor
+assortment once a listing is found).
+
+---
+
 ## Received
 
 ### SYB-170 Mini Breadboard — 6-in-1 pack (black selected)
@@ -222,7 +259,7 @@ the converted `.md` files are tracked).
   shipped — refund in progress, expected within 2 business days of
   cancellation. Not received, and no longer counted as "on order."
 - No replacement sourced yet — see
-  [TODO-arcticoder.md](TODO-arcticoder.md) § "Next parts to buy" and
+  [TODO-arcticoder.md](TODO-arcticoder.md) § "Next AliExpress order" and
   [inventory.md](inventory.md) § "Cancelled / needs replacement". Once a
   replacement is ordered, log it as a new entry here (new listing URL,
   new order date) rather than editing this one in place — this entry is
