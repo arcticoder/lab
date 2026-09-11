@@ -27,34 +27,14 @@ section stays at the top rather than after the bench-work sections —
 finding it buried past several pages of build tasks meant it kept getting
 skipped in practice.
 
-- [ ] **Check out the AliExpress cart — currently $0.31 short of the $10
-      free-shipping minimum.** Cart holds the two items below; add one
-      more small item (e.g. once a 49E Hall sensor or replacement
-      inductor listing is picked, below) to clear the threshold, then
-      check out.
-- [ ] **CY7C68013A / EZ-USB FX2LP USB logic analyzer board (`SCOPELA`
-      tier) — in cart as of 2026-09-09, not yet checked out.** Listing:
-      "EZ-USB FX2LP CY7C68013A USB Core Board Development Board USB Logic
-      Analyzer With I2C Serial SPI Interface Module Mini USB" — see
-      [orders.md](orders.md) § "In cart." `sigrok`'s `fx2lafw` firmware
-      supports it out of the box, no vendor software needed; first tier
-      with real hardware-timed sampling/triggering, needed to properly
-      validate tier2/tier3 circuits and the CD4066 `MUX` beyond what the
-      Pico's software-timed ADC can confirm. Check whether the listing
-      bundles an 8-wire test-clip cable and a USB cable before assuming
-      nothing else is needed.
-- [ ] **GY-521 (MPU6050) 3-axis gyro/accelerometer module — in cart as of
-      2026-09-09, not yet checked out.** Fills the tier5 `ACCELIF` gap
-      (substitutes for the originally-scoped ADXL335). Listing offers
-      1–10pcs with no variant selected yet — confirm quantity before
-      checkout. See [orders.md](orders.md) § "In cart."
-- [ ] **Color-ring inductor assortment, 0307 1/4W (12 values, 1µH-1mH)
-      replacement.** The original AliExpress order (120 units, ordered
-      2026-08-30) was cancelled by the seller/platform 2026-09-07 over a
-      shipping issue — refund in progress, not received. Find a
-      replacement listing (same 0307/1/4W package, ideally the same
-      1µH–1mH/12-value spread) and add it to the cart above. Blocks tier3
-      `INDBRIDGE`.
+**No urgent order needed right now** — 9 items are currently in transit
+(TL082, MF52AT thermistor, KY-003 Hall module, IRLZ44N MOSFET, piezo
+disc, SN74HC86N XOR gate, all ordered 2026-09-03; CY7C68013A logic
+analyzer board, GY-521 accelerometer module, and the color-ring inductor
+reorder, all ordered 2026-09-10 — see [orders.md](orders.md)), which is a
+healthy pipeline. The items below are still worth adding to a cart
+whenever a small top-up order is convenient, not something to rush.
+
 - [ ] **Linear/analog Hall-effect sensor (e.g. 49E), 5–10pk** — the
       KY-003/A3144 module already received only covers digital
       switch-output; this is still needed for the `HALLAMP` op-amp
@@ -90,6 +70,11 @@ skipped in practice.
       set.
 - [ ] **New `OHMMETER` build (tier3, 4-wire Kelvin).** 0.1Ω and 1Ω metal
       film resistors (20 each on hand) are the reference legs. No folder
+      exists yet.
+- [ ] **New `CAPBRIDGE` build (tier3, capacitance bridge).** Both the
+      multilayer ceramic capacitor assortment (50V, 10 values) and the
+      aluminum electrolytic capacitor kit (16V/25V/50V, 12 values)
+      arrived 2026-09-10 — no longer blocked on a shipment. No folder
       exists yet.
 - [ ] **`power_supplies/psu_low_v2` — physically assemble.** Wire-stripper
       blocker resolved 2026-09-03. RXEF050 polyfuse batch already
@@ -161,16 +146,18 @@ skipped in practice.
 
 ## Blocked — waiting on a shipment
 
-- [ ] **`CAPBRIDGE`** (tier3, capacitance bridge). Blocked on: multilayer
-      ceramic capacitor assortment (50V, 10 values) and aluminum
-      electrolytic capacitor kit (16V/25V/50V, 12 values), both ordered
-      2026-08-30, not yet received.
 - [ ] **`INDBRIDGE`** (tier3, inductance bridge). Blocked on: color-ring
       inductor assortment (0307 1/4W, 12 values) — **original order
       cancelled by AliExpress 2026-09-07** (shipping issue), refund
-      expected within 2 business days of cancellation. No replacement
-      sourced yet — see "Next AliExpress order" at the top of this file
-      and `docs/inventory.md`'s "Cancelled / needs replacement" table.
+      processed. **Reordered 2026-09-10** (same listing/variant), not yet
+      received.
+- [ ] **`SCOPELA`** (concurrent measurement tools, hardware-timed logic
+      analyzer). Blocked on: CY7C68013A / EZ-USB FX2LP USB logic analyzer
+      board, ordered 2026-09-10, not yet received. `sigrok`'s `fx2lafw`
+      firmware supports it out of the box — no vendor software needed.
+- [ ] **`ACCELIF`** (tier5). Blocked on: GY-521 (MPU6050) module, ordered
+      2026-09-10, not yet received. Substitutes for the originally-scoped
+      ADXL335.
 - [ ] **`ACTIVELIM`** (protection, required by `psu_medhigh`/`psu_high`;
       also feeds spacetime tier7 `HVPULSE`). Blocked on: IRLZ44N
       logic-level MOSFET, ordered 2026-09-03, not yet received. No
@@ -236,5 +223,5 @@ how each node connects before starting one.
       but the actual multiplexer circuit isn't built.
 - [ ] **Concurrent measurement tools**: `SCOPEUSBSER`, `SCOPEDSO`,
       `SCOPEBENCH`, `PRECBOX`, `LOADBANK`, `NOISEGEN`, `TESTSIG`,
-      `THERMOAMP` all undesigned/unsourced. (`SCOPELA` is in the cart —
-      see "Next AliExpress order" at the top of this file.)
+      `THERMOAMP` all undesigned/unsourced. (`SCOPELA` has a part on
+      order — see "Blocked — waiting on a shipment" above.)

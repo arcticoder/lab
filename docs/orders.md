@@ -15,43 +15,6 @@ the converted `.md` files are tracked).
 
 ---
 
-## In cart (not yet checked out)
-
-### EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
-
-- Listing: "EZ-USB FX2LP CY7C68013A USB Core Board Development Board USB
-  Logic Analyzer With I2C Serial SPI Interface Module Mini USB" — no
-  listing URL supplied yet.
-- This board *is* the `SCOPELA` tier purchase itself, not a sub-part of
-  it — see
-  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
-  "CY7C68013A board" entry. `sigrok`'s `fx2lafw` firmware supports it out
-  of the box. See [TODO-arcticoder.md](TODO-arcticoder.md) § "Next
-  AliExpress order."
-- Added to cart: 2026-09-09. Not yet checked out.
-
-### GY-521 (MPU6050) 3-axis gyro/accelerometer module
-
-- Listing: "1~10PCS EGBO GY-521 GY521 MPU 6050 MPU6050 MPU 6050 Module 3
-  Axis Analog Gyro Sensor + Accelerometer for arduino DIY KIT" — no
-  listing URL supplied yet. Quantity/variant not yet confirmed (listing
-  offers 1–10pcs) — resolve at checkout rather than assuming a count.
-- Substitutes for the originally-scoped ADXL335 to fill the tier5
-  `ACCELIF` gap — see
-  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
-  2026-09-03 gap-analysis cross-reference entry (this was the last of the
-  7 gap-analysis items still open). See
-  [TODO-arcticoder.md](TODO-arcticoder.md) § "Next AliExpress order."
-- Added to cart: 2026-09-09. Not yet checked out.
-
-**Cart total is $0.31 short of the $10 free-shipping minimum** as of
-2026-09-09 — needs at least one more small item added before checkout;
-see [TODO-arcticoder.md](TODO-arcticoder.md) § "Next AliExpress order"
-for candidates (49E Hall sensor, replacement color-ring inductor
-assortment once a listing is found).
-
----
-
 ## Received
 
 ### SYB-170 Mini Breadboard — 6-in-1 pack (black selected)
@@ -247,6 +210,39 @@ assortment once a listing is found).
   [parts_reference.md](parts_reference.md#pt334-6c-photodiode).
 - Logged received: 2026-09-03.
 
+### Multilayer ceramic capacitor assortment (50V)
+
+- Listing: "300pcs 10Value 50V 10pF 20pF 30pF 47pF 56pF 68pF 100pF 1nF
+  10nF 100nF Multilayer Ceramic Capacitor Assortment Monolithic Kit Box" —
+  https://www.aliexpress.com/item/1005004741548166.html.
+- 300 received (10 values × ~30pcs each, matching the ordered count). See
+  [parts_reference.md](parts_reference.md#multilayer-ceramic-capacitor-assortment-50v)
+  for the physical EIA 3-digit code printed on each cap, confirmed against
+  all 10 ordered values. **Operating temperature is still unresolved**
+  (listing self-contradicts: −40–80°C spec field vs. −25–185°C description
+  text) — the physical markings don't include a temperature figure, so
+  this caveat carries forward unchanged.
+- Supports: tier3 `CAPBRIDGE` (capacitance bridge) directly, plus general
+  bypass/decoupling and NE555-timing (tier1 `OSC`) use.
+- Ordered: 2026-08-30. Logged received: 2026-09-10.
+
+### Aluminum electrolytic capacitor kit (16V/25V/50V)
+
+- Listing: "120pcs Electrolytic Capacitor 16V 25V 50V Aluminum
+  Electrolytic Capacitor Kit 12 Values 1uF-470uF DIP Electrolyte
+  Capacitors". Listing URL still unresolved — the original order used a
+  literal `???.html` placeholder (see
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)); no
+  real URL has been supplied since, and none should be guessed.
+- 120 received (12 values × 10pcs), brand YTDMEN, radial-lead DIP-style,
+  ±20% tolerance — see
+  [parts_reference.md](parts_reference.md#aluminum-electrolytic-capacitor-kit-1665025050v)
+  for the full per-value table.
+- Supports: general PSU output/bulk filtering (`psu_medlow_lm317`,
+  `psu_medlow_usbc`) and future tier3 `CAPBRIDGE` use at higher
+  capacitance than the ceramic kit above covers.
+- Ordered: 2026-08-30. Logged received: 2026-09-10.
+
 ---
 
 ## Cancelled
@@ -258,12 +254,11 @@ assortment once a listing is found).
   AliExpress/the seller 2026-09-07** over a shipping issue, before it
   shipped — refund in progress, expected within 2 business days of
   cancellation. Not received, and no longer counted as "on order."
-- No replacement sourced yet — see
-  [TODO-arcticoder.md](TODO-arcticoder.md) § "Next AliExpress order" and
-  [inventory.md](inventory.md) § "Cancelled / needs replacement". Once a
-  replacement is ordered, log it as a new entry here (new listing URL,
-  new order date) rather than editing this one in place — this entry is
-  the record of what was originally ordered and why it didn't arrive.
+- **Replacement reordered 2026-09-10** — same listing/variant (still the
+  cheapest available), logged as a new entry in "On order" below rather
+  than editing this record in place; this entry stays as the record of
+  what was originally ordered and why it didn't arrive. See
+  [inventory.md](inventory.md) § "Cancelled / needs replacement".
 - Listing: "12values Color Ring Inductor Assortment 0307 1/4W 0.25W 0410
   1/2W 0510 1W 1UH 10UH 100UH Inductors Inductors Assorted Set Kit" —
   https://www.aliexpress.com/item/32988801481.html (variant selected:
@@ -281,59 +276,6 @@ assortment once a listing is found).
 ---
 
 ## On order (placed, not yet received)
-
-### Multilayer ceramic capacitor assortment (50V)
-
-- Listing: "300pcs 10Value 50V 10pF 20pF 30pF 47pF 56pF 68pF 100pF 1nF
-  10nF 100nF Multilayer Ceramic Capacitor Assortment Monolithic Kit Box" —
-  https://www.aliexpress.com/item/1005004741548166.html. **No specific
-  variant was given for this item** (unlike the other two orders in this
-  batch) — the listing may not have a selectable variant at all (a single
-  fixed 10-value/300pc box), but that isn't confirmed; check the actual
-  AliExpress order history once it ships rather than assuming.
-- 300 ordered (10 values × 30pcs). Values: 10pF, 20pF, 30pF, 47pF, 56pF,
-  68pF, 100pF, 1nF, 10nF, 100nF. Through-hole/in-line MLCC, 50V rated,
-  10% tolerance, 5.08mm lead pitch.
-- **Discrepancy in the listing itself:** the structured "Specifications"
-  block states operating temperature −40 to 80°C, but the free-text
-  product description states −25°C to 185°C for the same part. Don't
-  trust either figure as confirmed until a datasheet or physical
-  markings are available — flagged rather than picking one.
-- Supports: tier3 `CAPBRIDGE` (capacitance bridge) directly, plus general
-  bypass/decoupling and NE555-timing (tier1 `OSC`) use once received. See
-  [parts_reference.md](parts_reference.md#multilayer-ceramic-capacitor-assortment-50v).
-- Ordered: 2026-08-30.
-
-### Aluminum electrolytic capacitor kit (16V/25V/50V)
-
-- Listing: "120pcs Electrolytic Capacitor 16V 25V 50V Aluminum
-  Electrolytic Capacitor Kit 12 Values 1uF-470uF DIP Electrolyte
-  Capacitors". **The user-supplied URL for this item was a literal
-  placeholder (`https://www.aliexpress.com/item/???.html`) — the real
-  item ID was never provided.** Per the "don't guess a URL" convention
-  (see [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)),
-  no URL is recorded here; re-derive it from the AliExpress order history
-  once the item ships rather than trusting any link that might get
-  attached to this entry later.
-- 120 ordered (12 values × 10pcs), brand YTDMEN, radial-lead DIP-style,
-  ±20% tolerance:
-  1. 50V 1µF
-  2. 50V 2.2µF
-  3. 50V 3.3µF
-  4. 50V 4.7µF
-  5. 50V 10µF
-  6. 25V 22µF
-  7. 25V 33µF
-  8. 25V 47µF
-  9. 16V 100µF
-  10. 16V 220µF
-  11. 16V 330µF
-  12. 16V 470µF
-- Supports: general PSU output/bulk filtering (`psu_medlow_lm317`,
-  `psu_medlow_usbc`) and future tier3 `CAPBRIDGE` use at higher
-  capacitance than the ceramic kit above covers. See
-  [parts_reference.md](parts_reference.md#aluminum-electrolytic-capacitor-kit-1665025050v).
-- Ordered: 2026-08-30.
 
 ### TL082 JFET-input dual op-amp (DIP-8)
 
@@ -457,3 +399,67 @@ assortment once a listing is found).
   phase-detector primitive. See
   [parts_reference.md](parts_reference.md#sn74hc86n-quad-2-input-xor-gate).
 - Ordered: 2026-09-03.
+
+### EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
+
+- Listing: "EZ-USB FX2LP CY7C68013A USB Core Board Development Board USB
+  Logic Analyzer With I2C Serial SPI Interface Module Mini USB" —
+  https://www.aliexpress.com/item/1005008695596102.html.
+- 1 ordered. Board built around a CY7C68013A-56PVXC (low-power, enhanced
+  8051 core, 16KB program RAM, 48MHz, USB2.0 480Mbps, backward-compatible
+  USB1.1), with an onboard 24LC128 EEPROM (16K) for firmware/VID/PID
+  storage and in-system USB programming — no external programmer needed.
+  All GPIOs broken out on 2.54mm headers. Board size 55.24×41.68mm overall
+  (46.73×34.62mm hole-to-hole), positioning hole Ø3.15mm, weight ~13.11g.
+  Operating temperature −40 to +85°C.
+- This board *is* the `SCOPELA` tier purchase itself, not a sub-part of
+  it — see
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
+  "CY7C68013A board" entry. `sigrok`'s `fx2lafw` firmware supports it out
+  of the box.
+- Sat in cart since 2026-09-09 ($0.31 short of the $10 free-shipping
+  minimum, alongside the GY-521 below); checked out 2026-09-10 once the
+  inductor reorder below was added to clear that threshold — all three
+  shipped as one order.
+- Ordered: 2026-09-10.
+
+### GY-521 (MPU6050) 3-axis gyro/accelerometer module
+
+- Listing: "1~10PCS EGBO GY-521 GY521 MPU 6050 MPU6050 MPU 6050 Module 3
+  Axis Analog Gyro Sensor + Accelerometer for arduino DIY KIT" —
+  https://www.aliexpress.com/item/1005001863121268.html — selected variant
+  "1pcs Compatible".
+- 1 ordered — the earlier "quantity not yet confirmed" caveat from the
+  cart-stage entry is resolved by this variant string.
+- MPU-6050 chip, 3.3–5V supply (onboard low-dropout regulator), standard
+  I2C, built-in 16-bit ADC, gyro range ±250/500/1000/2000°/s, accel range
+  ±2/4/8/16g, 2.54mm pin pitch, immersion-gold PCB. Board ~2.1×1.5cm
+  (1.64cm wide including pin pads).
+- Substitutes for the originally-scoped ADXL335 to fill the tier5
+  `ACCELIF` gap — see
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
+  2026-09-03 gap-analysis cross-reference entry (this was the last of the
+  7 gap-analysis items still open).
+- Sat in cart since 2026-09-09, same cart/order as the CY7C68013A board
+  above; checked out 2026-09-10.
+- Ordered: 2026-09-10.
+
+### Color-ring inductor assortment (0307, 1/4W) reorder
+
+- Listing: "12values Color Ring Inductor Assortment 0307 1/4W 0.25W 0410
+  1/2W 0510 1W 1UH 10UH 100UH Inductors Inductors Assorted Set Kit" —
+  https://www.aliexpress.com/item/32988801481.html (variant selected:
+  "0307-120PCS-1lot") — same listing and variant as the cancelled order
+  below; still the cheapest available option as of 2026-09-10, so ordered
+  again rather than sourcing an alternate listing.
+- 120 ordered (12 values × 10pcs): 1µH, 10µH, 22µH, 33µH, 47µH, 100µH,
+  150µH, 220µH, 330µH, 470µH, 560µH, 1mH. Axial, color-ring-coded,
+  epoxy-coated, 0307 package (1/4W/0.25W). Rated dielectric withstand
+  250V AC rms, operating temperature −25 to 85°C. Same spec as the
+  cancelled order — see
+  [parts_reference.md](parts_reference.md#color-ring-inductor-assortment-0307-14w).
+- Added to the CY7C68013A/GY-521 cart to clear the $10 free-shipping
+  minimum (was $0.31 short with just those two items).
+- Supports: tier3 `INDBRIDGE` (inductance bridge) directly, and any
+  future filter/oscillator tank-circuit use.
+- Ordered: 2026-09-10.

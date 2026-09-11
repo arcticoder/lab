@@ -18,5 +18,14 @@ matching, so don't assume one file makes the other redundant.
 
 ---
 
-(No items closed out under this convention yet — see
-[TODO-arcticoder.md](TODO-arcticoder.md) for the active list.)
+## 2026-09-10
+
+- Checked out the AliExpress cart: CY7C68013A / EZ-USB FX2LP USB logic
+  analyzer board (`SCOPELA`) and GY-521 (MPU6050) accelerometer module,
+  plus a color-ring inductor assortment reorder added to clear the $10
+  free-shipping minimum. All three now "on order" in
+  [orders.md](orders.md) — see [TODO-arcticoder.md](TODO-arcticoder.md)
+  § "Blocked — waiting on a shipment."
+- Sourced a replacement for the cancelled color-ring inductor assortment
+  (0307 1/4W, 12 values) — reordered the same listing/variant, still
+  cheapest available.

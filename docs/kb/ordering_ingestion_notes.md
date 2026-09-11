@@ -303,6 +303,51 @@ convention (per the entry below) is populated once a part is actually
 ordered/received, and a cart isn't a commitment (items can silently drop
 out of a cart, quantities can change at checkout).
 
+## Physical part markings can be used to positively confirm a received batch against its ordered value list — worked example: ceramic capacitor EIA codes (2026-09-10)
+
+The 300pcs multilayer ceramic capacitor assortment (10 values, ordered
+2026-08-30) arrived with each cap printed with a standard 3-digit EIA
+code (two significant digits + a ×10^n multiplier in picofarads, or a
+bare 2-digit value under 100pF with no multiplier). The user reported 10
+distinct printed codes — `200`, `560`, `300`, `104`, `100`, `102`, `101`,
+`680`, `47`, `103` — with "about 30 of them" each. Decoding each against
+the EIA convention and cross-checking against the 10 originally-ordered
+values (10pF, 20pF, 30pF, 47pF, 56pF, 68pF, 100pF, 1nF, 10nF, 100nF) gave
+a clean 1:1 match with no leftover/unexplained codes and no ordered value
+missing a code — see the decode table in
+[parts_reference.md](parts_reference.md#multilayer-ceramic-capacitor-assortment-50v).
+This is a stronger confirmation than the earlier "received, untested"
+entries in this file get (which just log a count) — it independently
+verifies the *value* of what shipped, not just the quantity, from data
+the user could read directly off the parts without a meter. General
+lesson: when a received batch's individual units carry a standard,
+decodable marking (EIA capacitor codes, resistor color bands, symbol/date
+codes on ICs), ask for or transcribe those markings and cross-check them
+against the ordered value list rather than just trusting the order
+quantity matched — it's a free correctness check that a bulk assortment
+listing (prone to the value-substitution/mislabeling issues logged
+elsewhere in this file) actually shipped what it claimed.
+
+## The "In cart" → "On order" transition observed end-to-end: a third item added specifically to clear the free-shipping minimum (2026-09-10)
+
+The 2026-09-09 entry below introduced `orders.md`'s "In cart (not yet
+checked out)" stage, noting the cart (CY7C68013A logic analyzer +
+GY-521 accelerometer) was $0.31 short of the $10 free-shipping minimum
+and suggesting a 49E Hall sensor or a replacement color-ring inductor
+listing as candidates to close the gap. What actually happened: the user
+found a replacement inductor listing (same as the cancelled 2026-08-30
+order, still cheapest available) and added *that* to the same cart,
+clearing the threshold, then checked out all three together on
+2026-09-10. Confirms the predicted mechanism worked as designed — when a
+future session sees a cart-stage entry with a documented shipping-minimum
+shortfall, expect the eventual checkout batch to include whatever small
+item closed the gap, and treat all items checked out in the same
+message/session as one order batch (same order date, moved into
+`orders.md`'s "On order" section together) unless the user says
+otherwise. Also resolved the GY-521 entry's outstanding "quantity not yet
+confirmed" caveat from the cart stage: the checkout variant string was
+"1pcs Compatible," settling it at 1 unit.
+
 ## `psu_medlow_lm317/README.md` claims "on order" for the SFE Breadboard Power Supply Kit, but no matching entry exists in `orders.md` or either inventory
 
 Found 2026-09-03, not resolved. The kit is a RobotShop item (not

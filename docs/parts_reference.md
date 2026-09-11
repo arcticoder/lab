@@ -261,17 +261,15 @@ relative to LEDs.
 
 ## Color-ring inductor assortment (0307, 1/4W)
 
-**Cancelled 2026-09-07** — the original 120-unit order (placed
+**Reordered 2026-09-10** — the original 120-unit order (placed
 2026-08-30) was cancelled by AliExpress/the seller over a shipping issue
-before shipping; refund in progress. Not received, no longer "on order."
-A replacement listing hasn't been sourced yet — see
-[TODO-arcticoder.md](TODO-arcticoder.md) § "Next AliExpress order". Everything
-below describes the *originally selected* spec and is the target to match
-(or the best available alternative) when sourcing a replacement — treat
-package/value-spread/quantity as negotiable if no listing matches exactly,
-not as a hard requirement to re-derive from scratch. See
+before shipping (refund processed); the same listing/variant was still
+the cheapest available option, so it was ordered again rather than
+sourcing an alternate listing. Not yet received. See
+[orders.md](orders.md#color-ring-inductor-assortment-0307-14w-reorder)
+for the reorder's own record and
 [orders.md](orders.md#color-ring-inductor-assortment-0307-14w) for the
-cancelled order's own record. Axial,
+cancelled original. Axial,
 color-ring-coded, epoxy-coated, 0307 package (1/4W/0.25W) — the listing
 also offers 0410 (1/2W) and 0510 (1W) packages under the same title, but
 those variants were **not** selected. 12 values × 10pcs: 1µH, 10µH, 22µH,
@@ -290,35 +288,57 @@ any future RF/filter/oscillator tank-circuit design.
 
 ## Multilayer ceramic capacitor assortment (50V)
 
-300 ordered 2026-08-30, not yet received. See
+300 received 2026-09-10 (ordered 2026-08-30). See
 [orders.md](orders.md#multilayer-ceramic-capacitor-assortment-50v).
 Through-hole/in-line MLCC, 50V rated, 10% tolerance, 5.08mm lead pitch.
-10 values × 30pcs: 10pF, 20pF, 30pF, 47pF, 56pF, 68pF, 100pF, 1nF, 10nF,
-100nF. **Operating temperature is unresolved** — the listing's own
-structured spec field says −40 to 80°C while its free-text description
-says −25°C to 185°C for the same part; treat both as unconfirmed until a
-datasheet or physical part marking settles it, and don't silently pick
-one when referencing this part elsewhere. Ceramic capacitors have no
-polarity — either lead can go to either node. First candidate use: tier3
-`CAPBRIDGE` (capacitance bridge) directly, general bypass/decoupling
-across any circuit here, and NE555 timing capacitors (tier1 `OSC`) — the
-100nF/10nF SunFounder-kit ceramic caps (already on hand, not this ordered
-assortment) cover the [NE555 timer](#ne555-timer)'s `OSC` design in
-`oscillators/ne555_astable/` (designed & simulated 2026-09-01, not yet
-bench-built), so this assortment isn't actually needed for that use once
-it arrives.
+10 values × ~30pcs (physical count confirmed): 10pF, 20pF, 30pF, 47pF,
+56pF, 68pF, 100pF, 1nF, 10nF, 100nF. **Operating temperature is still
+unresolved** — the listing's own structured spec field says −40 to 80°C
+while its free-text description says −25°C to 185°C for the same part;
+the physical markings carry no temperature figure, so treat both as
+unconfirmed until a datasheet settles it. Ceramic capacitors have no
+polarity — either lead can go to either node.
+
+Each cap is printed with a 3-digit EIA code (picofarads, third digit =
+×10^n multiplier), confirmed against all 10 ordered values on receipt:
+
+| Printed code | Decodes to | Ordered value |
+|---|---|---|
+| 100 | 10×10⁰ = 10pF | 10pF |
+| 200 | 20×10⁰ = 20pF | 20pF |
+| 300 | 30×10⁰ = 30pF | 30pF |
+| 47  | 47pF (2-digit, no multiplier) | 47pF |
+| 560 | 56×10⁰ = 56pF | 56pF |
+| 680 | 68×10⁰ = 68pF | 68pF |
+| 101 | 10×10¹ = 100pF | 100pF |
+| 102 | 10×10² = 1000pF = 1nF | 1nF |
+| 103 | 10×10³ = 10000pF = 10nF | 10nF |
+| 104 | 10×10⁴ = 100000pF = 100nF | 100nF |
+
+Useful going forward for sorting/identifying an individual cap pulled
+from the assortment box without a meter — read the printed code, decode
+per this table, rather than guessing from cap size/color alone.
+
+First candidate use: tier3 `CAPBRIDGE` (capacitance bridge) directly,
+general bypass/decoupling across any circuit here, and NE555 timing
+capacitors (tier1 `OSC`) — the 100nF/10nF SunFounder-kit ceramic caps
+(already on hand, not this assortment) cover the
+[NE555 timer](#ne555-timer)'s `OSC` design in `oscillators/ne555_astable/`
+(designed & simulated 2026-09-01, not yet bench-built), so this
+assortment isn't actually needed for that use.
 
 ---
 
 ## Aluminum electrolytic capacitor kit (16V/25V/50V)
 
-120 ordered 2026-08-30, not yet received. See
+120 received 2026-09-10 (ordered 2026-08-30). See
 [orders.md](orders.md#aluminum-electrolytic-capacitor-kit-1665025050v) —
-**that entry's listing URL is unresolved** (the user supplied a literal
-`???` placeholder instead of a real item ID); don't trust any URL that
-might later get attached to this part without re-verifying against the
-actual AliExpress order history. Brand YTDMEN, radial-lead DIP-style,
-±20% tolerance. 12 values × 10pcs, by voltage/capacitance:
+**the listing URL is still unresolved** (the original order used a
+literal `???` placeholder instead of a real item ID, and no real URL has
+been supplied since); don't trust any URL that might later get attached
+to this part without re-verifying against the actual AliExpress order
+history. Brand YTDMEN, radial-lead DIP-style, ±20% tolerance. 12 values ×
+10pcs, by voltage/capacitance:
 
 | # | Voltage | Capacitance |
 |---|---------|-------------|
@@ -477,3 +497,48 @@ mount vertically with pin spacing matched to the pad spacing. First
 candidate use: bulk output filtering for `psu_medlow_lm317`/
 `psu_medlow_usbc`, and higher-capacitance tier3 `CAPBRIDGE` work beyond
 what the ceramic kit above covers.
+
+---
+
+## EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
+
+1 ordered 2026-09-10, not yet received. See
+[orders.md](orders.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
+Built around a CY7C68013A-56PVXC: low-power enhanced-8051 core, 16KB
+program RAM, 48MHz main clock, USB2.0 480Mbps (backward-compatible
+USB1.1). Onboard 24LC128 EEPROM (16K) holds VID/PID and firmware for
+in-system USB reprogramming — no external programmer needed. All GPIOs
+broken out on 2.54mm headers. Board 55.24×41.68mm overall
+(46.73×34.62mm hole-to-hole), positioning hole Ø3.15mm, ~13.11g.
+Operating temperature −40 to +85°C.
+
+This board *is* the `SCOPELA` tier purchase, not a component feeding into
+one — see
+[kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
+"CY7C68013A board" entry. `sigrok`'s `fx2lafw` firmware (package
+`sigrok-firmware-fx2lafw` on Debian/Ubuntu) supports it directly with
+PulseView, no vendor software. Check on arrival whether the board
+included an 8-wire Dupont test-clip cable and whether it's USB-A
+dongle-style or has its own Micro-USB port (would need a second Micro-USB
+cable — the one in inventory is earmarked for the Pico).
+
+---
+
+## GY-521 (MPU6050) 3-axis gyro/accelerometer module
+
+1 ordered 2026-09-10, not yet received. See
+[orders.md](orders.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module).
+MPU-6050 chip: 3.3–5V supply (onboard low-dropout regulator), standard
+I2C (SDA/SCL), built-in 16-bit ADC per axis. Gyro range
+±250/500/1000/2000°/s, accel range ±2/4/8/16g, onboard temperature
+sensor. 2.54mm pin pitch (breadboard-compatible), immersion-gold PCB.
+Board ~2.1×1.5cm (1.64cm including pin pads).
+
+Substitutes for the originally-scoped ADXL335 to fill the tier5
+`ACCELIF` gap — see
+[kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
+2026-09-03 gap-analysis cross-reference entry. The MPU-6050's onboard DMP
+also supports 9-axis motion fusion if an external magnetometer is added
+later, though nothing here currently plans for that. Interfaces to the
+Pico over I2C (SDA/SCL + 3V3 + GND, 4 wires total) — no analog frontend
+needed, unlike most other tier5 sensor nodes.

@@ -3874,3 +3874,23 @@ That remaining hit is just the kb file's own historical description, which is co
 All new discoveries (the mermaid-comment status convention, the new "in cart" lifecycle stage, the TODO reordering rationale) are recorded in `docs/kb/` for future sessions, not in the user-facing docs.
 <!-- ------ -->
 ---
+All documentation is updated (no commits made, since none were requested). Summary:
+
+**Received** (moved from "on order" → "received" in `orders.md`/`parts_reference.md`/`inventory.md`):
+
+-   Multilayer ceramic capacitor assortment (300pcs) --- the physical EIA codes you listed (`200`,`560`,`300`,`104`,`100`,`102`,`101`,`680`,`47`,`103`) decode to a clean 1:1 match against all 10 ordered values (10pF--100nF), now documented as a decode table in `parts_reference.md`. Temperature spec is still unresolved (listing self-contradicts).
+-   Aluminum electrolytic capacitor kit (120pcs, 12 values).
+
+**Newly ordered** (2026-09-10, added to `orders.md`/`parts_reference.md`/`inventory.md`):
+
+-   CY7C68013A / EZ-USB FX2LP logic analyzer board (`SCOPELA`)
+-   GY-521/MPU6050 module (`ACCELIF`) --- quantity resolved to 1 unit
+-   Color-ring inductor assortment reorder (`INDBRIDGE`) --- this was the item that cleared the $10 free-shipping minimum, so all three checked out together
+
+`pico/docs/inventory.md` needed no edit --- it's already just a one-line pointer to `lab/docs/inventory.md`, which is where all the real content lives now.
+
+**TODO-arcticoder.md**: removed the now-actioned cart bullets, added a note that 9 items are currently in transit (a healthy pipeline --- no urgent order needed), moved `CAPBRIDGE` into "Ready to build now" since both cap kits are on hand, and updated the "Blocked --- waiting on a shipment" section with `SCOPELA`/`ACCELIF`/`INDBRIDGE`'s new order dates. Closure logged in `TODO-completed.md`.
+
+**kb/ordering\_ingestion\_notes.md** (LLM-only): added two entries --- the EIA-code confirmation technique as a general pattern worth reusing on future receipts, and confirmation that the "in cart, short of free shipping" → "checked out with a 3rd item" flow predicted on 2026-09-09 played out exactly as expected.
+<!-- ------ -->
+---
