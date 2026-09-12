@@ -95,8 +95,8 @@ NE555 pin 3 (Output) is the square wave, swinging ~0V to ~VCC (~5.5V).
 That's too high to wire straight onto any Pico pin — GP26/ADC0 (and every
 other Pico GPIO) is limited to 0–3.3V (see `SCOPEPICO` in
 `docs/general_purpose_circuit_dependency.md`). Bring it into range with
-the same 2:1 resistor-divider approach used for
-[psu_4xaa's own output validation](../../power_supplies/psu_4xaa/README.md#validation):
+its own 2:1 resistor-divider, same technique as (but a separate, dedicated
+pair of resistors from) [psu_4xaa's own output validation divider](../../power_supplies/psu_4xaa/README.md#validation) — note that circuit's divider is no longer a matched 2:1 pair (10 kΩ + 5.1 kΩ as of 2026-09-11), so don't copy its exact resistor values here, just the general "halve a too-high swing before it hits GP26" idea:
 
 | From | To | Wire |
 |------|----|------|

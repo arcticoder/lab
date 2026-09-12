@@ -2042,3 +2042,61 @@ case, and that continuity-checking has no discrete component in the
 tempted to split this tool again, re-read that paragraph and the existing
 § "Reuse" section first; the "two use cases, one tool" framing is
 deliberate, not an oversight.
+
+## `psu_4xaa`'s ~0.14V fault (2026-09-11) was never traced to a component — it was the breadboard itself; rebuilding on a fresh board is a legitimate diagnostic step, not giving up
+
+The user worked through `README.md` § Troubleshooting step 0's full
+checklist on the original breadboard — all 4 cells reseated, power switch
+confirmed ON, dupont jumpers reseated, Schottky reseated, Schottky
+orientation independently re-confirmed correct (stripe/cathode away from
+the battery pack) — and GP26 still read ~0.14V, essentially unchanged.
+The polyfuse and both divider resistors were queued to reseat next but
+never got to it: instead, the user built the identical circuit from
+scratch on a second breadboard and it worked immediately (~1.9V, matching
+the divider math). Root cause was never identified more precisely than
+"something about the first breadboard" — no single swapped/reseated
+component on it ever restored the reading.
+
+Generalizes: for this repo's simple series-DC PSU circuits (battery
+chain + diode + fuse + divider), if the § Troubleshooting-style
+component-level checklist (cells, switch, diode reseat+orientation) is
+exhausted and the fault persists, a full rebuild on a different physical
+breadboard is a cheap, legitimate next diagnostic step — not a
+"something else must be wrong" admission of defeat, and not something to
+talk the user out of in favor of continuing to reseat individual parts.
+Full-size and mini (SYB170) breadboards can have a bad row or a broken
+mid-strip contact that silently kills continuity for an entire branch
+while every individually-checked component still looks fine in isolation
+— see also the existing "split power rails" caveat later in this file
+(`cd4066_switch_tester` entries above) for the same underlying class of
+breadboard-level (not component-level) fault. If a future session hits an
+unresolved near-0V/near-open fault on any breadboard-built circuit here
+after exhausting the obvious component checks, suggest trying a second
+breadboard before escalating to more exotic hypotheses.
+
+A cheap intermediate check worth reusing before a full rebuild: the user
+also independently wired just 2 of the 4 battery holders in series,
+probed directly (no divider) on yet another breadboard, and got ~2.98V —
+matching 2×1.5V almost exactly. Testing a subset of a series battery
+chain directly (raw, undivided) on a spare breadboard is a fast way to
+confirm the cells/holders themselves are fine before concluding the fault
+is elsewhere; it doesn't test the Schottky/fuse/divider, but it rules out
+the battery pack cheaply.
+
+## `psu_4xaa`'s § Validation divider is 10 kΩ + 5.1 kΩ, not the originally-designed two 10 kΩ — a deliberate, non-default choice, don't "fix" it back
+
+As of 2026-09-11, `power_supplies/psu_4xaa/README.md` and `breadboard.md`
+document a 10 kΩ (top leg, output side) + 5.1 kΩ (bottom leg, GND side)
+divider for § Validation, giving a ≈0.338 ratio (not the clean 0.5 a
+matched pair would give). This traces back to a suggestion from a
+*different* chat session the user was running in parallel while
+troubleshooting the ~0.14V fault above; when asked here whether to revert
+to a matched 10 kΩ pair (matching every other divider-based validation
+convention in this repo) or keep the asymmetric pair, the user explicitly
+chose to keep it as-is — reasoning given was "less work." Both resistor
+values are already in inventory (10 on hand each, see
+`docs/inventory.md`), so this isn't a parts-availability constraint,
+purely a preference to not re-touch a working build. Treat the 10 kΩ/5.1
+kΩ pair as the current correct spec for this circuit's validation divider
+going forward — don't propose reverting to two 10 kΩ for consistency's
+sake alone; that would just be re-litigating a decision already made.

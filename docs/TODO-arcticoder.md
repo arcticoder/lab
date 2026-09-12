@@ -51,17 +51,15 @@ whenever a small top-up order is convenient, not something to rush.
 
 ## Ready to build now — parts on hand
 
-- [ ] **`power_supplies/psu_4xaa` — finish running the § Validation
-      check.** First attempt (2026-09-07) read ~0.017V instead of the
-      ~2.75V target, but the battery pack was removed from its holders
-      for that run — with no power reaching the divider, ~0V is expected
-      and isn't a wiring fault (see `README.md` § Troubleshooting's new
-      step 0). **Next: reinsert all 4 AA cells, confirm the power switch
-      is ON, and re-run `measurement_tools/raw_voltage_probe/main.py`.**
-      If it now reads ~2.75V, record the result in `README.md`'s
-      bench-tested table and this file; if it's still off, work through
-      § Troubleshooting steps 1–3. **Do this first** — it also unblocks
-      the `ne555_astable` build below (see "Blocked").
+- [ ] **`oscillators/ne555_astable` (tier1 `OSC`) — bench-build it.**
+      Unblocked 2026-09-11: `power_supplies/psu_4xaa`, its power source,
+      is now bench-validated (~1.9V confirmed through the output's
+      10 kΩ/5.1 kΩ divider — see `power_supplies/psu_4xaa/README.md`
+      § Validation). Design is already simulated and mid-build
+      (`breadboard.md`/`README.md` updated 2026-09-06 with explicit
+      Pico-probe wiring for output validation). **Do this next** —
+      it was the explicit reason `psu_4xaa` validation was prioritized
+      ahead of the items below in the first place.
 - [ ] **New `TIA` build (tier2, transimpedance amplifier).** PT334-6C
       photodiode (10 on hand) + LM358P (spares available beyond the one
       used in `voltage_reference_lm358`). No folder exists yet — create
@@ -130,19 +128,6 @@ whenever a small top-up order is convenient, not something to rush.
       its original design — the ammeter jigs (`ammeter_10ohm`/`ammeter_1ohm`)
       replaced its role for polyfuse sorting, so this is optional cleanup,
       not a blocker.
-
-## Blocked — waiting on a bench validation
-
-- [ ] **`oscillators/ne555_astable` (tier1 `OSC`) — bench-build it.**
-      Blocked on: `power_supplies/psu_4xaa` bench-test (top of "Ready to
-      build now" above). Design simulated, mid-build
-      (breadboard.md/README.md updated 2026-09-06 with explicit
-      Pico-probe wiring for output validation), but its power source
-      isn't confirmed yet — the NE555 needs ≥4.5V, `psu_3xaa` (4.5V raw)
-      sags to ~4.02V under load per its own smoke test (under that
-      minimum), so `psu_4xaa` is the first AA tier that actually clears
-      it with margin, and it hasn't been bench-validated yet either (see
-      `oscillators/ne555_astable/README.md`).
 
 ## Blocked — waiting on a shipment
 

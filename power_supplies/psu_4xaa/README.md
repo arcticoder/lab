@@ -19,7 +19,8 @@ Spec: 6.0 V, <300 mA, ~1.6 W. See
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `breadboard.md` | Step-by-step breadboard wiring |
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
-| `validation_breadboard.jpg` | Photo of the 2×10 kΩ divider build used for § Validation |
+| `breadboard.jpg` | Photo of the base PSU build (2026-09-06, no validation divider) |
+| `validation_breadboard.jpg` | Photo of an earlier 2×10 kΩ divider attempt (2026-09-07), superseded by the 10 kΩ/5.1 kΩ pair now documented in § Validation — see [measurement_tools/raw_voltage_probe/breadboard4.jpg](../../measurement_tools/raw_voltage_probe/breadboard4.jpg) for the confirmed-working 10 kΩ/5.1 kΩ build (2026-09-11) |
 
 Every check in § Validation and § Troubleshooting below reads GP26 with
 [`measurement_tools/raw_voltage_probe`](../../measurement_tools/raw_voltage_probe/)'s
@@ -72,14 +73,19 @@ At Rload = 20 Ω: **V_out ≈ 5.51 V, I ≈ 276 mA** — the Schottky costs abou
 No physical load resistor either (see
 [breadboard.md § Expected behavior](breadboard.md#expected-behavior) for
 why 20 Ω isn't something to build). The check instead uses a lightweight
-2:1 resistor divider so a Pico ADC pin can safely read this PSU's ~5.5 V
+resistor divider so a Pico ADC pin can safely read this PSU's ~5.5 V
 output — GP26/ADC0 is limited to 0–3.3V (see
 `docs/general_purpose_circuit_dependency.md`'s `SCOPEPICO` node), so it
 can never be wired straight onto this rail.
 
-**Build:** two 10 kΩ resistors (from `../../docs/inventory.md`) in series
-across the output, from output(+) to output(−)/ground rail, with the
-midpoint tapped off to GP26.
+**Build:** a 10 kΩ + 5.1 kΩ resistor pair (from `../../docs/inventory.md`)
+in series across the output, from output(+) to output(−)/ground rail,
+with the midpoint tapped off to GP26. (Originally documented as two 10 kΩ
+resistors for a clean 1:1 half-voltage reading; the bench build that
+finally passed on 2026-09-11 used a 5.1 kΩ for the lower leg instead —
+kept as the standard going forward rather than swapping back, since it
+still safely halves-and-then-some the ~5.7–5.8V output and the math below
+already accounts for it.)
 
 ```
 psu_4xaa output (+)
@@ -88,7 +94,7 @@ psu_4xaa output (+)
       │
       ├──────► Pico GPIO 26 / ADC0 (Pin 31)
       │
-   [10 kΩ]
+   [5.1 kΩ]
       │
 psu_4xaa output (−) / ground rail ──────► Pico GND (Pin 28)
 ```
@@ -96,11 +102,11 @@ psu_4xaa output (−) / ground rail ──────► Pico GND (Pin 28)
 The Pico GND wire on the last line is **required**, not optional — GP26's
 ADC reading is only meaningful relative to the Pico's own ground. Without
 it the Pico and the PSU don't share a reference and GP26 reads garbage
-regardless of how correctly the two 10 kΩ resistors are wired.
+regardless of how correctly the 10 kΩ/5.1 kΩ pair is wired.
 
-At ~275 µA, this divider draws negligible current — it doesn't meaningfully
-load the PSU, and it's the *only* thing connected to the output for this
-check (no other load).
+At ~375 µA (5.7–5.8V ÷ 15.1 kΩ total), this divider draws negligible
+current — it doesn't meaningfully load the PSU, and it's the *only* thing
+connected to the output for this check (no other load).
 
 **Before reading GP26, confirm the battery pack is actually installed and
 powering the circuit**: all 4 cells seated in their holders, and the
@@ -118,20 +124,28 @@ reads ~0 V — which looks identical to a real fault but isn't one; see
 oversampled-average way: that script's printed "Resistance (R_x)" assumes
 a *different* circuit — an unknown resistor forming a divider against a
 known 10 kΩ reference, fed from the Pico's own 3V3 rail. This divider is
-fed by the PSU's own output through two *known* 10 kΩ resistors, with
-nothing unknown to solve for, so that script's resistance formula would
-be meaningless here (`resistance_measurement` gets reused below, in
+fed by the PSU's own output through two *known* resistors (10 kΩ + 5.1
+kΩ), with nothing unknown to solve for, so that script's resistance
+formula would be meaningless here (`resistance_measurement` gets reused
+below, in
 § Troubleshooting, but for a different job — continuity-checking the
 PSU's internal wiring with the battery disconnected, which is exactly the
 divider-against-an-unknown-resistance case it's built for):
 
-- Correct battery orientation: GP26 reads **~2.75 V** (half of the output
-  voltage). Expect the output itself to sit a little *above* the
-  documented ~5.51 V design figure — that number assumes the 276 mA drawn
-  by a 20 Ω load, and this divider's ~275 µA draws far less, so the
-  Schottky/fuse drops are smaller here.
+- Correct battery orientation: GP26 reads **~1.9 V** (5.1 kΩ ⁄ (10 kΩ +
+  5.1 kΩ) ≈ 0.338 of the output voltage). Expect the output itself to sit
+  a little *above* the documented ~5.51 V design figure — that number
+  assumes the 276 mA drawn by a 20 Ω load, and this divider's ~375 µA
+  draws far less, so the Schottky/fuse drops are smaller here (output
+  closer to ~5.7–5.8V, unloaded).
 - Reversed battery leads: GP26 reads **~0 V** — the Schottky blocks, no
   current reaches the divider.
+
+**Confirmed on real hardware 2026-09-11: ~1.9 V**, matching the math
+above. An earlier attempt on a different breadboard read ~0.14 V even
+with the battery pack confirmed installed/powered and the Schottky
+reseated and correctly oriented — see § Troubleshooting step 0 below for
+how that was resolved (it wasn't a single bad component).
 
 Don't probe directly across the Schottky's own leads with the Pico —
 doing that safely would mean moving Pico GND off the PSU's actual ground
@@ -144,7 +158,7 @@ ground.
 
 ## Troubleshooting
 
-If § Validation's divider reading doesn't land near the ~2.75 V target,
+If § Validation's divider reading doesn't land near the ~1.9 V target,
 work through these in order — each rules out one segment of the chain
 before moving to the next.
 
@@ -159,7 +173,19 @@ switch (if built) left open — not a wiring fault downstream. Reinsert all
 § Validation before working through steps 1–3 below; they assume power
 *is* reaching the divider and something else is wrong.
 
-### 1. Confirm the two 10 kΩ divider resistors are actually 10 kΩ
+**If reseating cells/switch/diode doesn't fix it either:** on 2026-09-11
+a build read ~0.14 V even after confirming all 4 cells seated, the switch
+ON, and reseating the dupont jumpers and Schottky (orientation confirmed
+correct — stripe/cathode away from the battery pack, toward the fuse).
+Rebuilding the identical circuit from scratch on a second breadboard
+worked immediately, without ever finishing the planned polyfuse/resistor
+reseat on the original board — so the fault was never pinned to one
+component. Treat a full rebuild on a fresh breadboard as a cheap next
+step once the checks above are exhausted, rather than continuing to
+reseat individual parts one at a time on a breadboard that may itself
+have a bad row/strip contact.
+
+### 1. Confirm the divider resistors are actually 10 kΩ and 5.1 kΩ
 
 Already visually confirmed from the color bands in `breadboard.jpg` —
 no further action needed unless the physical parts in the build have
@@ -168,7 +194,8 @@ circuit (out-of-circuit, so no parallel path through the rest of the
 divider skews the reading) and check it with
 [measurement_tools/resistance_measurement](../../measurement_tools/resistance_measurement/):
 clip its `R_x` leg to one leg of the pulled resistor and GND to the
-other, `mpremote run main.py`, expect a reading near 10,000 Ω.
+other, `mpremote run main.py`, expect a reading near 10,000 Ω for the top
+leg or 5,100 Ω for the bottom leg.
 
 ### 2. Continuity-check the 4-cell chain + Schottky + polyfuse
 
@@ -207,20 +234,20 @@ the battery pack and re-run § Validation.
 
 ### 3. Battery pack open-circuit voltage (bypassing the Schottky/fuse)
 
-Reuses the *same* 2×10 kΩ divider hardware already built for §
+Reuses the *same* 10 kΩ + 5.1 kΩ divider hardware already built for §
 Validation — just re-clip the divider's top leg from the polyfuse output
 over to **Holder 1 (+)** directly (the battery pack's raw positive
 terminal), keeping the divider's bottom leg on the ground rail / Holder 4
-(−) as before. This still safely halves the pack's ~6 V down to GP26-safe
+(−) as before. This still safely scales the pack's ~6 V down to GP26-safe
 territory, same reasoning as § Validation.
 
 Run [`raw_voltage_probe/main.py`](../../measurement_tools/raw_voltage_probe/)
-and compare the printed average against:
+and compare the printed average (≈0.338 × the pack's raw voltage) against:
 
-- **~3.0 V** — fresh 4×AA alkaline pack (4 × 1.5 V / 2).
-- **~2.4 V** — 4×AA NiMH, or a partly-discharged alkaline pack (4 × 1.2 V
-  / 2).
-- Meaningfully below ~2.4 V — weak/dead cell(s) or a miswired holder;
+- **~2.0 V** — fresh 4×AA alkaline pack (4 × 1.5 V × 0.338).
+- **~1.6 V** — 4×AA NiMH, or a partly-discharged alkaline pack (4 × 1.2 V
+  × 0.338).
+- Meaningfully below ~1.6 V — weak/dead cell(s) or a miswired holder;
   check individual cells.
 
 This is the correct circuit for this specific check — not

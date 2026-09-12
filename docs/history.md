@@ -3894,3 +3894,18 @@ All documentation is updated (no commits made, since none were requested). Summa
 **kb/ordering\_ingestion\_notes.md** (LLM-only): added two entries --- the EIA-code confirmation technique as a general pattern worth reusing on future receipts, and confirmation that the "in cart, short of free shipping" → "checked out with a 3rd item" flow predicted on 2026-09-09 played out exactly as expected.
 <!-- ------ -->
 ---
+**Summary --- psu\_4xaa is closed out, NE555 is next.**
+
+Documentation updated to reflect the confirmed bench result (GP26 ~1.9V, using the 10kΩ/5.1kΩ divider you chose to keep):
+
+-   `power_supplies/psu_4xaa/README.md` + `breadboard.md` --- validation math, troubleshooting steps, and parts list all now match the actual divider and the confirmed reading.
+-   `README.md` --- moved `psu_4xaa` into the "built & bench-tested" table; added the missing `oscillators/ne555_astable` row/tree entry (it existed in the ngspice/smoke-test lists but was never in the circuits tables).
+-   `docs/TODO-arcticoder.md` --- closed the psu\_4xaa validation item, removed the now-empty "Blocked --- waiting on a bench validation" section, and put `oscillators/ne555_astable` at the top of "Ready to build now" as the recommended next build (it was the explicit reason psu\_4xaa was prioritized in the first place). TIA stays next in line after that.
+-   `docs/TODO-completed.md` --- dated 2026-09-11 closure entry.
+-   `docs/kb/repo_docs_conventions.md` (LLM-only) --- two new entries: the "rebuild on a fresh breadboard" diagnostic lesson (component-level reseating didn't fix it; a second breadboard did), and a note that the 10kΩ/5.1kΩ divider is a deliberate, non-default choice --- don't propose reverting it for consistency.
+
+**Supply chain:** no new order needed --- both resistor values used are well-stocked (9 of each remain), and nothing else from this session's work draws down a limited part.
+
+**Recommendation for what's next:** build `oscillators/ne555_astable` now that its power source is validated, then `TIA`.
+<!-- ------ -->
+---

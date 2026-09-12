@@ -29,3 +29,19 @@ matching, so don't assume one file makes the other redundant.
 - Sourced a replacement for the cancelled color-ring inductor assortment
   (0307 1/4W, 12 values) — reordered the same listing/variant, still
   cheapest available.
+
+## 2026-09-11
+
+- **`power_supplies/psu_4xaa` § Validation check — passed.** GP26 read
+  ~1.9V through the output's divider, confirming the PSU's 4-cell chain,
+  Schottky, and polyfuse are all wired and working. An earlier attempt on
+  a different breadboard read ~0.14V even with the battery pack confirmed
+  installed/powered and the Schottky reseated/correctly oriented; the
+  fault was never pinned to one component — rebuilding the identical
+  circuit on a second breadboard fixed it immediately. The divider ended
+  up as 10 kΩ + 5.1 kΩ (not the originally-documented two 10 kΩ), kept as
+  the standard going forward. See `power_supplies/psu_4xaa/README.md`
+  § Validation/§ Troubleshooting and `README.md`'s bench-tested table.
+- Unblocked `oscillators/ne555_astable`, which was waiting specifically
+  on this PSU's bench-test — moved from "Blocked" to the top of "Ready to
+  build now" in `TODO-arcticoder.md`.

@@ -22,11 +22,13 @@ polyfuse → output.
 | Dupont M-M jumper (any) | 12–16cm | 3 |
 | SYB170 breadboard | 170-pin, 300V, <5A | 1 |
 | Slide Switch (optional) | 3-pin SPDT, SunFounder Thales kit | 1 |
-| Metal film resistor (optional, validation only) | 10 kΩ | 2 |
+| Metal film resistor (optional, validation only) | 10 kΩ | 1 |
+| Metal film resistor (optional, validation only) | 5.1 kΩ | 1 |
 
-The slide switch and 10 kΩ resistors are not part of the base PSU circuit
-— see § 5 (power switch) and [README.md § Validation](README.md#validation)
-for what each is for. Skip both if you just want the bare PSU.
+The slide switch and the two divider resistors are not part of the base
+PSU circuit — see § 5 (power switch) and
+[README.md § Validation](README.md#validation) for what each is for. Skip
+all three if you just want the bare PSU.
 
 ---
 

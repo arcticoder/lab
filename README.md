@@ -131,8 +131,9 @@ photo of the as-built jig where one was taken (see each circuit's own
 | `measurement_tools/ammeter_10ohm/` | Pico reads current (not just voltage) through a polyfuse under test, via a 10Ω shunt + slide-switch shorting jumper | polyfuse validation (bootstrap tier) | 2026-08-30 — all 20 RXEF005 (50mA) polyfuses PASS (trip + reset confirmed per unit) |
 | `measurement_tools/ammeter_1ohm/` | Same approach as `ammeter_10ohm` scaled for 500mA: ~1Ω jumper-chain shunt (see `resistance_measurement/`) + 1N5817 reverse-polarity diode on the high side | polyfuse validation (`psu_low` tier) | 2026-08-30 — all 20 RXEF050 (500mA) polyfuses PASS (trip + reset confirmed per unit) |
 | `measurement_tools/resistance_measurement/` | Voltage-divider jig (known 10Ω reference vs. unknown leg) for measuring a low-value resistance or checking continuity between two nodes | supporting tool for `ammeter_1ohm`; reused for continuity/troubleshooting checks (e.g. `psu_4xaa`) | 2026-08-30 — jumper-wire chain measured at ~1.005Ω, stable across repeated readings |
-| `measurement_tools/raw_voltage_probe/` | Plain averaged-voltage reader at GP26 — no resistance math, no divider assumptions; the calling circuit's own README supplies the target | general-purpose probe, split out of `psu_4xaa` 2026-09-07 for reuse | 2026-09-07 — confirmed reading ~0V correctly with the `psu_4xaa` divider unpowered; a non-zero (~2.75V) target reading is still pending that circuit's own validation |
+| `measurement_tools/raw_voltage_probe/` | Plain averaged-voltage reader at GP26 — no resistance math, no divider assumptions; the calling circuit's own README supplies the target | general-purpose probe, split out of `psu_4xaa` 2026-09-07 for reuse | 2026-09-11 — confirmed both the ~0V (divider unpowered) and non-zero (~1.9V, `psu_4xaa`'s divider) target readings against real hardware |
 | `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap) | 2026-08-30 — component-level validation complete: RXEF005 polyfuse PASS via `ammeter_10ohm/` (all 20 units), AA battery holder ready per `docs/inventory.md`. The assembled PSU itself has not been separately re-probed as its own demo build (see `fuse_test_voltmeter/README.md`'s test-vs-demo distinction) |
+| `power_supplies/psu_4xaa/` | 4×AA in series + 1N5817 Schottky + 500 mA polyfuse | `psu_system` (top of the plain-AA-series progression) | 2026-09-11 — GP26 read ~1.9V through the output's 10 kΩ/5.1 kΩ divider, matching the ~0.338 ratio's prediction. An earlier ~0.14V fault on a different breadboard was never pinned to one component — rebuilding the same circuit on a second breadboard fixed it immediately (see `README.md` § Troubleshooting) |
 
 ---
 
@@ -150,9 +151,9 @@ sequence this drives.
 |--------|---------|------|
 | `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (RXEF050 polyfuse validated — see `ammeter_1ohm/` above — and the wire-stripper blocker is resolved; not yet physically assembled) |
 | `power_supplies/psu_3xaa/` | 3×AA + Schottky + 500 mA polyfuse | `psu_system` (between `psu_low` and `psu_4xaa`) |
-| `power_supplies/psu_4xaa/` | 4×AA + Schottky + 500 mA polyfuse | `psu_system` (top of the plain-AA-series progression) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
 | `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit **not yet ordered**, not yet built — see `docs/TODO-arcticoder.md`) |
+| `oscillators/ne555_astable/` | NE555 astable square-wave oscillator, 3296 trimpot timing | tier1 `OSC` (powered from `psu_4xaa`, now bench-validated above — see `docs/TODO-arcticoder.md`) |
 
 Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
@@ -263,10 +264,12 @@ power_supplies/
         smoke_test.py
         README.md
 
-    psu_4xaa/                 4xAA + Schottky + 500 mA polyfuse (designed, not built)
+    psu_4xaa/                 4xAA + Schottky + 500 mA polyfuse (built & bench-tested)
         psu_4xaa.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        breadboard.jpg
+        validation_breadboard.jpg
         smoke_test.py
         README.md
 
@@ -288,6 +291,14 @@ signal_conditioning/
         breadboard.md
         breadboard.jpg
         main.py
+        smoke_test.py
+        README.md
+
+oscillators/
+    ne555_astable/            NE555 astable oscillator, 3296 trimpot timing (designed & simulated, not yet built)
+        ne555_astable.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
         smoke_test.py
         README.md
 
