@@ -126,6 +126,37 @@ pin 3 to the GP26 tap, R2 from that same tap to GND — not R1 alone), then
 re-run `oscillation_probe` and expect swing to land near ~2.75-2.9V, not
 3.300V.
 
+**Follow-up attempt, same day (2026-09-12):** re-wired R1/R2 into an
+actual series pair and bridged the breadboard's two vertical ground
+rails together (in case they were an unbridged split, per
+[oscillation_probe's own troubleshooting note](../../measurement_tools/oscillation_probe/README.md#reading-the-result)),
+then re-ran `oscillation_probe`:
+
+```
+GP26 min=0.006V max=3.300V avg=1.779V swing=3.294V
+Zero-crossings (about mid=1.653V): 109
+Rough toggle-rate estimate: ~1478 Hz
+```
+
+**Oscillation still confirmed** (109 crossings, ~1478Hz — matches the
+first reading within normal sample-to-sample noise, consistent with the
+same untouched trimpot setting). **The divider issue is not fixed** —
+this reading is statistically the same as the pre-fix one (max still
+pinned at 3.300V, swing still ~3.3V instead of the expected ~2.75-2.9V),
+so whatever's actually wrong survived both the series-wiring correction
+and the ground-rail bridge. Don't treat this attempt as having resolved
+the open issue.
+
+**Next diagnostic step:** rather than another visual re-wire, isolate it
+with [`measurement_tools/resistance_measurement`](../../measurement_tools/resistance_measurement/) —
+power down `psu_4xaa` first (its own supply must be disconnected before
+clipping resistance_measurement's leads onto any node it's driving, per
+that tool's own README), then check each divider leg individually: R1
+(pin 3 → tap) should read ~10kΩ, R2 (tap → GND) should read ~10kΩ, and
+the tap → GP26 jumper should read as continuity (~0Ω). This narrows
+whether R2 is actually missing/open, landed in the wrong row, or the tap
+node itself isn't where GP26 is actually clipped in.
+
 ---
 
 ## Expected behaviour

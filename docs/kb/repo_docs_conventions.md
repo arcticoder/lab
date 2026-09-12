@@ -881,6 +881,50 @@ switch's other throw if the pin's role genuinely needs an actively-driven
 more current than an internal pull resistor can source/sink, not a plain
 digital input like this one.
 
+## `ne555_astable` output-divider fault survived a plausible visual re-wire — re-seating R1/R2 in series + bridging the two ground rails changed nothing (2026-09-12)
+
+First bring-up of `oscillators/ne555_astable` found GP26 pinned at exactly
+3.300V through the output divider (`breadboard.md` §4, two 10kΩ resistors)
+instead of the expected ~2.75-2.9V half-swing — see the entry-worthy
+detail in `ne555_astable/README.md` § Validation. The leading hypothesis
+was R2 (tap→GND) missing/open, so the user re-wired R1/R2 into an actual
+series pair and, on the theory that a full-size breadboard's two vertical
+ground rails might be an unbridged split (a real failure mode already
+documented in the `cd4066_switch_tester` entries above), also ran a jumper
+bridging the two ground rails together. Re-running `oscillation_probe`
+afterward produced a reading statistically indistinguishable from the
+pre-fix one (swing still ~3.3V, still pinned at the ADC's saturation
+point) — neither change moved the symptom at all.
+
+Same elimination lesson as the `cd4066_switch_tester` pin-misidentification
+case (see above): when a plausible-sounding visual re-wire doesn't move a
+symptom, the fault likely isn't in what was changed. Don't propose a third
+guess-and-rewire cycle here — the next step is a direct, instrumented
+per-leg check with `measurement_tools/resistance_measurement` (power down
+`psu_4xaa` first per that tool's own README, then check R1 and R2
+individually and the tap→GP26 jumper's continuity) rather than another
+round of eyeballing the breadboard. If a future session lands on this
+build with the divider still unresolved, start with that measurement, not
+another re-wire attempt.
+
+## Windows/WSL photo saves can leave only a `*.jpg:Zone.Identifier`
+stray file behind, with no actual image — check for the real file before
+assuming a referenced photo exists (2026-09-12)
+
+While documenting the `ne555_astable` bring-up, an `ls` of
+`measurement_tools/oscillation_probe/` turned up
+`PXL_20260912_193901707.jpg:Zone.Identifier` (a small, ~25-byte metadata
+file Windows attaches to downloaded/copied files marking their security
+zone) with no corresponding `PXL_20260912_193901707.jpg` actually present
+— the photo transfer from the phone/Windows side hadn't completed yet, but
+the Zone.Identifier companion file had already landed. A directory listing
+that shows only the `:Zone.Identifier` file (rather than the real image
+alongside it) means the referenced photo doesn't exist in the repo yet,
+even if the user believes they already saved it — worth flagging rather
+than assuming the file is just named something slightly different. In
+this case the real `breadboard.jpg` followed shortly after in the same
+session.
+
 ## `fuse_test_voltmeter`'s resistor-shorting instruction (hand-touching two bare leads) is unreliable — switched to a jumper seated in the breadboard rows instead (2026-08-28)
 
 The original short-test instruction in `quickstart.md`/`breadboard.md`

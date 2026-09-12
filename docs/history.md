@@ -3936,3 +3936,25 @@ What I did in the repo (not committed):
 Next physical step per the updated TODO: disconnect GP26, verify both 10kΩ resistors are actually in series in the output divider, re-run `oscillation_probe` and expect swing near ~2.75--2.9V.
 <!-- ------ -->
 ---
+Photo's there now (`breadboard.jpg`, 2.5MB) --- I can see the Pico straddling the board, the 4×AA holders daisy-chained for `psu_4xaa`, and what looks like the ground-rail bridge jumper running along the left edge. Resolution's too low to confirm resistor placement precisely, though.
+
+**Short answer: not sufficient --- the fix didn't take.** Compare the two readings:
+
+|  | before fix | after fix |
+| --- |  --- |  --- |
+| swing | 3.300V | 3.294V |
+| --- |  --- |  --- |
+| crossings | 113 | 109 |
+| est. rate | ~1532 Hz | ~1478 Hz |
+
+Those are the same result within normal sample noise. Oscillation is still solidly confirmed (good --- second independent confirmation of this chip), but the divider problem is untouched: GP26 is still pinned at the ADC's 3.3V ceiling instead of the expected ~2.75--2.9V half-swing. Re-seating R1/R2 in series and bridging the ground rails apparently weren't the actual fault.
+
+**Don't do a third visual re-wire.** Next step is to isolate it with `measurement_tools/resistance_measurement`: power down `psu_4xaa` first, then check R1 (pin 3→tap) and R2 (tap→GND) each read ~10kΩ, and that the tap→GP26 jumper shows continuity. That'll tell you which leg is actually wrong instead of guessing again.
+
+**On testing the other 555 ICs:** the oscillation-confirmation method itself (zero-crossing count) still works fine even with the divider broken --- it's already validated two readings on this unit. But I'd hold off reusing this same GP26 divider wiring across the rest of the batch until it's actually fixed, since every chip swap on a still-broken divider repeats the same over-3.3V exposure to GP26. It's small current and probably not damaging, but no reason to keep doing it 10+ more times when one resistance\_measurement check would settle it.
+
+If you want to leave it plugged in, running the resistance\_measurement check now (with `psu_4xaa` unplugged) would be the most useful next probe.
+
+I've updated `ne555_astable/README.md` with both readings and the diagnostic next step, `docs/TODO-arcticoder.md`'s divider bullet to reflect the failed fix attempt, and added two kb notes (the failed-fix lesson, and a WSL quirk about `.jpg:Zone.Identifier` files sometimes landing without their actual image).
+<!-- ------ -->
+---

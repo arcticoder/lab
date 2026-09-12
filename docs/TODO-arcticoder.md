@@ -95,21 +95,32 @@ whenever a small top-up order is convenient, not something to rush.
 
 ## Open correctness issues to resolve
 
-- [ ] **`oscillators/ne555_astable` — fix the output divider.**
-      Bench-built and oscillation confirmed 2026-09-12 (113
-      zero-crossings, ~1.5kHz, inside the expected trim range — see
-      `README.md` § Validation) using the new
+- [ ] **`oscillators/ne555_astable` — fix the output divider (still open
+      after one attempted fix).** Bench-built and oscillation confirmed
+      2026-09-12 (113 zero-crossings, ~1.5kHz, inside the expected trim
+      range — see `README.md` § Validation) using
       `measurement_tools/oscillation_probe/`. This chip/build **passes**
-      its per-unit validation as an oscillator. **Remaining physical
-      step:** the output divider (two 10kΩ resistors, `breadboard.md`
-      §4) isn't actually halving pin 3's swing — GP26 read a full
-      0–3.3V swing pinned at the ADC's own saturation point instead of
-      the expected ~2.75V, meaning the bottom leg (R2, tap→GND) is
-      likely missing/open. Disconnect the GP26 jumper, confirm both
-      resistors are in place and in series, and re-run
-      `oscillation_probe` expecting swing near ~2.75-2.9V. Current
-      through the existing wiring is small enough this almost certainly
-      didn't damage the pin, but don't leave it wired this way.
+      its per-unit validation as an oscillator — that part is done. The
+      output divider (two 10kΩ resistors, `breadboard.md` §4) is a
+      **separate, still-unresolved** issue: it isn't actually halving
+      pin 3's swing, so GP26 reads a full 0–3.3V swing pinned at the
+      ADC's own saturation point instead of the expected ~2.75-2.9V.
+      **First attempted fix (2026-09-12, same day) did not resolve it:**
+      re-wired R1/R2 into an actual series pair and bridged the
+      breadboard's two vertical ground rails together, then re-ran
+      `oscillation_probe` — result was statistically the same as before
+      the fix (swing still ~3.3V pinned). See `ne555_astable/README.md`
+      § Validation for both readings side by side. **Next step:** stop
+      re-wiring by eye and isolate it with
+      `measurement_tools/resistance_measurement` instead — power down
+      `psu_4xaa` first, then check R1 (pin 3→tap) reads ~10kΩ, R2
+      (tap→GND) reads ~10kΩ, and the tap→GP26 jumper shows continuity.
+      Current through the existing wiring is small enough this almost
+      certainly hasn't damaged the Pico pin, but don't leave it wired
+      this way, and don't reuse this same GP26 wiring across the rest of
+      the NE555 batch (next bullet) until it's actually fixed — every
+      additional chip swap on a still-broken divider repeats the same
+      over-voltage exposure to GP26.
 - [ ] **`power_supplies/psu_medlow_usbc` — status is "incomplete /
       unverified."** The USB-C breakout is passive with no PD controller;
       VBUS may never come up without confirmed CC1/CC2 termination. Check
