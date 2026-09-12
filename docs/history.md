@@ -3909,3 +3909,30 @@ Documentation updated to reflect the confirmed bench result (GP26 ~1.9V, using t
 **Recommendation for what's next:** build `oscillators/ne555_astable` now that its power source is validated, then `TIA`.
 <!-- ------ -->
 ---
+**Short answer: yes, and no --- in that order.**
+
+**The ngspice output you pasted isn't new data** --- it's just re-running the netlist, and it matches the numbers already documented in `README.md` (freq\_lo ≈ 649Hz/649Hz, freq\_hi ≈ 2.7kHz --- same as before). The startup warnings are expected/documented, not a fault.
+
+**The real news is from probing the live hardware.** The Pico was actually reachable (`/dev/ttyACM0`), so I wrote a small burst-sampling probe and ran it against GP26 live:
+
+```
+GP26 min=0.000V max=3.300V avg=1.796V swing=3.300V
+Zero-crossings (about mid=1.650V): 113
+Rough toggle-rate estimate: ~1532 Hz
+
+```
+
+-   **113 zero-crossings is unambiguous oscillation**, and ~1.5kHz falls right inside this build's expected 649Hz--2.9kHz trim range. **This NE555 unit is genuinely oscillating --- it passes its per-unit validation.**
+-   **But the swing pinned at exactly 3.300V** --- the Pico ADC's own saturation point, not the ~2.75V the two-10kΩ output divider (breadboard.md §4) should produce. That means GP26 is very likely seeing more than 3.3V, clipped. Most likely cause: the divider's bottom leg (the second 10kΩ, from the GP26 tap to GND) is missing or not making contact, so GP26 is fed through only one resistor with nothing pulling it down.
+
+The current through that path is small (well under 1mA into a high-impedance ADC input), so this almost certainly didn't damage the pin --- but **I'd disconnect that GP26 jumper now** rather than leave it wired that way, and check that both divider resistors are actually in place and in series before reconnecting.
+
+What I did in the repo (not committed):
+
+-   Wrote a reusable **`measurement_tools/oscillation_probe/`** tool (burst-sample + zero-crossing count) since `raw_voltage_probe`'s averaging can't distinguish real toggling from a stuck DC level for anything faster than a few Hz.
+-   Updated `ne555_astable/README.md` (new §Validation), `breadboard.md` fault signatures, top-level `README.md`'s bench-tested table, and `docs/TODO-arcticoder.md` --- moved the ne555 item from "ready to build" to "open correctness issues" with the concrete divider fix as the next physical step.
+-   Logged the diagnostic pattern (swing pinned at exactly `V_IN` \= broken divider, not a rail reading) in `docs/kb/` for future sessions.
+
+Next physical step per the updated TODO: disconnect GP26, verify both 10kΩ resistors are actually in series in the output divider, re-run `oscillation_probe` and expect swing near ~2.75--2.9V.
+<!-- ------ -->
+---

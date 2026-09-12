@@ -134,6 +134,8 @@ photo of the as-built jig where one was taken (see each circuit's own
 | `measurement_tools/raw_voltage_probe/` | Plain averaged-voltage reader at GP26 — no resistance math, no divider assumptions; the calling circuit's own README supplies the target | general-purpose probe, split out of `psu_4xaa` 2026-09-07 for reuse | 2026-09-11 — confirmed both the ~0V (divider unpowered) and non-zero (~1.9V, `psu_4xaa`'s divider) target readings against real hardware |
 | `power_supplies/psu_ultralow_v1/` | Single AA + 50 mA polyfuse | `psu_ultralow` (bootstrap) | 2026-08-30 — component-level validation complete: RXEF005 polyfuse PASS via `ammeter_10ohm/` (all 20 units), AA battery holder ready per `docs/inventory.md`. The assembled PSU itself has not been separately re-probed as its own demo build (see `fuse_test_voltmeter/README.md`'s test-vs-demo distinction) |
 | `power_supplies/psu_4xaa/` | 4×AA in series + 1N5817 Schottky + 500 mA polyfuse | `psu_system` (top of the plain-AA-series progression) | 2026-09-11 — GP26 read ~1.9V through the output's 10 kΩ/5.1 kΩ divider, matching the ~0.338 ratio's prediction. An earlier ~0.14V fault on a different breadboard was never pinned to one component — rebuilding the same circuit on a second breadboard fixed it immediately (see `README.md` § Troubleshooting) |
+| `oscillators/ne555_astable/` | NE555 astable square-wave oscillator, 3296 trimpot timing | tier1 `OSC`, first per-unit NE555 batch validation | 2026-09-12 — oscillation confirmed (113 zero-crossings, ~1.5kHz, inside the expected 649Hz–2.9kHz trim range) via the new `measurement_tools/oscillation_probe/`. **Output divider not yet fixed**: GP26 pinned at 3.300V (ADC saturation) instead of the expected ~2.75V half-swing, meaning the 2:1 divider's bottom leg likely isn't connected — see `README.md` § Validation |
+| `measurement_tools/oscillation_probe/` | Burst-sampled GP26 reader that reports min/max/swing and a zero-crossing count — confirms genuine toggling where `raw_voltage_probe`'s averaging can't | general-purpose probe, built 2026-09-12 for `ne555_astable`'s bring-up | 2026-09-12 — used live against the `ne555_astable` bench build (see that row above) |
 
 ---
 
@@ -153,8 +155,6 @@ sequence this drives.
 | `power_supplies/psu_3xaa/` | 3×AA + Schottky + 500 mA polyfuse | `psu_system` (between `psu_low` and `psu_4xaa`) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
 | `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit **not yet ordered**, not yet built — see `docs/TODO-arcticoder.md`) |
-| `oscillators/ne555_astable/` | NE555 astable square-wave oscillator, 3296 trimpot timing | tier1 `OSC` (powered from `psu_4xaa`, now bench-validated above — see `docs/TODO-arcticoder.md`) |
-
 Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
 schematic, a breadboard wiring guide, and a `smoke_test.py`, but none have
@@ -235,6 +235,10 @@ measurement_tools/
         main.py
         README.md
 
+    oscillation_probe/       burst-sampled GP26 reader, confirms genuine toggling vs. a stuck DC level (built & bench-tested; built for ne555_astable)
+        main.py
+        README.md
+
 power_supplies/
     psu_pico_rail/            Pico onboard 3.3V rail, ~100mA (interim, built & bench-tested)
         psu_pico_rail.spice
@@ -295,10 +299,12 @@ signal_conditioning/
         README.md
 
 oscillators/
-    ne555_astable/            NE555 astable oscillator, 3296 trimpot timing (designed & simulated, not yet built)
+    ne555_astable/            NE555 astable oscillator, 3296 trimpot timing (built & bench-tested — oscillation confirmed, output divider fix pending)
         ne555_astable.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        breadboard.jpg
+        breadboard2.jpg
         smoke_test.py
         README.md
 

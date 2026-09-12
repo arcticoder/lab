@@ -51,15 +51,6 @@ whenever a small top-up order is convenient, not something to rush.
 
 ## Ready to build now — parts on hand
 
-- [ ] **`oscillators/ne555_astable` (tier1 `OSC`) — bench-build it.**
-      Unblocked 2026-09-11: `power_supplies/psu_4xaa`, its power source,
-      is now bench-validated (~1.9V confirmed through the output's
-      10 kΩ/5.1 kΩ divider — see `power_supplies/psu_4xaa/README.md`
-      § Validation). Design is already simulated and mid-build
-      (`breadboard.md`/`README.md` updated 2026-09-06 with explicit
-      Pico-probe wiring for output validation). **Do this next** —
-      it was the explicit reason `psu_4xaa` validation was prioritized
-      ahead of the items below in the first place.
 - [ ] **New `TIA` build (tier2, transimpedance amplifier).** PT334-6C
       photodiode (10 on hand) + LM358P (spares available beyond the one
       used in `voltage_reference_lm358`). No folder exists yet — create
@@ -84,10 +75,12 @@ whenever a small top-up order is convenient, not something to rush.
 
 ## Needs a validation step before the part can be trusted
 
-- [ ] **NE555 batch — no per-unit bring-up jig exists yet** (unlike
-      CD4066B or the polyfuses). The `ne555_astable` build doubles as the
-      first per-unit check for whichever unit goes in it, but doesn't
-      cover the rest of the batch.
+- [ ] **NE555 batch — only 1 of the batch has been through a per-unit
+      check** (unlike CD4066B or the polyfuses, which have dedicated
+      jigs). The `ne555_astable` build doubles as that check for
+      whichever unit goes in it — the unit currently installed passed
+      (oscillation confirmed 2026-09-12, see `ne555_astable/README.md`
+      § Validation) — but the rest of the batch is still unchecked.
 - [ ] **1N5817 Schottky diodes — not validated per-unit.** Check forward
       drop (~0.35–0.45V) on each before wiring into `psu_low_v2`; see
       `psu_4xaa/README.md` § Validation for the Pico-divider technique
@@ -102,6 +95,21 @@ whenever a small top-up order is convenient, not something to rush.
 
 ## Open correctness issues to resolve
 
+- [ ] **`oscillators/ne555_astable` — fix the output divider.**
+      Bench-built and oscillation confirmed 2026-09-12 (113
+      zero-crossings, ~1.5kHz, inside the expected trim range — see
+      `README.md` § Validation) using the new
+      `measurement_tools/oscillation_probe/`. This chip/build **passes**
+      its per-unit validation as an oscillator. **Remaining physical
+      step:** the output divider (two 10kΩ resistors, `breadboard.md`
+      §4) isn't actually halving pin 3's swing — GP26 read a full
+      0–3.3V swing pinned at the ADC's own saturation point instead of
+      the expected ~2.75V, meaning the bottom leg (R2, tap→GND) is
+      likely missing/open. Disconnect the GP26 jumper, confirm both
+      resistors are in place and in series, and re-run
+      `oscillation_probe` expecting swing near ~2.75-2.9V. Current
+      through the existing wiring is small enough this almost certainly
+      didn't damage the pin, but don't leave it wired this way.
 - [ ] **`power_supplies/psu_medlow_usbc` — status is "incomplete /
       unverified."** The USB-C breakout is passive with no PD controller;
       VBUS may never come up without confirmed CC1/CC2 termination. Check

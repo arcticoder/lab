@@ -2100,3 +2100,61 @@ purely a preference to not re-touch a working build. Treat the 10 kΩ/5.1
 kΩ pair as the current correct spec for this circuit's validation divider
 going forward — don't propose reverting to two 10 kΩ for consistency's
 sake alone; that would just be re-litigating a decision already made.
+
+## `raw_voltage_probe`'s averaged reading can't confirm toggling — built `oscillation_probe` instead, and it caught a real divider fault on `ne555_astable`'s first bring-up (2026-09-12)
+
+`raw_voltage_probe/main.py` averages 50 ADC samples spaced 1ms apart (a
+50ms window) and prints one number. For any node oscillating faster than
+a few Hz — like `ne555_astable`'s ~650Hz–2.9kHz output — that averaging
+window spans many full periods, so the result collapses to a
+duty-weighted mid-voltage that looks *identical* whether the node is
+genuinely toggling or just stuck at that same fixed DC level (e.g. a
+floating divider leg settling at some in-between voltage). `raw_voltage_probe`
+alone cannot distinguish these two cases for any circuit whose output
+swings faster than its own sampling cadence — this will recur for any
+future oscillator/PWM/logic-toggle bring-up, not just this one.
+
+Built [`measurement_tools/oscillation_probe`](../../measurement_tools/oscillation_probe/)
+to fix this class of gap: it grabs `BURST_SAMPLES = 2000` raw ADC reads
+back-to-back with no `sleep()` between them (~54ksps on real hardware),
+then reports min/max/swing/avg plus a zero-crossing count about the
+burst's own midpoint. A real toggling signal produces a large swing and
+many crossings; a stuck DC level (even a "wrong" one) produces near-zero
+swing and ~0 crossings. This is a direct instrument-vs-averaging
+distinction, not a refinement of `raw_voltage_probe` — keep both tools
+rather than merging them; `raw_voltage_probe` stays correct and simpler
+for genuinely slow/DC signals (its actual use in `psu_4xaa`), and
+`oscillation_probe` is the one to reach for whenever the question is
+specifically "is this node actually toggling."
+
+First real run, against `ne555_astable`'s bench build (`breadboard2.jpg`,
+GP26 through the circuit's own 2:1 output divider per `breadboard.md`
+§4): `min=0.000V max=3.300V avg=1.796V swing=3.300V`, 113 zero-crossings,
+crude estimate ~1532 Hz. The zero-crossing count alone is unambiguous
+proof of real oscillation (and the rough frequency lands inside this
+build's documented 649Hz–2.9kHz trim range) — so the NE555 chip itself
+passes its per-unit validation. But the *swing* value is a second,
+independent finding: it's pinned at exactly 3.300V, this tool's own
+`V_IN` constant and the Pico ADC's actual saturation voltage — not the
+~2.75V the two-10kΩ divider should produce from a ~5.5V pin-3 swing. A
+reading landing exactly on the ADC's own rail like this is a strong
+signal the ADC is clipping, not measuring: the real node voltage is at or
+above 3.3V. Most likely explanation for *this* circuit: the divider's
+bottom leg (R2, from the R1/GP26 tap to GND) is missing, not seated, or
+otherwise open, leaving GP26 fed through R1 alone with no path to ground
+— see `oscillation_probe/README.md`'s "Reading the result" section,
+which documents this exact `swing == V_IN` signature generically so a
+future circuit hitting the same pattern doesn't need this specific
+diagnosis re-derived. Not yet physically re-checked/fixed as of this
+writing — `docs/TODO-arcticoder.md`'s `ne555_astable` entry has the
+concrete next physical step (disconnect GP26, verify both divider
+resistors are actually in series, re-probe expecting ~2.75-2.9V).
+
+General lesson for any future circuit whose validation reads GP26 through
+a resistor divider: a swing (or a single `raw_voltage_probe` reading)
+landing at exactly `V_IN` (3.3V) or exactly 0V, rather than somewhere
+inside the divider's predicted range, means the ADC saturated — treat
+that as evidence the divider itself is broken (open leg, wrong
+resistor, bad connection), not as "the source is at a rail" unless the
+circuit's own design actually expects a rail-to-rail reading at that
+specific probe point.

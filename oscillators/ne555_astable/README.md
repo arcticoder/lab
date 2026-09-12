@@ -88,6 +88,46 @@ problem with the model or the result.
 
 ---
 
+## Validation
+
+First physical bench bring-up, 2026-09-12 (`breadboard2.jpg`), powered
+from `psu_4xaa`, trimpot at an untouched intermediate setting.
+[`measurement_tools/oscillation_probe`](../../measurement_tools/oscillation_probe/)
+(built for this bring-up — see that folder's own README) read GP26
+through the output divider (`breadboard.md` § 4):
+
+```
+GP26 min=0.000V max=3.300V avg=1.796V swing=3.300V
+Zero-crossings (about mid=1.650V): 113
+Rough toggle-rate estimate: ~1532 Hz
+```
+
+**Oscillation confirmed** — 113 zero-crossings over the burst window is
+unambiguous toggling, and the crude ~1.5kHz estimate sits inside this
+build's expected 649Hz–2.9kHz trim range (§ Expected behaviour below).
+This NE555 unit passes its per-unit validation.
+
+**Open issue found by the same reading:** swing pinned at exactly 3.300V
+— the Pico ADC's own saturation point, not the ~2.75V the 2:1 output
+divider (two 10kΩ resistors) should produce. GP26 is very likely seeing
+more than 3.3V, clipped by the ADC. The current draw through a 10kΩ path
+into a high-impedance ADC input is small (well under 1mA), so this
+almost certainly hasn't damaged the pin, but it should not be left this
+way or relied on for a real reading. Most likely cause: the divider's
+bottom leg (10 kΩ resistor #2, from the R1/R2 junction to GND) is missing
+or not making contact, leaving GP26 connected through only R1 with
+nothing pulling it down — see
+[`oscillation_probe/README.md`](../../measurement_tools/oscillation_probe/README.md#reading-the-result)
+for why a pinned-3.300V swing reads this way.
+
+**Next physical step:** disconnect the GP26 jumper from the divider row,
+confirm both 10kΩ resistors are actually in place and in series (R1 from
+pin 3 to the GP26 tap, R2 from that same tap to GND — not R1 alone), then
+re-run `oscillation_probe` and expect swing to land near ~2.75-2.9V, not
+3.300V.
+
+---
+
 ## Expected behaviour
 
 With Ra=1kΩ fixed and C=100nF, the frequency and duty cycle follow the
@@ -122,4 +162,9 @@ DC-blocking/attenuator buffer into line-in, per `SCOPEPC`'s node note.
 **Fault signatures**: output stuck high or low (not toggling) — check the
 pin 2/6 tie and the 100nF timing cap; output toggling but frequency far
 from the formula above — check Ra/Rb values and that the trimpot's wiper
-is landing in the pin 2/6 row, not floating.
+is landing in the pin 2/6 row, not floating; GP26 pinned at exactly
+3.300V (the Pico ADC's own saturation point) instead of the expected
+~2.75-2.9V half-swing — the output divider's bottom 10kΩ leg (R2, from
+the GP26 tap to GND) is likely missing or open, leaving GP26 connected
+through only R1 with no pulldown; see § Validation above for the worked
+2026-09-12 example of this exact fault.
