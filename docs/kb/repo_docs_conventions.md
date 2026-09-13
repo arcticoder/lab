@@ -2202,3 +2202,54 @@ that as evidence the divider itself is broken (open leg, wrong
 resistor, bad connection), not as "the source is at a rail" unless the
 circuit's own design actually expects a rail-to-rail reading at that
 specific probe point.
+
+**Resolution, 2026-09-13:** the `ne555_astable` divider fault above was
+finally isolated with `resistance_measurement`, per-leg, as the "Next
+diagnostic step" suggested — and the actual cause was neither wiring nor
+an open leg, but a **wrong-value resistor pulled from the wrong bin**:
+R2 measured ~273Ω, and its color bands confirmed it was a 220Ω part, not
+the intended 10kΩ. Two prior visual re-wires (series-pairing R1/R2,
+bridging ground rails) didn't find this because both assumed the parts
+themselves were correct and only the wiring topology was suspect — a
+component-value check with an actual measurement tool caught what visual
+inspection during the original build missed. **General lesson: when a
+divider/reading fault survives a topology re-check, verify the actual
+component *values* next with `resistance_measurement`, not just their
+placement** — a resistor drawer mix-up looks identical to a wiring fault
+in a divider-swing symptom, and band-reading by eye is exactly the kind
+of check that's easy to get wrong under bench lighting/fatigue. This also
+means quantities in `docs/inventory.md`'s Resistors table shouldn't be
+treated as a guarantee that a given pulled part is the value its bin
+says it is — see that file's 2026-09-13 caution note.
+
+## `resistance_measurement` reconfigured to GP28/10kΩ for a second, concurrent role (2026-09-13)
+
+Historically documented as a fixed 10Ω-reference/GP26 jig (built
+2026-08-30 to characterize the `ammeter_1ohm` jumper-chain shunt, see the
+entry above). On 2026-09-13 the user repurposed it to isolate the
+`ne555_astable` divider fault above, and explicitly chose **GP28 instead
+of GP26** and moved it onto its own, separate breadboard — reasoning
+given directly: they didn't want to disturb the GP26 wiring
+`oscillation_probe` already uses on the `ne555_astable`/`psu_4xaa` board,
+so adding this jig on a different ADC pin and a different breadboard
+means both tools can be used back-to-back without re-wiring either one.
+`R_REF` was changed from `10.0` to `10000.0` to match a 10kΩ reference
+resistor (matching the divider's own 10kΩ legs, since the immediate job
+was measuring those same-value resistors).
+
+**Bug caught in the same session:** at the point this conversation
+picked up, the live `main.py` on disk had `R_REF = 0.1` — neither the
+original 10.0 (10Ω) nor the intended 10000.0 (10kΩ) — apparently drifted
+back to a stale value after the actual bench measurements (which produced
+sane ~10kΩ and ~273Ω readings, only explainable if `R_REF` was actually
+10000.0 *at the time those specific `mpremote run` invocations
+happened*). Corrected back to `10000.0`. **General lesson: `main.py`'s
+`adc`/`R_REF` constants for this jig are mutable bench state, not a fixed
+spec** — before trusting or reasoning about a `resistance_measurement`
+reading (past or future), check what the file's constants actually say
+*now* rather than assuming they match either the tool's original design
+or a value mentioned earlier in the same conversation. This tool is
+reused across jobs (shunt characterization, continuity checks, divider
+diagnosis) more than any other jig in this repo, so its config is the
+most likely of any file here to be silently out of sync with the last
+bench session's narrative.

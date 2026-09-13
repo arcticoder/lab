@@ -27,12 +27,50 @@ repeated readings. That value is what `ammeter_1ohm/main.py` uses as its
 
 ---
 
+## Current configuration (2026-09-13): GP28 / 10kΩ, on its own breadboard
+
+`main.py`'s `adc` pin and `R_REF` are reconfigured for whatever job this
+jig is doing right now — they are **not** fixed at the original
+10Ω/GP26 shunt-characterization values above. As of 2026-09-13 the jig is
+wired as:
+
+```
+Pico 3V3 → 10kΩ (R_REF) → GP28 (ADC2) → 10kΩ (R_x under test) → GND
+```
+
+on a **separate breadboard** from `psu_4xaa` + `ne555_astable` +
+`oscillation_probe`, deliberately on **GP28 instead of GP26** so this
+jig's wiring never has to be added to or removed from the same breadboard
+`oscillation_probe` reads GP26 from — the two tools can now be used back
+to back without re-wiring either one. See `breadboard2.jpg` for the
+as-built layout. Before trusting any reading, check `main.py`'s live
+`adc = machine.ADC(...)` and `R_REF` line against whatever is actually
+wired on the bench — this jig has been reused for at least three
+different reference values now (10Ω, then briefly misconfigured, now
+10kΩ), and a stale constant produces a plausible-looking but wrong
+number rather than an obvious error.
+
+**Found and fixed a bad-batch resistor with this config:** used to
+isolate [`oscillators/ne555_astable`](../../oscillators/ne555_astable/)'s
+output-divider fault (see that circuit's `README.md` § Validation) —
+measuring the divider's R2 leg directly read ~273Ω, not the ~10kΩ it was
+supposed to be. Visual inspection of the color bands confirmed it was
+actually a 220Ω resistor, pulled from the wrong inventory bin during the
+original build. Swapping in a verified 10kΩ resistor fixed the divider.
+**Lesson for future builds:** when a swing/voltage reading looks wrong,
+check the actual resistor values with this jig before re-wiring by eye —
+band-reading a resistor by hand is error-prone enough that a bin mix-up
+can survive a visual check at build time.
+
+---
+
 ## Files
 
 | File | Purpose |
 |------|---------|
-| `main.py` | MicroPython — reads GP26, averages ADC samples, computes and prints `R_x` |
-| `breadboard.jpg` | Photo of the actual bench jig |
+| `main.py` | MicroPython — reads GP28 (currently), averages ADC samples, computes and prints `R_x` against whatever `R_REF` is set to |
+| `breadboard.jpg` | Photo of the original 10Ω/GP26 shunt-characterization jig |
+| `breadboard2.jpg` | Photo of the current 10kΩ/GP28 config, on its own breadboard (2026-09-13) |
 
 No `.spice`/`smoke_test.py` here — this is a one-off measurement jig for
 characterizing a specific physical jumper chain, not a circuit with a
@@ -99,12 +137,15 @@ mode.
 
 ## Why this is safe near 0Ω
 
-`R_ref` (10Ω) sits between the Pico's 3V3 rail and the divider midpoint, so
-even if `R_x` is a dead short to GND, the current is still limited to
+`R_ref` sits between the Pico's 3V3 rail and the divider midpoint, so even
+if `R_x` is a dead short to GND, the current is limited by whichever
+`R_REF` is currently wired in. At the original 10Ω config, that's
 3.3V / 10Ω ≈ 330mA — well inside what a Pico GPIO can source without
 damage, and small enough that a genuinely low `R_x` (like the ~1Ω jumper
 chain this jig was built to measure) doesn't need any additional current
-limiting of its own.
+limiting of its own. At the current 10kΩ config (§ "Current
+configuration" above), a dead short caps at 3.3V / 10kΩ ≈ 0.33mA —
+lower still.
 
 ---
 

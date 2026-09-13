@@ -1,17 +1,19 @@
 import machine
 import time
 
-# Voltage-divider resistance meter: 3V3 -> R_REF -> GP26 (ADC0) -> R_x -> GND.
-# R_x is whatever unknown resistance is wired into the divider's lower leg
-# (built to measure a jumper-wire chain being used as a low-value current
-# shunt for ammeter_1ohm/ — see README.md for the full circuit and math).
+# Voltage-divider resistance meter: 3V3 -> R_REF -> GP28 (ADC2) -> R_x -> GND.
+# R_x is whatever unknown resistance is wired into the divider's lower leg.
+# Current bench config (2026-09-13): moved off GP26/10Ω onto GP28/10kΩ so this
+# jig lives on its own breadboard without disturbing the GP26 wiring
+# oscillation_probe uses on the ne555_astable board — see README.md for the
+# full circuit and history of both configs.
 # Solving the divider for the unknown leg: R_x = R_REF * (V_out / (V_in - V_out))
 
 # ADC Setup
-adc = machine.ADC(26)  # GPIO 26 = ADC0
+adc = machine.ADC(28)  # GPIO 28 = ADC2
 
 # CONFIGURATION: Set this to the exact value of your known upper resistor in Ohms
-R_REF = 10.0
+R_REF = 10000.0
 
 # Supply voltage on 3V3 pin (typically ~3.3V, measure with ADC if necessary)
 V_IN = 3.3

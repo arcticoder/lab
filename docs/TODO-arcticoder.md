@@ -27,16 +27,19 @@ section stays at the top rather than after the bench-work sections —
 finding it buried past several pages of build tasks meant it kept getting
 skipped in practice.
 
-**No urgent order needed right now, but the pipeline is thinning** — the
-entire 2026-09-03 batch (TL082, MF52AT thermistor, IRLZ44N MOSFET, piezo
-disc, SN74HC86N XOR gate, KY-003 Hall module) arrived 2026-09-12,
-unlocking several new builds below (see "Ready to build now"). Only the
-2026-09-10 batch is still in transit: GY-521 accelerometer module,
-CY7C68013A logic analyzer board, and the color-ring inductor reorder —
-see [orders.md](orders.md). That's thinner than the prior 9-item
-pipeline, so a top-up order is worth placing soon (transit runs a few
-weeks) rather than waiting for these 3 to also land before shopping
-again — the items below are the standing candidates for that top-up.
+**No order needed right now — hold off on a top-up.** The entire
+2026-09-03 batch (TL082, MF52AT thermistor, IRLZ44N MOSFET, piezo disc,
+SN74HC86N XOR gate, KY-003 Hall module) arrived 2026-09-12, unlocking 10
+new-build items below ("Ready to build now"), on top of 4 existing
+validation-pending items ("Needs a validation step"). That's ~14 backlog
+items against parts already on hand, only the GY-521 module, CY7C68013A
+board, and color-ring inductor reorder from the 2026-09-10 batch are
+still in transit — see [orders.md](orders.md). **Build/validation rate,
+not part supply, is the bottleneck right now**, so a top-up order would
+just make the pipeline longer than the bench can work through. Revisit
+once the 14-item backlog above has shrunk meaningfully (roughly half),
+not on a fixed calendar schedule — the items below stay as the standing
+candidates for whenever that top-up is actually warranted.
 
 - [ ] **Linear/analog Hall-effect sensor (e.g. 49E), 5–10pk** — the
       KY-003/A3144 module already received only covers digital
@@ -96,12 +99,21 @@ again — the items below are the standing candidates for that top-up.
 
 ## Needs a validation step before the part can be trusted
 
-- [ ] **NE555 batch — only 1 of the batch has been through a per-unit
-      check** (unlike CD4066B or the polyfuses, which have dedicated
-      jigs). The `ne555_astable` build doubles as that check for
-      whichever unit goes in it — the unit currently installed passed
-      (oscillation confirmed 2026-09-12, see `ne555_astable/README.md`
-      § Validation) — but the rest of the batch is still unchecked.
+- [ ] **NE555 batch — 9 of 10 units still unchecked.** The
+      `ne555_astable` build doubles as the per-unit check (unlike CD4066B
+      or the polyfuses, which have dedicated jigs) — the unit currently
+      installed passed (oscillation confirmed 2026-09-12, see
+      `ne555_astable/README.md` § Validation), and the build's output
+      divider fault that blocked reusing this wiring across the rest of
+      the batch is now **fixed** (2026-09-13 — bad 220Ω resistor in the
+      R2 leg, swapped for a verified 10kΩ; see that README's § Validation
+      resolution entry). **Now unblocked to test the rest of the batch:**
+      for each remaining unit, swap it into the `ne555_astable` socket,
+      power up from `psu_4xaa`, run `oscillation_probe`, and expect swing
+      ~2.2V (no longer pinned at 3.300V) with a crossing count in the
+      dozens+ over the burst window — see `ne555_astable/README.md` §
+      Expected behaviour for the fault signatures if a unit fails this
+      check.
 - [ ] **1N5817 Schottky diodes — not validated per-unit.** Check forward
       drop (~0.35–0.45V) on each before wiring into `psu_low_v2`; see
       `psu_4xaa/README.md` § Validation for the Pico-divider technique
@@ -116,32 +128,6 @@ again — the items below are the standing candidates for that top-up.
 
 ## Open correctness issues to resolve
 
-- [ ] **`oscillators/ne555_astable` — fix the output divider (still open
-      after one attempted fix).** Bench-built and oscillation confirmed
-      2026-09-12 (113 zero-crossings, ~1.5kHz, inside the expected trim
-      range — see `README.md` § Validation) using
-      `measurement_tools/oscillation_probe/`. This chip/build **passes**
-      its per-unit validation as an oscillator — that part is done. The
-      output divider (two 10kΩ resistors, `breadboard.md` §4) is a
-      **separate, still-unresolved** issue: it isn't actually halving
-      pin 3's swing, so GP26 reads a full 0–3.3V swing pinned at the
-      ADC's own saturation point instead of the expected ~2.75-2.9V.
-      **First attempted fix (2026-09-12, same day) did not resolve it:**
-      re-wired R1/R2 into an actual series pair and bridged the
-      breadboard's two vertical ground rails together, then re-ran
-      `oscillation_probe` — result was statistically the same as before
-      the fix (swing still ~3.3V pinned). See `ne555_astable/README.md`
-      § Validation for both readings side by side. **Next step:** stop
-      re-wiring by eye and isolate it with
-      `measurement_tools/resistance_measurement` instead — power down
-      `psu_4xaa` first, then check R1 (pin 3→tap) reads ~10kΩ, R2
-      (tap→GND) reads ~10kΩ, and the tap→GP26 jumper shows continuity.
-      Current through the existing wiring is small enough this almost
-      certainly hasn't damaged the Pico pin, but don't leave it wired
-      this way, and don't reuse this same GP26 wiring across the rest of
-      the NE555 batch (next bullet) until it's actually fixed — every
-      additional chip swap on a still-broken divider repeats the same
-      over-voltage exposure to GP26.
 - [ ] **`power_supplies/psu_medlow_usbc` — status is "incomplete /
       unverified."** The USB-C breakout is passive with no PD controller;
       VBUS may never come up without confirmed CC1/CC2 termination. Check

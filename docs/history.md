@@ -3979,4 +3979,30 @@ All four docs and both kb notes are now corrected. Summary of the fix:
 -   **`TODO-arcticoder.md`** --- `ACCELIF` moved back to "Blocked" (still waiting on GY-521); `HALLAMP`'s blocked-entry updated to reflect KY-003 has now actually arrived (still only a partial unlock --- the 49E linear sensor is still needed and not yet even ordered); the top pipeline note now correctly describes the entire 2026-09-03 batch as arrived and the entire 2026-09-10 batch as still in transit.
 -   **kb notes** --- corrected both new entries to describe what actually happened (a mixup between two similarly-formatted module codes, KY-003 vs. GY-521) rather than the wrong narrative, so a future session doesn't inherit the error.
 <!-- ------ -->
+---Moved GP26 off the ohmmeter circuit onto GP28, and R_REF from a 1Ω shunt down to a 10kΩ reference resistor, per your instruction to keep `oscillation_probe`'s existing GP26 wiring undisturbed. Your bench sequence found the real fault: R2 in `ne555_astable`'s output divider measured ~273Ω instead of ~10kΩ, and the color bands confirmed it as a 220Ω resistor pulled from the wrong bin — not a wiring problem, which is why the two earlier re-wire attempts didn't fix it. Swapping in a verified 10kΩ resistor fixed it: `oscillation_probe` now reads swing ~2.2V, no longer pinned at the ADC's 3.3V ceiling, with the same crossing count/toggle-rate as both earlier readings, confirming this was never an oscillation problem.
+
+**Yes, you can test the rest of the NE555 batch now** — the divider issue that was blocking that (repeated over-3.3V exposure on GP26 with every chip swap) is resolved. Swap the remaining 9 units through the same socket, run `oscillation_probe`, and expect swing around ~2.2V with dozens+ zero-crossings; a unit that pins at 3.300V or shows single-digit crossings fails.
+
+Also caught a bug while updating `resistance_measurement`: the working tree's `main.py` had `R_REF = 0.1` — neither your original 10Ω config nor the 10kΩ you described setting — which would have produced meaningless numbers for anyone running it as-is going forward. Corrected to `10000.0` to match the wiring you described.
+
+What I updated: `resistance_measurement/README.md` and `main.py` (current GP28/10kΩ config, documented alongside the historical 10Ω/GP26 one), `ne555_astable/README.md` and `breadboard.md` (divider resolution, corrected expected-swing figure), `docs/TODO-arcticoder.md` (closed the divider bullet into `TODO-completed.md`, updated the NE555 batch bullet with the now-unblocked per-unit procedure, and pared back the "next AliExpress order" urgency — you're sitting on roughly 14 backlog items already on hand, so build rate rather than part supply is the current bottleneck), `docs/inventory.md` (bin-mixup caution note), top-level `README.md`'s bench-tested table, and two `docs/kb/` entries logging the wrong-resistor-not-wiring lesson and the stale-`R_REF` trap for future sessions.
+<!-- ------ -->
+---
+This reads cleanly. Everything is updated and consistent.
+
+Answer: yes, you can test the rest of the batch now
+---------------------------------------------------
+
+The output-divider fault is resolved --- it was never the oscillator or the wiring topology, it was a **220Ω resistor mistaken for the 10kΩ R2 leg** (visually confirmed by color bands, measured ~273Ω vs the intended ~10kΩ). Swapping in a verified 10kΩ resistor fixed it: `oscillation_probe` now reads swing ~2.2V, no longer pinned at the ADC's 3.3V ceiling, with the same crossing count as your two earlier readings (confirming this specific chip's oscillation was solid the whole time).
+
+For each of the remaining 9 NE555 units: swap it into the socket, power from `psu_4xaa`, run `oscillation_probe`, and expect **swing ~2.2V with dozens+ zero-crossings**. A unit pinning at 3.300V or showing single-digit crossings fails.
+
+One thing worth flagging: while updating the docs I found `resistance_measurement/main.py`'s `R_REF` was actually `0.1` in the working tree --- not the `10000.0` you described setting. I corrected it to `10000.0` to match your wiring (3V3 → 10kΩ → GP28 → 10kΩ → GND), since a stale `0.1` would silently produce meaningless "Measured Resistance" numbers on your next run.
+
+**Also updated per your standing instructions:**
+
+-   `TODO-arcticoder.md` --- closed out the divider bullet, rewrote the NE555 batch item with the now-unblocked procedure above, and pared back the "next AliExpress order" urgency to a hold --- you're sitting on ~14 backlog items already on hand (10 ready-to-build, 4 validation-pending), so build rate rather than part supply is the bottleneck right now.
+-   `docs/inventory.md`, top-level `README.md`, `ne555_astable/README.md` + `breadboard.md`, `resistance_measurement/README.md` --- all reflect the fix and the current GP28/10kΩ jig config.
+-   `docs/kb/` --- logged two lessons for future sessions: a divider-symptom fault can be a wrong-value component, not just wiring, and this jig's `main.py` constants are mutable bench state that need checking against the file, not assumed from conversation.
+<!-- ------ -->
 ---

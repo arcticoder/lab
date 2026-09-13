@@ -45,3 +45,24 @@ matching, so don't assume one file makes the other redundant.
 - Unblocked `oscillators/ne555_astable`, which was waiting specifically
   on this PSU's bench-test — moved from "Blocked" to the top of "Ready to
   build now" in `TODO-arcticoder.md`.
+
+## 2026-09-13
+
+- **`oscillators/ne555_astable` — output divider fault fixed.** Isolated
+  with `measurement_tools/resistance_measurement` (reconfigured to
+  10kΩ reference / GP28, on its own breadboard, per instruction from the
+  user to keep it off GP26 so `oscillation_probe`'s wiring doesn't need
+  to move): R1 read ~10kΩ as expected, but R2 read ~273Ω — a mis-picked
+  220Ω resistor (confirmed by color bands), not the intended 10kΩ.
+  Swapped in a verified 10kΩ; `oscillation_probe` re-run shows swing no
+  longer pinned at 3.300V (now ~2.2V) with the same crossing
+  count/toggle-rate as both earlier readings. Removed from
+  `TODO-arcticoder.md`'s "Open correctness issues" — see
+  `oscillators/ne555_astable/README.md` § Validation for the full
+  resolution.
+- Also found and fixed a stale `R_REF` in
+  `measurement_tools/resistance_measurement/main.py` — the working tree
+  had `R_REF = 0.1` (an old ammeter-shunt value), which would have
+  produced meaningless "Measured Resistance" numbers for anyone running
+  it going forward. Corrected to `R_REF = 10000.0` to match the currently
+  wired 10kΩ reference resistor.

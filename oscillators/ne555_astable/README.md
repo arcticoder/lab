@@ -157,6 +157,37 @@ the tap → GP26 jumper should read as continuity (~0Ω). This narrows
 whether R2 is actually missing/open, landed in the wrong row, or the tap
 node itself isn't where GP26 is actually clipped in.
 
+**Root cause found and fixed, 2026-09-13.** Per-leg check with
+`resistance_measurement` (reconfigured to 10kΩ reference / GP28, on its
+own breadboard — see that tool's own README) found R1 reading ~10kΩ as
+expected, but R2 reading only ~273Ω. Visual inspection of the color bands
+confirmed R2 was actually a 220Ω resistor, not the intended 10kΩ —
+pulled from the wrong inventory bin during the original build, not a
+wiring fault. Swapped in a verified 10kΩ resistor for R2 and re-ran
+`oscillation_probe`:
+
+```
+Samples: 2000 over 36875 us (~54237 sps)
+GP26 min=0.014V max=2.227V avg=1.205V swing=2.213V
+Zero-crossings (about mid=1.120V): 109
+Rough toggle-rate estimate: ~1478 Hz
+```
+
+**Output divider issue resolved.** Swing is no longer pinned at 3.300V —
+GP26 now reads a real divided value, and the crossing count/toggle-rate
+estimate (109 crossings, ~1478Hz) matches both earlier readings on this
+same untouched trimpot setting, so oscillation was never in doubt. The
+divider now halves pin 3's swing to ~2.2V rather than the ~2.75-2.9V
+originally estimated from a ~5.5V nominal VCC — see § Expected behaviour
+below for why the real number reads lower than that estimate. This is not
+a new fault; it reflects `psu_4xaa`'s actual loaded output being somewhat
+below the 6.0V nominal, not a divider defect.
+
+**This divider design and R1/R2 pair (10kΩ each, verified) is now safe to
+reuse unmodified for the rest of the NE555 batch** — see
+`docs/TODO-arcticoder.md`'s "Needs a validation step" section for the
+per-unit swap-and-check procedure.
+
 ---
 
 ## Expected behaviour
@@ -194,8 +225,13 @@ DC-blocking/attenuator buffer into line-in, per `SCOPEPC`'s node note.
 pin 2/6 tie and the 100nF timing cap; output toggling but frequency far
 from the formula above — check Ra/Rb values and that the trimpot's wiper
 is landing in the pin 2/6 row, not floating; GP26 pinned at exactly
-3.300V (the Pico ADC's own saturation point) instead of the expected
-~2.75-2.9V half-swing — the output divider's bottom 10kΩ leg (R2, from
-the GP26 tap to GND) is likely missing or open, leaving GP26 connected
-through only R1 with no pulldown; see § Validation above for the worked
-2026-09-12 example of this exact fault.
+3.300V (the Pico ADC's own saturation point) instead of a real divided
+value — the output divider's bottom 10kΩ leg (R2, from the GP26 tap to
+GND) is likely missing, open, or the wrong value (see § Validation above
+for the worked 2026-09-12/13 example — R2 turned out to be a
+mis-picked 220Ω resistor, not 10kΩ). With a genuinely correct 10kΩ/10kΩ
+divider, expect GP26's swing to land around **~2.2V** (confirmed
+2026-09-13), not the ~2.75-2.9V a naive half of a ~5.5V nominal VCC would
+suggest — `psu_4xaa`'s actual loaded output runs somewhat below its 6.0V
+nominal, so treat ~2.2V as the real reference point for this build, not
+2.75-2.9V.

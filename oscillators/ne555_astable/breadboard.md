@@ -105,10 +105,12 @@ pair of resistors from) [psu_4xaa's own output validation divider](../../power_s
 | 10 kΩ resistor #2 | GND rail | Dupont M-M jumper |
 | psu_4xaa GND (−) / NE555 pin 1 | Pico GND (Pin 28) | Black Dupont jumper (shared ground reference — without this, GP26's reading is meaningless) |
 
-**What this confirms today:** GP26 toggling between ~0V and ~2.75V (half
-of pin 3's ~5.5V swing) proves this specific NE555 unit is actually
-oscillating in astable mode — enough for this circuit's stated purpose
-(first per-unit validation of the NE555 batch, see `README.md`).
+**What this confirms today:** GP26 toggling between ~0V and ~2.2V (half
+of pin 3's actual swing under `psu_4xaa`'s loaded output — see
+`README.md` § Validation for why this reads lower than a naive half of
+6.0V nominal) proves this specific NE555 unit is actually oscillating in
+astable mode — enough for this circuit's stated purpose (first per-unit
+validation of the NE555 batch, see `README.md`).
 
 **What this doesn't give you yet:** an actual frequency/duty-cycle
 number. That needs either the tier2 `FREQC` frequency counter (not yet

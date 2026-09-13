@@ -49,6 +49,15 @@ example (RXEF050 tier's 10 Ω test load).
 | 100 kΩ  | 10       |
 | 1 MΩ    | 10       |
 
+**2026-09-13 bin-mixup caution:** a resistor pulled for the 10 kΩ role in
+`oscillators/ne555_astable`'s output divider turned out to actually be a
+220 Ω part (confirmed both by color bands and by
+`measurement_tools/resistance_measurement`) — see that circuit's
+`README.md` § Validation. Quantities above are unaffected (still 10 of
+each), but treat any already-placed 10 kΩ/220 Ω pull from this kit as
+worth re-checking with `resistance_measurement` before trusting it in a
+new build, rather than by eye alone.
+
 ---
 
 ## Active Components and Sensors
