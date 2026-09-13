@@ -3971,3 +3971,12 @@ All updates are complete. Summary of what changed:
 **kb notes** (LLM-only, not end-user facing) --- Logged the partial-batch-arrival pattern and the parts\_reference.md copy-paste bug in `ordering_ingestion_notes.md`, and logged the multi-bullet-unblock TODO maintenance pattern in `todo_list_conventions.md`.
 <!-- ------ -->
 ---
+All four docs and both kb notes are now corrected. Summary of the fix:
+
+-   **`orders.md`** --- GY-521 moved back to "On order"; KY-003 A3144 Hall sensor module moved to "Received" (logged 2026-09-12).
+-   **`parts_reference.md`** --- status lines swapped accordingly.
+-   **`inventory.md`** --- KY-003 moved into the received-parts table; GY-521 moved back to "On Order."
+-   **`TODO-arcticoder.md`** --- `ACCELIF` moved back to "Blocked" (still waiting on GY-521); `HALLAMP`'s blocked-entry updated to reflect KY-003 has now actually arrived (still only a partial unlock --- the 49E linear sensor is still needed and not yet even ordered); the top pipeline note now correctly describes the entire 2026-09-03 batch as arrived and the entire 2026-09-10 batch as still in transit.
+-   **kb notes** --- corrected both new entries to describe what actually happened (a mixup between two similarly-formatted module codes, KY-003 vs. GY-521) rather than the wrong narrative, so a future session doesn't inherit the error.
+<!-- ------ -->
+---

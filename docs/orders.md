@@ -338,26 +338,33 @@ the converted `.md` files are tracked).
   [parts_reference.md](parts_reference.md#sn74hc86n-quad-2-input-xor-gate).
 - Ordered: 2026-09-03. Logged received: 2026-09-12.
 
-### GY-521 (MPU6050) 3-axis gyro/accelerometer module
+### KY-003 A3144 Hall sensor breakout module
 
-- Listing: "1~10PCS EGBO GY-521 GY521 MPU 6050 MPU6050 MPU 6050 Module 3
-  Axis Analog Gyro Sensor + Accelerometer for arduino DIY KIT" —
-  https://www.aliexpress.com/item/1005001863121268.html — selected variant
-  "1pcs Compatible".
-- 1 received — the earlier "quantity not yet confirmed" caveat from the
-  cart-stage entry is resolved by this variant string.
-- MPU-6050 chip, 3.3–5V supply (onboard low-dropout regulator), standard
-  I2C, built-in 16-bit ADC, gyro range ±250/500/1000/2000°/s, accel range
-  ±2/4/8/16g, 2.54mm pin pitch, immersion-gold PCB. Board ~2.1×1.5cm
-  (1.64cm wide including pin pads).
-- Substitutes for the originally-scoped ADXL335 to fill the tier5
-  `ACCELIF` gap — see
-  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
-  2026-09-03 gap-analysis cross-reference entry (this was the last of the
-  7 gap-analysis items still open).
-- Sat in cart since 2026-09-09, same cart/order as the CY7C68013A board
-  above; checked out 2026-09-10.
-- Ordered: 2026-09-10. Logged received: 2026-09-12.
+- Listing: "1PCS~20PCS EGBO KY-003 A3144 Standard Hall Magnetic Sensor
+  Module Works Boards" — https://www.aliexpress.com/item/1005009484498750.html
+- 1 received. This listing's text (unlike the other five in this batch)
+  had no selected-variant line — a new order-ingestion gap distinct from
+  the previously-logged "bundled part-number variants" pattern in
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md): here
+  the variant/quantity was simply missing from the message rather than
+  ambiguous within it. Resolved by asking the user directly (confirmed
+  2026-09-04: 1 unit) rather than guessing.
+- Fills the tier5 `HALLAMP` gap identified in `docs/history.md` (item 1
+  of the gap-analysis entry) — **only partially**. That gap asked for a
+  "linear analog output" Hall sensor; the A3144 is a digital
+  **switch-output** Hall IC (per its own datasheet: "the output is a
+  digital voltage signal"), and this module wraps it with an onboard
+  comparator/pull-up on a 3-pin header (GND, 3V3, GPIO-out). That covers
+  a simple presence/proximity digital read straight off a Pico GPIO — no
+  amplifier needed — but does **not** unlock the tier5 `HALLAMP`
+  op-amp-amplifier design as originally scoped, which still needs a
+  genuinely linear/analog Hall element (e.g. a 49E) if that specific node
+  is still wanted later.
+- Electrical (A3144 die): VCC 4.5–24V, output low ~175mV typ (400mV max)
+  at 20mA sink, supply current ~3mA, operating (turn-on) point 7–23mT
+  typ, release point 5–17.5mT typ. See
+  [parts_reference.md](parts_reference.md#ky-003-a3144-hall-sensor-breakout-module).
+- Ordered: 2026-09-03. Logged received: 2026-09-12.
 
 ---
 
@@ -393,33 +400,26 @@ the converted `.md` files are tracked).
 
 ## On order (placed, not yet received)
 
-### KY-003 A3144 Hall sensor breakout module
+### GY-521 (MPU6050) 3-axis gyro/accelerometer module
 
-- Listing: "1PCS~20PCS EGBO KY-003 A3144 Standard Hall Magnetic Sensor
-  Module Works Boards" — https://www.aliexpress.com/item/1005009484498750.html
-- 1 ordered. This listing's text (unlike the other five in this batch)
-  had no selected-variant line — a new order-ingestion gap distinct from
-  the previously-logged "bundled part-number variants" pattern in
-  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md): here
-  the variant/quantity was simply missing from the message rather than
-  ambiguous within it. Resolved by asking the user directly (confirmed
-  2026-09-04: 1 unit) rather than guessing.
-- Fills the tier5 `HALLAMP` gap identified in `docs/history.md` (item 1
-  of the gap-analysis entry) — **only partially**. That gap asked for a
-  "linear analog output" Hall sensor; the A3144 is a digital
-  **switch-output** Hall IC (per its own datasheet: "the output is a
-  digital voltage signal"), and this module wraps it with an onboard
-  comparator/pull-up on a 3-pin header (GND, 3V3, GPIO-out). That covers
-  a simple presence/proximity digital read straight off a Pico GPIO — no
-  amplifier needed — but does **not** unlock the tier5 `HALLAMP`
-  op-amp-amplifier design as originally scoped, which still needs a
-  genuinely linear/analog Hall element (e.g. a 49E) if that specific node
-  is still wanted later.
-- Electrical (A3144 die): VCC 4.5–24V, output low ~175mV typ (400mV max)
-  at 20mA sink, supply current ~3mA, operating (turn-on) point 7–23mT
-  typ, release point 5–17.5mT typ. See
-  [parts_reference.md](parts_reference.md#ky-003-a3144-hall-sensor-breakout-module).
-- Ordered: 2026-09-03.
+- Listing: "1~10PCS EGBO GY-521 GY521 MPU 6050 MPU6050 MPU 6050 Module 3
+  Axis Analog Gyro Sensor + Accelerometer for arduino DIY KIT" —
+  https://www.aliexpress.com/item/1005001863121268.html — selected variant
+  "1pcs Compatible".
+- 1 ordered — the earlier "quantity not yet confirmed" caveat from the
+  cart-stage entry is resolved by this variant string.
+- MPU-6050 chip, 3.3–5V supply (onboard low-dropout regulator), standard
+  I2C, built-in 16-bit ADC, gyro range ±250/500/1000/2000°/s, accel range
+  ±2/4/8/16g, 2.54mm pin pitch, immersion-gold PCB. Board ~2.1×1.5cm
+  (1.64cm wide including pin pads).
+- Substitutes for the originally-scoped ADXL335 to fill the tier5
+  `ACCELIF` gap — see
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
+  2026-09-03 gap-analysis cross-reference entry (this was the last of the
+  7 gap-analysis items still open).
+- Sat in cart since 2026-09-09, same cart/order as the CY7C68013A board
+  above; checked out 2026-09-10.
+- Ordered: 2026-09-10.
 
 ### EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
 

@@ -27,17 +27,16 @@ section stays at the top rather than after the bench-work sections —
 finding it buried past several pages of build tasks meant it kept getting
 skipped in practice.
 
-**No urgent order needed right now, but the pipeline is thinning** — 6 of
-the last 9 in-transit items (TL082, MF52AT thermistor, IRLZ44N MOSFET,
-piezo disc, SN74HC86N XOR gate, GY-521 accelerometer module) arrived
-2026-09-12, unlocking several new builds below (see "Ready to build now").
-Only 3 items are still in transit: KY-003 Hall module (ordered
-2026-09-03), and the CY7C68013A logic analyzer board + color-ring
-inductor reorder (both ordered 2026-09-10) — see [orders.md](orders.md).
-That's thinner than the prior 9-item pipeline, so a top-up order is worth
-placing soon (transit runs a few weeks) rather than waiting for these 3
-to also land before shopping again — the items below are the standing
-candidates for that top-up.
+**No urgent order needed right now, but the pipeline is thinning** — the
+entire 2026-09-03 batch (TL082, MF52AT thermistor, IRLZ44N MOSFET, piezo
+disc, SN74HC86N XOR gate, KY-003 Hall module) arrived 2026-09-12,
+unlocking several new builds below (see "Ready to build now"). Only the
+2026-09-10 batch is still in transit: GY-521 accelerometer module,
+CY7C68013A logic analyzer board, and the color-ring inductor reorder —
+see [orders.md](orders.md). That's thinner than the prior 9-item
+pipeline, so a top-up order is worth placing soon (transit runs a few
+weeks) rather than waiting for these 3 to also land before shopping
+again — the items below are the standing candidates for that top-up.
 
 - [ ] **Linear/analog Hall-effect sensor (e.g. 49E), 5–10pk** — the
       KY-003/A3144 module already received only covers digital
@@ -87,9 +86,6 @@ candidates for that top-up.
 - [ ] **New `ACTIVELIM`/`HVPULSE` build (protection + tier7).** IRLZ44N
       logic-level MOSFET (only 1 on hand, arrived 2026-09-12) serves both
       nodes until/unless more units are ordered. No folder exists yet.
-- [ ] **New `ACCELIF` build (tier5, accelerometer interface).** GY-521
-      (MPU6050) module (1 on hand, arrived 2026-09-12) — I2C only, no
-      analog frontend needed. No folder exists yet.
 - [ ] **New `EPFIELD` build (tier5, electric field probe).** TL082
       JFET-input dual op-amp (10 on hand, arrived 2026-09-12) — the
       high-impedance front end LM358 couldn't provide. No folder exists
@@ -184,12 +180,16 @@ candidates for that top-up.
       analyzer). Blocked on: CY7C68013A / EZ-USB FX2LP USB logic analyzer
       board, ordered 2026-09-10, not yet received. `sigrok`'s `fx2lafw`
       firmware supports it out of the box — no vendor software needed.
-- [ ] **`HALLAMP`** (tier5) — partially unlocked once KY-003/A3144
-      arrives (not yet received), but not fully even then. It's digital
-      switch-output (a presence/proximity read), not the linear-analog
-      Hall element the original op-amp-amplifier design needs — a
-      genuinely linear part (e.g. a 49E, see "Next AliExpress order" at
-      the top of this file) is still needed.
+- [ ] **`ACCELIF`** (tier5). Blocked on: GY-521 (MPU6050) module, ordered
+      2026-09-10, not yet received. Substitutes for the originally-scoped
+      ADXL335.
+- [ ] **`HALLAMP`** (tier5) — partially unlocked now that KY-003/A3144
+      has arrived (2026-09-12), but not fully. It's digital switch-output
+      (a presence/proximity read), not the linear-analog Hall element the
+      original op-amp-amplifier design needs — a genuinely linear part
+      (e.g. a 49E, see "Next AliExpress order" at the top of this file,
+      not yet even ordered) is still needed to actually build the
+      `HALLAMP` op-amp circuit as scoped.
 
 ## Backlog — undesigned, long-tail
 
@@ -213,12 +213,13 @@ how each node connects before starting one.
       (distinct from the bootstrap ammeter jigs).
 - [ ] **Tier 4**: `IA`, `DA`, `DEMOD` undesigned. (`PHASED` now has a part
       on hand — see "Ready to build now" above.)
-- [ ] **Tier 5** (spacetime): `EPFIELD`, `ACCELIF`, `CHGAMP` now have
-      parts on hand (see "Ready to build now" above) but no folder,
-      netlist, or breadboard guide yet — three net-new builds. `HALLAMP`
-      is still only partially unlocked (KY-003 digital module still in
-      transit, and a linear/analog sensor like the 49E is still needed
-      regardless — see "Blocked" above). `LVDTAMP` remains fully
+- [ ] **Tier 5** (spacetime): `EPFIELD` and `CHGAMP` now have parts on
+      hand (see "Ready to build now" above) but no folder, netlist, or
+      breadboard guide yet — two net-new builds. `ACCELIF` is still
+      blocked on the GY-521 module, not yet received (see "Blocked"
+      above). `HALLAMP` is partially unlocked (KY-003 arrived, but a
+      linear/analog sensor like the 49E is still needed for the op-amp
+      circuit as scoped — see "Blocked" above). `LVDTAMP` remains fully
       backlogged — no transducer sourced yet.
 - [ ] **Tier 6**: `LOCKIN`, `AAF`, `TIMEINT`, `JITTER` undesigned.
 - [ ] **Tier 7** (spacetime): `RFPWR`, `MIXER`, `SWEEP` completely

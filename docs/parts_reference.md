@@ -413,7 +413,7 @@ thermistor in `inventory.md` is flagged "suspect faulty."
 
 ## KY-003 A3144 Hall sensor breakout module
 
-1 ordered 2026-09-03, not yet received. See
+1 received 2026-09-12 (ordered 2026-09-03); untested. See
 [orders.md](orders.md#ky-003-a3144-hall-sensor-breakout-module). 3-pin header
 module wrapping an A3144 Hall-switch IC plus onboard pull-up:
 
@@ -526,7 +526,7 @@ cable — the one in inventory is earmarked for the Pico).
 
 ## GY-521 (MPU6050) 3-axis gyro/accelerometer module
 
-1 received 2026-09-12 (ordered 2026-09-10); untested. See
+1 ordered 2026-09-10, not yet received. See
 [orders.md](orders.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module).
 MPU-6050 chip: 3.3–5V supply (onboard low-dropout regulator), standard
 I2C (SDA/SCL), built-in 16-bit ADC per axis. Gyro range

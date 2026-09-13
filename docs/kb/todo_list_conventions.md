@@ -72,29 +72,34 @@ position is correct, not an oversight to fix the same way.
 
 ## A single arrival report can unblock several "Blocked" bullets at once — check every remaining bullet's part name, not just the ones the arrival report seems to obviously match (2026-09-12)
 
-When 6 items arrived in one report (TL082, MF52AT, IRLZ44N, piezo,
-SN74HC86N, GY-521 — see
+When 6 items arrived in one report (the full 2026-09-03 batch: TL082,
+MF52AT, IRLZ44N, piezo, SN74HC86N, KY-003 — see
 [ordering_ingestion_notes.md](ordering_ingestion_notes.md)'s matching
-entry), it closed 6 of the 9 bullets then sitting in "Blocked — waiting
-on a shipment" (`THERM`, `PHASED`, `ACTIVELIM`, `HVPULSE`, `EPFIELD`,
-`CHGAMP`, `ACCELIF` — `ACTIVELIM`/`HVPULSE` share one MOSFET so count as
-one part-driven unblock). Only `INDBRIDGE`, `SCOPELA`, and `HALLAMP`
-(partial) remained blocked, on the 3 items that didn't arrive. Each
-newly-unblocked bullet moved into "Ready to build now" following the
-section's existing convention (name the part, its quantity, arrival
-date, and "No folder exists yet") rather than being deleted — none of
-these six have a folder/netlist/breadboard guide, so they're genuinely
-new build targets, not completions. Also had to sweep the "Backlog —
-undesigned, long-tail" section for parenthetical cross-references
-pointing at "Blocked" for `THERM`/`PHASED`/tier5 nodes and repoint them
-at "Ready to build now" — those asides go stale silently since nothing
-enforces they track the referenced section's actual current contents.
-General lesson: when an arrival report resolves more than one item,
-re-check the *entire* "Blocked" section against the arrival list rather
-than hand-matching just the parts you already expect to be there — it's
-easy to miss one (here, `ACCELIF`/GY-521 was the one most likely to be
-overlooked, since GY-521 shipped in a different batch/order date than the
-other five).
+entry, including the correction after an initial KY-003/GY-521 mixup), it
+closed 6 of the 9 bullets then sitting in "Blocked — waiting on a
+shipment" (`THERM`, `PHASED`, `ACTIVELIM`, `HVPULSE`, `EPFIELD`,
+`CHGAMP` — `ACTIVELIM`/`HVPULSE` share one MOSFET so count as one
+part-driven unblock; `HALLAMP` only *partially* unblocked, since KY-003
+is digital-only and the tier5 op-amp design still needs a linear sensor).
+`INDBRIDGE`, `SCOPELA`, and `ACCELIF` remained fully blocked, on the 3
+items from the separate 2026-09-10 batch (GY-521, CY7C68013A, inductor
+reorder) that didn't arrive. Each newly-unblocked bullet moved into
+"Ready to build now" following the section's existing convention (name
+the part, its quantity, arrival date, and "No folder exists yet") rather
+than being deleted — none of these have a folder/netlist/breadboard
+guide, so they're genuinely new build targets, not completions. Also had
+to sweep the "Backlog — undesigned, long-tail" section for parenthetical
+cross-references pointing at "Blocked" for `THERM`/`PHASED`/tier5 nodes
+and repoint them at "Ready to build now" — those asides go stale
+silently since nothing enforces they track the referenced section's
+actual current contents. General lesson: when an arrival report resolves
+more than one item, re-check the *entire* "Blocked" section against the
+arrival list rather than hand-matching just the parts you already expect
+to be there — and don't assume which specific part name goes with which
+batch just because two candidate part codes (KY-003, GY-521) look
+similarly formatted; re-verify the exact string per
+[ordering_ingestion_notes.md](ordering_ingestion_notes.md)'s entry on
+that mixup before writing status changes across four files.
 
 ## Don't write future-session working notes into TODO-arcticoder.md itself
 

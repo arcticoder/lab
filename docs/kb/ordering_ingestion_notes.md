@@ -351,21 +351,31 @@ confirmed" caveat from the cart stage: the checkout variant string was
 ## A batch arrival report can name only some items from an in-transit set — check each order line individually, don't assume "arrived today" covers everything still on order (2026-09-12)
 
 The user reported 6 items arrived on the same day (2026-09-12): TL082,
-MF52AT thermistor, IRLZ44N MOSFET, 12mm piezo disc, SN74HC86N XOR gate
-(all from the 2026-09-03 batch of 6), plus GY-521 (from the 2026-09-10
-batch of 3). **Two items from those same two batches were *not* in the
-arrival report**: KY-003 Hall module (2026-09-03 batch — odd that it
-shipped separately from its 5 batch-mates, but nothing in the message
-explained why) and the CY7C68013A logic analyzer board + color-ring
-inductor reorder (2026-09-10 batch). Moved only the 6 named items through
-the on-order → received pipeline (`orders.md`, `inventory.md`,
-`parts_reference.md`, `TODO-arcticoder.md`'s Blocked/Ready-to-build
-sections) and left the other 3 exactly where they were. General lesson:
-match the arrival report against the full current "On order" list item
-by item rather than assuming a same-batch/same-order-date grouping arrives
-atomically — AliExpress sellers routinely split one order into multiple
-shipments/tracking numbers, so partial-batch arrival is the expected case,
-not an anomaly to double-check before acting on.
+MF52AT thermistor, IRLZ44N MOSFET, 12mm piezo disc, SN74HC86N XOR gate,
+and KY-003 Hall module — this turned out to be the **entire** 2026-09-03
+batch of 6, arriving together. **The other 3 items still in transit**
+(GY-521 accelerometer, CY7C68013A logic analyzer board, color-ring
+inductor reorder) were all from the separate 2026-09-10 batch and were
+correctly *not* in the arrival report.
+
+First pass at this ingestion got it wrong: the initial arrival report was
+misread as "5 items from the 2026-09-03 batch + GY-521 from the
+2026-09-10 batch," moving GY-521 to received and leaving KY-003 on order
+— the exact inverse of what happened. The user caught it via an IDE
+selection on the GY-521 heading plus a one-line correction ("meant the
+KY-003... module"). Fixed by re-doing the on-order → received move for
+both items in the opposite direction across all four touched files
+(`orders.md`, `inventory.md`, `parts_reference.md`,
+`TODO-arcticoder.md`) rather than patching only the most visible spot —
+a partial fix would have left the two parts' status disagreeing between
+files. General lesson: when six single-unit-or-small-batch part names
+are listed together in one message, don't pattern-match them against
+"which batch would make a tidier story" (here, "one item per batch
+arrived" felt like a plausible reading but was wrong) — resolve each
+named part strictly against its own listing name, and when the two
+parts being distinguished have superficially similar identifiers in a
+chat context (KY-003 vs. GY-521 — both alphanumeric module codes), give
+that no weight at all versus just re-reading the exact string.
 
 ## Moving 6 items to "received" at once surfaced an unrelated copy-paste bug in `parts_reference.md` — worth a skim of neighboring content when editing a section, not just the lines being changed
 
