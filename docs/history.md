@@ -4013,6 +4013,16 @@ This reads cleanly and consistently. Both tasks are done. Summary:
 **2\. TODO restructuring --- done.** Merged "Ready to build now," "Needs a validation step," and "Open correctness issues" into one dependency-ordered list: the 1N5817 diode forward-drop check now sits directly above `psu_low_v2` assembly (which depends on it --- previously this dependency was hidden across two separate sections), followed by `psu_3xaa`, then the independent new-builds, then items that don't block anything else. Also fixed a stray cross-reference in `general_purpose_circuit_dependency.md` and updated the intro's item counts.
 
 Documented the reasoning behind the merge (and why it's different from keeping the AliExpress-ordering section separate) in `lab/docs/kb/todo_list_conventions.md` for future sessions.
-<!-- 
------- -->
+<!-- ------ -->
+---
+Both issues checked out as real errors, now fixed in [TODO-arcticoder.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/TODO-arcticoder.md):
+
+**1\. `psu_3xaa` did not need `psu_low_v2` built first.** Its `README.md` and `breadboard.md` already exist in full and don't reference `psu_low_v2` for anything --- they're independent 2×AA/3×AA holder chains. The "verify that assumption once psu\_low\_v2 is built" line was invented, not sourced from anything. Both actually depend on the 1N5817 diode forward-drop check (same unvalidated batch), in parallel, not on each other. Fixed the diode-check bullet to gate both builds, and reworded `psu_3xaa` to drop the false dependency.
+
+**2\. TIA's implied dependency on `psu_3xaa` was also wrong** --- and you're right that there's no README/breadboard.md yet to confirm anything either way. The actual source of truth is [general\_purpose\_circuit\_dependency.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/general_purpose_circuit_dependency.md), which has the edge `psu_low --> tier2` (TIA is a tier2 node) --- not `psu_3aa --> tier2`. So TIA's real prerequisite is `psu_low_v2` (already the bullet above it), and it doesn't need `psu_3xaa` at all despite sitting below it in the list.
+
+I also corrected the kb entry ([todo\_list\_conventions.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/kb/todo_list_conventions.md)) that had baked in the false `1N5817 → psu_low_v2 → psu_3xaa` chain earlier today, and added a lesson there: before writing "X depends on Y" into the TODO, check it against the dependency-graph docs and the target circuit's own README/breadboard.md rather than inferring from similarity or list position.
+
+Net effect on your actual next steps: unchanged in substance --- 1N5817 check first, then you can do `psu_low_v2`, `psu_3xaa`, and (once psu\_low\_v2 exists) TIA in whatever order suits your bench session, none of them blocking each other the way the old text implied.
+<!-- ------ -->
 ---

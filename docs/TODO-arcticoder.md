@@ -68,25 +68,35 @@ Everything past the dependency-linked pair at the top has no such
 dependency and can be done in any order.
 
 - [ ] **1N5817 Schottky diodes — not validated per-unit.** Check forward
-      drop (~0.35–0.45V) on each before wiring into `psu_low_v2` (next
-      bullet); see `psu_4xaa/README.md` § Validation for the Pico-divider
-      technique (same approach applies to any circuit using this diode).
-      `psu_3xaa`/`psu_4xaa` use the same diode type and are already
+      drop (~0.35–0.45V) on each before wiring into `psu_low_v2` or
+      `psu_3xaa` (both bullets directly below — this gates both, not just
+      the first one); see `psu_4xaa/README.md` § Validation for the
+      Pico-divider technique (same approach applies to any circuit using
+      this diode). `psu_4xaa` uses the same diode type and is already
       trusted, but only by continuity/orientation check, not a measured
-      forward drop — do the real measurement before this build, not after.
+      forward drop — do the real measurement before either build below,
+      not after.
 - [ ] **`power_supplies/psu_low_v2` — physically assemble.** Wire-stripper
       blocker resolved 2026-09-03. RXEF050 polyfuse batch already
       validated (`measurement_tools/ammeter_1ohm/`). Depends on the
       1N5817 diode check directly above — nothing else is blocking this.
-- [ ] **`power_supplies/psu_3xaa` — confirm and assemble.** Likely shares
-      the same AA-holder lead-termination step as `psu_low_v2` above —
-      verify that assumption once `psu_low_v2` is built.
+- [ ] **`power_supplies/psu_3xaa` — confirm and assemble.** `README.md`
+      and `breadboard.md` are already complete and don't reference
+      `psu_low_v2` for anything — it's a separate 3×AA holder chain, not
+      an extension of it. Only depends on the 1N5817 diode check two
+      bullets above (same diode batch, same unvalidated-forward-drop
+      status); doesn't need `psu_low_v2` assembled first and can be done
+      before, after, or in parallel with it.
 - [ ] **New `TIA` build (tier2, transimpedance amplifier).** PT334-6C
       photodiode (10 on hand) + LM358P (spares available beyond the one
-      used in `voltage_reference_lm358`). No folder exists yet — create
-      one under `signal_conditioning/` or `measurement_tools/` with the
-      usual `.spice` + `breadboard.md` + `smoke_test.py` + `README.md`
-      set.
+      used in `voltage_reference_lm358`). Per
+      [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
+      (`psu_low --> tier2` edge), its supply-rail prerequisite is
+      `psu_low_v2`, not `psu_3xaa` — despite sitting below `psu_3xaa` in
+      this list, it doesn't need `psu_3xaa` done at all. No folder exists
+      yet — create one under `signal_conditioning/` or
+      `measurement_tools/` with the usual `.spice` + `breadboard.md` +
+      `smoke_test.py` + `README.md` set.
 - [ ] **New `OHMMETER` build (tier3, 4-wire Kelvin).** 0.1Ω and 1Ω metal
       film resistors (20 each on hand) are the reference legs. No folder
       exists yet.

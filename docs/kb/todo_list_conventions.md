@@ -123,12 +123,12 @@ real dependencies between bullets in different sections.
 Fixed by merging all three into one section, keeping the "Ready to build
 now — parts on hand" header, ordered so that whenever a build bullet
 depends on a validation/correctness bullet, the dependency comes first
-and says so explicitly (e.g. 1N5817 diode check → `psu_low_v2` assembly →
-`psu_3xaa` assembly, in that order, each bullet naming what it depends
-on). Items with no dependency on anything above them follow in no
-particular order; items that don't block anything currently in the list
-(e.g. CD4066BCN switches 2–4, which only matter once `MUX`/`DEMOD` exist)
-say so explicitly rather than being sorted purely by category.
+and says so explicitly (e.g. 1N5817 diode check → `psu_low_v2` assembly,
+each bullet naming what it depends on). Items with no dependency on
+anything above them follow in no particular order; items that don't
+block anything currently in the list (e.g. CD4066BCN switches 2–4, which
+only matter once `MUX`/`DEMOD` exist) say so explicitly rather than being
+sorted purely by category.
 
 General lesson for future restructuring: before splitting the file into
 separate sections by *kind* of task (build vs. validate vs. fix vs.
@@ -138,6 +138,30 @@ dependency from someone working the file top-to-bottom one section at a
 time — merge into a single ordered list instead, and only split out a
 section when it has its own genuinely independent reason (like ordering's
 shipping-transit clock, see the entry above).
+
+**Correction, same day:** the first pass of this merge also wrote
+`psu_3xaa` assembly as depending on `psu_low_v2` assembly ("Likely shares
+the same AA-holder lead-termination step... verify that assumption once
+`psu_low_v2` is built") — a dependency that was invented, not read off
+anything. `psu_3xaa/README.md` and `breadboard.md` already existed in
+full at the time and don't reference `psu_low_v2` for any open step; the
+two are independent 2×AA/3×AA holder chains that both happen to use the
+1N5817 batch, so both depend on the diode-check bullet directly, not on
+each other. Separately, the `TIA` bullet was placed right after
+`psu_3xaa` with no dependency stated, which read as "needs `psu_3xaa`"
+simply from list position — but
+[general_purpose_circuit_dependency.md](../general_purpose_circuit_dependency.md)
+has `psu_low --> tier2` (not `psu_3aa --> tier2`), so `TIA`'s real
+prerequisite is `psu_low_v2`, already satisfied by the bullet above
+`psu_3xaa`. **Lesson: before writing "X depends on Y" (or ordering two
+bullets so it reads that way) into this file, check it against
+`general_purpose_circuit_dependency.md`/`spacetime_circuits_dependency.md`
+and against the target circuit's own `README.md`/`breadboard.md` if one
+exists — don't infer a dependency from "these two things seem similar" or
+from where a new bullet happens to land in the list.** The user caught
+this by literally asking "checking what this is needed for" at each step
+and finding no source backing the implied chain — that check should
+happen before the bullet is written, not after.
 
 ## Don't write future-session working notes into TODO-arcticoder.md itself
 
