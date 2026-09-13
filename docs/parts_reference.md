@@ -355,13 +355,21 @@ history. Brand YTDMEN, radial-lead DIP-style, ±20% tolerance. 12 values ×
 | 11 | 16V | 330µF |
 | 12 | 16V | 470µF |
 
-**Polarized — orientation matters.**
+**Polarized — orientation matters.** Long lead = positive; the can body
+is marked with a stripe (usually with `−` symbols) on the negative side.
+Per the listing's own manual text: solder at 350–380°C for ≤3 seconds
+per joint (prolonged heat can damage the electrolyte), keep the working
+voltage at or below 80% of the rated voltage for the selected value, and
+mount vertically with pin spacing matched to the pad spacing. First
+candidate use: bulk output filtering for `psu_medlow_lm317`/
+`psu_medlow_usbc`, and higher-capacitance tier3 `CAPBRIDGE` work beyond
+what the ceramic kit above covers.
 
 ---
 
 ## TL082 JFET-input dual op-amp
 
-10 ordered 2026-09-03, DIP-8, not yet received. See
+10 received 2026-09-12 (ordered 2026-09-03), DIP-8; untested. See
 [orders.md](orders.md#tl082-jfet-input-dual-op-amp-dip-8). Same physical
 pinout convention as the on-hand LM358:
 
@@ -390,7 +398,7 @@ wiring a single-supply front end.
 
 ## MF52AT NTC thermistor (10kΩ)
 
-10 ordered 2026-09-03, not yet received. See
+10 received 2026-09-12 (ordered 2026-09-03); untested. See
 [orders.md](orders.md#mf52at-ntc-thermistor-10k). 2-lead bead
 thermistor, no polarity. R25 = 10kΩ ±1%, B(25/50) = 3950K ±1%, operating
 range −55–125°C, black modified-phenolic body, nickel-tin-plated leads.
@@ -430,7 +438,7 @@ still wanted as a build target.
 
 ## IRLZ44N logic-level MOSFET
 
-1 ordered 2026-09-03, TO-220, not yet received. See
+1 received 2026-09-12 (ordered 2026-09-03), TO-220; untested. See
 [orders.md](orders.md#irlz44n-logic-level-n-channel-mosfet-to-220).
 Standard TO-220 pinout, tab facing away, pins left to right:
 
@@ -451,7 +459,7 @@ MOSFET of any kind was previously on hand.
 
 ## Piezo element, 12mm disc
 
-20 ordered 2026-09-03, not yet received. See
+20 received 2026-09-12 (ordered 2026-09-03); untested. See
 [orders.md](orders.md#piezo-element-12mm-disc). 2-terminal ceramic disc
 element (brass or copper backing plate + piezoceramic layer), no fixed
 polarity convention like a diode — used either as a driven
@@ -467,7 +475,7 @@ hand.
 
 ## SN74HC86N quad 2-input XOR gate
 
-1 ordered 2026-09-03, DIP-14, not yet received. See
+1 received 2026-09-12 (ordered 2026-09-03), DIP-14; untested. See
 [orders.md](orders.md#sn74hc86n-quad-2-input-xor-gate). Standard 74HC86
 pinout (verify against the specific manufacturer's datasheet before
 building, same caveat as the CD4066B entry above):
@@ -488,15 +496,7 @@ to phase difference between two same-frequency square waves), which
 feeds tier6 `LOCKIN`. **Listing's own variant string had a truncated
 package suffix ("DIP-1")** — treated as DIP-14 until the physical part
 confirms otherwise; see the caveat in
-[orders.md](orders.md#sn74hc86n-quad-2-input-xor-gate). Long lead = positive; the can body
-is marked with a stripe (usually with `−` symbols) on the negative side.
-Per the listing's own manual text: solder at 350–380°C for ≤3 seconds
-per joint (prolonged heat can damage the electrolyte), keep the working
-voltage at or below 80% of the rated voltage for the selected value, and
-mount vertically with pin spacing matched to the pad spacing. First
-candidate use: bulk output filtering for `psu_medlow_lm317`/
-`psu_medlow_usbc`, and higher-capacitance tier3 `CAPBRIDGE` work beyond
-what the ceramic kit above covers.
+[orders.md](orders.md#sn74hc86n-quad-2-input-xor-gate).
 
 ---
 
@@ -526,7 +526,7 @@ cable — the one in inventory is earmarked for the Pico).
 
 ## GY-521 (MPU6050) 3-axis gyro/accelerometer module
 
-1 ordered 2026-09-10, not yet received. See
+1 received 2026-09-12 (ordered 2026-09-10); untested. See
 [orders.md](orders.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module).
 MPU-6050 chip: 3.3–5V supply (onboard low-dropout regulator), standard
 I2C (SDA/SCL), built-in 16-bit ADC per axis. Gyro range

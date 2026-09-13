@@ -70,6 +70,32 @@ the bottom in this same pass — genuinely no clock on it (nothing is
 blocked waiting for a backlog item to be designed), so its bottom
 position is correct, not an oversight to fix the same way.
 
+## A single arrival report can unblock several "Blocked" bullets at once — check every remaining bullet's part name, not just the ones the arrival report seems to obviously match (2026-09-12)
+
+When 6 items arrived in one report (TL082, MF52AT, IRLZ44N, piezo,
+SN74HC86N, GY-521 — see
+[ordering_ingestion_notes.md](ordering_ingestion_notes.md)'s matching
+entry), it closed 6 of the 9 bullets then sitting in "Blocked — waiting
+on a shipment" (`THERM`, `PHASED`, `ACTIVELIM`, `HVPULSE`, `EPFIELD`,
+`CHGAMP`, `ACCELIF` — `ACTIVELIM`/`HVPULSE` share one MOSFET so count as
+one part-driven unblock). Only `INDBRIDGE`, `SCOPELA`, and `HALLAMP`
+(partial) remained blocked, on the 3 items that didn't arrive. Each
+newly-unblocked bullet moved into "Ready to build now" following the
+section's existing convention (name the part, its quantity, arrival
+date, and "No folder exists yet") rather than being deleted — none of
+these six have a folder/netlist/breadboard guide, so they're genuinely
+new build targets, not completions. Also had to sweep the "Backlog —
+undesigned, long-tail" section for parenthetical cross-references
+pointing at "Blocked" for `THERM`/`PHASED`/tier5 nodes and repoint them
+at "Ready to build now" — those asides go stale silently since nothing
+enforces they track the referenced section's actual current contents.
+General lesson: when an arrival report resolves more than one item,
+re-check the *entire* "Blocked" section against the arrival list rather
+than hand-matching just the parts you already expect to be there — it's
+easy to miss one (here, `ACCELIF`/GY-521 was the one most likely to be
+overlooked, since GY-521 shipped in a different batch/order date than the
+other five).
+
 ## Don't write future-session working notes into TODO-arcticoder.md itself
 
 A future LLM chat's own working notes on this repo belong in `docs/kb/`

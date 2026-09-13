@@ -243,6 +243,122 @@ the converted `.md` files are tracked).
   capacitance than the ceramic kit above covers.
 - Ordered: 2026-08-30. Logged received: 2026-09-10.
 
+### TL082 JFET-input dual op-amp (DIP-8)
+
+- Listing: "10PCS TL061 TL062 TL071 TL072 TL081 TL082 061 062 071 072 081
+  082CP CN IP ACN ACP IN DIP-8" — selected variant "TL082" —
+  https://www.aliexpress.com/item/1005006751676691.html
+- 10 received. Fills the tier5 `EPFIELD`/`CHGAMP` gap identified in
+  `docs/history.md` (item 3 of its ~2026-09-01 gap-analysis entry): the
+  on-hand LM358 is bipolar-input (~20–100nA bias current) — the wrong
+  device class for a high-impedance electrometer/charge-amp front end.
+  TL082 is a JFET-input dual op-amp (bias current in the pA range),
+  matching what those two nodes need.
+- Listing gave no electrical spec beyond generic "standard" placeholders
+  (package: DIP, dissipation power: standard, supply voltage: standard) —
+  nothing beyond the standard TL082 datasheet ratings to record until the
+  part is on hand. See
+  [parts_reference.md](parts_reference.md#tl082-jfet-input-dual-op-amp).
+- Ordered: 2026-09-03. Logged received: 2026-09-12.
+
+### MF52AT NTC thermistor (10kΩ)
+
+- Listing: "10/500pcs NTC Thermistor Thermal Resistor MF52 NTC-MF52AT 1K
+  5K 10K 50K 100K Ohm R 1% B 3950 Little Blackhead" — selected variant
+  "10K 10pcs" — https://www.aliexpress.com/item/1005009419869430.html
+- 10 received, 10kΩ value. Fills the safety `THERM` gap identified in
+  `docs/history.md` (item 7 of the same gap-analysis entry): the existing
+  thermistor in `inventory.md` is flagged "suspect faulty."
+- **The listing's own spec sheet describes a different value than what
+  was ordered**: the pasted datasheet text's worked example is model
+  `MF52A₁104F3950`, where the `104` EIA code decodes to 10×10⁴ = 100kΩ —
+  that's the listing's generic family sheet, not the 10kΩ (`103` code)
+  variant actually selected. The rest of the sheet (±1% tolerance,
+  B(25/50) = 3950K±1%, operating range −55–125°C, nickel-tin-plated
+  leads, black modified-phenolic body) should still apply across the
+  whole MF52 family regardless of R25 value, but treat the R25 figure
+  itself as belonging to the 100kΩ example, not the ordered part. The
+  sheet's physical-dimension figures (bead diameter Φ0.3±0.05mm) also
+  read as a probable OCR/translation error for a leaded bead thermistor
+  this size — verify against the physical part once received rather than
+  trusting the transcription. See
+  [parts_reference.md](parts_reference.md#mf52at-ntc-thermistor-10k).
+- Ordered: 2026-09-03. Logged received: 2026-09-12.
+
+### IRLZ44N logic-level N-channel MOSFET (TO-220)
+
+- Listing: "1-20PCS L7905CV L7905 L7918CV L7918 IRLZ44N IRLZ44 TOP245YN
+  TOP245 TIP29C TIP29 TIP127 127 TO-220" — selected variant "1PCS
+  IRLZ44N" — https://www.aliexpress.com/item/1005012492083603.html
+- 1 received. Fills the tier7 `HVPULSE` and protection `ACTIVELIM` gap
+  identified in `docs/history.md` (item 5 of the gap-analysis entry): no
+  switching MOSFET of any kind was previously on hand — the S8050/S8550
+  in inventory are small-signal BJTs, unsuited to either HV pulsing or
+  active current limiting.
+- Listing gave no electrical spec beyond generic "standard" placeholders
+  — record the standard IRLZ44N datasheet ratings (logic-level gate,
+  Vgs(th) ~1–2V, Id ~47A, Vds 55V) once the part is on hand and a real
+  datasheet is checked in. See
+  [parts_reference.md](parts_reference.md#irlz44n-logic-level-mosfet).
+- Ordered: 2026-09-03. Logged received: 2026-09-12.
+
+### Piezo element, 12mm disc
+
+- Listing: "20PCS Piezo Elements Buzzer Sounder Sensor Trigger Drum Disc
+  Copper Piezo Speaker 12MM 15MM 20MM 27MM Piezoelectric" — selected
+  variant "12MM 20PCS" — https://www.aliexpress.com/item/1005009103008432.html
+- 20 received, 12mm size. Fills the tier5 `CHGAMP` gap identified in
+  `docs/history.md` (item 4 of the gap-analysis entry): `CHGAMP` needs a
+  charge-output transducer to actually drive; nothing in inventory
+  generates a charge signal. Pairs with the TL082 above (JFET-input
+  op-amp front end for the charge amplifier).
+- Listing's spec block is mostly boilerplate ("standard"/"international
+  standard" placeholders) plus packaging dimensions for the seller's
+  shipping lot (10×5×10cm, 20g) — not part specs. No piezo disc
+  diameter/capacitance/resonant-frequency datasheet value is available
+  from the listing; check the physical part once it arrives. See
+  [parts_reference.md](parts_reference.md#piezo-element-12mm-disc).
+- Ordered: 2026-09-03. Logged received: 2026-09-12.
+
+### SN74HC86N quad 2-input XOR gate
+
+- Listing: "1-50PCS AT24C32A 24C32 A6252M A6252 93C56 C56WP SN74HC86N
+  74HC86 IT8517VG HXS 2SA970-GR 2SA970" — selected variant "1PCS
+  SN74HC86N DIP-1" — https://www.aliexpress.com/item/1005012522711553.html
+- 1 received. **The variant string's package suffix ("DIP-1") is almost
+  certainly truncated** — the SN74HC86N is a standard DIP-14 part, and
+  there is no "DIP-1" package in the 74HC86 family. Recorded verbatim per
+  the "don't silently fix a listing string" convention in
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md); treat
+  as DIP-14 until the physical part confirms otherwise.
+- Fills the tier4 `PHASED` → tier6 `LOCKIN` gap identified in
+  `docs/history.md` (item 6 of the gap-analysis entry): no logic gate IC
+  on hand except the 74HC595 shift register; XOR is the standard
+  phase-detector primitive. See
+  [parts_reference.md](parts_reference.md#sn74hc86n-quad-2-input-xor-gate).
+- Ordered: 2026-09-03. Logged received: 2026-09-12.
+
+### GY-521 (MPU6050) 3-axis gyro/accelerometer module
+
+- Listing: "1~10PCS EGBO GY-521 GY521 MPU 6050 MPU6050 MPU 6050 Module 3
+  Axis Analog Gyro Sensor + Accelerometer for arduino DIY KIT" —
+  https://www.aliexpress.com/item/1005001863121268.html — selected variant
+  "1pcs Compatible".
+- 1 received — the earlier "quantity not yet confirmed" caveat from the
+  cart-stage entry is resolved by this variant string.
+- MPU-6050 chip, 3.3–5V supply (onboard low-dropout regulator), standard
+  I2C, built-in 16-bit ADC, gyro range ±250/500/1000/2000°/s, accel range
+  ±2/4/8/16g, 2.54mm pin pitch, immersion-gold PCB. Board ~2.1×1.5cm
+  (1.64cm wide including pin pads).
+- Substitutes for the originally-scoped ADXL335 to fill the tier5
+  `ACCELIF` gap — see
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
+  2026-09-03 gap-analysis cross-reference entry (this was the last of the
+  7 gap-analysis items still open).
+- Sat in cart since 2026-09-09, same cart/order as the CY7C68013A board
+  above; checked out 2026-09-10.
+- Ordered: 2026-09-10. Logged received: 2026-09-12.
+
 ---
 
 ## Cancelled
@@ -277,48 +393,6 @@ the converted `.md` files are tracked).
 
 ## On order (placed, not yet received)
 
-### TL082 JFET-input dual op-amp (DIP-8)
-
-- Listing: "10PCS TL061 TL062 TL071 TL072 TL081 TL082 061 062 071 072 081
-  082CP CN IP ACN ACP IN DIP-8" — selected variant "TL082" —
-  https://www.aliexpress.com/item/1005006751676691.html
-- 10 ordered. Fills the tier5 `EPFIELD`/`CHGAMP` gap identified in
-  `docs/history.md` (item 3 of its ~2026-09-01 gap-analysis entry): the
-  on-hand LM358 is bipolar-input (~20–100nA bias current) — the wrong
-  device class for a high-impedance electrometer/charge-amp front end.
-  TL082 is a JFET-input dual op-amp (bias current in the pA range),
-  matching what those two nodes need.
-- Listing gave no electrical spec beyond generic "standard" placeholders
-  (package: DIP, dissipation power: standard, supply voltage: standard) —
-  nothing beyond the standard TL082 datasheet ratings to record until the
-  part is on hand. See
-  [parts_reference.md](parts_reference.md#tl082-jfet-input-dual-op-amp).
-- Ordered: 2026-09-03.
-
-### MF52AT NTC thermistor (10kΩ)
-
-- Listing: "10/500pcs NTC Thermistor Thermal Resistor MF52 NTC-MF52AT 1K
-  5K 10K 50K 100K Ohm R 1% B 3950 Little Blackhead" — selected variant
-  "10K 10pcs" — https://www.aliexpress.com/item/1005009419869430.html
-- 10 ordered, 10kΩ value. Fills the safety `THERM` gap identified in
-  `docs/history.md` (item 7 of the same gap-analysis entry): the existing
-  thermistor in `inventory.md` is flagged "suspect faulty."
-- **The listing's own spec sheet describes a different value than what
-  was ordered**: the pasted datasheet text's worked example is model
-  `MF52A₁104F3950`, where the `104` EIA code decodes to 10×10⁴ = 100kΩ —
-  that's the listing's generic family sheet, not the 10kΩ (`103` code)
-  variant actually selected. The rest of the sheet (±1% tolerance,
-  B(25/50) = 3950K±1%, operating range −55–125°C, nickel-tin-plated
-  leads, black modified-phenolic body) should still apply across the
-  whole MF52 family regardless of R25 value, but treat the R25 figure
-  itself as belonging to the 100kΩ example, not the ordered part. The
-  sheet's physical-dimension figures (bead diameter Φ0.3±0.05mm) also
-  read as a probable OCR/translation error for a leaded bead thermistor
-  this size — verify against the physical part once received rather than
-  trusting the transcription. See
-  [parts_reference.md](parts_reference.md#mf52at-ntc-thermistor-10k).
-- Ordered: 2026-09-03.
-
 ### KY-003 A3144 Hall sensor breakout module
 
 - Listing: "1PCS~20PCS EGBO KY-003 A3144 Standard Hall Magnetic Sensor
@@ -347,59 +421,6 @@ the converted `.md` files are tracked).
   [parts_reference.md](parts_reference.md#ky-003-a3144-hall-sensor-breakout-module).
 - Ordered: 2026-09-03.
 
-### IRLZ44N logic-level N-channel MOSFET (TO-220)
-
-- Listing: "1-20PCS L7905CV L7905 L7918CV L7918 IRLZ44N IRLZ44 TOP245YN
-  TOP245 TIP29C TIP29 TIP127 127 TO-220" — selected variant "1PCS
-  IRLZ44N" — https://www.aliexpress.com/item/1005012492083603.html
-- 1 ordered. Fills the tier7 `HVPULSE` and protection `ACTIVELIM` gap
-  identified in `docs/history.md` (item 5 of the gap-analysis entry): no
-  switching MOSFET of any kind was previously on hand — the S8050/S8550
-  in inventory are small-signal BJTs, unsuited to either HV pulsing or
-  active current limiting.
-- Listing gave no electrical spec beyond generic "standard" placeholders
-  — record the standard IRLZ44N datasheet ratings (logic-level gate,
-  Vgs(th) ~1–2V, Id ~47A, Vds 55V) once the part is on hand and a real
-  datasheet is checked in. See
-  [parts_reference.md](parts_reference.md#irlz44n-logic-level-mosfet).
-- Ordered: 2026-09-03.
-
-### Piezo element, 12mm disc
-
-- Listing: "20PCS Piezo Elements Buzzer Sounder Sensor Trigger Drum Disc
-  Copper Piezo Speaker 12MM 15MM 20MM 27MM Piezoelectric" — selected
-  variant "12MM 20PCS" — https://www.aliexpress.com/item/1005009103008432.html
-- 20 ordered, 12mm size. Fills the tier5 `CHGAMP` gap identified in
-  `docs/history.md` (item 4 of the gap-analysis entry): `CHGAMP` needs a
-  charge-output transducer to actually drive; nothing in inventory
-  generates a charge signal. Pairs with the TL082 above (JFET-input
-  op-amp front end for the charge amplifier).
-- Listing's spec block is mostly boilerplate ("standard"/"international
-  standard" placeholders) plus packaging dimensions for the seller's
-  shipping lot (10×5×10cm, 20g) — not part specs. No piezo disc
-  diameter/capacitance/resonant-frequency datasheet value is available
-  from the listing; check the physical part once it arrives. See
-  [parts_reference.md](parts_reference.md#piezo-element-12mm-disc).
-- Ordered: 2026-09-03.
-
-### SN74HC86N quad 2-input XOR gate
-
-- Listing: "1-50PCS AT24C32A 24C32 A6252M A6252 93C56 C56WP SN74HC86N
-  74HC86 IT8517VG HXS 2SA970-GR 2SA970" — selected variant "1PCS
-  SN74HC86N DIP-1" — https://www.aliexpress.com/item/1005012522711553.html
-- 1 ordered. **The variant string's package suffix ("DIP-1") is almost
-  certainly truncated** — the SN74HC86N is a standard DIP-14 part, and
-  there is no "DIP-1" package in the 74HC86 family. Recorded verbatim per
-  the "don't silently fix a listing string" convention in
-  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md); treat
-  as DIP-14 until the physical part confirms otherwise.
-- Fills the tier4 `PHASED` → tier6 `LOCKIN` gap identified in
-  `docs/history.md` (item 6 of the gap-analysis entry): no logic gate IC
-  on hand except the 74HC595 shift register; XOR is the standard
-  phase-detector primitive. See
-  [parts_reference.md](parts_reference.md#sn74hc86n-quad-2-input-xor-gate).
-- Ordered: 2026-09-03.
-
 ### EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
 
 - Listing: "EZ-USB FX2LP CY7C68013A USB Core Board Development Board USB
@@ -421,27 +442,6 @@ the converted `.md` files are tracked).
   minimum, alongside the GY-521 below); checked out 2026-09-10 once the
   inductor reorder below was added to clear that threshold — all three
   shipped as one order.
-- Ordered: 2026-09-10.
-
-### GY-521 (MPU6050) 3-axis gyro/accelerometer module
-
-- Listing: "1~10PCS EGBO GY-521 GY521 MPU 6050 MPU6050 MPU 6050 Module 3
-  Axis Analog Gyro Sensor + Accelerometer for arduino DIY KIT" —
-  https://www.aliexpress.com/item/1005001863121268.html — selected variant
-  "1pcs Compatible".
-- 1 ordered — the earlier "quantity not yet confirmed" caveat from the
-  cart-stage entry is resolved by this variant string.
-- MPU-6050 chip, 3.3–5V supply (onboard low-dropout regulator), standard
-  I2C, built-in 16-bit ADC, gyro range ±250/500/1000/2000°/s, accel range
-  ±2/4/8/16g, 2.54mm pin pitch, immersion-gold PCB. Board ~2.1×1.5cm
-  (1.64cm wide including pin pads).
-- Substitutes for the originally-scoped ADXL335 to fill the tier5
-  `ACCELIF` gap — see
-  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
-  2026-09-03 gap-analysis cross-reference entry (this was the last of the
-  7 gap-analysis items still open).
-- Sat in cart since 2026-09-09, same cart/order as the CY7C68013A board
-  above; checked out 2026-09-10.
 - Ordered: 2026-09-10.
 
 ### Color-ring inductor assortment (0307, 1/4W) reorder

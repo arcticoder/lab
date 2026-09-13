@@ -3958,3 +3958,16 @@ If you want to leave it plugged in, running the resistance\_measurement check no
 I've updated `ne555_astable/README.md` with both readings and the diagnostic next step, `docs/TODO-arcticoder.md`'s divider bullet to reflect the failed fix attempt, and added two kb notes (the failed-fix lesson, and a WSL quirk about `.jpg:Zone.Identifier` files sometimes landing without their actual image).
 <!-- ------ -->
 ---
+All updates are complete. Summary of what changed:
+
+**`orders.md`** --- Moved TL082, MF52AT thermistor, IRLZ44N MOSFET, piezo disc, SN74HC86N XOR gate, and GY-521 accelerometer from "On order" to "Received," each with a "Logged received: 2026-09-12" date. KY-003, CY7C68013A, and the inductor reorder correctly remain on order.
+
+**`parts_reference.md`** --- Updated all six entries' status lines to "received... untested." Also fixed a pre-existing copy-paste bug: a paragraph about electrolytic capacitor polarity/soldering was wrongly attached to the SN74HC86N (XOR gate) entry instead of the aluminum electrolytic capacitor kit entry --- moved it to the correct section.
+
+**`inventory.md`** --- Moved the six rows into the "Prototyping, Analog ICs & Test Equipment" table; the "On Order" table now only lists the 3 still-in-transit items.
+
+**`TODO-arcticoder.md`** --- Removed 6 now-resolved bullets from "Blocked --- waiting on a shipment" (only `INDBRIDGE`, `SCOPELA`, and partial `HALLAMP` remain blocked), added 6 corresponding "Ready to build now" entries (`PHASED`, `THERM` replacement, `ACTIVELIM`/`HVPULSE`, `ACCELIF`, `EPFIELD`, `CHGAMP`), fixed stale cross-references in the Backlog section, and updated the "Next AliExpress order" pipeline note --- now flagging that only 3 items remain in transit (down from 9) and a top-up order is worth placing soon, though nothing is urgently blocking today.
+
+**kb notes** (LLM-only, not end-user facing) --- Logged the partial-batch-arrival pattern and the parts\_reference.md copy-paste bug in `ordering_ingestion_notes.md`, and logged the multi-bullet-unblock TODO maintenance pattern in `todo_list_conventions.md`.
+<!-- ------ -->
+---

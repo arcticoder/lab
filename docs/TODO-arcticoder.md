@@ -27,13 +27,17 @@ section stays at the top rather than after the bench-work sections —
 finding it buried past several pages of build tasks meant it kept getting
 skipped in practice.
 
-**No urgent order needed right now** — 9 items are currently in transit
-(TL082, MF52AT thermistor, KY-003 Hall module, IRLZ44N MOSFET, piezo
-disc, SN74HC86N XOR gate, all ordered 2026-09-03; CY7C68013A logic
-analyzer board, GY-521 accelerometer module, and the color-ring inductor
-reorder, all ordered 2026-09-10 — see [orders.md](orders.md)), which is a
-healthy pipeline. The items below are still worth adding to a cart
-whenever a small top-up order is convenient, not something to rush.
+**No urgent order needed right now, but the pipeline is thinning** — 6 of
+the last 9 in-transit items (TL082, MF52AT thermistor, IRLZ44N MOSFET,
+piezo disc, SN74HC86N XOR gate, GY-521 accelerometer module) arrived
+2026-09-12, unlocking several new builds below (see "Ready to build now").
+Only 3 items are still in transit: KY-003 Hall module (ordered
+2026-09-03), and the CY7C68013A logic analyzer board + color-ring
+inductor reorder (both ordered 2026-09-10) — see [orders.md](orders.md).
+That's thinner than the prior 9-item pipeline, so a top-up order is worth
+placing soon (transit runs a few weeks) rather than waiting for these 3
+to also land before shopping again — the items below are the standing
+candidates for that top-up.
 
 - [ ] **Linear/analog Hall-effect sensor (e.g. 49E), 5–10pk** — the
       KY-003/A3144 module already received only covers digital
@@ -72,6 +76,27 @@ whenever a small top-up order is convenient, not something to rush.
 - [ ] **`power_supplies/psu_3xaa` — confirm and assemble.** Likely shares
       the same AA-holder lead-termination step as `psu_low_v2` above —
       verify that assumption once `psu_low_v2` is built.
+- [ ] **New `PHASED` build (tier4, phase detector).** SN74HC86N quad XOR
+      gate (1 on hand, arrived 2026-09-12; DIP-14 per the listing's own
+      truncated variant string, unconfirmed against the physical part —
+      see [parts_reference.md](parts_reference.md#sn74hc86n-quad-2-input-xor-gate)).
+      Feeds tier6 `LOCKIN`. No folder exists yet.
+- [ ] **`THERM` replacement — design + build.** MF52AT 10kΩ NTC thermistor
+      (10 on hand, arrived 2026-09-12) replaces the "suspect faulty"
+      thermistor currently in `inventory.md`. No circuit exists yet.
+- [ ] **New `ACTIVELIM`/`HVPULSE` build (protection + tier7).** IRLZ44N
+      logic-level MOSFET (only 1 on hand, arrived 2026-09-12) serves both
+      nodes until/unless more units are ordered. No folder exists yet.
+- [ ] **New `ACCELIF` build (tier5, accelerometer interface).** GY-521
+      (MPU6050) module (1 on hand, arrived 2026-09-12) — I2C only, no
+      analog frontend needed. No folder exists yet.
+- [ ] **New `EPFIELD` build (tier5, electric field probe).** TL082
+      JFET-input dual op-amp (10 on hand, arrived 2026-09-12) — the
+      high-impedance front end LM358 couldn't provide. No folder exists
+      yet.
+- [ ] **New `CHGAMP` build (tier5, charge amplifier).** TL082 (shared with
+      `EPFIELD` above) + 12mm piezo disc (20 on hand, arrived 2026-09-12)
+      as the charge-output transducer. No folder exists yet.
 
 ## Needs a validation step before the part can be trusted
 
@@ -159,37 +184,12 @@ whenever a small top-up order is convenient, not something to rush.
       analyzer). Blocked on: CY7C68013A / EZ-USB FX2LP USB logic analyzer
       board, ordered 2026-09-10, not yet received. `sigrok`'s `fx2lafw`
       firmware supports it out of the box — no vendor software needed.
-- [ ] **`ACCELIF`** (tier5). Blocked on: GY-521 (MPU6050) module, ordered
-      2026-09-10, not yet received. Substitutes for the originally-scoped
-      ADXL335.
-- [ ] **`ACTIVELIM`** (protection, required by `psu_medhigh`/`psu_high`;
-      also feeds spacetime tier7 `HVPULSE`). Blocked on: IRLZ44N
-      logic-level MOSFET, ordered 2026-09-03, not yet received. No
-      switching MOSFET of any kind was previously on hand.
-- [ ] **`THERM`** (safety monitoring) replacement sensor. Blocked on:
-      MF52AT 10kΩ NTC thermistor batch, ordered 2026-09-03, not yet
-      received. The existing thermistor in inventory is flagged "suspect
-      faulty."
-- [ ] **`PHASED`** (tier4) → feeds `LOCKIN` (tier6). Blocked on: SN74HC86N
-      quad XOR gate, ordered 2026-09-03, not yet received. No logic gate
-      IC suited to phase detection was previously on hand (only a 74HC595
-      shift register).
 - [ ] **`HALLAMP`** (tier5) — partially unlocked once KY-003/A3144
-      arrives, but not fully. It's digital switch-output (a
-      presence/proximity read), not the linear-analog Hall element the
-      original op-amp-amplifier design needs — a genuinely linear part
-      (e.g. a 49E, see "Next AliExpress order" at the top of this file)
-      is still needed.
-- [ ] **`EPFIELD`** (tier5). Blocked on: TL082 JFET-input dual op-amp,
-      ordered 2026-09-03, not yet received. LM358 (on hand) is
-      bipolar-input — wrong device class for a high-impedance
-      electrometer front end.
-- [ ] **`CHGAMP`** (tier5). Blocked on: TL082 (same order as above) *and*
-      the 12mm piezo disc batch, both ordered 2026-09-03, not yet
-      received.
-- [ ] **`HVPULSE`** (tier7). Blocked on: IRLZ44N logic-level MOSFET,
-      ordered 2026-09-03, not yet received (same part as `ACTIVELIM`
-      above).
+      arrives (not yet received), but not fully even then. It's digital
+      switch-output (a presence/proximity read), not the linear-analog
+      Hall element the original op-amp-amplifier design needs — a
+      genuinely linear part (e.g. a 49E, see "Next AliExpress order" at
+      the top of this file) is still needed.
 
 ## Backlog — undesigned, long-tail
 
@@ -201,7 +201,8 @@ how each node connects before starting one.
 - [ ] **Safety monitoring** (general-purpose): `LEAKDET`, `GFCI`,
       `ESDMON`, `INSMON`, `ARCDECT`, `OVERCUR`, `OVERVOLT`, `TEMPCOIL`,
       `EMSTOP`, `PSUHEALTH`, `FUSESTAT`, `RFRAD`, `VACPRES`, `SMOKDET` all
-      undesigned. (`THERM` has a part on order — see "Blocked" above.)
+      undesigned. (`THERM` now has a part on hand — see "Ready to build
+      now" above.)
 - [ ] **PSU system**: `psu_medhigh`/`psu_high` — no fuse/limiter circuit
       built around the Lenovo 65W adapter (on hand) or any industrial
       supply.
@@ -210,11 +211,15 @@ how each node connects before starting one.
       `fuse_test_voltmeter`).
 - [ ] **Tier 2**: `VM`, `AM`, `FREQC` undesigned as dedicated circuits
       (distinct from the bootstrap ammeter jigs).
-- [ ] **Tier 4**: `IA`, `DA`, `DEMOD` undesigned. (`PHASED` has a part on
-      order — see "Blocked" above.)
-- [ ] **Tier 5** (spacetime): once the blocked parts arrive, none of
-      `HALLAMP`, `EPFIELD`, `LVDTAMP`, `ACCELIF`, `CHGAMP` have a folder,
-      netlist, or breadboard guide yet — all five are net-new builds.
+- [ ] **Tier 4**: `IA`, `DA`, `DEMOD` undesigned. (`PHASED` now has a part
+      on hand — see "Ready to build now" above.)
+- [ ] **Tier 5** (spacetime): `EPFIELD`, `ACCELIF`, `CHGAMP` now have
+      parts on hand (see "Ready to build now" above) but no folder,
+      netlist, or breadboard guide yet — three net-new builds. `HALLAMP`
+      is still only partially unlocked (KY-003 digital module still in
+      transit, and a linear/analog sensor like the 49E is still needed
+      regardless — see "Blocked" above). `LVDTAMP` remains fully
+      backlogged — no transducer sourced yet.
 - [ ] **Tier 6**: `LOCKIN`, `AAF`, `TIMEINT`, `JITTER` undesigned.
 - [ ] **Tier 7** (spacetime): `RFPWR`, `MIXER`, `SWEEP` completely
       unaddressed; no parts identified. Lowest priority of the spacetime

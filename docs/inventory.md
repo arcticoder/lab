@@ -221,6 +221,12 @@ in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 | PT334-6C photodiode (5mm)                     | 10       | Received 2026-09-03; untested. Silicon PIN photodiode — candidate for a tier2 `TIA` (transimpedance amplifier) build alongside the on-hand LM358P. See `lab/docs/parts_reference.md#pt334-6c-photodiode`. |
 | Multilayer ceramic capacitor assortment, 50V (10 values, 10pF-100nF) | 300 | Received 2026-09-10 (ordered 2026-08-30); untested. Physical EIA 3-digit codes confirmed against all 10 ordered values — see `lab/docs/parts_reference.md#multilayer-ceramic-capacitor-assortment-50v` for the decode table. Operating temperature still unresolved (listing self-contradicts). |
 | Aluminum electrolytic capacitor kit, 16V/25V/50V (12 values, 1µF-470µF) | 120 | Received 2026-09-10 (ordered 2026-08-30); untested. Polarized, radial-lead DIP-style, ±20% tolerance. See `lab/docs/parts_reference.md#aluminum-electrolytic-capacitor-kit-1665025050v` for the full per-value table. |
+| TL082 JFET-input dual op-amp, DIP-8 | 10 | Received 2026-09-12 (ordered 2026-09-03); untested. Fills the tier5 `EPFIELD`/`CHGAMP` gap — the on-hand LM358 is bipolar-input (wrong device class for a high-impedance electrometer/charge-amp front end). See `lab/docs/parts_reference.md#tl082-jfet-input-dual-op-amp`. |
+| MF52AT NTC thermistor, 10kΩ, B3950, 1% | 10 | Received 2026-09-12 (ordered 2026-09-03); untested. Fills the safety `THERM` gap — the existing thermistor in this table (Active Components and Sensors, above) is flagged "suspect faulty." See `lab/docs/parts_reference.md#mf52at-ntc-thermistor-10k`. |
+| IRLZ44N logic-level N-channel MOSFET, TO-220 | 1 | Received 2026-09-12 (ordered 2026-09-03); untested. Fills the tier7 `HVPULSE` and protection `ACTIVELIM` gap — no switching MOSFET of any kind was previously on hand. See `lab/docs/parts_reference.md#irlz44n-logic-level-mosfet`. |
+| Piezo element, 12mm disc | 20 | Received 2026-09-12 (ordered 2026-09-03); untested. Fills the tier5 `CHGAMP` gap — a charge-output transducer to drive the charge amplifier. See `lab/docs/parts_reference.md#piezo-element-12mm-disc`. |
+| SN74HC86N quad 2-input XOR gate, DIP-14 | 1 | Received 2026-09-12 (ordered 2026-09-03); untested. Fills the tier4 `PHASED` → tier6 `LOCKIN` gap — no logic gate IC on hand besides the 74HC595 shift register. See `lab/docs/parts_reference.md#sn74hc86n-quad-2-input-xor-gate`. |
+| GY-521 (MPU6050) 3-axis gyro/accelerometer module | 1 | Received 2026-09-12 (ordered 2026-09-10); untested. Substitutes for the originally-scoped ADXL335 to fill the tier5 `ACCELIF` gap. See `lab/docs/parts_reference.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module`. |
 
 ---
 
@@ -233,14 +239,8 @@ above once physically received.
 
 | Component                                    | Quantity | Notes                                                           |
 |-----------------------------------------------|----------|--------------------------------------------------------------------|
-| TL082 JFET-input dual op-amp, DIP-8 | 10 | Ordered 2026-09-03, not yet received. Fills the tier5 `EPFIELD`/`CHGAMP` gap — the on-hand LM358 is bipolar-input (wrong device class for a high-impedance electrometer/charge-amp front end). See `lab/docs/parts_reference.md#tl082-jfet-input-dual-op-amp`. |
-| MF52AT NTC thermistor, 10kΩ, B3950, 1% | 10 | Ordered 2026-09-03, not yet received. Fills the safety `THERM` gap — the existing thermistor in this table (Active Components and Sensors, above) is flagged "suspect faulty." See `lab/docs/parts_reference.md#mf52at-ntc-thermistor-10k`. |
 | KY-003 A3144 Hall sensor breakout module | 1 | Ordered 2026-09-03, not yet received. Fills the tier5 `HALLAMP` gap only partially — this is a digital switch-output Hall IC, not the linear analog sensor the gap called for. See `lab/docs/parts_reference.md#ky-003-a3144-hall-sensor-breakout-module`. |
-| IRLZ44N logic-level N-channel MOSFET, TO-220 | 1 | Ordered 2026-09-03, not yet received. Fills the tier7 `HVPULSE` and protection `ACTIVELIM` gap — no switching MOSFET of any kind was previously on hand. See `lab/docs/parts_reference.md#irlz44n-logic-level-mosfet`. |
-| Piezo element, 12mm disc | 20 | Ordered 2026-09-03, not yet received. Fills the tier5 `CHGAMP` gap — a charge-output transducer to drive the charge amplifier. See `lab/docs/parts_reference.md#piezo-element-12mm-disc`. |
-| SN74HC86N quad 2-input XOR gate, DIP-14 | 1 | Ordered 2026-09-03, not yet received. Fills the tier4 `PHASED` → tier6 `LOCKIN` gap — no logic gate IC on hand besides the 74HC595 shift register. See `lab/docs/parts_reference.md#sn74hc86n-quad-2-input-xor-gate`. |
 | EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer) | 1 | Ordered 2026-09-10, not yet received. *Is* the `SCOPELA` tier purchase itself; `sigrok`'s `fx2lafw` firmware supports it out of the box. See `lab/docs/parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer`. |
-| GY-521 (MPU6050) 3-axis gyro/accelerometer module | 1 | Ordered 2026-09-10, not yet received. Substitutes for the originally-scoped ADXL335 to fill the tier5 `ACCELIF` gap. See `lab/docs/parts_reference.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module`. |
 | Color-ring inductor assortment, 0307 1/4W (12 values, 1µH-1mH) — reorder | 120 | Ordered 2026-09-10, not yet received. Reorder of the cancelled item below (same listing/variant, still cheapest available). Blocks tier3 `INDBRIDGE`. See `lab/docs/parts_reference.md#color-ring-inductor-assortment-0307-14w`. |
 
 ---

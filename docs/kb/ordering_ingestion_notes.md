@@ -348,6 +348,47 @@ otherwise. Also resolved the GY-521 entry's outstanding "quantity not yet
 confirmed" caveat from the cart stage: the checkout variant string was
 "1pcs Compatible," settling it at 1 unit.
 
+## A batch arrival report can name only some items from an in-transit set — check each order line individually, don't assume "arrived today" covers everything still on order (2026-09-12)
+
+The user reported 6 items arrived on the same day (2026-09-12): TL082,
+MF52AT thermistor, IRLZ44N MOSFET, 12mm piezo disc, SN74HC86N XOR gate
+(all from the 2026-09-03 batch of 6), plus GY-521 (from the 2026-09-10
+batch of 3). **Two items from those same two batches were *not* in the
+arrival report**: KY-003 Hall module (2026-09-03 batch — odd that it
+shipped separately from its 5 batch-mates, but nothing in the message
+explained why) and the CY7C68013A logic analyzer board + color-ring
+inductor reorder (2026-09-10 batch). Moved only the 6 named items through
+the on-order → received pipeline (`orders.md`, `inventory.md`,
+`parts_reference.md`, `TODO-arcticoder.md`'s Blocked/Ready-to-build
+sections) and left the other 3 exactly where they were. General lesson:
+match the arrival report against the full current "On order" list item
+by item rather than assuming a same-batch/same-order-date grouping arrives
+atomically — AliExpress sellers routinely split one order into multiple
+shipments/tracking numbers, so partial-batch arrival is the expected case,
+not an anomaly to double-check before acting on.
+
+## Moving 6 items to "received" at once surfaced an unrelated copy-paste bug in `parts_reference.md` — worth a skim of neighboring content when editing a section, not just the lines being changed
+
+While updating the SN74HC86N XOR gate entry in `parts_reference.md` for
+its 2026-09-12 arrival, its trailing paragraph ("Long lead = positive...
+solder at 350–380°C... prolonged heat can damage the electrolyte...
+candidate use: bulk output filtering for `psu_medlow_lm317`... higher-
+capacitance tier3 `CAPBRIDGE`") turned out to describe the **aluminum
+electrolytic capacitor kit**, not a XOR gate IC — a digital logic chip has
+no lead polarity or electrolyte to damage. The electrolytic capacitor
+kit's own section, just above it in the same file, was missing exactly
+this content (it only had a bare "Polarized — orientation matters."
+sentence). Moved the paragraph to the correct section and left the XOR
+gate entry ending at its citation link. Root cause unclear (likely a
+stray paste during a past edit of adjacent sections) but nothing else in
+the file appeared to reference the misplaced text, so this was a pure
+copy-paste orphan rather than an intentional cross-reference. General
+lesson: when editing one entry in `parts_reference.md`, a quick skim of
+the surrounding 1-2 entries for content that doesn't match their own
+heading is worth doing — this file has no automated consistency check,
+and the failure mode (real solder-handling advice attached to the wrong
+part) could mislead a bench session if never caught.
+
 ## `psu_medlow_lm317/README.md` claims "on order" for the SFE Breadboard Power Supply Kit, but no matching entry exists in `orders.md` or either inventory
 
 Found 2026-09-03, not resolved. The kit is a RobotShop item (not
