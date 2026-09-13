@@ -163,6 +163,104 @@ this by literally asking "checking what this is needed for" at each step
 and finding no source backing the implied chain — that check should
 happen before the bullet is written, not after.
 
+## `TODO-agent.md` split from `TODO-arcticoder.md`: file-creation work vs. bench/ordering work (established 2026-09-13)
+
+Through 2026-09-13, "Ready to build now" mixed two genuinely different
+kinds of task under one bullet style: physical bench work the user has to
+do by hand (assemble a PSU, validate a diode batch), and file-creation
+work that's entirely Claude's job (write a `.spice` netlist,
+`breadboard.md`, `smoke_test.py`, `README.md` for a circuit that has
+parts on hand but "no folder exists yet"). The user flagged this
+explicitly and with some heat: creating those files is not something they
+should ever be asked to do — "we live in a post-AI world now... systemize
+a way to ensure the dependent tasks that can be completed by you are
+performed before I attempt to complete the bench steps myself." They
+pointed at `aqei-bridge/docs/TODO.md` (a sibling repo's pure agent-task
+list) as the pattern to follow.
+
+Fixed by creating [TODO-agent.md](../TODO-agent.md): every "no folder
+exists yet" item moves there instead of sitting in
+`TODO-arcticoder.md` as something that reads like an open task for the
+user. `TODO-arcticoder.md` should only ever gain a bullet for a given
+circuit once its folder/netlist/breadboard/smoke-test already exist — at
+that point the bullet is purely "physically assemble," per how the `TIA`
+and `CAPBRIDGE` bullets were rewritten the same day once
+`signal_conditioning/transimpedance_amplifier/` and
+`measurement_tools/capacitance_bridge/` were actually built. Both files
+share the same `TODO-completed.md` audit-trail convention (one shared
+log, not a second one per file) — a completed *design* task and a
+completed *bench* task are still both just "this item is done," so
+splitting the completion log by which file the item came from would add
+bookkeeping with no reader benefit.
+
+**Rule going forward: before adding "New `X` build... no folder exists
+yet" to `TODO-arcticoder.md`, that's a signal the item belongs in
+`TODO-agent.md` instead, not a valid `TODO-arcticoder.md` entry.** Design,
+simulate, smoke-test, and document the circuit there (or immediately, if
+asked to build something specific — see the `TIA`/`CAPBRIDGE` precedent),
+then add the bench-assembly bullet to `TODO-arcticoder.md` once real
+files back it.
+
+## "Ready to build now" is a no-urgency menu, not a mandatory queue, when nothing downstream needs its contents yet (established 2026-09-13)
+
+Separately from the file-creation split above, the user also pushed back
+on `TODO-arcticoder.md` reading like "a laundry list" even after the
+file-creation items were accounted for — the remaining bench-work bullets
+(validate a diode batch, assemble a PSU, etc.) were still presented with
+the same top-to-bottom "do this next" framing as the ordering section,
+despite most of them not actually blocking anything else on the bench.
+Checking the dependency graphs confirmed this: as of 2026-09-13, every
+downstream consumer of "Ready to build now"'s contents (tier4 and beyond)
+is itself still undesigned, so nothing currently *requires* any of these
+builds to happen — they're all genuinely optional right now, parts-on-
+hand busywork, not a backlog the user is behind on.
+
+Fixed by reframing the section's own intro (not by moving anything out of
+it): explicit language that nothing in it blocks anything else, that it's
+a menu to pick from rather than a queue to clear, and that skipping the
+whole section costs nothing. This is a narrower, more specific version of
+"Sections with real lead-time consequences must sit near the top" (below)
+— that entry is about section *placement*; this one is about section
+*framing* within an already-correctly-placed section. **Rule for future
+edits: before presenting a section as an ordered queue, check whether its
+items actually gate anything else currently on the list (via the
+dependency graphs) — if none of them do, say so explicitly in the
+section's own intro rather than leaving the reader to infer urgency from
+list position alone.** Revisit this framing if/when tier4+ circuits start
+getting designed and something in this section becomes a real
+prerequisite again.
+
+## Don't propose rebuilding something that already exists — check `README.md`'s bench-tested table and existing folders before writing "New `X` build" (established 2026-09-13)
+
+`TODO-arcticoder.md` briefly carried a "New `OHMMETER` build (tier3,
+4-wire Kelvin)" bullet listing the 0.1Ω/1Ω metal film resistors as
+reference legs, with "No folder exists yet." This was wrong on the
+premise, not just the wording: `measurement_tools/resistance_measurement/`
+already exists, is already built and bench-tested, and is in active
+reuse (it isolated the `ne555_astable` output-divider fault — see
+`repo_docs_conventions.md`'s `cd4066_switch_tester`/`ne555_astable`
+entries). It's a 2-wire divider, not a literal 4-wire Kelvin bridge, so it
+doesn't perfectly match the dependency graph's `OHMMETER` node label — but
+per the same substitution logic as `PASSVM` (see
+`repo_docs_conventions.md`), that's close enough to satisfy the node's
+*present* need. The user's own words: "I've already built an ohmmeter. If
+more are needed I'll build them when they're required."
+
+Fixed by removing the bullet entirely (not just editing it) and replacing
+it with a short prose note explaining why no `OHMMETER` bullet exists —
+the precedent set by `capacitance_bridge`'s own README, which documents
+the identical reasoning for why it substitutes a timing comparison for a
+literal AC bridge (see the entry above). **Rule for future TODO edits:
+before writing "New `X` build" for any dependency-graph node, check
+`README.md`'s "built & bench-tested" table and this repo's existing
+folders for something that already functionally satisfies the node — a
+node's literal label (e.g. "4-Wire Kelvin Ohmmeter") doesn't require a
+literal from-scratch rebuild if a simpler existing circuit already covers
+its current use, and proposing one anyway reads as not having checked
+first.** Only propose the more precise/literal version once something
+concrete actually needs the improvement the simpler version can't
+provide.
+
 ## Don't write future-session working notes into TODO-arcticoder.md itself
 
 A future LLM chat's own working notes on this repo belong in `docs/kb/`

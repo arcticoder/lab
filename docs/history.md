@@ -4026,3 +4026,18 @@ I also corrected the kb entry ([todo\_list\_conventions.md](vscode-webview://0t0
 Net effect on your actual next steps: unchanged in substance --- 1N5817 check first, then you can do `psu_low_v2`, `psu_3xaa`, and (once psu\_low\_v2 exists) TIA in whatever order suits your bench session, none of them blocking each other the way the old text implied.
 <!-- ------ -->
 ---
+Summary
+-------
+
+**Built and verified two new circuits** (netlist simulated in `ngspice`, `smoke_test.py` green, `breadboard.md`/`README.md`/`main.py` written):
+
+-   [signal\_conditioning/transimpedance\_amplifier/](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/signal_conditioning/transimpedance_amplifier/) --- PT334-6C photodiode + LM358 (tier2 `TIA`)
+-   [measurement\_tools/capacitance\_bridge/](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/measurement_tools/capacitance_bridge/) --- RC charge-time capacitance meter targeting the 1µF--470µF electrolytic kit (tier3 `CAPBRIDGE`)
+
+**Removed the redundant OHMMETER ask** --- `resistance_measurement` already satisfies it; added a note explaining why, instead of proposing a rebuild.
+
+**Split the TODO system**: created `lab/docs/TODO-agent.md` for file-creation work (Claude's job, mirroring `aqei-bridge/docs/TODO.md`), moved the 5 remaining undesigned circuits (`PHASED`, `THERM`, `ACTIVELIM`/`HVPULSE`, `EPFIELD`, `CHGAMP`) there, and rewrote `TODO-arcticoder.md`'s intro so "Ready to build now" is explicitly framed as a no-urgency menu (nothing in it currently blocks anything else) rather than a mandatory queue. Logged everything in `TODO-completed.md` and documented the reasoning in `docs/kb/todo_list_conventions.md` for future sessions.
+
+Updated `lab/README.md`, `inventory.md`, and `parts_reference.md` to cross-reference the new circuits, and confirmed the full smoke-test suite still passes (the one failure, `psu_medlow_usbc`, is a pre-existing intentional assertion, unrelated to today's changes).
+<!-- ------ -->
+---

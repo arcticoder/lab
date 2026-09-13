@@ -75,3 +75,48 @@ matching, so don't assume one file makes the other redundant.
   `oscillators/ne555_astable/README.md` § Validation for the per-unit
   table and `docs/inventory.md`'s NE555 row. Removed from
   `TODO-arcticoder.md`'s "Needs a validation step" section.
+- **`signal_conditioning/transimpedance_amplifier/` (tier2 `TIA`) —
+  designed, simulated, smoke-tested.** PT334-6C photodiode in zero-bias
+  mode into an LM358 transimpedance stage (photodiode modeled as an ideal
+  10µA current source, `Rf`=100kΩ from the on-hand kit, giving a 1.0V
+  design-point output — confirmed by `ngspice -b`, current-source node
+  order specifically verified by simulation to give the documented
+  positive polarity). `smoke_test.py` checks virtual-ground behavior,
+  headroom against `psu_low_v2`'s rail, and the Iph×Rf functional
+  relationship — all green. `breadboard.md`, `README.md`, and a streaming
+  `main.py` (mirrors `voltage_reference_lm358`'s style) also written. Not
+  yet physically assembled — see `TODO-arcticoder.md`'s "Ready to build
+  now" for that bullet (no current downstream urgency).
+- **`measurement_tools/capacitance_bridge/` (tier3 `CAPBRIDGE`) —
+  designed, simulated, smoke-tested.** RC charge-time capacitance meter
+  (known `Rref`=100kΩ + unknown `Cx`, timed crossing of 63.2% of Vin)
+  substituting for a classical 4-arm AC bridge, the same kind of
+  substitution `resistance_measurement` already made for `OHMMETER`.
+  Confirmed by `ngspice -b` (10µF nominal test point recovers ~9.997µF).
+  `smoke_test.py` checks `Rref` dissipation and the derived-capacitance
+  functional relationship — both green. `README.md` documents a "Range"
+  table showing this technique targets the 1µF–470µF electrolytic kit,
+  not the pF/nF ceramic assortment; `main.py` polls both a discharge and
+  a charge phase (not a fixed sleep, so the largest kit values discharge
+  fully before timing). Not yet physically assembled — see
+  `TODO-arcticoder.md`'s "Ready to build now" for that bullet.
+- **`OHMMETER` (tier3) — resolved as already satisfied, removed from the
+  active list.** The user pointed out an ohmmeter (`resistance_measurement`)
+  already exists and is in active use; re-checked
+  `general_purpose_circuit_dependency.md` and found `OHMMETER`'s only
+  consumer (tier4) is itself undesigned, so there's no concrete need for
+  the originally-scoped 4-wire Kelvin precision upgrade right now. Removed
+  the "New `OHMMETER` build" bullet from `TODO-arcticoder.md`'s "Ready to
+  build now" (was previously listed there with no folder, which read as
+  an open task) and replaced it with a short prose note explaining why
+  it's intentionally absent, instead of silently deleting it.
+- **`TODO-agent.md` created** — a new Claude-facing counterpart to
+  `TODO-arcticoder.md`, tracking file/folder/netlist-creation work (not
+  physical bench work) so it gets done proactively instead of surfacing
+  as a "no folder exists yet" line item on the user's own list. Moved the
+  5 remaining "parts on hand, no folder yet" items (`PHASED`, a `THERM`
+  replacement, `ACTIVELIM`/`HVPULSE`, `EPFIELD`, `CHGAMP`) there from
+  `TODO-arcticoder.md`'s "Ready to build now", each with enough of its
+  current design/sourcing state written down for a future session to pick
+  up without re-deriving it. See `docs/kb/todo_list_conventions.md` for
+  the reasoning this split is based on.

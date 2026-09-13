@@ -1,16 +1,24 @@
 # TODO — arcticoder
 
-Single human-facing checklist for this repo, covering both the
-general-purpose tier graph
-([general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md))
-and the spacetime-research tier graph
-([spacetime_circuits_dependency.md](spacetime_circuits_dependency.md)), plus
-personal action items only you can do (ordering, physical verification on
-the bench, decisions).
+Single human-facing checklist for this repo: things that need your hands,
+eyes, or a purchasing decision — ordering, physically assembling/wiring a
+circuit, and bench validation. Anything that's just creating a file
+(a netlist, a breadboard guide, a smoke test, a folder for a new circuit)
+is **not** on this list — that's Claude's job, tracked separately in
+[TODO-agent.md](TODO-agent.md) and done proactively, before a build ever
+shows up here as something for you to physically assemble. See
+[docs/kb/todo_list_conventions.md](kb/todo_list_conventions.md) for why
+this split exists.
 
-**Work this file top-to-bottom, one section at a time.** Whichever
-section below is first to still have an unchecked item is what to do
-next, and within that section the first bullet is the most important.
+**"Next AliExpress order" comes first because it's the one section with
+a real clock** (shipping transit runs a few weeks) — work that one first
+if it has an open item. **"Ready to build now" is a menu, not a queue**:
+as of 2026-09-13, nothing in it is currently blocking any other buildable
+work (everything downstream — tier4 and beyond — is itself still
+undesigned), so pick whatever you feel like out of it, or ignore the
+whole section, with no cost to anything else on this list. "Blocked" and
+"Backlog" are reference sections, not action items, until something
+changes their status.
 
 Completed circuits' bench-test status is tracked in `README.md`'s "built &
 bench-tested" table and `docs/history.md`. For the TODO items on *this*
@@ -29,14 +37,13 @@ skipped in practice.
 
 **No order needed right now — hold off on a top-up.** The entire
 2026-09-03 batch (TL082, MF52AT thermistor, IRLZ44N MOSFET, piezo disc,
-SN74HC86N XOR gate, KY-003 Hall module) arrived 2026-09-12, unlocking 10
-new-build items in "Ready to build now" below. The NE555 batch validation
-(all 10 units) completed 2026-09-13 — see
-[TODO-completed.md](TODO-completed.md) — leaving 3 validation-pending
-items in that same section (1N5817 diodes, CD4066BCN switches 2–4, glass
-tube fuses) plus 4 open-correctness items, folded into the same
-dependency-ordered list rather than tracked separately. That's ~17 items
-in "Ready to build now" against parts/circuits already on hand; only the
+SN74HC86N XOR gate, KY-003 Hall module) arrived 2026-09-12. The NE555
+batch validation (all 10 units) completed 2026-09-13 — see
+[TODO-completed.md](TODO-completed.md). As of 2026-09-13, "Ready to build
+now" holds 11 items against parts/circuits already on hand (down from 17
+— 6 moved to [TODO-agent.md](TODO-agent.md) pending a folder/design, or
+were dropped as already satisfied; see that section's own note and
+[docs/kb/todo_list_conventions.md](kb/todo_list_conventions.md)); only the
 GY-521 module, CY7C68013A board, and color-ring inductor reorder from the
 2026-09-10 batch are still in transit — see [orders.md](orders.md).
 **Build/validation rate, not part supply, is the bottleneck right now**,
@@ -59,13 +66,23 @@ standing candidates for whenever that top-up is actually warranted.
       it (`LVDTAMP`). Pricier/more niche than the items above; lower
       priority but the last unaddressed tier5 sensor.
 
-## Ready to build now — parts on hand
+## Ready to build now — parts on hand, none of this is urgent
 
-Builds, validation steps, and correctness fixes are one dependency-ordered
-list here, not three separate lists — when a build needs a validation or
-correctness step done first, that step is the bullet directly above it.
-Everything past the dependency-linked pair at the top has no such
-dependency and can be done in any order.
+**Nothing below is blocking anything else currently on this list** — every
+downstream consumer (tier4 and beyond) is itself still undesigned, so
+there's no cost to skipping this entire section indefinitely. Treat it as
+a menu of what you *could* spend bench time on, not a backlog you're
+behind on. Builds, validation steps, and correctness fixes are one
+dependency-ordered list here, not three separate lists — when a build
+needs a validation or correctness step done first, that step is the
+bullet directly above it. Everything past the dependency-linked pair at
+the top has no such dependency and can be done in any order.
+
+Five other circuits have parts on hand but no folder/netlist/breadboard
+guide yet (`PHASED`, a `THERM` replacement, `ACTIVELIM`/`HVPULSE`,
+`EPFIELD`, `CHGAMP`) — that design/file-creation work is tracked in
+[TODO-agent.md](TODO-agent.md), not here, since it's not something you do.
+They'll appear below, as bench-assembly bullets, once that's done.
 
 - [ ] **1N5817 Schottky diodes — not validated per-unit.** Check forward
       drop (~0.35–0.45V) on each before wiring into `psu_low_v2` or
@@ -87,42 +104,33 @@ dependency and can be done in any order.
       bullets above (same diode batch, same unvalidated-forward-drop
       status); doesn't need `psu_low_v2` assembled first and can be done
       before, after, or in parallel with it.
-- [ ] **New `TIA` build (tier2, transimpedance amplifier).** PT334-6C
-      photodiode (10 on hand) + LM358P (spares available beyond the one
-      used in `voltage_reference_lm358`). Per
+- [ ] **`signal_conditioning/transimpedance_amplifier` (tier2, `TIA`) —
+      physically assemble.** Folder/netlist/breadboard guide/smoke test
+      now exist (2026-09-13). Per
       [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
       (`psu_low --> tier2` edge), its supply-rail prerequisite is
-      `psu_low_v2`, not `psu_3xaa` — despite sitting below `psu_3xaa` in
-      this list, it doesn't need `psu_3xaa` done at all. No folder exists
-      yet — create one under `signal_conditioning/` or
-      `measurement_tools/` with the usual `.spice` + `breadboard.md` +
-      `smoke_test.py` + `README.md` set.
-- [ ] **New `OHMMETER` build (tier3, 4-wire Kelvin).** 0.1Ω and 1Ω metal
-      film resistors (20 each on hand) are the reference legs. No folder
-      exists yet.
-- [ ] **New `CAPBRIDGE` build (tier3, capacitance bridge).** Both the
-      multilayer ceramic capacitor assortment (50V, 10 values) and the
-      aluminum electrolytic capacitor kit (16V/25V/50V, 12 values)
-      arrived 2026-09-10 — no longer blocked on a shipment. No folder
-      exists yet.
-- [ ] **New `PHASED` build (tier4, phase detector).** SN74HC86N quad XOR
-      gate (1 on hand, arrived 2026-09-12; DIP-14 per the listing's own
-      truncated variant string, unconfirmed against the physical part —
-      see [parts_reference.md](parts_reference.md#sn74hc86n-quad-2-input-xor-gate)).
-      Feeds tier6 `LOCKIN`. No folder exists yet.
-- [ ] **`THERM` replacement — design + build.** MF52AT 10kΩ NTC thermistor
-      (10 on hand, arrived 2026-09-12) replaces the "suspect faulty"
-      thermistor currently in `inventory.md`. No circuit exists yet.
-- [ ] **New `ACTIVELIM`/`HVPULSE` build (protection + tier7).** IRLZ44N
-      logic-level MOSFET (only 1 on hand, arrived 2026-09-12) serves both
-      nodes until/unless more units are ordered. No folder exists yet.
-- [ ] **New `EPFIELD` build (tier5, electric field probe).** TL082
-      JFET-input dual op-amp (10 on hand, arrived 2026-09-12) — the
-      high-impedance front end LM358 couldn't provide. No folder exists
-      yet.
-- [ ] **New `CHGAMP` build (tier5, charge amplifier).** TL082 (shared with
-      `EPFIELD` above) + 12mm piezo disc (20 on hand, arrived 2026-09-12)
-      as the charge-output transducer. No folder exists yet.
+      `psu_low_v2` (two bullets above), not `psu_3xaa`. No current
+      downstream consumer (tier4/spacetime are still undesigned) — build
+      whenever you feel like it.
+- [ ] **`measurement_tools/capacitance_bridge` (tier3, `CAPBRIDGE`) —
+      physically assemble.** Folder/netlist/breadboard guide/smoke test
+      now exist (2026-09-13), targeting the aluminum electrolytic
+      capacitor kit (1µF–470µF) — see its `README.md` § Range for why the
+      pF/nF ceramic assortment isn't in scope for this design. No PSU
+      needed (runs off the Pico's own GPIO/3V3). No current downstream
+      consumer — build whenever you feel like it.
+
+**No `OHMMETER` bullet here on purpose.**
+`measurement_tools/resistance_measurement` (already built and in active
+use — see its own README) already covers the tier3 `OHMMETER` node's
+present need with a 2-wire divider, the same kind of substitution
+`capacitance_bridge` above makes for a literal 4-arm bridge. A dedicated
+4-wire Kelvin design would only matter for measuring resistances small
+enough that lead/contact resistance corrupts a 2-wire reading — nothing
+on this bench currently needs that precision (its only consumer, tier4,
+is undesigned). Not queued anywhere; revisit only if a specific
+low-resistance measurement actually needs it.
+
 - [ ] **`power_supplies/psu_medlow_usbc` — status is "incomplete /
       unverified."** The USB-C breakout is passive with no PD controller;
       VBUS may never come up without confirmed CC1/CC2 termination. Check
@@ -193,8 +201,8 @@ how each node connects before starting one.
 - [ ] **Safety monitoring** (general-purpose): `LEAKDET`, `GFCI`,
       `ESDMON`, `INSMON`, `ARCDECT`, `OVERCUR`, `OVERVOLT`, `TEMPCOIL`,
       `EMSTOP`, `PSUHEALTH`, `FUSESTAT`, `RFRAD`, `VACPRES`, `SMOKDET` all
-      undesigned. (`THERM` now has a part on hand — see "Ready to build
-      now" above.)
+      undesigned. (`THERM` now has a part on hand — folder/design pending
+      in [TODO-agent.md](TODO-agent.md).)
 - [ ] **PSU system**: `psu_medhigh`/`psu_high` — no fuse/limiter circuit
       built around the Lenovo 65W adapter (on hand) or any industrial
       supply.
@@ -204,10 +212,10 @@ how each node connects before starting one.
 - [ ] **Tier 2**: `VM`, `AM`, `FREQC` undesigned as dedicated circuits
       (distinct from the bootstrap ammeter jigs).
 - [ ] **Tier 4**: `IA`, `DA`, `DEMOD` undesigned. (`PHASED` now has a part
-      on hand — see "Ready to build now" above.)
+      on hand — folder/design pending in [TODO-agent.md](TODO-agent.md).)
 - [ ] **Tier 5** (spacetime): `EPFIELD` and `CHGAMP` now have parts on
-      hand (see "Ready to build now" above) but no folder, netlist, or
-      breadboard guide yet — two net-new builds. `ACCELIF` is still
+      hand but no folder, netlist, or breadboard guide yet — two net-new
+      builds pending in [TODO-agent.md](TODO-agent.md). `ACCELIF` is still
       blocked on the GY-521 module, not yet received (see "Blocked"
       above). `HALLAMP` is partially unlocked (KY-003 arrived, but a
       linear/analog sensor like the 49E is still needed for the op-amp

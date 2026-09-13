@@ -1,0 +1,52 @@
+* transimpedance_amplifier — PT334-6C photodiode + LM358 TIA front-end
+*
+* Circuit topology (per docs/parts_reference.md#pt334-6c-photodiode):
+*   PT334-6C anode   -> GND (node 0), zero-bias/photovoltaic mode
+*   PT334-6C cathode -> LM358 inverting input (node 2, held at virtual
+*                        ground by the feedback loop below)
+*   Rf (feedback)    -> from LM358 output (node 3) back to node 2
+*   LM358 non-inverting input -> GND (node 0)
+*
+* Spec target: tier2 TIA node (general_purpose_circuit_dependency.md),
+* powered from psu_low_v2 (psu_low --> tier2 edge) per the TIA-placement
+* correction in docs/kb/todo_list_conventions.md — NOT from psu_3xaa.
+*
+* Photodiode modeled as an ideal current source (Iph) from node 2 to
+* node 0, standing in for the PT334-6C's photocurrent in zero-bias
+* (photovoltaic) mode — matches the repo's existing simplified-model
+* convention (see signal_conditioning/voltage_reference_lm358.spice's own
+* header re: the LM358 E-element). This does NOT model dark current,
+* junction capacitance, or the diode's own I-V curve, only the
+* photocurrent magnitude. Iph=10uA is an illustrative bench-light value,
+* not a calibrated lux/responsivity measurement for this specific part —
+* rescale for whatever's actually incident on the real photodiode.
+* Current-source node order (2 -> 0, not 0 -> 2) was confirmed by
+* simulation to reproduce the documented cathode-at-virtual-ground
+* wiring's expected positive output polarity (V(3) = +Iph*Rf); the
+* opposite order would flip Vout negative, which a single-supply LM358
+* can't produce (see README.md's headroom caveat).
+*
+* LM358 modeled as an ideal op-amp (same E-element technique as
+* voltage_reference_lm358.spice): a very-high-gain (1e5)
+* voltage-controlled voltage source, non-inverting input grounded,
+* inverting input at node 2, output at node 3. Does not model input
+* offset voltage, bias current, slew rate, or output-swing headroom near
+* GND/VCC (see README.md for the real part's headroom caveat against
+* psu_low_v2's rail).
+*
+* Rf = 100k (SunFounder kit, on hand) gives Vout = 10uA * 100k = 1.0V —
+* comfortably inside the LM358's single-supply output-swing ceiling
+* against psu_low_v2's rail (see README.md).
+
+Iph     2 0  DC 10u
+Rf      2 3  100k
+Eopamp  3 0  0 2  1e5
+
+.control
+op
+echo --- TIA: virtual-ground node (should be ~0V) vs output (Iph * Rf) ---
+print v(2) v(3)
+quit
+.endc
+
+.end

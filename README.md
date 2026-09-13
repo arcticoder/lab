@@ -55,7 +55,9 @@ ngspice -b power_supplies/psu_3xaa/psu_3xaa.spice
 ngspice -b power_supplies/psu_4xaa/psu_4xaa.spice
 ngspice -b power_supplies/psu_medlow_usbc/psu_medlow_usbc.spice
 ngspice -b signal_conditioning/voltage_reference_lm358/voltage_reference_lm358.spice
+ngspice -b signal_conditioning/transimpedance_amplifier/transimpedance_amplifier.spice
 ngspice -b oscillators/ne555_astable/ne555_astable.spice
+ngspice -b measurement_tools/capacitance_bridge/capacitance_bridge.spice
 ```
 
 Run from the repo root. Each netlist prints an operating point at its
@@ -95,7 +97,9 @@ python power_supplies/psu_medlow_usbc/smoke_test.py
 python power_supplies/psu_pico_rail/smoke_test.py
 python power_supplies/psu_ultralow_v1/smoke_test.py
 python signal_conditioning/voltage_reference_lm358/smoke_test.py
+python signal_conditioning/transimpedance_amplifier/smoke_test.py
 python oscillators/ne555_astable/smoke_test.py
+python measurement_tools/capacitance_bridge/smoke_test.py
 ```
 
 Or run all of them at once with `tools/run_all_smoke_tests.py`, which
@@ -155,13 +159,17 @@ sequence this drives.
 | `power_supplies/psu_3xaa/` | 3×AA + Schottky + 500 mA polyfuse | `psu_system` (between `psu_low` and `psu_4xaa`) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
 | `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit **not yet ordered**, not yet built — see `docs/TODO-arcticoder.md`) |
+| `signal_conditioning/transimpedance_amplifier/` | PT334-6C photodiode + LM358 current-to-voltage converter | tier2 `TIA` (fed from `psu_low_v2`; no current downstream urgency — see `docs/TODO-arcticoder.md`) |
+| `measurement_tools/capacitance_bridge/` | RC charge-time capacitance meter (known `Rref` vs. unknown `Cx`, timed against a 63.2%-of-Vin threshold) | tier3 `CAPBRIDGE`, targets the 1µF–470µF electrolytic kit (see its own README § Range) |
 Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
 schematic, a breadboard wiring guide, and a `smoke_test.py`, but none have
-been physically assembled with real components yet. The polyfuses they
-depend on are no longer the blocker — both batches passed validation via
-`ammeter_10ohm`/`ammeter_1ohm` above — so what remains is just the
-physical build. Everything else in
+been physically assembled with real components yet. For the PSU rows, the
+polyfuses they depend on are no longer the blocker — both batches passed
+validation via `ammeter_10ohm`/`ammeter_1ohm` above — so what remains is
+just the physical build; `transimpedance_amplifier` and
+`capacitance_bridge` have no polyfuse dependency at all (the latter needs
+no PSU whatsoever — see its own README). Everything else in
 `docs/general_purpose_circuit_dependency.md` /
 `docs/spacetime_circuits_dependency.md` (safety monitoring, most of tiers
 1–9) hasn't been worked out to netlist stage at all — folders for those
@@ -171,9 +179,11 @@ will show up here as they get one.
 
 ## Notes
 
-- `measurement_tools/fuse_test_voltmeter/`, `cd4066_switch_tester/`, and
-  `signal_conditioning/voltage_reference_lm358/` are the circuits here with
-  Pico firmware (`main.py`) checked in. For more
+- `measurement_tools/fuse_test_voltmeter/`, `cd4066_switch_tester/`,
+  `measurement_tools/capacitance_bridge/`,
+  `signal_conditioning/voltage_reference_lm358/`, and
+  `signal_conditioning/transimpedance_amplifier/` are the circuits here
+  with Pico firmware (`main.py`) checked in. For more
   capable Pico ADC work (filtering, calibration curves, noise
   characterization), see the sibling `pico/` repo's
   `measurement_tools/gpio_analog_sensing/` — that repo isn't limited to
@@ -239,6 +249,14 @@ measurement_tools/
         main.py
         README.md
 
+    capacitance_bridge/      RC charge-time capacitance meter, targets the 1uF-470uF electrolytic kit (designed, not built)
+        capacitance_bridge.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        smoke_test.py
+        README.md
+
 power_supplies/
     psu_pico_rail/            Pico onboard 3.3V rail, ~100mA (interim, built & bench-tested)
         psu_pico_rail.spice
@@ -298,6 +316,14 @@ signal_conditioning/
         smoke_test.py
         README.md
 
+    transimpedance_amplifier/ PT334-6C photodiode + LM358 current-to-voltage converter (designed, not built)
+        transimpedance_amplifier.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        smoke_test.py
+        README.md
+
 oscillators/
     ne555_astable/            NE555 astable oscillator, 3296 trimpot timing (built & bench-tested — oscillation confirmed, output divider fixed 2026-09-13)
         ne555_astable.spice
@@ -313,7 +339,8 @@ docs/
     general_purpose_circuit_dependency.md       general-purpose tier graph (PSU, protection, tiers 1-4/6/9, scope/logic-analyzer tiers M0-M5)
     spacetime_circuits_dependency.md            spacetime-specific tier graph (tiers 5/7/8)
     TODO-arcticoder.md                          human TODO: single active/blocked/backlog checklist for both graphs above, plus personal action items
-    TODO-completed.md                           dated audit trail of TODO-arcticoder.md items once done — moved here, not deleted
+    TODO-agent.md                                Claude-facing TODO: file/folder-creation tasks (netlists, docs) queued for Claude, before a build gets a bench bullet in TODO-arcticoder.md
+    TODO-completed.md                           dated audit trail of TODO-arcticoder.md/TODO-agent.md items once done — moved here, not deleted
     inventory.md                                master component inventory (moved from pico/docs/inventory.md 2026-09-07)
     orders.md                                   AliExpress order log (received / on order)
     parts_reference.md                          pinouts & specs for ordered parts without a datasheet on file

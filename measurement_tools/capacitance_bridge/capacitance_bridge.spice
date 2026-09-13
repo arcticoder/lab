@@ -1,0 +1,43 @@
+* capacitance_bridge — RC charge-time capacitance meter
+*
+* Circuit topology:
+*   Pico GPIO (drive, node 1) --Rref(100k)--> node 2 --Cx--> GND
+*   Pico ADC reads node 2.
+*
+* Charging Cx from a GPIO driven HIGH through Rref is a single-pole RC
+* charge: Vc(t) = Vin*(1 - e^(-t/(Rref*Cx))). At t = Rref*Cx (one time
+* constant), Vc = 0.632*Vin. Timing that crossing and solving
+* Cx = t / Rref is the "bridge" here: it substitutes a known-reference-
+* vs-unknown timing comparison for a classical 4-arm AC bridge (which
+* would need an AC excitation source and a phase-sensitive null
+* detector — not available on this bench). This is the same kind of
+* substitution measurement_tools/resistance_measurement already made for
+* the tier3 `OHMMETER` node (a voltage divider instead of a literal
+* 4-wire Kelvin bridge) — see docs/kb/todo_list_conventions.md.
+*
+* Practical range: only usable for capacitance values whose charge time
+* is comfortably within what a Pico polling loop can resolve (main.py
+* samples every ~1ms) — this targets the aluminum electrolytic capacitor
+* kit (1uF-470uF, docs/inventory.md), not the pF/nF ceramic assortment,
+* whose charge times at Rref=100k would be microseconds or less. See
+* README.md's "Range" section.
+*
+* Nominal design/test point below: Cx = 10uF (a value from the
+* electrolytic kit), Rref = 100k (SunFounder kit, on hand).
+* Vin models the Pico GPIO driven HIGH (3.3V).
+
+Vin     1 0  DC 3.3
+Rref    1 2  100k
+Cx      2 0  10u
+.ic v(2)=0
+
+.control
+tran 1m 3 uic
+meas tran t63 WHEN v(2)=2.0856 RISE=1
+let c_measured = t63 / 100k
+echo --- capacitance_bridge: time to 63.2% of Vin, and derived Cx ---
+print t63
+print c_measured
+.endc
+
+.end

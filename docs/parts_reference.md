@@ -249,10 +249,11 @@ resistor for a tier3 `OHMMETER` (4-wire Kelvin) build.
 
 10 received 2026-09-03 (ordered 2026-08-30), 5mm package, untested. See
 [orders.md](orders.md#pt334-6c-photodiode-5mm). Silicon PIN photodiode,
-typically used reverse-biased in a transimpedance amplifier front-end
-(anode to GND, cathode through a feedback resistor/op-amp to a positive
-rail) — candidate for a tier2 `TIA` build alongside the on-hand LM358P.
-Pin identification: the longer lead is the anode, matching standard
+used in zero-bias (photovoltaic) mode in
+[signal_conditioning/transimpedance_amplifier/](../signal_conditioning/transimpedance_amplifier/)
+(tier2 `TIA`, designed/simulated 2026-09-13): anode to GND, cathode
+through a feedback resistor to the LM358's virtual-ground inverting
+input. Pin identification: the longer lead is the anode, matching standard
 photodiode/LED lead convention — confirm against the physical part
 before wiring, since some photodiode packages reverse this convention
 relative to LEDs.
@@ -319,13 +320,18 @@ Useful going forward for sorting/identifying an individual cap pulled
 from the assortment box without a meter — read the printed code, decode
 per this table, rather than guessing from cap size/color alone.
 
-First candidate use: tier3 `CAPBRIDGE` (capacitance bridge) directly,
-general bypass/decoupling across any circuit here, and NE555 timing
-capacitors (tier1 `OSC`) — the 100nF/10nF SunFounder-kit ceramic caps
-(already on hand, not this assortment) cover the
-[NE555 timer](#ne555-timer)'s `OSC` design in `oscillators/ne555_astable/`
-(designed & simulated 2026-09-01, not yet bench-built), so this
-assortment isn't actually needed for that use.
+**Not** the range
+[measurement_tools/capacitance_bridge/](../measurement_tools/capacitance_bridge/)
+(tier3 `CAPBRIDGE`, designed/simulated 2026-09-13) actually targets — that
+circuit's RC charge-time technique needs charge times a Pico polling loop
+can resolve (tens of ms and up), and this assortment's pF/nF values would
+charge in microseconds at a practical `Rref`; see that circuit's README
+§ Range. General bypass/decoupling across any circuit here, and NE555
+timing capacitors (tier1 `OSC`) remain candidate uses — the 100nF/10nF
+SunFounder-kit ceramic caps (already on hand, not this assortment) cover
+the [NE555 timer](#ne555-timer)'s `OSC` design in
+`oscillators/ne555_astable/` (built & bench-tested), so this assortment
+isn't actually needed for that use either.
 
 ---
 
@@ -360,10 +366,13 @@ is marked with a stripe (usually with `−` symbols) on the negative side.
 Per the listing's own manual text: solder at 350–380°C for ≤3 seconds
 per joint (prolonged heat can damage the electrolyte), keep the working
 voltage at or below 80% of the rated voltage for the selected value, and
-mount vertically with pin spacing matched to the pad spacing. First
-candidate use: bulk output filtering for `psu_medlow_lm317`/
-`psu_medlow_usbc`, and higher-capacitance tier3 `CAPBRIDGE` work beyond
-what the ceramic kit above covers.
+mount vertically with pin spacing matched to the pad spacing. Used
+(a 10µF unit) as the design/test point in
+[measurement_tools/capacitance_bridge/](../measurement_tools/capacitance_bridge/)
+(tier3 `CAPBRIDGE`, designed/simulated 2026-09-13) — this kit's whole
+1µF–470µF range is what that circuit's RC charge-time technique targets
+(see its README § Range). Also a candidate for bulk output filtering on
+`psu_medlow_lm317`/`psu_medlow_usbc`.
 
 ---
 
