@@ -188,6 +188,33 @@ reuse unmodified for the rest of the NE555 batch** — see
 `docs/TODO-arcticoder.md`'s "Needs a validation step" section for the
 per-unit swap-and-check procedure.
 
+**Batch validation, remaining 9 units, same day (2026-09-13,
+`breadboard3.jpg`).** Each of IC 2 through IC 10 swapped into the same
+socket/wiring (trimpot untouched throughout) and run through
+`oscillation_probe`:
+
+| IC | swing | crossings | toggle-rate est. |
+|----|-------|-----------|-------------------|
+| 2  | 2.221V | 113 | ~1532 Hz |
+| 3  | 2.226V | 112 | ~1518 Hz |
+| 4  | 2.231V | 112 | ~1519 Hz |
+| 5  | 2.241V | 113 | ~1532 Hz |
+| 6  | 2.223V | 111 | ~1505 Hz |
+| 7  | 2.238V | 112 | ~1519 Hz |
+| 8  | 2.239V | 112 | ~1519 Hz |
+| 9  | 2.232V | 113 | ~1532 Hz |
+| 10 | 2.250V | 114 | ~1546 Hz |
+
+**All 9 pass.** Every swing lands in the ~2.2-2.25V band the fixed
+divider produces (no unit pinned at 3.300V), and every crossing count is
+in the low hundreds over the burst window — unambiguous toggling, none of
+the "stuck high/low" or "far from formula" fault signatures below. The
+~1505-1546Hz spread across otherwise-identical wiring and an untouched
+trimpot is normal chip-to-chip timing tolerance (~3%), not a fault.
+Combined with IC 1 above, **all 10 units in the NE555 batch are now
+validated PASS** — see `docs/inventory.md`'s NE555 row and
+`docs/TODO-arcticoder.md` (moved to `TODO-completed.md`).
+
 ---
 
 ## Expected behaviour

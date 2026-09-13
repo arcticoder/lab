@@ -4006,3 +4006,13 @@ One thing worth flagging: while updating the docs I found `resistance_measuremen
 -   `docs/kb/` --- logged two lessons for future sessions: a divider-symptom fault can be a wrong-value component, not just wiring, and this jig's `main.py` constants are mutable bench state that need checking against the file, not assumed from conversation.
 <!-- ------ -->
 ---
+This reads cleanly and consistently. Both tasks are done. Summary:
+
+**1\. NE555 batch validation (9 remaining units) --- complete.** All 9 units (IC 2--10) passed: swing ~2.2--2.25V, 111--114 crossings, consistent with IC 1's earlier result. All 10 units in the batch are now validated. Updated `oscillators/ne555_astable/README.md` (per-unit results table), `docs/inventory.md` (NE555 row), and moved the item from `TODO-arcticoder.md` to `TODO-completed.md`.
+
+**2\. TODO restructuring --- done.** Merged "Ready to build now," "Needs a validation step," and "Open correctness issues" into one dependency-ordered list: the 1N5817 diode forward-drop check now sits directly above `psu_low_v2` assembly (which depends on it --- previously this dependency was hidden across two separate sections), followed by `psu_3xaa`, then the independent new-builds, then items that don't block anything else. Also fixed a stray cross-reference in `general_purpose_circuit_dependency.md` and updated the intro's item counts.
+
+Documented the reasoning behind the merge (and why it's different from keeping the AliExpress-ordering section separate) in `lab/docs/kb/todo_list_conventions.md` for future sessions.
+<!-- 
+------ -->
+---

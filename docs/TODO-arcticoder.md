@@ -30,23 +30,27 @@ skipped in practice.
 **No order needed right now — hold off on a top-up.** The entire
 2026-09-03 batch (TL082, MF52AT thermistor, IRLZ44N MOSFET, piezo disc,
 SN74HC86N XOR gate, KY-003 Hall module) arrived 2026-09-12, unlocking 10
-new-build items below ("Ready to build now"), on top of 4 existing
-validation-pending items ("Needs a validation step"). That's ~14 backlog
-items against parts already on hand, only the GY-521 module, CY7C68013A
-board, and color-ring inductor reorder from the 2026-09-10 batch are
-still in transit — see [orders.md](orders.md). **Build/validation rate,
-not part supply, is the bottleneck right now**, so a top-up order would
-just make the pipeline longer than the bench can work through. Revisit
-once the 14-item backlog above has shrunk meaningfully (roughly half),
-not on a fixed calendar schedule — the items below stay as the standing
-candidates for whenever that top-up is actually warranted.
+new-build items in "Ready to build now" below. The NE555 batch validation
+(all 10 units) completed 2026-09-13 — see
+[TODO-completed.md](TODO-completed.md) — leaving 3 validation-pending
+items in that same section (1N5817 diodes, CD4066BCN switches 2–4, glass
+tube fuses) plus 4 open-correctness items, folded into the same
+dependency-ordered list rather than tracked separately. That's ~17 items
+in "Ready to build now" against parts/circuits already on hand; only the
+GY-521 module, CY7C68013A board, and color-ring inductor reorder from the
+2026-09-10 batch are still in transit — see [orders.md](orders.md).
+**Build/validation rate, not part supply, is the bottleneck right now**,
+so a top-up order would just make the pipeline longer than the bench can
+work through. Revisit once that backlog has shrunk meaningfully (roughly
+half), not on a fixed calendar schedule — the items below stay as the
+standing candidates for whenever that top-up is actually warranted.
 
 - [ ] **Linear/analog Hall-effect sensor (e.g. 49E), 5–10pk** — the
       KY-003/A3144 module already received only covers digital
       switch-output; this is still needed for the `HALLAMP` op-amp
       amplifier circuit as originally scoped.
 - [ ] Decide whether to order the SFE Breadboard Power Supply Kit for
-      `power_supplies/psu_medlow_lm317/` (see "Open correctness issues"
+      `power_supplies/psu_medlow_lm317/` (see "Ready to build now"
       below — currently not ordered).
 - [ ] *(optional upgrade, not blocking)* **Tier 1 `REF`** — TL431A
       precision shunt reference (5 on hand, untested) could replace or
@@ -57,6 +61,26 @@ candidates for whenever that top-up is actually warranted.
 
 ## Ready to build now — parts on hand
 
+Builds, validation steps, and correctness fixes are one dependency-ordered
+list here, not three separate lists — when a build needs a validation or
+correctness step done first, that step is the bullet directly above it.
+Everything past the dependency-linked pair at the top has no such
+dependency and can be done in any order.
+
+- [ ] **1N5817 Schottky diodes — not validated per-unit.** Check forward
+      drop (~0.35–0.45V) on each before wiring into `psu_low_v2` (next
+      bullet); see `psu_4xaa/README.md` § Validation for the Pico-divider
+      technique (same approach applies to any circuit using this diode).
+      `psu_3xaa`/`psu_4xaa` use the same diode type and are already
+      trusted, but only by continuity/orientation check, not a measured
+      forward drop — do the real measurement before this build, not after.
+- [ ] **`power_supplies/psu_low_v2` — physically assemble.** Wire-stripper
+      blocker resolved 2026-09-03. RXEF050 polyfuse batch already
+      validated (`measurement_tools/ammeter_1ohm/`). Depends on the
+      1N5817 diode check directly above — nothing else is blocking this.
+- [ ] **`power_supplies/psu_3xaa` — confirm and assemble.** Likely shares
+      the same AA-holder lead-termination step as `psu_low_v2` above —
+      verify that assumption once `psu_low_v2` is built.
 - [ ] **New `TIA` build (tier2, transimpedance amplifier).** PT334-6C
       photodiode (10 on hand) + LM358P (spares available beyond the one
       used in `voltage_reference_lm358`). No folder exists yet — create
@@ -71,13 +95,6 @@ candidates for whenever that top-up is actually warranted.
       aluminum electrolytic capacitor kit (16V/25V/50V, 12 values)
       arrived 2026-09-10 — no longer blocked on a shipment. No folder
       exists yet.
-- [ ] **`power_supplies/psu_low_v2` — physically assemble.** Wire-stripper
-      blocker resolved 2026-09-03. RXEF050 polyfuse batch already
-      validated (`measurement_tools/ammeter_1ohm/`). Nothing else is
-      blocking this.
-- [ ] **`power_supplies/psu_3xaa` — confirm and assemble.** Likely shares
-      the same AA-holder lead-termination step as `psu_low_v2` above —
-      verify that assumption once `psu_low_v2` is built.
 - [ ] **New `PHASED` build (tier4, phase detector).** SN74HC86N quad XOR
       gate (1 on hand, arrived 2026-09-12; DIP-14 per the listing's own
       truncated variant string, unconfirmed against the physical part —
@@ -96,38 +113,6 @@ candidates for whenever that top-up is actually warranted.
 - [ ] **New `CHGAMP` build (tier5, charge amplifier).** TL082 (shared with
       `EPFIELD` above) + 12mm piezo disc (20 on hand, arrived 2026-09-12)
       as the charge-output transducer. No folder exists yet.
-
-## Needs a validation step before the part can be trusted
-
-- [ ] **NE555 batch — 9 of 10 units still unchecked.** The
-      `ne555_astable` build doubles as the per-unit check (unlike CD4066B
-      or the polyfuses, which have dedicated jigs) — the unit currently
-      installed passed (oscillation confirmed 2026-09-12, see
-      `ne555_astable/README.md` § Validation), and the build's output
-      divider fault that blocked reusing this wiring across the rest of
-      the batch is now **fixed** (2026-09-13 — bad 220Ω resistor in the
-      R2 leg, swapped for a verified 10kΩ; see that README's § Validation
-      resolution entry). **Now unblocked to test the rest of the batch:**
-      for each remaining unit, swap it into the `ne555_astable` socket,
-      power up from `psu_4xaa`, run `oscillation_probe`, and expect swing
-      ~2.2V (no longer pinned at 3.300V) with a crossing count in the
-      dozens+ over the burst window — see `ne555_astable/README.md` §
-      Expected behaviour for the fault signatures if a unit fails this
-      check.
-- [ ] **1N5817 Schottky diodes — not validated per-unit.** Check forward
-      drop (~0.35–0.45V) on each before wiring into `psu_low_v2`; see
-      `psu_4xaa/README.md` § Validation for the Pico-divider technique
-      (same approach applies to any circuit using this diode).
-- [ ] **CD4066BCN — switches 2–4 per chip still untested** (only switch 1
-      of each of the 10 chips has been run through
-      `measurement_tools/cd4066_switch_tester/`). Needed before trusting a
-      specific chip/switch in a `MUX` or `DEMOD` build.
-- [ ] **Glass tube fuses (2A fast-blow, 10 on hand) — no test jig built.**
-      Needed before trusting one in the `psu_medlow` protection path
-      (pairs with the panel-mount fuse holder, also on hand).
-
-## Open correctness issues to resolve
-
 - [ ] **`power_supplies/psu_medlow_usbc` — status is "incomplete /
       unverified."** The USB-C breakout is passive with no PD controller;
       VBUS may never come up without confirmed CC1/CC2 termination. Check
@@ -140,15 +125,26 @@ candidates for whenever that top-up is actually warranted.
       circuit. `smoke_test.py` has a static
       `PD_SINK_TERMINATION_CONFIRMED = False` check that fails on purpose
       until this is resolved.
-- [ ] **`power_supplies/psu_medlow_lm317` — decide whether to order the
-      SFE Breadboard Power Supply Kit.** Currently **not ordered** (see
-      `power_supplies/psu_medlow_lm317/README.md`) — earlier docs
-      incorrectly said "on order" in a couple of places; corrected
-      2026-09-06.
 - [ ] **`power_supplies/psu_ultralow_v1` — no assembled-PSU demo has ever
       been run**, only component-level validation (battery holder +
       polyfuse individually confirmed). Worth one real bench check of the
       assembled circuit.
+- [ ] **CD4066BCN — switches 2–4 per chip still untested** (only switch 1
+      of each of the 10 chips has been run through
+      `measurement_tools/cd4066_switch_tester/`). Not blocking anything
+      else above — needed before trusting a specific chip/switch in a
+      `MUX` or `DEMOD` build (both still backlog, undesigned).
+- [ ] **Glass tube fuses (2A fast-blow, 10 on hand) — no test jig built.**
+      Not blocking anything else above — needed before trusting one in
+      the `psu_medlow` protection path (pairs with the panel-mount fuse
+      holder, also on hand; `psu_medlow` itself is backlog, undesigned).
+- [ ] **`power_supplies/psu_medlow_lm317` — decide whether to order the
+      SFE Breadboard Power Supply Kit.** Currently **not ordered** (see
+      `power_supplies/psu_medlow_lm317/README.md`) — earlier docs
+      incorrectly said "on order" in a couple of places; corrected
+      2026-09-06. This is an ordering decision, not bench work — see
+      "Next AliExpress order" at the top of this file, where the same
+      item is tracked as a purchase candidate.
 - [ ] *(low priority, not currently blocking anything)* **`fuse_test_voltmeter`
       trip detection is non-functional** since bench wiring diverged from
       its original design — the ammeter jigs (`ammeter_10ohm`/`ammeter_1ohm`)

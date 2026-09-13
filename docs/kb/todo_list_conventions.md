@@ -101,6 +101,44 @@ similarly formatted; re-verify the exact string per
 [ordering_ingestion_notes.md](ordering_ingestion_notes.md)'s entry on
 that mixup before writing status changes across four files.
 
+## Merge build/validation/correctness into one dependency-ordered list — don't split by category the way "Next AliExpress order" is split out (established 2026-09-13)
+
+Until 2026-09-13, "Ready to build now," "Needs a validation step before
+the part can be trusted," and "Open correctness issues to resolve" were
+three separate sections/headers, in that order. The user flagged this
+explicitly: a build in "Ready to build now" could depend on an item sitting
+in "Needs a validation step" (e.g. `power_supplies/psu_low_v2`'s assembly
+bullet said "nothing else is blocking this" while the 1N5817 Schottky
+diode forward-drop check — which its own wiring needs — sat in the
+*other* section, un-cross-referenced), and the file is worked strictly
+top-to-bottom, so a reader doing the "Ready to build" bullet first could
+build on an unvalidated part without realizing it. The user's framing:
+this is *not* the same situation as "Next AliExpress order" sitting apart
+from bench-work sections (see the entry above this one) — ordering has
+its own external clock (shipping transit) that justifies a separate
+top-of-file section, but build/validate/correctness are all bench work
+with no such distinct clock, so splitting them by category just hides
+real dependencies between bullets in different sections.
+
+Fixed by merging all three into one section, keeping the "Ready to build
+now — parts on hand" header, ordered so that whenever a build bullet
+depends on a validation/correctness bullet, the dependency comes first
+and says so explicitly (e.g. 1N5817 diode check → `psu_low_v2` assembly →
+`psu_3xaa` assembly, in that order, each bullet naming what it depends
+on). Items with no dependency on anything above them follow in no
+particular order; items that don't block anything currently in the list
+(e.g. CD4066BCN switches 2–4, which only matter once `MUX`/`DEMOD` exist)
+say so explicitly rather than being sorted purely by category.
+
+General lesson for future restructuring: before splitting the file into
+separate sections by *kind* of task (build vs. validate vs. fix vs.
+order), check whether items across the proposed sections actually depend
+on each other. If they can, a category split will silently hide that
+dependency from someone working the file top-to-bottom one section at a
+time — merge into a single ordered list instead, and only split out a
+section when it has its own genuinely independent reason (like ordering's
+shipping-transit clock, see the entry above).
+
 ## Don't write future-session working notes into TODO-arcticoder.md itself
 
 A future LLM chat's own working notes on this repo belong in `docs/kb/`

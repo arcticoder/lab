@@ -66,3 +66,12 @@ matching, so don't assume one file makes the other redundant.
   produced meaningless "Measured Resistance" numbers for anyone running
   it going forward. Corrected to `R_REF = 10000.0` to match the currently
   wired 10kΩ reference resistor.
+- **NE555 batch — remaining 9 of 10 units validated PASS.** With the
+  output-divider fault fixed (same day, above), swapped IC 2 through IC
+  10 through the same `ne555_astable` socket/wiring and ran
+  `oscillation_probe` on each (`breadboard3.jpg`): all 9 show swing
+  ~2.2-2.25V and crossings in the low hundreds, matching IC 1's already-
+  passed reading. **All 10 units in the batch are now validated** — see
+  `oscillators/ne555_astable/README.md` § Validation for the per-unit
+  table and `docs/inventory.md`'s NE555 row. Removed from
+  `TODO-arcticoder.md`'s "Needs a validation step" section.
