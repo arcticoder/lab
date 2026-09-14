@@ -2253,3 +2253,39 @@ reused across jobs (shunt characterization, continuity checks, divider
 diagnosis) more than any other jig in this repo, so its config is the
 most likely of any file here to be silently out of sync with the last
 bench session's narrative.
+
+## Wide/far-away breadboard photos are not enough to catch real wiring bugs by eye — expect closer-up photos going forward (2026-09-13)
+
+`psu_4xaa`'s divider re-check (§ Validation in that circuit's README) was
+reviewed here from `validation_breadboard.jpg`-style wide shots, which
+didn't resolve individual leads/jumper endpoints clearly enough to catch
+actual wiring issues that were present on the board. arcticoder found and
+fixed those issues themselves, purely by inspecting the physical board,
+and reported explicitly that the photos being too far away is the likely
+reason a review here didn't catch them first. Going forward, expect
+closer-up photos (see `psu_4xaa/validation_breadboard2.jpg` for the new
+style) — but even those can still be too cluttered with tape/jumpers to
+fully verify topology by eye alone (confirmed on that same photo: dense
+tape wrapping and overlapping jumpers made it impossible to trace every
+connection with confidence even at close range). Don't assert a wiring
+fix is visually confirmed from a photo unless individual leads/terminals
+are actually traceable in it — when in doubt, say the photo doesn't
+resolve enough to confirm, rather than guessing. The measured
+electrical result (a real `raw_voltage_probe` reading matching the
+documented target) remains the actual source of truth for whether a
+build is correct, not a visual read of any photo, close-up or not.
+
+## 1N5817 diodes get individually tracked by a physical marker (curled legs + no tape = already used), not by count alone (2026-09-13)
+
+The `psu_4xaa` bullet in `TODO-arcticoder.md`'s "1N5817 Schottky diodes"
+item requires a per-unit forward-drop check (via the Pico-divider
+technique in `psu_4xaa/README.md` § Validation) before a given physical
+diode goes into `psu_low_v2` or `psu_3xaa` — but the batch has no printed
+serial numbers, so "which diode was already checked" isn't otherwise
+distinguishable. arcticoder's convention: the diode already installed and
+measured in `psu_4xaa` has curled legs and its tape wrapping removed,
+while every other 1N5817 in the batch is still straight-legged and taped.
+When reasoning about which diode is validated vs. still-unchecked-spare in
+future sessions, use this physical marker rather than assuming order/count
+in the bin — and don't suggest re-taping or straightening the used one, since
+that would erase the marker.

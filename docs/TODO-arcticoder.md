@@ -84,15 +84,21 @@ guide yet (`PHASED`, a `THERM` replacement, `ACTIVELIM`/`HVPULSE`,
 [TODO-agent.md](TODO-agent.md), not here, since it's not something you do.
 They'll appear below, as bench-assembly bullets, once that's done.
 
-- [ ] **1N5817 Schottky diodes — not validated per-unit.** Check forward
-      drop (~0.35–0.45V) on each before wiring into `psu_low_v2` or
-      `psu_3xaa` (both bullets directly below — this gates both, not just
-      the first one); see `psu_4xaa/README.md` § Validation for the
-      Pico-divider technique (same approach applies to any circuit using
-      this diode). `psu_4xaa` uses the same diode type and is already
-      trusted, but only by continuity/orientation check, not a measured
-      forward drop — do the real measurement before either build below,
-      not after.
+- [ ] **1N5817 Schottky diodes — still need a per-unit forward-drop check
+      for whichever units go into `psu_low_v2`/`psu_3xaa` specifically.**
+      The diode already installed in `psu_4xaa` is now past
+      continuity/orientation-only trust: re-ran the divider check
+      2026-09-13 after finding and fixing wiring issues on a rebuild
+      (`psu_4xaa/validation_breadboard2.jpg`) and got GP26 ≈ 1.990 V,
+      matching the ~1.9 V target — that specific diode's forward-conduction
+      behavior is confirmed. It's identifiable in the batch by curled legs
+      and no tape (every other 1N5817 is still straight-legged and taped).
+      **Still open:** the same check, on whichever diode(s) actually go
+      into `psu_low_v2` and `psu_3xaa` (both bullets directly below — this
+      still gates both) — plan is to check each at assembly time rather
+      than pre-validating the whole batch upfront; see
+      `psu_4xaa/README.md` § Validation for the Pico-divider technique
+      (same approach applies to any circuit using this diode).
 - [ ] **`power_supplies/psu_low_v2` — physically assemble.** Wire-stripper
       blocker resolved 2026-09-03. RXEF050 polyfuse batch already
       validated (`measurement_tools/ammeter_1ohm/`). Depends on the

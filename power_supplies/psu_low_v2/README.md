@@ -20,6 +20,11 @@ Spec: 3.0 V, <300 mA, ~0.9 W. See
 | `breadboard.md` | Step-by-step breadboard wiring |
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 
+§ Validation below reads GP26 with
+[`measurement_tools/raw_voltage_probe`](../../measurement_tools/raw_voltage_probe/)'s
+`main.py` — the same plain averaged-voltage reader `psu_4xaa` uses for its
+own divider check, reused here rather than duplicated.
+
 ---
 
 ## Build
@@ -62,6 +67,50 @@ At Rload = 10 Ω: **V_out ≈ 2.53 V, I ≈ 253 mA** — the Schottky costs abou
 
 ## Validation
 
-Probe across the Schottky with a Pico ADC pin. Forward bias should read
-~0.35 V drop; reversing the battery leads should read ~0 V across the load
-(diode blocking).
+Same divider-based technique as
+[psu_4xaa](../psu_4xaa/README.md#validation) — same battery chemistry and
+protection stack, just two cells instead of four. GP26/ADC0 is limited to
+0–3.3 V, and two fresh AA cells in series can sit close to that limit
+open-circuit, so this rail also gets divided down rather than probed
+directly; full rationale and troubleshooting for this technique (including
+why the Schottky's own leads aren't probed directly) live in that README.
+
+**Build:** the same 10 kΩ + 5.1 kΩ resistor pair (from
+`../../docs/inventory.md`) in series across the output, from output(+) to
+output(−)/ground rail, with the midpoint tapped off to GP26 — and Pico GND
+tied to the ground rail, required for a meaningful reading:
+
+```
+psu_low_v2 output (+)
+      │
+   [10 kΩ]
+      │
+      ├──────► Pico GPIO 26 / ADC0 (Pin 31)
+      │
+   [5.1 kΩ]
+      │
+psu_low_v2 output (−) / ground rail ──────► Pico GND (Pin 28)
+```
+
+**Run:**
+
+```bash
+cd measurement_tools/raw_voltage_probe
+mpremote run main.py
+```
+
+**Expected readings** (5.1 kΩ ⁄ (10 kΩ + 5.1 kΩ) ≈ 0.338 of the output
+voltage):
+
+- Correct battery orientation: GP26 reads **~1.0 V**. The loaded design
+  figure of ~2.53 V (§ Expected behaviour above) assumes 253 mA at a 10 Ω
+  load; the divider only draws ~200 µA, so the Schottky/fuse drops are
+  much smaller here and the actual output sits closer to its unloaded
+  ~2.8–3.0 V.
+- Reversed battery leads: GP26 reads **~0 V** — the Schottky blocks, no
+  current reaches the divider.
+
+Not yet confirmed on real hardware — record the actual reading here once
+this circuit is assembled and run (see `docs/TODO-arcticoder.md`'s
+"Ready to build now" section for build status, including the 1N5817
+per-unit check this build still depends on).

@@ -4041,3 +4041,18 @@ Summary
 Updated `lab/README.md`, `inventory.md`, and `parts_reference.md` to cross-reference the new circuits, and confirmed the full smoke-test suite still passes (the one failure, `psu_medlow_usbc`, is a pre-existing intentional assertion, unrelated to today's changes).
 <!-- ------ -->
 ---
+Both tasks are done. Summary of changes:
+
+**Task 1 --- psu\_4xaa diode validation follow-up:**
+
+-   [psu\_4xaa/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/power_supplies/psu_4xaa/README.md) --- added `validation_breadboard2.jpg` to the Files table and documented the 2026-09-13 reconfirmation (1.990 V, matching target), plus the curled-legs/no-tape marker for the now-validated diode.
+-   [TODO-arcticoder.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/TODO-arcticoder.md) --- updated the 1N5817 bullet: the diode in `psu_4xaa` is now function-validated, but the diodes for `psu_low_v2`/`psu_3xaa` still need their own check (plan: check at assembly time, not batch-upfront), so those two builds stay gated as before.
+-   Added two kb-only entries to `repo_docs_conventions.md`: one noting wide breadboard photos aren't sufficient to catch wiring bugs (and even closer ones can still be too cluttered to fully verify --- don't overclaim visual confirmation), and one documenting the curled-legs/no-tape diode-tracking marker.
+
+**Task 2 --- psu\_low\_v2 validation docs:**
+
+-   [psu\_low\_v2/README.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/power_supplies/psu_low_v2/README.md) § Validation now has the actual divider wiring diagram (reusing the same 10 kΩ/5.1 kΩ pair as `psu_4xaa`), the `mpremote run main.py` command, and expected voltage targets for correct/reversed polarity --- replacing the old vague "probe across the Schottky" instruction, which was also inconsistent with the established safer divider convention.
+
+No AliExpress order is needed --- nothing here changed part supply status.
+<!-- ------ -->
+---

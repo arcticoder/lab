@@ -21,6 +21,7 @@ Spec: 6.0 V, <300 mA, ~1.6 W. See
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
 | `breadboard.jpg` | Photo of the base PSU build (2026-09-06, no validation divider) |
 | `validation_breadboard.jpg` | Photo of an earlier 2×10 kΩ divider attempt (2026-09-07), superseded by the 10 kΩ/5.1 kΩ pair now documented in § Validation — see [measurement_tools/raw_voltage_probe/breadboard4.jpg](../../measurement_tools/raw_voltage_probe/breadboard4.jpg) for the confirmed-working 10 kΩ/5.1 kΩ build (2026-09-11) |
+| `validation_breadboard2.jpg` | Close-up photo of a 2026-09-13 rebuild, after arcticoder found and fixed wiring issues by hand (a wide breadboard shot hadn't shown them clearly enough to catch from the photo alone) — confirmed working, GP26 ≈ 1.990 V |
 
 Every check in § Validation and § Troubleshooting below reads GP26 with
 [`measurement_tools/raw_voltage_probe`](../../measurement_tools/raw_voltage_probe/)'s
@@ -146,6 +147,16 @@ above. An earlier attempt on a different breadboard read ~0.14 V even
 with the battery pack confirmed installed/powered and the Schottky
 reseated and correctly oriented — see § Troubleshooting step 0 below for
 how that was resolved (it wasn't a single bad component).
+
+**Reconfirmed 2026-09-13 on a second rebuild: 1.990 V** — arcticoder
+found and fixed additional wiring issues by hand before this run
+(`validation_breadboard2.jpg`); a wide/far-away breadboard photo hadn't
+made them visible enough to catch from a photo review alone. The Schottky
+now in this circuit is the one already exercised by this measurement —
+identifiable in the parts bin by curled legs and no tape (every other
+1N5817 in the batch is still straight-legged and taped), so it isn't
+confused with an unvalidated spare when wiring `psu_low_v2` or
+`psu_3xaa`.
 
 Don't probe directly across the Schottky's own leads with the Pico —
 doing that safely would mean moving Pico GND off the PSU's actual ground
