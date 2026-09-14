@@ -1,0 +1,77 @@
+* active_current_limiter — IRLZ44N + sense resistor + comparator, ACTIVELIM
+*
+* Topology (per docs/parts_reference.md#irlz44n-logic-level-mosfet):
+*   VCC --Rload--> DRAIN --IRLZ44N(Drain->Source)--> SOURCE --Rs(0.1)--> GND
+*   Comparator monitors V(SOURCE) = I*Rs against a fixed 0.2V reference
+*   (Vref = I_limit * Rs, I_limit = 2A) and drives the MOSFET gate:
+*   below threshold -> gate HIGH (MOSFET fully on, normal pass-through);
+*   above threshold -> gate LOW (MOSFET off).
+*
+* Vref = 0.2V. In the real build this comes from the on-hand TL431A
+* shunt reference (2.495V bandgap) divided down with two resistors —
+* modeled here as an ideal constant inside the comparator expression
+* rather than a separate divider, since the divider's own math isn't
+* this circuit's point (voltage_reference_lm358 already covers
+* reference-divider validation).
+*
+* MOSFET modeled as an ideal switch (Ron=0.05, approximating IRLZ44N's
+* low-mOhm Rds(on) at Vgs=5V) rather than a vendor transistor-level
+* model, same technique ne555_astable.spice uses for its own discharge
+* transistor. Comparator modeled as an ideal rail-to-rail B-source (0V
+* or 3.3V, Pico-logic-compatible gate drive is plenty to fully enhance a
+* logic-level MOSFET).
+*
+* This is a hard-trip (bang-bang) limiter, not continuous linear
+* foldback regulation — see README.md's Design notes for why, and for a
+* real limitation this simple ideal-switch model actually surfaces: a
+* hard-trip comparator with no hysteresis/latch has NO stable DC
+* operating point once tripped (open -> sense voltage collapses to ~0 ->
+* comparator wants to re-close -> re-trips -> repeat), which is a real
+* electrical behavior (chattering at the trip boundary), not a
+* simulation artifact — attempting to simulate a sustained fault as a
+* single closed-loop .op below FAILS TO CONVERGE for exactly this
+* reason (confirmed: "Timestep too small; trouble with swmod-instance
+* sfet" when Rload is dropped low enough to force a trip). So the fault
+* condition is checked differently below: an open-loop sense-only test
+* validates the comparator's *decision* (does it correctly call "trip"
+* at a fault-level current) without asking the unstable closed loop to
+* find a fixed point that doesn't exist. See README.md for the real fix
+* (linear foldback or an explicit latch) if chattering protection isn't
+* good enough for a real build.
+*
+* Case 1 (closed loop, normal): Rload=12ohm against an illustrative 12V
+* supply (representing a psu_medhigh-tier rail — that PSU has no folder
+* yet, see general_purpose_circuit_dependency.md's backlog) draws ~1A,
+* comfortably under the 2A trip point, so the switch stays closed.
+*
+* Case 2 (open-loop sense check, fault): a 3A test current source
+* through the same Rs value (electrically independent of Case 1's
+* network — same ground only) stands in for "a fault pushed 3A through
+* the sense resistor" and confirms the comparator correctly reads this
+* as over-limit, without needing the full switch feedback loop to
+* settle anywhere.
+
+* --- Case 1: closed loop, normal load ---
+Vcc    1 0  DC 12
+Rload  1 2  12
+Sfet   2 3  4 0  SWMOD
+Rs     3 0  0.1
+Bctrl  4 0  V = (V(3) > 0.2) ? 0 : 3.3
+.model SWMOD SW(Ron=0.05 Roff=1e9 Vt=1.65 Vh=0.1)
+
+* --- Case 2: open-loop sense check, fault-level current ---
+Itest    0 5  DC 3
+Rs_test  5 0  0.1
+Bctrl_test 6 0  V = (V(5) > 0.2) ? 0 : 3.3
+
+.control
+op
+echo --- ACTIVELIM Case 1 (normal, 12ohm load): load current, sense voltage, gate state ---
+let i_load = (v(1)-v(2))/12
+print i_load v(3) v(4)
+echo --- ACTIVELIM Case 2 (fault-level 3A sense test): sense voltage, comparator decision ---
+print v(5) v(6)
+quit
+.endc
+
+.end

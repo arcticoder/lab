@@ -15,10 +15,11 @@ Each circuit gets its own top-level folder with a SPICE netlist, a
 generated schematic, and a breadboard wiring guide. Power supplies are
 grouped under `power_supplies/`; measurement/test tools are grouped under
 `measurement_tools/`; signal-conditioning building blocks (references,
-amplifiers) are grouped under `signal_conditioning/`; timing/waveform
-generators are grouped under `oscillators/`; other circuit categories
-(safety monitoring, etc.) get their own top-level folders as they're
-built.
+amplifiers, sensor front-ends) are grouped under `signal_conditioning/`;
+timing/waveform generators are grouped under `oscillators/`; safety
+monitoring circuits are grouped under `safety/`; current/voltage
+protection circuits are grouped under `protection/`; other circuit
+categories get their own top-level folders as they're built.
 
 ---
 
@@ -58,6 +59,11 @@ ngspice -b signal_conditioning/voltage_reference_lm358/voltage_reference_lm358.s
 ngspice -b signal_conditioning/transimpedance_amplifier/transimpedance_amplifier.spice
 ngspice -b oscillators/ne555_astable/ne555_astable.spice
 ngspice -b measurement_tools/capacitance_bridge/capacitance_bridge.spice
+ngspice -b signal_conditioning/electric_field_probe/electric_field_probe.spice
+ngspice -b signal_conditioning/charge_amplifier/charge_amplifier.spice
+ngspice -b safety/thermal_monitor/thermal_monitor.spice
+ngspice -b signal_conditioning/phase_detector/phase_detector.spice
+ngspice -b protection/active_current_limiter/active_current_limiter.spice
 ```
 
 Run from the repo root. Each netlist prints an operating point at its
@@ -100,6 +106,11 @@ python signal_conditioning/voltage_reference_lm358/smoke_test.py
 python signal_conditioning/transimpedance_amplifier/smoke_test.py
 python oscillators/ne555_astable/smoke_test.py
 python measurement_tools/capacitance_bridge/smoke_test.py
+python signal_conditioning/electric_field_probe/smoke_test.py
+python signal_conditioning/charge_amplifier/smoke_test.py
+python safety/thermal_monitor/smoke_test.py
+python signal_conditioning/phase_detector/smoke_test.py
+python protection/active_current_limiter/smoke_test.py
 ```
 
 Or run all of them at once with `tools/run_all_smoke_tests.py`, which
@@ -161,19 +172,29 @@ sequence this drives.
 | `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit **not yet ordered**, not yet built — see `docs/TODO-arcticoder.md`) |
 | `signal_conditioning/transimpedance_amplifier/` | PT334-6C photodiode + LM358 current-to-voltage converter | tier2 `TIA` (fed from `psu_low_v2`; no current downstream urgency — see `docs/TODO-arcticoder.md`) |
 | `measurement_tools/capacitance_bridge/` | RC charge-time capacitance meter (known `Rref` vs. unknown `Cx`, timed against a 63.2%-of-Vin threshold) | tier3 `CAPBRIDGE`, targets the 1µF–470µF electrolytic kit (see its own README § Range) |
+| `signal_conditioning/electric_field_probe/` | Bare-electrode electrostatic sensor: 1MΩ/1MΩ bias divider to VCC/2, TL082 unity-gain follower | tier5 `EPFIELD` — a direct spacetime-research sensor node, see `docs/spacetime_circuits_dependency.md` |
+| `signal_conditioning/charge_amplifier/` | 12mm piezo disc + TL082 inverting charge amp (`Cf`/`Rf_bias` feedback), VCC/2-biased for bipolar swing | tier5 `CHGAMP` — a direct spacetime-research sensor node |
+| `safety/thermal_monitor/` | MF52AT NTC divider (centers at VCC/2 at 25°C) + GPIO-driven alarm LED | safety `THERM` ("Thermal Monitoring with Alarm Threshold") |
+| `signal_conditioning/phase_detector/` | SN74HC86N XOR gate comparing `ne555_astable`'s output tap against an independent Pico PWM reference, RC-lowpassed | tier4 `PHASED`, feeds tier6 `LOCKIN` (undesigned) |
+| `protection/active_current_limiter/` | IRLZ44N + 0.1Ω sense resistor + LM358 comparator, hard-trip at 2A | general-purpose `ACTIVELIM`, protects `psu_medhigh`/`psu_high` (both backlog) |
 Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
-schematic, a breadboard wiring guide, and a `smoke_test.py`, but none have
-been physically assembled with real components yet. For the PSU rows, the
-polyfuses they depend on are no longer the blocker — both batches passed
-validation via `ammeter_10ohm`/`ammeter_1ohm` above — so what remains is
-just the physical build; `transimpedance_amplifier` and
-`capacitance_bridge` have no polyfuse dependency at all (the latter needs
-no PSU whatsoever — see its own README). Everything else in
+schematic, a breadboard wiring guide, and a `smoke_test.py` (all but
+`active_current_limiter` also have a `main.py`, same reasoning as the
+PSU rows above having none), but none have been physically assembled
+with real components yet. For the PSU rows, the polyfuses they depend on
+are no longer the blocker — both batches passed validation via
+`ammeter_10ohm`/`ammeter_1ohm` above — so what remains is just the
+physical build; `transimpedance_amplifier`, `capacitance_bridge`,
+`electric_field_probe`, `charge_amplifier`, `thermal_monitor`, and
+`phase_detector` all run off `psu_pico_rail` (or need no PSU at all) and
+have no battery-PSU dependency. Everything else in
 `docs/general_purpose_circuit_dependency.md` /
-`docs/spacetime_circuits_dependency.md` (safety monitoring, most of tiers
-1–9) hasn't been worked out to netlist stage at all — folders for those
-will show up here as they get one.
+`docs/spacetime_circuits_dependency.md` (most safety monitoring, most of
+tiers 1–9) hasn't been worked out to netlist stage at all — folders for
+those will show up here as they get one. `docs/TODO-arcticoder.md`'s
+"Ready to build now" section tracks the physical-assembly status of
+every row above.
 
 ---
 
@@ -321,6 +342,47 @@ signal_conditioning/
         schematic.png         (generated, gitignored)
         breadboard.md
         main.py
+        smoke_test.py
+        README.md
+
+    electric_field_probe/    bare-electrode electrostatic sensor, TL082 follower (tier5 EPFIELD, designed, not built)
+        electric_field_probe.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        smoke_test.py
+        README.md
+
+    charge_amplifier/        12mm piezo disc + TL082 inverting charge amp (tier5 CHGAMP, designed, not built)
+        charge_amplifier.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        smoke_test.py
+        README.md
+
+    phase_detector/          SN74HC86N XOR phase detector + RC lowpass (tier4 PHASED, designed, not built)
+        phase_detector.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        smoke_test.py
+        README.md
+
+safety/
+    thermal_monitor/         MF52AT NTC divider + GPIO alarm LED (safety THERM, designed, not built)
+        thermal_monitor.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        smoke_test.py
+        README.md
+
+protection/
+    active_current_limiter/  IRLZ44N + sense resistor + LM358 comparator (ACTIVELIM, designed, not built)
+        active_current_limiter.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
         smoke_test.py
         README.md
 

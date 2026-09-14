@@ -12,11 +12,25 @@ this split exists.
 
 **"Next AliExpress order" comes first because it's the one section with
 a real clock** (shipping transit runs a few weeks) — work that one first
-if it has an open item. **"Ready to build now" is a menu, not a queue**:
-as of 2026-09-13, nothing in it is currently blocking any other buildable
-work (everything downstream — tier4 and beyond — is itself still
-undesigned), so pick whatever you feel like out of it, or ignore the
-whole section, with no cost to anything else on this list. "Blocked" and
+if it has an open item. **"Ready to build now" is a menu, not a queue**
+in the narrow sense that nothing in it is currently a hard blocker for
+anything else on this list — pick whatever you feel like out of it, or
+skip the whole section, with no scheduling cost to anything else here.
+That's a different claim than it was as of yesterday, though: tier4
+(`PHASED`) and tier5 (`EPFIELD`/`CHGAMP`, the electric-field-probe and
+charge-amp sensor front-ends) got designed 2026-09-13 specifically
+because they're the actual spacetime-research sensor chain this whole
+repo exists to build toward — see `README.md`'s "Circuits — designed,
+not yet built" table and
+[spacetime_circuits_dependency.md](spacetime_circuits_dependency.md) for
+why those two nodes aren't generic infrastructure the way most of this
+section's other items are. Nothing downstream of them (tier6 `LOCKIN`)
+exists yet either, so there's still no scheduling deadline forcing them
+ahead of anything else — but if you're choosing what to spend bench time
+on based on what actually matters to the goal rather than just picking
+whatever's easiest, those two are the closest thing on this list to the
+real objective right now, which is why they're placed first below rather
+than sorted alphabetically or by part-arrival date. "Blocked" and
 "Backlog" are reference sections, not action items, until something
 changes their status.
 
@@ -38,11 +52,15 @@ skipped in practice.
 **No order needed right now — hold off on a top-up.** The entire
 2026-09-03 batch (TL082, MF52AT thermistor, IRLZ44N MOSFET, piezo disc,
 SN74HC86N XOR gate, KY-003 Hall module) arrived 2026-09-12. The NE555
-batch validation (all 10 units) completed 2026-09-13 — see
+batch validation (all 10 units) completed 2026-09-13, and the same day
+`EPFIELD`, `CHGAMP`, `THERM`, `PHASED`, and `ACTIVELIM` all went from
+"parts on hand, no folder" to fully designed/simulated/documented — see
 [TODO-completed.md](TODO-completed.md). As of 2026-09-13, "Ready to build
-now" holds 11 items against parts/circuits already on hand (down from 17
-— 6 moved to [TODO-agent.md](TODO-agent.md) pending a folder/design, or
-were dropped as already satisfied; see that section's own note and
+now" holds 16 items against parts/circuits already on hand (up from 11
+that morning — the 5 items above just finished design, not new parts
+arriving; only `HVPULSE` remains in [TODO-agent.md](TODO-agent.md), and
+that's blocked on a scope decision, not file-creation work — see that
+file's remaining open item and
 [docs/kb/todo_list_conventions.md](kb/todo_list_conventions.md)); only the
 GY-521 module, CY7C68013A board, and color-ring inductor reorder from the
 2026-09-10 batch are still in transit — see [orders.md](orders.md).
@@ -65,25 +83,57 @@ standing candidates for whenever that top-up is actually warranted.
 - [ ] **LVDT transducer** — the only tier5 node with zero hardware behind
       it (`LVDTAMP`). Pricier/more niche than the items above; lower
       priority but the last unaddressed tier5 sensor.
+- [ ] *(no rush — `HVPULSE` has no defined scope yet either)* **Second
+      IRLZ44N MOSFET (or a small pack)** — the only unit on hand went
+      into `protection/active_current_limiter/` (`ACTIVELIM`,
+      2026-09-13); `HVPULSE` (tier7/8) would need its own unit once it
+      actually has a target voltage/energy and a safety design behind
+      it, neither of which exist yet — see
+      [TODO-agent.md](TODO-agent.md)'s remaining open item. Ordering
+      this now wouldn't unblock anything; only worth doing once
+      `HVPULSE`'s scope is actually decided.
 
 ## Ready to build now — parts on hand, none of this is urgent
 
-**Nothing below is blocking anything else currently on this list** — every
-downstream consumer (tier4 and beyond) is itself still undesigned, so
-there's no cost to skipping this entire section indefinitely. Treat it as
-a menu of what you *could* spend bench time on, not a backlog you're
+**Nothing below is a hard blocker for anything else on this list** — the
+two spacetime-sensor bullets placed first are genuinely part of the
+research goal (see this file's intro), but nothing *downstream of them*
+(tier6 `LOCKIN`) is designed yet, so there's still no scheduling cost to
+skipping this entire section indefinitely if you'd rather not. Treat it
+as a menu of what you *could* spend bench time on, not a backlog you're
 behind on. Builds, validation steps, and correctness fixes are one
 dependency-ordered list here, not three separate lists — when a build
 needs a validation or correctness step done first, that step is the
 bullet directly above it. Everything past the dependency-linked pair at
-the top has no such dependency and can be done in any order.
+the top has no such dependency and can be done in any order. The first
+two bullets are placed first deliberately (see this file's intro above),
+not because anything technically requires them before the rest.
 
-Five other circuits have parts on hand but no folder/netlist/breadboard
-guide yet (`PHASED`, a `THERM` replacement, `ACTIVELIM`/`HVPULSE`,
-`EPFIELD`, `CHGAMP`) — that design/file-creation work is tracked in
-[TODO-agent.md](TODO-agent.md), not here, since it's not something you do.
-They'll appear below, as bench-assembly bullets, once that's done.
+Only `HVPULSE` (tier7/8, high-voltage pulse generator) still has a part
+on hand but no folder — and that's a real scope decision blocking it
+(what peak voltage/energy, plus a safety design pass), not file-creation
+work Claude can just do; see [TODO-agent.md](TODO-agent.md)'s remaining
+open item. Everything else that was in that state as of yesterday
+(`PHASED`, a `THERM` replacement, `ACTIVELIM`, `EPFIELD`, `CHGAMP`) got
+designed, simulated, smoke-tested, and documented 2026-09-13 — see
+[TODO-completed.md](TODO-completed.md) for the full entry — and now has
+its bench-assembly bullet below.
 
+- [ ] **`signal_conditioning/electric_field_probe` (tier5 `EPFIELD`) —
+      physically assemble.** Folder/netlist/breadboard guide/smoke test
+      now exist (2026-09-13). Powered from `psu_pico_rail` (already
+      built) — no PSU assembly needed first. No electrode has been
+      ordered; any small bare conductor (a stripped jump-wire end or
+      foil scrap) works for a first build, per that circuit's own
+      README. No current downstream consumer (tier6 `LOCKIN` is
+      undesigned) — but this is a direct spacetime-research sensor
+      build, not generic infra; see this file's intro for why it's
+      placed here rather than sorted by part-arrival date.
+- [ ] **`signal_conditioning/charge_amplifier` (tier5 `CHGAMP`) —
+      physically assemble.** Folder/netlist/breadboard guide/smoke test
+      now exist (2026-09-13). Powered from `psu_pico_rail`. Same
+      no-current-downstream-consumer situation as `EPFIELD` above, same
+      reason it's prioritized here anyway.
 - [ ] **1N5817 Schottky diodes — still need a per-unit forward-drop check
       for whichever units go into `psu_low_v2`/`psu_3xaa` specifically.**
       The diode already installed in `psu_4xaa` is now past
@@ -116,7 +166,9 @@ They'll appear below, as bench-assembly bullets, once that's done.
       [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
       (`psu_low --> tier2` edge), its supply-rail prerequisite is
       `psu_low_v2` (two bullets above), not `psu_3xaa`. No current
-      downstream consumer (tier4/spacetime are still undesigned) — build
+      downstream consumer specifically calling for a `TIA` (tier4/tier5
+      now have some designed nodes — `PHASED`, `EPFIELD`, `CHGAMP` — but
+      none of them actually use a transimpedance amplifier) — build
       whenever you feel like it.
 - [ ] **`measurement_tools/capacitance_bridge` (tier3, `CAPBRIDGE`) —
       physically assemble.** Folder/netlist/breadboard guide/smoke test
@@ -125,6 +177,40 @@ They'll appear below, as bench-assembly bullets, once that's done.
       pF/nF ceramic assortment isn't in scope for this design. No PSU
       needed (runs off the Pico's own GPIO/3V3). No current downstream
       consumer — build whenever you feel like it.
+- [ ] **`safety/thermal_monitor` (`THERM`) — physically assemble.**
+      Folder/netlist/breadboard guide/smoke test/`main.py` now exist
+      (2026-09-13). Powered from `psu_pico_rail`. Fills the safety
+      `THERM` gap (the existing thermistor in `inventory.md` is flagged
+      "suspect faulty") — no current downstream consumer, build whenever
+      you feel like it.
+- [ ] **`signal_conditioning/phase_detector` (tier4, `PHASED`) —
+      physically assemble.** Folder/netlist/breadboard guide/smoke
+      test/`main.py` now exist (2026-09-13). **Requires
+      `oscillators/ne555_astable` wired on a breadboard** — this circuit
+      taps its existing output divider rather than building a fresh
+      NE555 stage; if `ne555_astable` has already been broken back down
+      to inventory since its own 2026-09-13 batch validation (see
+      `README.md`'s "built & bench-tested" convention on returning parts
+      once nothing else needs them wired), re-assemble it first. Feeds
+      tier6 `LOCKIN` (still undesigned) — no current downstream consumer,
+      but see this file's intro for why this and the two spacetime
+      sensor bullets above it are worth prioritizing over pure
+      busywork regardless.
+- [ ] **`protection/active_current_limiter` (`ACTIVELIM`) — physically
+      assemble.** Folder/netlist/breadboard guide/smoke test now exist
+      (2026-09-13). **Consumes the only IRLZ44N MOSFET on hand** — fine,
+      since `HVPULSE` (the only other node wanting one) can't use it yet
+      regardless of availability (needs a scope decision first, see
+      "Next AliExpress order" below). Needs the TL431A reference divider
+      sized against whatever Cathode voltage it ends up regulated to on
+      the bench — a real-hardware sizing step, not something the netlist
+      could pin down in advance; see that circuit's own `breadboard.md`
+      § Reference divider. **Known limitation, not a build defect**: this
+      is a simple hard-trip (bang-bang) limiter with no hysteresis/latch,
+      so expect it to chatter (rapidly cycle on/off) right at the 2A trip
+      boundary rather than cleanly shut off — see that circuit's own
+      README § Design notes if that turns out to matter for whatever it
+      ends up protecting.
 
 **No `OHMMETER` bullet here on purpose.**
 `measurement_tools/resistance_measurement` (already built and in active
@@ -207,26 +293,26 @@ how each node connects before starting one.
 - [ ] **Safety monitoring** (general-purpose): `LEAKDET`, `GFCI`,
       `ESDMON`, `INSMON`, `ARCDECT`, `OVERCUR`, `OVERVOLT`, `TEMPCOIL`,
       `EMSTOP`, `PSUHEALTH`, `FUSESTAT`, `RFRAD`, `VACPRES`, `SMOKDET` all
-      undesigned. (`THERM` now has a part on hand — folder/design pending
-      in [TODO-agent.md](TODO-agent.md).)
-- [ ] **PSU system**: `psu_medhigh`/`psu_high` — no fuse/limiter circuit
-      built around the Lenovo 65W adapter (on hand) or any industrial
-      supply.
+      still undesigned. (`THERM` is done — see "Ready to build now" above.)
+- [ ] **PSU system**: `psu_medhigh`/`psu_high` themselves — no complete
+      PSU tier built around the Lenovo 65W adapter (on hand) or any
+      industrial supply. The limiter piece those tiers need
+      (`ACTIVELIM`) is done — see "Ready to build now" above — but that's
+      a protection stage, not the PSU tier itself.
 - [ ] **Bootstrap tier**: `LEDIND`, `SIMPLECNT`, `TUNINGFK`, `AUDIOSC`,
       `CRTSC` all undesigned (`PASSVM` is already done via
       `fuse_test_voltmeter`).
 - [ ] **Tier 2**: `VM`, `AM`, `FREQC` undesigned as dedicated circuits
       (distinct from the bootstrap ammeter jigs).
-- [ ] **Tier 4**: `IA`, `DA`, `DEMOD` undesigned. (`PHASED` now has a part
-      on hand — folder/design pending in [TODO-agent.md](TODO-agent.md).)
-- [ ] **Tier 5** (spacetime): `EPFIELD` and `CHGAMP` now have parts on
-      hand but no folder, netlist, or breadboard guide yet — two net-new
-      builds pending in [TODO-agent.md](TODO-agent.md). `ACCELIF` is still
-      blocked on the GY-521 module, not yet received (see "Blocked"
-      above). `HALLAMP` is partially unlocked (KY-003 arrived, but a
-      linear/analog sensor like the 49E is still needed for the op-amp
-      circuit as scoped — see "Blocked" above). `LVDTAMP` remains fully
-      backlogged — no transducer sourced yet.
+- [ ] **Tier 4**: `IA`, `DA`, `DEMOD` still undesigned. (`PHASED` is
+      done — see "Ready to build now" above.)
+- [ ] **Tier 5** (spacetime): `EPFIELD` and `CHGAMP` are done — see
+      "Ready to build now" above. `ACCELIF` is still blocked on the
+      GY-521 module, not yet received (see "Blocked" above). `HALLAMP` is
+      partially unlocked (KY-003 arrived, but a linear/analog sensor like
+      the 49E is still needed for the op-amp circuit as scoped — see
+      "Blocked" above). `LVDTAMP` remains fully backlogged — no
+      transducer sourced yet.
 - [ ] **Tier 6**: `LOCKIN`, `AAF`, `TIMEINT`, `JITTER` undesigned.
 - [ ] **Tier 7** (spacetime): `RFPWR`, `MIXER`, `SWEEP` completely
       unaddressed; no parts identified. Lowest priority of the spacetime

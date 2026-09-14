@@ -120,3 +120,66 @@ matching, so don't assume one file makes the other redundant.
   current design/sourcing state written down for a future session to pick
   up without re-deriving it. See `docs/kb/todo_list_conventions.md` for
   the reasoning this split is based on.
+- **`signal_conditioning/electric_field_probe/` (tier5 `EPFIELD`) —
+  designed, simulated, smoke-tested.** Bare-electrode electrostatic
+  sensor: 1MΩ/1MΩ bias divider to VCC/2, TL082 unity-gain follower.
+  Powered from `psu_pico_rail` (not a battery tier) specifically so the
+  output can never exceed the Pico ADC's 0-3.3V range regardless of
+  op-amp behavior — a deliberate departure from this repo's usual
+  battery-PSU-plus-headroom-caveat pattern. No calibrated sensitivity
+  claimed (a floating electrode's real coupling depends on geometry, not
+  a representable SPICE current) — simulation only confirms the bias
+  divider and follower feedback loop. `smoke_test.py` green.
+  `breadboard.md`/`README.md`/`main.py` written. Not yet physically
+  assembled — see `TODO-arcticoder.md`'s "Ready to build now."
+- **`signal_conditioning/charge_amplifier/` (tier5 `CHGAMP`) — designed,
+  simulated, smoke-tested.** 12mm piezo disc into a TL082 inverting
+  charge amp (10nF `Cf` feedback capacitor parallel with a 1MΩ
+  `Rf_bias`), same VCC/2 bias-divider pattern as `EPFIELD` for bipolar
+  swing. Corner frequency ~16Hz documented (above it, true charge-
+  integrator behavior; below it, `Rf_bias` dominates). `.op` simulation
+  only checks the DC bias-stabilization math (this repo's smoke tests
+  don't run `.tran`) — real tap-transient behavior is a hardware
+  validation step, documented as such rather than faked in SPICE.
+  `smoke_test.py` green. Not yet physically assembled.
+- **`safety/thermal_monitor/` (`THERM`) — designed, simulated,
+  smoke-tested.** Resolved as the literal safety-subgraph `THERM` node
+  ("Thermal Monitoring with Alarm Threshold"), not a new node — MF52AT
+  divider (`Rref`=10kΩ matching R25, centers at VCC/2 at room temp) plus
+  a GPIO-driven alarm LED, satisfying the "with alarm threshold" half of
+  the node's own label, not just bare temperature readout. `main.py`
+  implements the beta-equation resistance→temperature conversion.
+  `smoke_test.py` green (LED current/power bounds + divider-ratio
+  check).
+- **`signal_conditioning/phase_detector/` (tier4 `PHASED`) — designed,
+  simulated, smoke-tested.** Resolved the previously-open "what's the
+  second square wave" design question: a Pico GPIO PWM output,
+  independently generated and deliberately **not** phase-locked to
+  `ne555_astable`'s oscillator — their natural phase drift sweeps the
+  XOR's filtered output through its full range, which is what actually
+  validates the XOR primitive on real hardware (see this circuit's own
+  README § Design notes for why true phase-locking is out of scope here
+  and belongs to whatever eventually builds tier6 `LOCKIN`). First
+  digital-logic element in this repo's SPICE conventions (an ideal
+  behavioral XOR + RC lowpass, two static logic-level cases). Taps
+  `ne555_astable`'s existing output divider for input 1A rather than
+  wiring a fresh connection to its raw output. `smoke_test.py` green.
+- **`protection/active_current_limiter/` (`ACTIVELIM`) — designed,
+  simulated, smoke-tested.** IRLZ44N + 0.1Ω sense resistor + LM358
+  comparator, hard-trip (bang-bang) current limiter at a 2A threshold.
+  Consumed the only IRLZ44N on hand, ahead of `HVPULSE` (see
+  `TODO-agent.md`'s remaining open item) — prioritized because it's
+  well-scoped and low-risk (protects a `psu_medhigh`-class rail, well
+  within bench-safe voltages) while `HVPULSE` still has no defined target
+  voltage or safety design. **Simulation surfaced a real design
+  limitation, not just a documented caveat**: forcing the fault case as
+  a single closed-loop operating point fails to converge in ngspice
+  (`Error: Transient op failed, timestep too small`) — a bang-bang
+  comparator with no hysteresis/latch has no stable DC operating point
+  under a sustained fault (real hardware would chatter at the trip
+  boundary). Worked around by simulating the fault case open-loop
+  (checking only the comparator's threshold decision) instead of forcing
+  a fixed point that doesn't exist — documented in both the netlist
+  header and `README.md` as a real limitation, with linear foldback or
+  an explicit latch named as the actual fix if chattering ever proves to
+  be a problem. `smoke_test.py` green.

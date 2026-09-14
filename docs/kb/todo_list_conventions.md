@@ -261,6 +261,42 @@ first.** Only propose the more precise/literal version once something
 concrete actually needs the improvement the simpler version can't
 provide.
 
+## "Ready to build now" being a no-urgency menu is a snapshot, not a permanent verdict — re-check it whenever the downstream tiers actually get designed (established 2026-09-13, same day as the entry above)
+
+The entry above ("'Ready to build now' is a no-urgency menu... when
+nothing downstream needs its contents yet") was correct as of that
+morning, but the user pushed back the same day: presenting items as
+"no cost to skip" reads as settled when it was really just "true given
+today's undesigned state of tier4+" — and if some of those items
+*aren't* actually contributing to the repo's stated goal
+(`README.md`'s spacetime-research framing), the fix isn't wording, it's
+designing the downstream tiers so the question has a real answer instead
+of an assumed one. The user's framing: treat Claude as having "robot
+arms" and directly do the FTL-research design work already queued in
+`TODO-agent.md`, rather than waiting for it to be picked up at whatever
+pace felt natural.
+
+This produced the second 2026-09-13 pass: `EPFIELD`, `CHGAMP` (both
+directly-named tier5 spacetime nodes), `THERM`, `PHASED` (feeds tier6
+`LOCKIN`, which will process the tier5 sensors' output), and `ACTIVELIM`
+all designed/simulated/smoke-tested/documented in one sitting — see
+[spacetime_sensor_chain_notes.md](spacetime_sensor_chain_notes.md) for
+the design decisions and
+`TODO-completed.md`'s matching dated entry for the summary. `HVPULSE`
+was deliberately left alone (needs an actual scope decision from the
+user, not more design effort — see `TODO-agent.md`'s remaining open
+item).
+
+**Rule for future sessions**: "nothing downstream needs this yet" is a
+true statement about the *current* state of the dependency graph, not a
+permanent property of the item. When enough of `TODO-agent.md`'s open
+items get designed in one pass that the graph's actual shape changes
+(a "Ready to build now" item's downstream consumer stops being
+undesigned), re-check whether that item's own framing/urgency in
+`TODO-arcticoder.md` needs to change too — don't let it keep reading as
+"generic, skippable busywork" once it's actually become a real
+prerequisite for something.
+
 ## Don't write future-session working notes into TODO-arcticoder.md itself
 
 A future LLM chat's own working notes on this repo belong in `docs/kb/`

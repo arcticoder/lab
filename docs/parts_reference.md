@@ -401,7 +401,16 @@ impedance to the op-amp's input. Typically needs a dual (split) supply
 or a mid-rail bias network for single-supply use, unlike LM358's
 single-supply-friendly input range down to GND — confirm the specific
 TL082 variant's input common-mode range against its datasheet before
-wiring a single-supply front end.
+wiring a single-supply front end. Used (1 of 10 each) in
+[signal_conditioning/electric_field_probe](../signal_conditioning/electric_field_probe/)
+and
+[signal_conditioning/charge_amplifier](../signal_conditioning/charge_amplifier/)
+(designed/simulated 2026-09-13, not yet physically assembled) — both use
+the 1MΩ/1MΩ VCC/2 bias-divider pattern and run off `psu_pico_rail` rather
+than a battery PSU tier specifically so their output can't exceed the
+Pico ADC's 0-3.3V range; see either circuit's own README for the
+real-hardware caveat that 3.3V single-supply is below TL082's typical
+recommended minimum, not yet confirmed against the physical parts.
 
 ---
 
@@ -415,8 +424,11 @@ range −55–125°C, black modified-phenolic body, nickel-tin-plated leads.
 different part (`104` EIA code = 100kΩ) than the 10kΩ (`103` code)
 variant actually ordered — treat only the tolerance/B-value/temperature-
 range figures as trustworthy for this specific part, not the R25 value
-in the sheet's example. Fills the safety `THERM` gap; the existing
-thermistor in `inventory.md` is flagged "suspect faulty."
+in the sheet's example. Used (1 of 10) in
+[safety/thermal_monitor](../safety/thermal_monitor/) (designed/simulated
+2026-09-13, not yet physically assembled) — fills the safety `THERM`
+gap; the existing thermistor in `inventory.md` is flagged "suspect
+faulty."
 
 ---
 
@@ -461,8 +473,13 @@ Logic-level N-channel MOSFET — gate threshold voltage low enough (~1–2V
 typ) to switch fully on from a 3.3V Pico GPIO directly, unlike a
 standard-level MOSFET that needs a ~10V gate drive. Typical ratings:
 Vds 55V, Id ~47A (heatsink-dependent), Rds(on) low-mΩ range at Vgs=5V.
-Fills the tier7 `HVPULSE` and protection `ACTIVELIM` gap — no switching
-MOSFET of any kind was previously on hand.
+The only unit on hand is used in
+[protection/active_current_limiter](../protection/active_current_limiter/)
+(general-purpose `ACTIVELIM`, designed/simulated 2026-09-13, not yet
+physically assembled) — a second unit would be needed before tier7
+`HVPULSE` could use its own, and that node is still blocked on a scope
+decision (target voltage/energy, safety design) regardless of part
+availability; see `docs/TODO-agent.md`.
 
 ---
 
@@ -474,11 +491,12 @@ element (brass or copper backing plate + piezoceramic layer), no fixed
 polarity convention like a diode — used either as a driven
 buzzer/actuator or, wired into a charge-amplifier front end, as a
 charge-output transducer (mechanical flex/vibration → small charge
-signal). Fills the tier5 `CHGAMP` gap: nothing else in inventory
-generates a charge signal for that node to actually amplify. No
-diameter-specific capacitance or resonant-frequency spec is available
-from the listing — measure or look up once the physical part is on
-hand.
+signal). Used (1 of 20) in
+[signal_conditioning/charge_amplifier](../signal_conditioning/charge_amplifier/)
+(tier5 `CHGAMP`, designed/simulated 2026-09-13, not yet physically
+assembled). No diameter-specific capacitance or resonant-frequency spec
+is available from the listing — measure or look up once the physical
+part is on hand.
 
 ---
 
@@ -499,12 +517,19 @@ building, same caveat as the CD4066B entry above):
 | 6 | 2Y | 13 | 4B |
 | 7 | GND | 14 | VCC |
 
-Four independent 2-input XOR gates. Fills the tier4 `PHASED` gap: XOR is
-the standard phase-detector primitive (output duty cycle proportional
-to phase difference between two same-frequency square waves), which
-feeds tier6 `LOCKIN`. **Listing's own variant string had a truncated
-package suffix ("DIP-1")** — treated as DIP-14 until the physical part
-confirms otherwise; see the caveat in
+Four independent 2-input XOR gates. The only unit on hand is used
+(gate 1 only) in
+[signal_conditioning/phase_detector](../signal_conditioning/phase_detector/)
+(tier4 `PHASED`, designed/simulated 2026-09-13, not yet physically
+assembled): XOR is the standard phase-detector primitive (output duty
+cycle proportional to phase difference between two square waves), which
+feeds tier6 `LOCKIN`. That circuit compares `ne555_astable`'s output tap
+against an independently-generated Pico PWM reference — the two aren't
+phase-locked, which turned out to be the actual point (see
+`phase_detector/README.md` § Design notes), not a limitation to fix.
+**Listing's own variant string had a truncated package suffix
+("DIP-1")** — treated as DIP-14 until the physical part confirms
+otherwise; see the caveat in
 [orders.md](orders.md#sn74hc86n-quad-2-input-xor-gate).
 
 ---

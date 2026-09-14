@@ -1,0 +1,60 @@
+* charge_amplifier — 12mm piezo disc + TL082 charge-amp front-end, tier5 CHGAMP
+*
+* Topology (per docs/parts_reference.md#piezo-element-12mm-disc and
+* #tl082-jfet-input-dual-op-amp):
+*   Non-inverting input (BIAS, node 2) sits at VCC/2 via a 1Meg/1Meg
+*   divider from VCC to GND — same bias-network idea as
+*   signal_conditioning/electric_field_probe, needed here because a
+*   piezo's charge output is bipolar (compress vs. release) and a
+*   single-supply op-amp can't represent a negative output around 0V.
+*   Piezo (modeled as a charge/current source Iq) injects into the
+*   inverting input (VIRT, node 3), which the op-amp's negative feedback
+*   holds at BIAS (virtual short).
+*   Feedback network: Cf (10nF) in parallel with Rf_bias (1Meg) from VIRT
+*   to OUT (node 4). Cf is the actual charge-to-voltage integrator
+*   element (Vout = -Q/Cf for a fast transient); Rf_bias provides the DC
+*   bias path a pure capacitive feedback loop lacks (without it, the
+*   op-amp's own input bias current would integrate onto Cf forever and
+*   drift the output to a rail — standard charge-amp practice, not
+*   optional).
+*
+* VCC = 3.3V from psu_pico_rail — same rationale as electric_field_probe:
+* guarantees OUT can never exceed the Pico ADC's 0-3.3V input range
+* regardless of divider/op-amp behavior. Same real-hardware caveat also
+* applies here: 3.3V is below the TL082's typical recommended minimum
+* supply — see README.md.
+*
+* This op-point demonstrates the DC bias-stabilization behavior only:
+* Iq=100nA is an illustrative DC stand-in for "some charge is flowing,"
+* not a calibrated tap/flex-event magnitude (a real piezo tap is a fast
+* transient, not a steady current — this repo's smoke tests only run
+* ngspice `.op`, not `.tran`, so the AC/transient integrating behavior
+* (magnitude Q/Cf, sign set by which way the piezo flexes — a real tap
+* produces both a compression and a release transient, opposite in
+* sign) is a documented design calculation in README.md, not something
+* this specific netlist simulates). At true DC steady state, Cf is
+* fully charged (blocks DC) so all of Iq flows through Rf_bias, giving
+* Vout = BIAS + Iq*Rf_bias for this source's defined current direction
+* (confirmed by simulation: node 4 reads bias+100mV, not bias-100mV —
+* the opposite piezo polarity would flip this sign, which is exactly
+* the bipolar behavior the VCC/2 bias network exists to accommodate).
+* This checks the feedback network topology and virtual-short behavior,
+* the same way transimpedance_amplifier's Iph=10uA checks its own
+* feedback loop.
+
+Vcc  1 0  DC 3.3
+R1   1 2  1meg
+R2   2 0  1meg
+Iq   3 0  DC 100n
+Rfb  3 4  1meg
+Cf   3 4  10n
+Eopamp 4 0 2 3  1e5
+
+.control
+op
+echo --- CHGAMP: bias (VCC/2) vs virtual input (should match bias) vs output (bias + Iq*Rf_bias) ---
+print v(2) v(3) v(4)
+quit
+.endc
+
+.end

@@ -1,0 +1,57 @@
+* thermal_monitor — MF52AT NTC divider + Pico alarm LED, safety THERM node
+*
+* Topology (per docs/parts_reference.md#mf52at-ntc-thermistor-10k):
+*   VCC(1) --Rref(10k)--> MID(2) --Rntc(MF52AT, 10k @ 25C)--> GND(0)
+*   Pico ADC reads MID; main.py converts MID's voltage to a resistance
+*   (same divider-inversion math as measurement_tools/
+*   resistance_measurement) and then to a temperature via the MF52AT's
+*   own beta equation (B=3950K, R25=10k — docs/parts_reference.md).
+*   Rref = 10k (matching R25) is a deliberate choice: it centers MID at
+*   VCC/2 at 25C, giving equal ADC headroom for readings above and below
+*   room temperature rather than skewing the usable range toward one end.
+*
+*   Separately, GPIO(3) --Rled(220)--> Dled(4) --> GND(0) models the
+*   alarm LED main.py drives high when the computed temperature crosses
+*   its alarm threshold — this is what makes this node "Thermal
+*   Monitoring WITH ALARM THRESHOLD" per its label in
+*   general_purpose_circuit_dependency.md's safety subgraph, not just a
+*   bare thermometer. GPIO(3) is modeled here in its alarm-ACTIVE state
+*   (driven high) to check the LED branch's current/power are safe; the
+*   inactive (GPIO low, LED off) state draws ~0mA and needs no separate
+*   check.
+*
+* VCC = 3.3V from psu_pico_rail — same rail as the ADC reference, same
+* rationale as electric_field_probe/charge_amplifier (output structurally
+* can't exceed the Pico ADC's safe input range).
+*
+* Rntc modeled as a fixed 10k resistor (its value AT 25C only) — this
+* op-point checks the divider ratio at that one reference condition, not
+* the NTC's temperature response curve (that's a resistance-vs-temperature
+* relationship, not something a static op-point sweeps; see main.py for
+* the beta-equation conversion actually used against real ADC readings
+* at whatever temperature is present).
+*
+* Dled: real LED SPICE parameters aren't on file for the specific
+* red/blue/green/white/yellow LEDs on hand (docs/inventory.md lists them
+* with no part number) — IS/N/RS below are generic red-LED-like values
+* chosen to land in the datasheet-typical ~1.8-2.2V forward-drop range at
+* a few mA, not measured against the physical part. Confirm against
+* whichever LED color is actually used before trusting the exact current
+* figure on real hardware.
+
+Vcc    1 0  DC 3.3
+Rref   1 2  10k
+Rntc   2 0  10k
+Vgpio  3 0  DC 3.3
+Rled   3 4  220
+Dled   4 0  DLED
+.model DLED D(IS=1e-19 N=2 RS=5)
+
+.control
+op
+echo --- THERM: divider midpoint at 25C (should be VCC/2) vs alarm-LED node/current ---
+print v(2) v(4) i(vgpio)
+quit
+.endc
+
+.end

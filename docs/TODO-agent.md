@@ -37,75 +37,21 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
 
 ## Open items
 
-### `PHASED` — tier4 phase detector
+### `HVPULSE` — tier7/8 high-voltage pulse generator
 
-Part on hand: SN74HC86N quad 2-input XOR gate (1 unit, arrived
-2026-09-12; DIP-14 per the listing's own truncated variant string,
-**unconfirmed against the physical part** — see
-[parts_reference.md](parts_reference.md#sn74hc86n-quad-2-input-xor-gate)
-for the caveat, check this before designing pin assignments). Feeds tier6
-`LOCKIN`.
-
-Design note not yet resolved: a classic XOR phase detector needs two
-square waves of the same frequency at a variable phase offset — this
-bench has one square-wave source (`oscillators/ne555_astable`), not two
-phase-related ones. Before writing a netlist, work out what the second
-input actually is on this bench (a second NE555 stage, a GPIO-driven
-reference square wave from the Pico, or something else) — don't assume a
-second oscillator exists without checking.
-
-### `THERM` replacement — general-purpose temperature sensing
-
-Part on hand: MF52AT 10kΩ NTC thermistor (10 units, arrived 2026-09-12).
-Replaces the "suspect faulty" thermistor currently in `inventory.md`; no
-folder/circuit exists yet. No dependency-graph tier node currently named
-for this — check whether it maps to an existing undesigned node
-(`TEMPCOMP`, tier3) or stands alone before creating the folder.
-
-Likely most tractable design here: a resistor-divider + Pico ADC
-temperature readout (thermistor value → ADC voltage → resistance via the
-same divider math as `measurement_tools/resistance_measurement`, then
-resistance → temperature via the MF52AT's beta/Steinhart-Hart
-coefficients from its datasheet) — similar complexity class to
-`capacitance_bridge`, not a novel topology.
-
-### `ACTIVELIM`/`HVPULSE` — protection current limiter + tier7/8 HV pulse
-
-Part on hand: IRLZ44N logic-level MOSFET (1 unit only, arrived
-2026-09-12) — serves both nodes until/unless more are ordered, so whoever
-picks this up first should design with that scarcity in mind (e.g. don't
-consume the only unit on a throwaway test if both nodes need it).
-`ACTIVELIM` feeds `psu_medhigh`/`psu_high` (both backlog, undesigned —
-see `general_purpose_circuit_dependency.md`'s `ACTIVELIM -.required.->`
-edges). `HVPULSE` is tier8 spacetime work
-(`spacetime_circuits_dependency.md`).
-
-**Flag before starting**: `HVPULSE` implies actual high-voltage pulse
-generation — this needs a real safety design pass (isolation, discharge
-paths, what "high" actually means here numerically) before any netlist,
-not just a topology copy-paste. Don't treat this the same way as the
-low-voltage sensor builds above.
-
-### `EPFIELD` — tier5 electric field probe
-
-Part on hand: TL082 JFET-input dual op-amp (10 units, arrived
-2026-09-12) — picked specifically for input impedance a bipolar-input
-LM358 can't provide. No electrode/probe hardware identified yet in
-`inventory.md`/`orders.md` — check whether a physical sensing electrode
-needs to be ordered before this can be fully designed, or whether a
-simple exposed-wire/foil electrode is the intended approach for a first
-build.
-
-### `CHGAMP` — tier5 charge amplifier
-
-Parts on hand: TL082 (shared with `EPFIELD` above) + 12mm piezo disc (20
-units, arrived 2026-09-12) as the charge-output transducer. Standard
-charge-amp topology: piezo modeled as a capacitive charge source, op-amp
-in an integrator-like configuration with a feedback **capacitor** (not a
-resistor — contrast with `transimpedance_amplifier`'s feedback resistor)
-plus a large parallel bias resistor to prevent output drift. Check the
-electrolytic/ceramic capacitor kits in `inventory.md` for a suitable
-feedback capacitor value before assuming one needs to be ordered.
+**Still blocked on a scope decision, not a part.** The only IRLZ44N on
+hand was consumed designing [ACTIVELIM](../protection/active_current_limiter/)
+instead (see that circuit's README § Design notes for why it was
+prioritized) — a second unit would need ordering before this could use
+its own MOSFET regardless. More fundamentally: nothing on this bench
+currently defines what "high voltage" means here numerically. There's no
+HV source of any kind in inventory (the highest voltage anywhere on the
+bench is the Lenovo adapter's 20V) and no isolation/discharge-path safety
+design has been done. **Don't start a netlist for this without first
+getting an actual target peak voltage/energy figure and a real safety
+design pass (isolation, discharge paths)** — this is a judgment call
+that needs the human, not something to infer from the tier graph's
+generic label.
 
 ---
 
@@ -118,4 +64,23 @@ feedback capacitor value before assuming one needs to be ordered.
   (`README.md`/`breadboard.md`/`main.py`). See
   [TODO-completed.md](TODO-completed.md) for the full entry and
   `TODO-arcticoder.md`'s "Ready to build now" for their new
+  physically-assemble bullets.
+- **2026-09-13** (second pass, same day): `signal_conditioning/
+  electric_field_probe/` (`EPFIELD`, tier5), `signal_conditioning/
+  charge_amplifier/` (`CHGAMP`, tier5), `safety/thermal_monitor/`
+  (`THERM`), `signal_conditioning/phase_detector/` (`PHASED`, tier4),
+  and `protection/active_current_limiter/` (`ACTIVELIM`) — all five
+  designed, simulated, smoke-tested (green), and documented. This was
+  the direct spacetime-research sensor chain (`EPFIELD`/`CHGAMP` are
+  named tier5 nodes in `spacetime_circuits_dependency.md`, not general
+  infrastructure) plus the `PHASED` node that unlocks tier6 `LOCKIN`
+  processing of their output — see
+  [kb/spacetime_sensor_chain_notes.md](kb/spacetime_sensor_chain_notes.md)
+  for the design decisions made along the way (single-supply ADC-safety
+  bias pattern, the resolved "second oscillator" question for `PHASED`,
+  and a real hard-trip chattering limitation `ACTIVELIM`'s own
+  simulation surfaced). `HVPULSE` (shares `ACTIVELIM`'s MOSFET) remains
+  open above — it needs a scope decision, not more design time. See
+  [TODO-completed.md](TODO-completed.md) for the full entry and
+  `TODO-arcticoder.md`'s "Ready to build now" for the new
   physically-assemble bullets.

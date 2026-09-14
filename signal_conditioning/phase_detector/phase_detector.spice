@@ -1,0 +1,68 @@
+* phase_detector — SN74HC86N XOR gate + RC lowpass, tier4 PHASED
+*
+* Design question this resolves (was open in docs/TODO-agent.md): a
+* classic XOR phase detector needs two same-frequency square waves at a
+* variable phase offset, and this bench only had one square-wave source
+* (oscillators/ne555_astable). Resolution: the SECOND input is a Pico
+* GPIO PWM output, independently generated (not derived from/synced to
+* the NE555). The two are NOT phase-locked to each other — see
+* breadboard.md/README.md for why that's fine for validating the XOR
+* primitive itself (their relative phase continuously drifts, sweeping
+* the XOR duty cycle through its full 0-100% range, a beat-frequency
+* demonstration rather than a fixed-phase reading) and why true
+* phase-locking is deferred to whatever eventually builds tier6 LOCKIN.
+*
+* Topology (per docs/parts_reference.md#sn74hc86n-quad-2-input-xor-gate):
+*   1A (node A) <- oscillators/ne555_astable's own output-divider tap
+*                  (already Pico-ADC-safe, ~2.2-2.9V high level - see
+*                  that circuit's README Validation section)
+*   1B (node B) <- Pico GPIO configured as PWM, 0-3.3V, tuned near the
+*                  NE555's own trimmed frequency (~1.5kHz)
+*   1Y (node XOR) -> Rf(10k)/Cf(100nF) lowpass -> OUT, read by Pico ADC
+*
+* VCC = 3.3V from psu_pico_rail, same rail that generates the PWM
+* reference and reads the ADC output — avoids any cross-rail mismatch.
+*
+* The XOR gate itself is modeled as an ideal behavioral source (this
+* repo's first digital-logic element - no vendor macromodel available,
+* same "ideal + documented caveats" philosophy as the op-amp E-elements
+* and the NE555 astable macromodel). Two static logic-level cases are
+* simulated (not a real toggling waveform - see README.md for why a
+* static .op case is what this repo's smoke-test convention checks):
+*   Case 1, in-phase: both inputs HIGH -> XOR true truth table says LOW
+*   Case 2, out-of-phase: one HIGH, one LOW -> XOR true truth table says HIGH
+* Both cases also confirm the RC lowpass passes DC unattenuated (no
+* current flows through Cf at a true DC operating point, so Rf drops
+* nothing and OUT should equal the XOR node exactly) - this is what
+* actually gets exercised on real, continuously-toggling hardware, where
+* the filter averages a duty cycle instead of passing a static level.
+
+Va      1 0  DC 3.3
+Vb      2 0  DC 3.3
+Bxor    3 0  V = (V(1) > 1.65) != (V(2) > 1.65) ? 3.3 : 0
+Rf      3 4  10k
+Cf      4 0  100n
+
+.control
+* --- Case 1: in-phase (A=B=HIGH) — XOR should read LOW, filtered output ~0V ---
+op
+let v_a_inphase = v(1)
+let v_b_inphase = v(2)
+let v_xor_inphase = v(3)
+let v_out_inphase = v(4)
+echo --- Case 1: in-phase (A=HIGH, B=HIGH) ---
+print v_a_inphase v_b_inphase v_xor_inphase v_out_inphase
+
+* --- Case 2: out-of-phase (A=HIGH, B=LOW) — XOR should read HIGH, filtered output ~3.3V ---
+alter Vb = 0
+op
+let v_a_outphase = v(1)
+let v_b_outphase = v(2)
+let v_xor_outphase = v(3)
+let v_out_outphase = v(4)
+echo --- Case 2: out-of-phase (A=HIGH, B=LOW) ---
+print v_a_outphase v_b_outphase v_xor_outphase v_out_outphase
+quit
+.endc
+
+.end

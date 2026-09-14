@@ -4056,3 +4056,40 @@ Both tasks are done. Summary of changes:
 No AliExpress order is needed --- nothing here changed part supply status.
 <!-- ------ -->
 ---
+Summary
+-------
+
+You pushed back on `TODO-arcticoder.md`'s framing that "Ready to build now" items weren't blocking anything because tier4+ was still undesigned --- if items on that list aren't actually contributing to the spacetime-research goal, they shouldn't be presented as neutral busywork. Rather than argue about the framing, I designed the downstream tiers `TODO-agent.md` had queued, to give the question a real answer.
+
+**Built and verified five new circuits** (netlist simulated in `ngspice`, `smoke_test.py` green, `breadboard.md`/`README.md` written, `main.py` for the four with a Pico-readable output):
+
+-   `signal_conditioning/electric_field_probe/` --- bare-electrode electrostatic sensor, TL082 unity-gain follower (tier5 `EPFIELD`) --- a direct spacetime-research sensor node, not general infrastructure.
+-   `signal_conditioning/charge_amplifier/` --- 12mm piezo disc + TL082 inverting charge amp (tier5 `CHGAMP`) --- same, the other direct sensor node.
+-   `safety/thermal_monitor/` --- MF52AT NTC divider + GPIO alarm LED (safety `THERM`, first circuit in a new `safety/` top-level folder).
+-   `signal_conditioning/phase_detector/` --- SN74HC86N XOR gate comparing `ne555_astable`'s output against an independent, deliberately *not* phase-locked Pico PWM reference (tier4 `PHASED`, resolves a previously-open design question, feeds tier6 `LOCKIN`).
+-   `protection/active_current_limiter/` --- IRLZ44N + sense resistor + LM358 comparator, hard-trip at 2A (`ACTIVELIM`, first circuit in a new `protection/` top-level folder). Its own fault-case simulation failed to converge in ngspice for a real reason (a bang-bang limiter with no hysteresis/latch has no stable operating point under sustained fault) --- worked around by simulating the fault case open-loop instead of forcing a fixed point that doesn't exist, and documented as a real chattering limitation rather than papered over.
+
+Three of the five (`EPFIELD`/`CHGAMP`/`THERM`) power their op-amp/logic directly from `psu_pico_rail` instead of a battery PSU tier --- a new pattern, chosen so the output is structurally incapable of exceeding the Pico ADC's 0-3.3V range, rather than merely unlikely to given careful resistor math.
+
+**Rewrote `TODO-arcticoder.md`**: moved these five from `TODO-agent.md`'s queue to "Ready to build now" with correct dependency notes, placed the two direct spacetime-sensor builds first (not because anything technically blocks on them, but because they're the actual research objective), updated the stale "tier4+ is undesigned" framing throughout (including the backlog section's now-outdated parenthetical cross-references), and added a note that a second IRLZ44N is a future (not urgent) order candidate once `HVPULSE` actually gets a scope decision. `HVPULSE` itself was deliberately left undesigned in `TODO-agent.md` --- it's blocked on the user needing to define an actual target voltage/energy and safety plan, not on more design time.
+
+Updated `lab/README.md` (new circuits table rows, repo structure, simulate/smoke-test command lists, new `safety/`/`protection/` folder mentions), `inventory.md`, and `parts_reference.md` to cross-reference the new circuits, added `docs/kb/spacetime_sensor_chain_notes.md` documenting the design decisions for future sessions, and confirmed the full smoke-test suite still passes (17 run, only the pre-existing intentional `psu_medlow_usbc` failure, unrelated to today's changes).
+<!-- ------ -->
+---
+All five circuits flagged in `TODO-agent.md` as ready to design got built, simulated, smoke-tested, and documented --- this is the concrete design work that resolves the ambiguity you flagged:
+
+**New circuits** (all in `lab/`):
+
+-   `signal_conditioning/electric_field_probe/` (tier5 `EPFIELD`) and `signal_conditioning/charge_amplifier/` (tier5 `CHGAMP`) --- the two sensor front-ends directly named in `spacetime_circuits_dependency.md`. These aren't generic infrastructure; they're the actual FTL-research sensing hardware.
+-   `signal_conditioning/phase_detector/` (tier4 `PHASED`) --- resolved the open "needs two square waves" design question using an independent, deliberately *non*\-phase-locked Pico PWM reference against the existing NE555 oscillator.
+-   `safety/thermal_monitor/` (`THERM`) and `protection/active_current_limiter/` (`ACTIVELIM`) --- new top-level `safety/` and `protection/` folders, as the main README always intended.
+
+All five run off `psu_pico_rail` (a new pattern for op-amp fronts: it makes an out-of-range ADC reading structurally impossible, not just unlikely). `ACTIVELIM`'s fault-case simulation actually failed to converge in ngspice --- real physics, not a bug: a hysteresis-free comparator limiter has no stable operating point under sustained fault, so it'll chatter on real hardware. That's documented as a known limitation, not hidden.
+
+**`HVPULSE` was deliberately left undesigned** --- it has no defined target voltage/energy and no HV source exists on this bench, so this is a scope decision only you can make, not something to fabricate.
+
+**`TODO-arcticoder.md`** is rewritten: the two spacetime-sensor builds are now first in "Ready to build now" (not because anything blocks on them, but because they're the actual objective), stale "tier4+ is undesigned" claims throughout the file are corrected, and a second IRLZ44N is noted as a future (not urgent) order candidate once `HVPULSE` gets scoped. No AliExpress order is needed right now.
+
+Everything's verified (`tools/run_all_smoke_tests.py`: 17 pass, only the pre-existing intentional `psu_medlow_usbc` failure). Docs swept: `README.md`, `inventory.md`, `parts_reference.md`, `history.md`, plus a new `kb/spacetime_sensor_chain_notes.md` for future sessions. Nothing has been committed --- say the word if you want that done.
+<!-- ------ -->
+---

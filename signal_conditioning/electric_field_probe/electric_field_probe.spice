@@ -1,0 +1,51 @@
+* electric_field_probe — TL082 high-impedance electrometer buffer, tier5 EPFIELD
+*
+* Topology (per docs/parts_reference.md#tl082-jfet-input-dual-op-amp):
+*   Electrode (bare wire/foil) -> node BIAS, the TL082 ch.A non-inverting
+*   input. BIAS is also the midpoint of a 1Meg/1Meg divider from VCC to
+*   GND — the largest resistor value on hand (docs/inventory.md
+*   Resistors table tops out at 1 MOhm), chosen to keep the electrode's
+*   DC path as high-impedance as this bench's parts allow (a real
+*   electrometer front end uses GOhm-range bias resistors; 1Meg is what's
+*   actually on hand, so bandwidth/sensitivity is bounded accordingly —
+*   see README.md's honest caveat on this).
+*   TL082 ch.A wired as a unity-gain follower (inverting input tied
+*   straight to the output) buffers BIAS down to a low-impedance OUT the
+*   Pico ADC can read without loading the divider.
+*   Ch.B is unused (left open on the real board, same convention as
+*   transimpedance_amplifier's unused LM358 ch.2).
+*
+* VCC = 3.3V from psu_pico_rail (Pico's own onboard 3V3 rail), not a
+* battery PSU tier — deliberate choice so OUT can never exceed the Pico
+* ADC's own 0-3.3V safe input range regardless of TL082 behavior (an
+* op-amp powered from a battery rail like psu_low_v2/psu_4xaa could put
+* an out-of-range voltage on GP26/GP27 if the divider math were ever
+* wrong — see the ne555_astable README's own pinned-3.300V incident for
+* what that looks like on real hardware). The tradeoff: 3.3V is below
+* the TL082's typical datasheet-recommended minimum supply (most JFET
+* dual op-amps like this are specified from a much wider split-supply
+* range) — flagged as a real-hardware caveat in README.md, not glossed
+* over; if the real part doesn't buffer correctly at 3.3V single-supply,
+* that's the first thing to suspect.
+*
+* This op-point demonstrates the bias-divider math (BIAS should land at
+* VCC/2) and confirms the follower actually tracks it (OUT should equal
+* BIAS) — it does NOT model a calibrated field-to-voltage sensitivity
+* number, since the electrode's real coupling depends entirely on its
+* physical geometry/proximity to whatever it's sensing, not on anything
+* representable as a fixed SPICE current source. Real sensitivity is
+* checked qualitatively on hardware (see README.md's Validation section).
+
+Vcc  1 0  DC 3.3
+R1   1 2  1meg
+R2   2 0  1meg
+Eopamp 3 0 2 3  1e5
+
+.control
+op
+echo --- EPFIELD: bias midpoint (should be VCC/2) vs buffered output (should track it) ---
+print v(2) v(3)
+quit
+.endc
+
+.end
