@@ -4093,3 +4093,20 @@ All five run off `psu_pico_rail` (a new pattern for op-amp fronts: it makes an o
 Everything's verified (`tools/run_all_smoke_tests.py`: 17 pass, only the pre-existing intentional `psu_medlow_usbc` failure). Docs swept: `README.md`, `inventory.md`, `parts_reference.md`, `history.md`, plus a new `kb/spacetime_sensor_chain_notes.md` for future sessions. Nothing has been committed --- say the word if you want that done.
 <!-- ------ -->
 ---
+All docs-only changes, no code touched, so no need to run smoke tests. Here's a summary of what changed and direct answers to your numbered points:
+
+**1\. IRLZ44N/ACTIVELIM/HVPULSE** --- Corrected: the docs previously implied a second MOSFET must be ordered before `HVPULSE` unblocks. That's only true if both circuits need to be physically assembled *simultaneously* --- which isn't the case (neither's target PSU tier is built, and nothing in this repo's scope runs them concurrently). Per the ephemeral convention, `ACTIVELIM`'s single IRLZ44N returns to inventory once bench-validated and can serve `HVPULSE` next. Fixed in `TODO-agent.md`, `TODO-arcticoder.md`, `inventory.md`, `parts_reference.md`, and the `active_current_limiter` README/breadboard.
+
+**2\. Numeric "high voltage" threshold** --- Added: **50V DC / 30V AC RMS** (matches IEC 61140 SELV), derived from your own reasoning about skin-resistance ranges and the 30--50mA/50--100mA danger bands. Lives in the new `kb/circuit_lifecycle_and_repo_scope.md` and is referenced from `TODO-agent.md`'s `HVPULSE` entry.
+
+**2.1 Netlist vs. assembly** --- Clarified: a netlist/BOM for dependency-graph clarity is fine once `HVPULSE` has a target figure, even with no near-term build plan. Physical assembly of anything over the 50V/30V line stays out of scope until you're regularly pushing the Lenovo adapter's amperage.
+
+**3/4. Repo scope** --- Removed language implying this repo "exists to build toward" the spacetime research or that bench items are "worth prioritizing over busywork" --- not a joke, just imprecise; there's no busywork here to begin with. Reframed the TODO intros so spacetime-tier bullets are grouped for dependency clarity only, not ranked by objective-closeness. The actual research experiments explicitly stay out of this repo's scope.
+
+**5\. Lenovo adapter** --- No PSU folder is built around it yet. It's reserved for the still-backlog `psu_medhigh`/`psu_high` tiers (`PSUMEDHIGH` node in `general_purpose_circuit_dependency.md`) --- not `psu_medlow_usbc` or anything else currently on the bench.
+
+**6\. Multimeter** --- Fixed: `active_current_limiter/README.md` no longer offers a multimeter as an "or" alternative. It now names the exact Pico-ADC technique (read the circuit's own sense-resistor node directly, `V/0.1Ω`). Also strengthened your `instrument_not_absence_framing` memory since this is the third recurrence.
+
+All reasoning is captured in the new `lab/docs/kb/circuit_lifecycle_and_repo_scope.md` for future sessions, plus a dated entry in `kb/todo_list_conventions.md` and two updated memory files.
+<!-- ------ -->
+---

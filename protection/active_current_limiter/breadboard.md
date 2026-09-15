@@ -11,13 +11,15 @@ MOSFET turns off. This is the general-purpose `ACTIVELIM` node in
 — protects `psu_medhigh`/`psu_high` (both backlog, no folder yet), so
 this circuit stands alone ahead of either PSU actually being built.
 
-**Consumes the only IRLZ44N MOSFET currently on hand** (1 unit — see
+**Uses the only IRLZ44N MOSFET currently on hand** (1 unit — see
 `docs/inventory.md`). `HVPULSE` (tier7/8, spacetime) was flagged in
-`docs/TODO-agent.md` as sharing this same single part; building this
-circuit uses it, so a second MOSFET would need to be ordered before
-`HVPULSE` could be built with its own unit — see `README.md`'s Design
-notes for why `HVPULSE` wasn't attempted in this same pass regardless of
-part availability.
+`docs/TODO-agent.md` as sharing this same single part, but per this
+repo's ephemeral-circuit convention it returns to inventory once this
+build's bench check passes and nothing else needs it wired — a second
+MOSFET is only actually needed if both circuits must be physically
+assembled at once, which isn't the case today (see
+`docs/kb/circuit_lifecycle_and_repo_scope.md`). See `README.md`'s Design
+notes for why `HVPULSE` wasn't attempted in this same pass regardless.
 
 ---
 

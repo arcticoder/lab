@@ -124,26 +124,36 @@ ahead of `psu_low_v2` being physically assembled.
 **Why `HVPULSE` wasn't attempted alongside this, despite sharing the
 same MOSFET.** `docs/TODO-agent.md` flags `HVPULSE` (tier7/8, high-
 voltage pulse generation) as needing "a real safety design pass
-(isolation, discharge paths, what 'high' actually means here
-numerically) before any netlist" — and critically, nothing on this
-bench currently defines a target peak voltage or energy for it (no HV
-source of any kind is in inventory; the highest voltage anywhere on this
-bench is the Lenovo adapter's 20V). Building `ACTIVELIM` doesn't resolve
-that — it answers a different, lower-risk question (protecting a
-`psu_medhigh`-class rail from overcurrent), and consumes the only
-IRLZ44N on hand in the process. A second MOSFET would need ordering
-before `HVPULSE` could use its own unit once its scope is actually
-defined — see `docs/TODO-arcticoder.md`'s "Next AliExpress order" for
-this noted as a future (not yet urgent) candidate.
+(isolation, discharge paths, and a target figure above this bench's 50V
+DC/30V AC numeric high-voltage threshold) before any netlist" — and
+critically, nothing on this bench currently defines a target peak
+voltage or energy for it (no HV source of any kind is in inventory; the
+highest voltage anywhere on this bench is the Lenovo adapter's 20V, and
+no PSU folder is built around that adapter yet either). Building
+`ACTIVELIM` doesn't resolve that — it answers a different, lower-risk
+question (protecting a `psu_medhigh`-class rail from overcurrent) and
+uses the only IRLZ44N on hand in the process. Per this repo's ephemeral-
+circuit convention, that MOSFET returns to inventory once this build's
+bench check passes, so it isn't actually gone — a second unit would only
+be needed if `HVPULSE` had to be physically assembled *at the same time*
+as `ACTIVELIM`, which isn't the case (see
+`docs/kb/circuit_lifecycle_and_repo_scope.md`). Ordering a second one
+ahead of that is optional — see `docs/TODO-arcticoder.md`'s "Next
+AliExpress order" for it noted as a future (not urgent) candidate.
 
 ---
 
 ## Validation
 
-No `main.py` — validate by placing a multimeter or
+No `main.py` — validate with the Pico's own ADC read directly across the
+circuit's existing sense resistor `Rs` (the MOSFET-Source/`Rs` junction —
+`breadboard.md`'s § 2 sense node), the same technique
 [resistance_measurement](../../measurement_tools/resistance_measurement/)
-in series with the load and confirming the load current stays under the
-trip point in normal operation, and that a deliberately excessive load
+and the `ammeter_10ohm`/`ammeter_1ohm` jigs use for a known shunt: load
+current = `V(sense node) / 0.1Ω`. Confirm that voltage stays under 0.2V
+(2A × 0.1Ω) in normal operation, and that a deliberately excessive load
 (a low-resistance short, well below what the intended downstream circuit
-would ever draw) trips the MOSFET off. Expect chattering at the boundary
-itself — see Design notes above — not a clean single trip event.
+would ever draw) drives it to the 0.2V trip threshold and the gate
+collapses toward 0V as the MOSFET cuts off. Expect chattering at the
+boundary itself — see Design notes above — not a clean single trip
+event.

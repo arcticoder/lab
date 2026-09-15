@@ -16,23 +16,24 @@ if it has an open item. **"Ready to build now" is a menu, not a queue**
 in the narrow sense that nothing in it is currently a hard blocker for
 anything else on this list — pick whatever you feel like out of it, or
 skip the whole section, with no scheduling cost to anything else here.
-That's a different claim than it was as of yesterday, though: tier4
-(`PHASED`) and tier5 (`EPFIELD`/`CHGAMP`, the electric-field-probe and
-charge-amp sensor front-ends) got designed 2026-09-13 specifically
-because they're the actual spacetime-research sensor chain this whole
-repo exists to build toward — see `README.md`'s "Circuits — designed,
-not yet built" table and
+tier4 (`PHASED`) and tier5 (`EPFIELD`/`CHGAMP`, the electric-field-probe
+and charge-amp sensor front-ends) got designed 2026-09-13 — see
+`README.md`'s "Circuits — designed, not yet built" table and
 [spacetime_circuits_dependency.md](spacetime_circuits_dependency.md) for
 why those two nodes aren't generic infrastructure the way most of this
-section's other items are. Nothing downstream of them (tier6 `LOCKIN`)
-exists yet either, so there's still no scheduling deadline forcing them
-ahead of anything else — but if you're choosing what to spend bench time
-on based on what actually matters to the goal rather than just picking
-whatever's easiest, those two are the closest thing on this list to the
-real objective right now, which is why they're placed first below rather
-than sorted alphabetically or by part-arrival date. "Blocked" and
-"Backlog" are reference sections, not action items, until something
-changes their status.
+section's other items are. That's the only reason they're grouped first
+below — it isn't a priority ranking. This repo's own scope stops at
+designing, simulating, documenting, and bench-validating equipment; the
+actual research experiments these sensor nodes will eventually feed
+belong to a separate future repo and aren't started here (see
+[kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md)),
+so there's no in-repo objective to rank bench time against. Physically
+assembling anything below is for confirming its design against real
+hardware once — per this repo's ephemeral-circuit convention (see
+`README.md` § Circuits — built & bench-tested), it goes back to
+inventory afterward rather than staying wired to feed anything
+downstream. "Blocked" and "Backlog" are reference sections, not action
+items, until something changes their status.
 
 Completed circuits' bench-test status is tracked in `README.md`'s "built &
 bench-tested" table and `docs/history.md`. For the TODO items on *this*
@@ -83,25 +84,31 @@ standing candidates for whenever that top-up is actually warranted.
 - [ ] **LVDT transducer** — the only tier5 node with zero hardware behind
       it (`LVDTAMP`). Pricier/more niche than the items above; lower
       priority but the last unaddressed tier5 sensor.
-- [ ] *(no rush — `HVPULSE` has no defined scope yet either)* **Second
-      IRLZ44N MOSFET (or a small pack)** — the only unit on hand went
-      into `protection/active_current_limiter/` (`ACTIVELIM`,
-      2026-09-13); `HVPULSE` (tier7/8) would need its own unit once it
-      actually has a target voltage/energy and a safety design behind
-      it, neither of which exist yet — see
+- [ ] *(optional, not a blocker — see*
+      *[kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md))*
+      **Second IRLZ44N MOSFET (or a small pack)** — the only unit on
+      hand is currently in `protection/active_current_limiter/`
+      (`ACTIVELIM`, 2026-09-13), but per this repo's ephemeral-circuit
+      convention it returns to inventory once that build's bench check
+      passes and can then serve `HVPULSE` instead. A second unit is only
+      actually needed if both circuits must stay physically assembled at
+      the same time — not the case today. `HVPULSE` (tier7/8) also still
+      needs an actual target voltage/energy figure (above this bench's
+      50V DC/30V AC numeric high-voltage threshold) and a safety design
+      pass before it has a scope at all — see
       [TODO-agent.md](TODO-agent.md)'s remaining open item. Ordering
-      this now wouldn't unblock anything; only worth doing once
-      `HVPULSE`'s scope is actually decided.
+      this now wouldn't unblock anything regardless.
 
 ## Ready to build now — parts on hand, none of this is urgent
 
 **Nothing below is a hard blocker for anything else on this list** — the
-two spacetime-sensor bullets placed first are genuinely part of the
-research goal (see this file's intro), but nothing *downstream of them*
-(tier6 `LOCKIN`) is designed yet, so there's still no scheduling cost to
-skipping this entire section indefinitely if you'd rather not. Treat it
-as a menu of what you *could* spend bench time on, not a backlog you're
-behind on. Builds, validation steps, and correctness fixes are one
+two spacetime-sensor bullets are placed first only for dependency-graph
+grouping (see this file's intro), not because they're more important;
+nothing *downstream of them* (tier6 `LOCKIN`) is designed yet, so there's
+still no scheduling cost to skipping this entire section indefinitely if
+you'd rather not. Treat it as a menu of what you *could* spend bench time
+on, not a backlog you're behind on. Builds, validation steps, and
+correctness fixes are one
 dependency-ordered list here, not three separate lists — when a build
 needs a validation or correctness step done first, that step is the
 bullet directly above it. Everything past the dependency-linked pair at
@@ -126,14 +133,14 @@ its bench-assembly bullet below.
       ordered; any small bare conductor (a stripped jump-wire end or
       foil scrap) works for a first build, per that circuit's own
       README. No current downstream consumer (tier6 `LOCKIN` is
-      undesigned) — but this is a direct spacetime-research sensor
-      build, not generic infra; see this file's intro for why it's
-      placed here rather than sorted by part-arrival date.
+      undesigned) — this is a spacetime-tier sensor node, grouped here
+      per this file's intro, not because it's more urgent than anything
+      else in this section.
 - [ ] **`signal_conditioning/charge_amplifier` (tier5 `CHGAMP`) —
       physically assemble.** Folder/netlist/breadboard guide/smoke test
       now exist (2026-09-13). Powered from `psu_pico_rail`. Same
       no-current-downstream-consumer situation as `EPFIELD` above, same
-      reason it's prioritized here anyway.
+      grouping reason for being listed here.
 - [ ] **1N5817 Schottky diodes — still need a per-unit forward-drop check
       for whichever units go into `psu_low_v2`/`psu_3xaa` specifically.**
       The diode already installed in `psu_4xaa` is now past
@@ -192,16 +199,23 @@ its bench-assembly bullet below.
       to inventory since its own 2026-09-13 batch validation (see
       `README.md`'s "built & bench-tested" convention on returning parts
       once nothing else needs them wired), re-assemble it first. Feeds
-      tier6 `LOCKIN` (still undesigned) — no current downstream consumer,
-      but see this file's intro for why this and the two spacetime
-      sensor bullets above it are worth prioritizing over pure
-      busywork regardless.
+      tier6 `LOCKIN` (still undesigned) — bench-validating this now just
+      confirms the design against real hardware; per the ephemeral
+      convention it returns to inventory afterward and gets rebuilt once
+      `LOCKIN` (or an actual experiment, out of this repo's scope) needs
+      it wired. No scheduling cost either way — build whenever you feel
+      like it.
 - [ ] **`protection/active_current_limiter` (`ACTIVELIM`) — physically
       assemble.** Folder/netlist/breadboard guide/smoke test now exist
-      (2026-09-13). **Consumes the only IRLZ44N MOSFET on hand** — fine,
-      since `HVPULSE` (the only other node wanting one) can't use it yet
-      regardless of availability (needs a scope decision first, see
-      "Next AliExpress order" below). Needs the TL431A reference divider
+      (2026-09-13). **Uses the only IRLZ44N MOSFET on hand** — fine,
+      since per this repo's ephemeral-circuit convention it returns to
+      inventory once this build's bench check passes, and `HVPULSE`
+      (the only other node wanting one) can't use it yet regardless
+      (needs a scope decision first, see "Next AliExpress order" below);
+      a second unit is only needed if both must be assembled at once,
+      not the case today (see
+      [kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md)).
+      Needs the TL431A reference divider
       sized against whatever Cathode voltage it ends up regulated to on
       the bench — a real-hardware sizing step, not something the netlist
       could pin down in advance; see that circuit's own `breadboard.md`

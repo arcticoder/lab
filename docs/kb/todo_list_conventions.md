@@ -297,6 +297,31 @@ undesigned), re-check whether that item's own framing/urgency in
 "generic, skippable busywork" once it's actually become a real
 prerequisite for something.
 
+## Don't frame "ready to build now" items by closeness to the spacetime-research objective, and don't assume a shared part needs duplicating (2026-09-14)
+
+User correction, 2026-09-14: this file's own intro (and several bullets)
+had drifted into saying the `EPFIELD`/`CHGAMP`/`PHASED` bullets were
+placed first because they're "the actual spacetime-research sensor chain
+this whole repo exists to build toward" / "the closest thing on this
+list to the real objective." That overstates this repo's scope — it
+designs/simulates/documents/bench-validates equipment only; the actual
+research experiments run in a separate future repo and are never started
+here. Grouping those bullets first for dependency-graph clarity is fine;
+ranking them as more important than the rest of the "menu, not queue"
+section is not, since there's no in-repo objective to rank against.
+Separately, the IRLZ44N MOSFET shared between `ACTIVELIM` and `HVPULSE`
+was documented as requiring a second unit before `HVPULSE` could
+proceed — wrong, since every circuit here is ephemeral (see
+[[lab_pico_repo_structure]]'s build → bench-test → return-to-inventory
+convention): the single unit returns to inventory once `ACTIVELIM`'s own
+bench check passes, and a duplicate is only actually needed if both
+circuits must be assembled at the same time. Full writeup, plus the new
+50V DC/30V AC numeric "high voltage" threshold established the same day,
+is in
+[circuit_lifecycle_and_repo_scope.md](circuit_lifecycle_and_repo_scope.md) —
+read that before writing "no current downstream consumer, but build it
+anyway" language into either TODO file again.
+
 ## Don't write future-session working notes into TODO-arcticoder.md itself
 
 A future LLM chat's own working notes on this repo belong in `docs/kb/`

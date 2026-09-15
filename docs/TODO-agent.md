@@ -39,19 +39,49 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
 
 ### `HVPULSE` — tier7/8 high-voltage pulse generator
 
-**Still blocked on a scope decision, not a part.** The only IRLZ44N on
-hand was consumed designing [ACTIVELIM](../protection/active_current_limiter/)
-instead (see that circuit's README § Design notes for why it was
-prioritized) — a second unit would need ordering before this could use
-its own MOSFET regardless. More fundamentally: nothing on this bench
-currently defines what "high voltage" means here numerically. There's no
-HV source of any kind in inventory (the highest voltage anywhere on the
-bench is the Lenovo adapter's 20V) and no isolation/discharge-path safety
-design has been done. **Don't start a netlist for this without first
-getting an actual target peak voltage/energy figure and a real safety
-design pass (isolation, discharge paths)** — this is a judgment call
-that needs the human, not something to infer from the tier graph's
-generic label.
+**Still blocked on a scope decision, not a part.** The only IRLZ44N
+currently *wired* is in [ACTIVELIM](../protection/active_current_limiter/)
+(see that circuit's README § Design notes for why it was designed
+first) — but per this repo's ephemeral-circuit convention (nothing stays
+assembled once its own bench check passes and nothing else currently
+needs it wired — see `README.md` § Circuits — built & bench-tested),
+that single on-hand IRLZ44N returns to inventory once `ACTIVELIM` is
+bench-validated, and can then be reused here. **A second unit is only
+actually required if `ACTIVELIM` and `HVPULSE` need to be physically
+assembled at the same time** — not the case today: both protect/generate
+for PSU tiers (`psu_medhigh`/`psu_high`) that are themselves still
+backlog with no folder, and this repo doesn't run the experiments that
+would ever need two such circuits live simultaneously (see
+[kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md)).
+Ordering a second IRLZ44N ahead of that is optional, not a blocker.
+
+More fundamentally: nothing on this bench currently defines what "high
+voltage" means here numerically. **This bench's numeric threshold: above
+50V DC / 30V AC RMS counts as high voltage** — the same limit IEC 61140's
+SELV (safety extra-low voltage) classification uses. Reasoning: dry-skin
+resistance runs roughly 100kΩ–600kΩ, but broken/damp-skin contact
+resistance can fall to ~1,000Ω — at 1,000Ω, 50V drives 50mA, inside the
+30–50mA range that can paralyze respiratory muscles and bordering the
+50–100mA range that can induce ventricular fibrillation. Nothing on the
+bench today exceeds this threshold (the Lenovo 65W adapter tops out at
+20V; no PSU circuit is built around it yet — see
+`docs/general_purpose_circuit_dependency.md`'s `PSUMEDHIGH` node) and no
+HV source of any kind is in inventory; no isolation/discharge-path safety
+design has been done either. **Don't start a netlist for this without
+first getting an actual target peak voltage/energy figure and a real
+safety design pass (isolation, discharge paths) from the human** — this
+is a judgment call, not something to infer from the tier graph's generic
+label.
+
+**Once scoped, a netlist/BOM here is fine even with no near-term
+physical-assembly plans** — the point is dependency-graph/build-order
+clarity, not an assembly commitment (see
+[kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md)
+for the repo-scope reasoning). Physical assembly of anything exceeding
+the 50V/30V threshold above stays out of scope until the human decides
+to raise the hazard level of assembled circuits on this bench — don't
+add a "physically assemble" bullet for it to `TODO-arcticoder.md` on the
+strength of a netlist alone.
 
 ---
 

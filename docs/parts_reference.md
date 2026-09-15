@@ -476,10 +476,13 @@ Vds 55V, Id ~47A (heatsink-dependent), Rds(on) low-mΩ range at Vgs=5V.
 The only unit on hand is used in
 [protection/active_current_limiter](../protection/active_current_limiter/)
 (general-purpose `ACTIVELIM`, designed/simulated 2026-09-13, not yet
-physically assembled) — a second unit would be needed before tier7
-`HVPULSE` could use its own, and that node is still blocked on a scope
-decision (target voltage/energy, safety design) regardless of part
-availability; see `docs/TODO-agent.md`.
+physically assembled) — returns to inventory once that build's bench
+check passes (per this repo's ephemeral-circuit convention) and can then
+serve tier7 `HVPULSE`, which is still blocked on a scope decision
+(target voltage/energy, safety design) regardless of part availability;
+a second unit is only needed if both circuits must be assembled at once,
+not the case today — see `docs/TODO-agent.md` and
+`docs/kb/circuit_lifecycle_and_repo_scope.md`.
 
 ---
 
