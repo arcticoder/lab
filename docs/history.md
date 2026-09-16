@@ -4110,3 +4110,16 @@ All docs-only changes, no code touched, so no need to run smoke tests. Here's a 
 All reasoning is captured in the new `lab/docs/kb/circuit_lifecycle_and_repo_scope.md` for future sessions, plus a dated entry in `kb/todo_list_conventions.md` and two updated memory files.
 <!-- ------ -->
 ---
+All done. Here's the summary of what I did with the "read the literature" decision:
+
+I ran six targeted searches across three independent published families of small-force/anomalous-thrust experiments (a high-voltage capacitor/electrode family, a closed-cavity RF-power family, and a resonant piezoelectric-stack family) --- deliberately using functional search terms rather than the theories' own names, and never quoting a source's title if it named one directly. That surfaced a real, consistent instrumentation pattern that's now written into [spacetime\_circuits\_dependency.md](vscode-webview://0t0t5avd7ct05m067k0tm0m1svt8ldc5ga1o0gfosfmbv9948a51/lab/docs/spacetime_circuits_dependency.md)'s new "Why these tiers" section, sourced by bare links, with zero theory/program/researcher names anywhere --- including the kb notes, since `no_fringe_science_terms` explicitly covers kb prose too:
+
+-   **`LVDTAMP`** (previously your only hardware-less tier5 node) now has real justification --- published force balances consistently read out displacement via a capacitive/inductive sensor, which is exactly an LVDT's role, just at far coarser resolution.
+-   **`CALORIF`/`THERM`** are better framed as thermal-artifact-rejection instruments (the single most-repeated false-positive source across all three literatures) than generic energy measurement.
+-   **Tier6 `LOCKIN`** got its strongest justification yet: synchronous detection of a small periodic force against noise is standard practice in this literature, and it's the direct next stage after `PHASED`/`EPFIELD`/`CHGAMP`.
+-   **`EPFIELD`** picked up a second real role: characterizing ion/corona-wind, a named confound in the high-voltage family, not just sensing a target field.
+-   One real gap surfaced and left for you: no tier5 node names the mechanical force/displacement *balance* itself, only the sensor half. Flagged in `TODO-arcticoder.md`'s Backlog rather than added unilaterally.
+
+Combined with the electric-field-probe diagnosis, everything is written up in the repo's own docs (README/breadboard.md/TODO-arcticoder.md/TODO-completed.md and three kb files) and in my own cross-session memory, so this doesn't need re-litigating next time.
+<!-- ------ -->
+---

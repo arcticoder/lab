@@ -97,3 +97,11 @@ regardless of what's brought near the electrode, check TL082 power
 (pins 8/4), the pin 2-to-pin 1 feedback jumper, and that the electrode is
 actually making contact with the BIAS row — see `README.md`'s Validation
 section for the full troubleshooting list.
+
+**2026-09-15 bench note**: the first build got a working TL082 (rest
+reading ~1.69–1.70V, not railed) but no visible deflection from a piezo
+spark or triboelectric test charge — see `README.md` § Bench findings
+for the full diagnosis (the 1MΩ divider's ~500kΩ node impedance, plus a
+long trailing electrode lead that this file's own § Circuit overview
+already warns against). Keep the electrode lead as short as the bench
+setup allows — the as-built lead was ~30–40cm, well past what's needed.

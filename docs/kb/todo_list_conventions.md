@@ -333,3 +333,36 @@ kb file's own "Audience: future LLM sessions... not the end user" header,
 and reading it in the TODO list itself was pointless friction for the
 user). The rule still applies — it just doesn't need restating inside the
 human-facing file anymore.
+
+## "No current downstream consumer" reads as "no purpose" on a re-read a day later — it means something narrower
+
+`TODO-arcticoder.md` used "No current downstream consumer (tier6
+`LOCKIN` is undesigned)" for `EPFIELD`/`CHGAMP`, and similar phrasing for
+`THERM`/`CAPBRIDGE`/`TIA`. Caught 2026-09-15 (the day after this phrasing
+was written 2026-09-13): re-encountering that line without the same
+context fresh caused the user to read it as "these circuits have no
+purpose at all — why build them?" and to question whether this repo is
+actually in service of the spacetime-research goal at all. The phrase's
+*intended* meaning is narrower and still accurate: no other **in-repo**
+node currently consumes this one's output (the next tier6 processing
+stage isn't designed yet) — it says nothing about whether the circuit
+itself serves the dependency graph's stated purpose. `EPFIELD`/`CHGAMP`
+specifically ARE named tier5 sensor-interface nodes in
+`spacetime_circuits_dependency.md`, whose own header states they exist
+to serve as sensing building blocks for whatever FTL-research experiment
+eventually needs them (see [[circuit_lifecycle_and_repo_scope]] for why
+running that experiment itself is out of this repo's scope) — that's a
+real purpose, just not one satisfied by another *in-repo* node yet.
+
+**How to apply**: when writing "no current downstream consumer" (or
+similar) about a tier5/7/8 (spacetime) node, make the distinction
+explicit inline rather than assuming the reader will re-derive it from
+the file's intro paragraph — e.g. "no further in-repo processing stage
+built yet (tier6 `LOCKIN` is undesigned) — this doesn't mean the sensor
+itself lacks a purpose; it's one of the tier5 nodes `spacetime_circuits_
+dependency.md` scopes as an FTL-research sensor front-end." For
+general-purpose nodes (`THERM`, `CAPBRIDGE`, `TIA`) the plain "no current
+downstream consumer, build whenever you feel like it" reading is fine
+as-is — the ambiguity specifically bites on spacetime-tier nodes because
+those carry an extra "why does this exist at all" question the
+general-purpose ones don't.

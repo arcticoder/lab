@@ -183,3 +183,21 @@ matching, so don't assume one file makes the other redundant.
   header and `README.md` as a real limitation, with linear foldback or
   an explicit latch named as the actual fix if chattering ever proves to
   be a problem. `smoke_test.py` green.
+
+## 2026-09-15
+
+- **`signal_conditioning/electric_field_probe/` (tier5 `EPFIELD`) —
+  physically assembled and bench-tested.** TL082 unity-gain follower
+  confirmed working at 3.3V single-supply (rest output ~1.693–1.701V vs.
+  the simulated 1.650V ideal, a small stable offset, not railed) —
+  resolves that circuit's README caveat about running the TL082 below
+  its typical minimum supply. A piezo-igniter spark and a
+  triboelectrically-charged object (tape peeled off a roll) both
+  produced no deflection beyond that same offset band — consistent with,
+  not contradicting, the design's own predicted sensitivity ceiling from
+  its 1MΩ (not GΩ) bias divider, not a wiring fault. Full diagnosis and
+  concrete next steps (free direct-touch retest, then a GΩ resistor
+  candidate, then trying `CHGAMP`'s charge-integrating topology instead)
+  in that circuit's own README § Bench findings; the GΩ resistor is now
+  a standing candidate in `TODO-arcticoder.md`'s "Next AliExpress order"
+  section.

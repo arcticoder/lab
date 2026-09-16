@@ -73,19 +73,20 @@ gets fed into GP26 with the wrong resistor in place (pinned at exactly
 3.300V, the ADC's own saturation point) — this design avoids that failure
 mode by construction rather than by careful resistor selection.
 
-**Real-hardware caveat: TL082 below its typical minimum supply.** 3.3V
-single-supply is below what the TL082's datasheet typically recommends
-for full-spec operation (JFET dual op-amps in this class are usually
-specified from a much wider split-supply range). Many parts in this
-class still function as a low-gain buffer well below their spec'd
-minimum, just with reduced bandwidth/slew and more offset — but this
-hasn't been confirmed for the specific TL082 units on hand. **If the
-real buffer doesn't track the bias node on the bench** (output stuck at
-0V, at VCC, or not responding to the electrode at all), this supply
-choice is the first thing to suspect — the fix is trying `psu_low_v2`
-(3V, same order of magnitude, unlikely to help) or `psu_4xaa` (6V, real
-headroom) with an added attenuator/divider ahead of the Pico ADC, not a
-new circuit topology.
+**Real-hardware caveat: TL082 below its typical minimum supply — now
+confirmed working.** 3.3V single-supply is below what the TL082's
+datasheet typically recommends for full-spec operation (JFET dual
+op-amps in this class are usually specified from a much wider
+split-supply range). **Bench-confirmed 2026-09-15**: the buffer tracks
+the bias node correctly at this supply — rest output reads ~1.693–1.701V
+against the simulated 1.650V ideal, a small (~45–50mV) but stable offset,
+not stuck at either rail. This is the expected behavior for a JFET
+op-amp run below its spec'd minimum supply (reduced precision, not a
+non-functional buffer) — see § Bench findings below for the full
+reading. If a *different* TL082 unit or a fresh build doesn't track the
+bias node at all (output pinned at 0V or VCC), suspect a wiring fault
+(feedback jumper, power pins) before the supply choice — the supply
+itself is no longer the first suspect now that it's confirmed to work.
 
 **Why 1MΩ, not a "real" electrometer-grade bias resistor.** A dedicated
 electrostatic-field electrometer front end conventionally uses GΩ-range
@@ -127,3 +128,66 @@ watch the reading drift back. If the reading never moves:
   just resting near it.
 - If all of the above check out and it still doesn't respond, see the
   real-hardware supply-voltage caveat above.
+
+---
+
+## Bench findings (2026-09-15)
+
+First physical build (`breadboard.jpg`), TL082 and bias divider wired per
+spec. `main.py` output at rest:
+
+```
+EPFIELD output: 1.693 V  (deviation from rest: +0.043 V)
+EPFIELD output: 1.701 V  (deviation from rest: +0.051 V)
+EPFIELD output: 1.695 V  (deviation from rest: +0.045 V)
+```
+
+("deviation from rest" here is `main.py` printing `v - 1.65` — a fixed
+constant, not a captured baseline sample — so these three lines show the
+output sitting in a tight ~1.693–1.701V band, not three different
+measurements relative to an earlier reading.)
+
+**TL082 confirmed working**: ~45–50mV off the ideal 1.650V, stable and
+not railed — see the supply-voltage caveat above, now resolved.
+
+**No response to test charge sources.** A piezo igniter spark and a
+triboelectrically-charged object (tape peeled off a roll) were both
+brought near the electrode; the reading never moved outside that same
+~1.693–1.701V band — i.e., no measurable difference between "at rest"
+and "charge source nearby." This is not a wiring fault (the follower
+demonstrably works, per above) — it matches this circuit's own predicted
+limitation in § Design notes above: **the 1MΩ/1MΩ divider presents only
+~500kΩ (the two legs in parallel) at the sensing node**, not the GΩ range
+a dedicated electrometer front end uses. With a stray input capacitance
+in the low picofarads, 500kΩ gives a decay time constant on the order of
+a microsecond to a few microseconds — any charge the electrode picks up
+bleeds back to the 1.65V bias point far faster than `main.py` samples
+(1ms per ADC read, 0.5s per printed line), so a real but fast transient
+would be invisible to this logging even if the electrode coupled
+something.
+
+**Secondary factor: electrode lead length.** The as-built electrode
+(`breadboard.jpg`) is a long (~30–40cm) Dupont jumper trailing off the
+edge of the desk, not the short lead this file and `breadboard.md` both
+call for on this high-impedance node — a longer lead is more antenna,
+picking up ambient/mains noise rather than adding sensitivity. Worth
+shortening on any rebuild, independent of the impedance point above.
+
+**Concrete next steps, in order of cost:**
+1. **Free retest**: touch the electrode directly with a finger (skin
+   contact, not proximity) instead of a piezo spark or rubbed tape at a
+   distance — a much stronger and closer charge/capacitive coupling. If
+   *this* still produces no deflection beyond the ~45–50mV band, it
+   confirms the 500kΩ node is the bottleneck rather than the test method.
+2. **If step 1 still shows nothing**: the next real fix is a GΩ-range
+   resistor replacing R2 (BIAS-to-GND leg), raising the sensing node's
+   impedance by 3+ orders of magnitude and pushing the decay time
+   constant into a range `main.py` can actually observe. Not currently
+   on hand or on order — see `docs/TODO-arcticoder.md`'s "Next
+   AliExpress order" section.
+3. **Alternative**: `signal_conditioning/charge_amplifier/` (`CHGAMP`,
+   same tier5, not yet physically assembled) integrates injected charge
+   through a feedback capacitor (Q=CV) rather than relying on a bias
+   resistor's voltage divider — a fundamentally more sensitive topology
+   for exactly this kind of short charge-injection event (piezo spark),
+   worth trying before ordering a GΩ resistor.

@@ -83,7 +83,20 @@ standing candidates for whenever that top-up is actually warranted.
       supplement the resistor-divider + LM358 buffer for better precision.
 - [ ] **LVDT transducer** — the only tier5 node with zero hardware behind
       it (`LVDTAMP`). Pricier/more niche than the items above; lower
-      priority but the last unaddressed tier5 sensor.
+      priority but the last unaddressed tier5 sensor. **Now has a
+      concrete literature-backed justification** (2026-09-15 scan, see
+      `spacetime_circuits_dependency.md`'s "Why these tiers" section):
+      published small-force experimental apparatus consistently reads
+      out a beam/pendulum's displacement via a capacitive or inductive
+      sensor — an LVDT is a hobbyist-scale stand-in for that role, at
+      far coarser resolution than the nN-scale published instruments.
+- [ ] *(contingent — try `CHGAMP` and the free retest first, see that
+      bullet above and `electric_field_probe/README.md` § Bench
+      findings)* **GΩ-range resistor** — `EPFIELD`'s 1MΩ bias divider
+      (the largest value on hand) showed no measurable response to test
+      charge sources 2026-09-15; a GΩ-range unit replacing its R2 leg is
+      the concrete fix if `CHGAMP` and a direct-touch retest both still
+      come up empty. Not currently on hand or on order.
 - [ ] *(optional, not a blocker — see*
       *[kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md))*
       **Second IRLZ44N MOSFET (or a small pack)** — the only unit on
@@ -126,21 +139,19 @@ designed, simulated, smoke-tested, and documented 2026-09-13 — see
 [TODO-completed.md](TODO-completed.md) for the full entry — and now has
 its bench-assembly bullet below.
 
-- [ ] **`signal_conditioning/electric_field_probe` (tier5 `EPFIELD`) —
-      physically assemble.** Folder/netlist/breadboard guide/smoke test
-      now exist (2026-09-13). Powered from `psu_pico_rail` (already
-      built) — no PSU assembly needed first. No electrode has been
-      ordered; any small bare conductor (a stripped jump-wire end or
-      foil scrap) works for a first build, per that circuit's own
-      README. No current downstream consumer (tier6 `LOCKIN` is
-      undesigned) — this is a spacetime-tier sensor node, grouped here
-      per this file's intro, not because it's more urgent than anything
-      else in this section.
 - [ ] **`signal_conditioning/charge_amplifier` (tier5 `CHGAMP`) —
       physically assemble.** Folder/netlist/breadboard guide/smoke test
-      now exist (2026-09-13). Powered from `psu_pico_rail`. Same
-      no-current-downstream-consumer situation as `EPFIELD` above, same
-      grouping reason for being listed here.
+      now exist (2026-09-13). Powered from `psu_pico_rail`. This is a
+      spacetime-tier sensor node, grouped here per this file's intro,
+      not because it's more urgent than anything else in this section.
+      **Worth trying next**: `electric_field_probe` (`EPFIELD`, same
+      tier) was physically assembled and bench-tested 2026-09-15 —
+      TL082 confirmed working, but its resistive bias-divider approach
+      showed no measurable response to a piezo-spark or triboelectric
+      test charge (see that circuit's own README § Bench findings).
+      `CHGAMP`'s charge-integrating (capacitor-feedback) topology is a
+      fundamentally different, more sensitive approach to the same kind
+      of signal — may succeed where `EPFIELD`'s did not.
 - [ ] **1N5817 Schottky diodes — still need a per-unit forward-drop check
       for whichever units go into `psu_low_v2`/`psu_3xaa` specifically.**
       The diode already installed in `psu_4xaa` is now past
@@ -326,7 +337,20 @@ how each node connects before starting one.
       partially unlocked (KY-003 arrived, but a linear/analog sensor like
       the 49E is still needed for the op-amp circuit as scoped — see
       "Blocked" above). `LVDTAMP` remains fully backlogged — no
-      transducer sourced yet.
+      transducer sourced yet (see "Next AliExpress order" above for its
+      2026-09-15 literature-backed justification).
+- [ ] **Possible missing tier5 node: precision force/displacement-balance
+      readout.** A 2026-09-15 literature scan (see
+      `spacetime_circuits_dependency.md`'s "Why these tiers" section)
+      found that every published small-force experimental family centers
+      on a mechanical beam/torsion balance read out by a capacitive or
+      inductive displacement sensor — `LVDTAMP` covers the sensor half of
+      that, but the balance structure itself has no node anywhere in
+      this graph. Not added as a new node without your say — this is a
+      structural graph change, not a design task Claude should decide
+      alone. Worth a decision whenever you're ready: add a node (and
+      what it should be named/scoped as), or decide `LVDTAMP` alone is
+      close enough and skip it.
 - [ ] **Tier 6**: `LOCKIN`, `AAF`, `TIMEINT`, `JITTER` undesigned.
 - [ ] **Tier 7** (spacetime): `RFPWR`, `MIXER`, `SWEEP` completely
       unaddressed; no parts identified. Lowest priority of the spacetime

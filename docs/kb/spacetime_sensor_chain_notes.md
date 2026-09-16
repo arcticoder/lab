@@ -152,3 +152,142 @@ mistake — a real bistable/oscillatory circuit will refuse to converge to
 a single point for the same reason it would misbehave on the bench, and
 that's worth documenting as a finding, not suppressing by decomposing
 the simulation until it stops complaining without also writing up why.
+
+## A resistive bias divider's own value sets a hard sensitivity ceiling — "the op-amp works" and "the sensor is sensitive enough" are two separate claims
+
+`electric_field_probe` (`EPFIELD`) was physically assembled and
+bench-tested 2026-09-15 (see `TODO-completed.md`'s 2026-09-15 entry and
+that circuit's own README § Bench findings for the full writeup). Two
+findings worth separating clearly, because it's easy to conflate them
+into one "didn't work" verdict:
+
+1. **The TL082 follower itself works fine** at 3.3V single-supply, below
+   its datasheet-recommended minimum — rest output was ~1.693–1.701V
+   against a simulated 1.650V ideal, a small stable offset, not pinned
+   at either rail. This confirms the README's own "many parts in this
+   class still function below spec, just with more offset" prediction.
+2. **The sensor showed no measurable response to test charge sources**
+   (piezo-igniter spark, triboelectrically-charged tape) — but this is
+   *also* exactly what the design's own § Design notes predicted: the
+   1MΩ/1MΩ bias divider presents only ~500kΩ at the sensing node (the
+   two legs in parallel), vs. the GΩ range a dedicated electrometer
+   front end needs. The reasoning worth internalizing: with a
+   low-picofarad stray input capacitance, 500kΩ gives an RC decay time
+   constant on the order of a microsecond — any charge the electrode
+   couples in bleeds back to the bias point far faster than the
+   circuit's own sampling can observe it (`main.py` samples the ADC at
+   1ms intervals, prints every 0.5s). A GΩ resistor would push that time
+   constant into an observable range; nothing about the op-amp changes.
+
+**Why this matters generally**: a "no response" bench result on a
+follower/buffer-based sensor doesn't by itself tell you whether the
+active component or the passive network around it is the bottleneck —
+check the passive network's own input impedance against the physics of
+what's being sensed (here: electrostatic induction needs a
+high-impedance path so charge doesn't bleed off before it can be read)
+before concluding the amplifier needs replacing or re-testing in
+isolation. In this case the follower's rest-voltage accuracy (within
+~50mV of ideal, not railed) was itself sufficient evidence it was
+working — isolating the TL082 for a separate test would not have added
+information the rest-voltage reading didn't already give.
+
+**Also worth noting**: `main.py`'s printed "deviation from rest" is
+`v - 1.65` (a hardcoded constant recomputed every call), not a captured
+baseline sample from an earlier reading. Multiple printed lines showing
+similar deviation values means the output is sitting in a tight band
+around a fixed offset from ideal — not "three repeated measurements
+against an earlier baseline." Worth double-checking this distinction
+before reading a run of near-identical "deviation" values as either
+confirming or ruling out a response to an external stimulus.
+
+**Secondary, compounding factor**: the as-built electrode was a long
+(~30–40cm) Dupont jumper trailing off the desk edge — the opposite of
+`breadboard.md`'s own explicit "keep this row's wiring short" guidance
+for high-impedance nodes. Didn't cause the null result by itself (the
+500kΩ-impedance argument above is sufficient on its own), but adds noise
+susceptibility for free with no sensitivity benefit — worth fixing on
+any rebuild regardless of whether the GΩ-resistor fix happens.
+
+## Literature scan session, 2026-09-15 — instrumentation requirements for tier5–8, sourced but theory-agnostic
+
+Session context: the user questioned why tier5/7/8 circuits were being
+designed with "no current downstream consumer" and asked for a
+literature-backed pass on what experimental validations these nodes
+actually need to serve, working backwards from real published
+small-force/anomalous-thrust research rather than the tier graph's own
+generic labels. Explicitly approved reading the actual methodology
+papers behind this kind of hobbyist sensor kit for real design
+justification, on the condition that **no specific theory, program, or
+researcher name appears in any current-state doc — including this kb
+file** (re-confirmed 2026-09-15: [[no_fringe_science_terms]]'s ban
+explicitly covers "kb prose," not just README/dependency-graph text — do
+not relax that here just because this file is LLM-only). Everything
+below is written to that constraint: functional description only, bare
+URLs for citation, never a quoted paper title if the title itself
+contains a banned/adjacent name.
+
+**Search scope**: six web searches across three independent published
+families of small-force/thrust claims — (a) a high-voltage
+capacitor/sharp-electrode family, historically attributed by mainstream
+analysis to an aerodynamic ion/corona-wind effect; (b) a closed-cavity
+RF-power family tested by multiple independent groups with null results;
+(c) a resonant piezoelectric-stack family requiring a precisely
+phase-controlled dual drive. This was a first-pass scan (a double
+handful of sources), not an exhaustive dozens-of-papers review — treat
+the findings below as a starting rationale to build on, not a closed
+literature review.
+
+**Findings, condensed** (full writeup with citations is in
+`spacetime_circuits_dependency.md`'s own "Why these tiers" section —
+that's the current-state doc; this entry is the session's working notes
+behind it):
+
+- Every family's published apparatus centers on a **precision
+  force/displacement balance** (knife-edge beam balance, torsion
+  pendulum, capacitive displacement sensor), resolving tens of nN to
+  ~1µN. Nothing in this bench's tier graph names that mechanical
+  structure directly — `LVDTAMP` is the closest existing fit (an LVDT is
+  one real way to read a beam/pendulum's displacement) but a dedicated
+  torsion-/beam-balance node doesn't exist. Flagged as a real gap in
+  `spacetime_circuits_dependency.md` and `TODO-arcticoder.md`'s Backlog,
+  not added as a new node without the human's say — that's a structural
+  graph change, a bigger decision than a rationale addition.
+- **Thermal drift is the single most-repeated false-positive source**
+  across every family's published methodology — one group built a
+  specific mechanical arrangement (an inverted, counterbalanced pendulum
+  design) purely to cancel it, and explicitly warns that thermal/
+  mechanical load plus high current creates false-positive force
+  readings. This reframes tier8 `CALORIF` (and the already-built safety
+  `THERM`) as artifact-rejection instruments specifically, not generic
+  "energy measurement" — worth keeping that framing in mind if `CALORIF`
+  ever gets designed.
+- **RF power + frequency sweep** is central to the closed-cavity family
+  (sweep to find cavity resonance, compute thrust-per-watt against a
+  classical radiation-pressure floor) — direct tier7 `RFPWR`/`SWEEP`
+  justification.
+- **Precisely phase-controlled dual drive signals + frequency sweep to
+  find peak response** is central to the resonant piezoelectric-stack
+  family. This is the strongest justification found for tier6 `LOCKIN`
+  specifically (not just "generically useful DSP") — synchronous
+  detection at a known drive frequency is the standard technique for
+  pulling a small periodic force signal out of noise here, and it's the
+  direct next stage downstream of `PHASED` (built) and `EPFIELD`/`CHGAMP`
+  (bench-tested).
+- **Ion/corona-wind characterization** (particle-image velocimetry,
+  electrostatic probes) is the standard technique for isolating that
+  specific confound in the high-voltage capacitor/electrode family —
+  functionally identical to what `EPFIELD` already does (sense a local
+  field/charge). Gives `EPFIELD` a second concrete role beyond detecting
+  a target field: ruling out this specific confound in any high-voltage
+  setup a future experiment repo runs.
+
+**How to apply if asked to go deeper**: the six searches used generic
+functional query terms (e.g. "asymmetric capacitor high voltage
+electrostatic thrust experiment methodology," "closed RF cavity thrust
+measurement torsion balance," "resonant piezoelectric thruster phase
+measurement instrumentation," "torsion balance nanonewton force sensor
+design") rather than the theories' own names — this kept search results
+usable without needing the banned names in the query either, and is the
+pattern to repeat for follow-up scans (e.g. going deeper on `LVDTAMP`'s
+displacement-sensor requirements, or on the still-unaddressed
+force/displacement-balance gap noted above).

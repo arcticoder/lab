@@ -89,6 +89,79 @@ amperage). Until then, don't queue physical assembly of anything above
 50V/30V (`HVPULSE` included) in `TODO-arcticoder.md`, even once it has a
 netlist — see the scope-layer distinction above.
 
+## Resolved 2026-09-15: circuit selection now traces to literature, repo-scope boundary itself unchanged
+
+The question below was raised and resolved same-day. **Resolution**: the
+user chose to have Claude read the actual experimental-methodology
+literature behind this kind of small-force/anomalous-thrust sensor kit
+for real design justification (not just the tier graph's generic
+labels), while keeping every current-state doc — README, dependency
+graphs, **and kb prose** — free of any specific theory/program/researcher
+name, per [[no_fringe_science_terms]] (which explicitly covers kb prose,
+not just user-facing docs — don't relax that just because a kb file is
+LLM-only). See `spacetime_circuits_dependency.md`'s "Why these tiers"
+section for the sourced-but-unnamed rationale this produced, and
+`spacetime_sensor_chain_notes.md`'s matching session-notes entry for the
+literature-scan process to repeat on future passes.
+
+**What did NOT change**: the three-layer scope split below (design/
+bench-validate/actual-experiments-elsewhere) stands as originally
+established 2026-09-14 — this only added a sourced justification layer
+on *why* a tier5/7/8 node exists, not a change to what's in-scope to
+build here. The friction that started this was partly a documentation-
+clarity bug ("no current downstream consumer" reading as "no purpose" —
+see `todo_list_conventions.md`'s entry) and partly a genuine desire for
+deeper grounding, which this literature pass addresses without touching
+the scope boundary itself.
+
+<details>
+<summary>Original open-question entry (2026-09-15, kept for context)</summary>
+
+## Open question as of 2026-09-15: does this scope boundary still hold?
+
+The three-layer split above was established 2026-09-14 at the user's own
+explicit, heated request — quoted directly in this file's own history.
+One day later (2026-09-15), the user pushed back hard on the *result* of
+that same decision: seeing "no current downstream consumer" attached to
+`EPFIELD`/`CHGAMP` in `TODO-arcticoder.md` (layer 2 items, per this
+file), they asked "why am I building them then? Are we doing spacetime
+research or not?" and floated requiring a literature/preprint-backed
+research question to justify a circuit before it gets designed at all —
+which would mean layer 3 (the actual research question) starting to
+reach back into what layers 1-2 are allowed to do, the opposite
+direction from how this file currently draws the boundary.
+
+**Don't read this as the boundary being wrong or already reversed.**
+Two things are true at once: (a) part of the 2026-09-15 friction was a
+documentation-clarity bug, not a scope problem — see
+[todo_list_conventions.md](todo_list_conventions.md)'s new entry on "no
+current downstream consumer" reading as "no purpose" out of context,
+when `EPFIELD`/`CHGAMP` already have a stated purpose (named tier5 nodes
+in `spacetime_circuits_dependency.md`) independent of whether tier6
+exists yet; (b) the deeper question — should circuit *selection/design*
+require an explicit research-question trace before it happens, rather
+than working forward from the general tier graph — is a real, open
+question about how this repo should run, not something Claude should
+resolve unilaterally in either direction. As of this writing the session
+that surfaced this asked the user to clarify rather than assuming an
+answer; check `docs/history.md` and this file's own future entries for
+which way it was actually resolved before assuming the 2026-09-14 scope
+still holds unmodified, or that it's been replaced.
+
+**If the answer turns out to be "yes, trace forward from research
+questions"**: that likely means revisiting how `spacetime_circuits_
+dependency.md` frames tier5/7/8 nodes (currently theory-agnostic by
+design, see [[no_fringe_science_terms]]-equivalent constraint already in
+that file's own header) — probably by naming the *class* of experimental
+validation each node serves (e.g. "detecting a small quasi-static
+electric field near a test article") without naming a specific theory,
+rather than a wholesale reversal of the design/bench-only repo-scope
+line itself. **If the answer is "no, the 2026-09-14 boundary stands"**:
+the fix is just the documentation-wording one in
+`todo_list_conventions.md` — no scope change needed at all.
+
+</details>
+
 ## No multimeter — ever (recurring correction, see also [[instrument_not_absence_framing]])
 
 The user does not own or use a handheld multimeter; every measurement on

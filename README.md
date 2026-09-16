@@ -151,6 +151,7 @@ photo of the as-built jig where one was taken (see each circuit's own
 | `power_supplies/psu_4xaa/` | 4×AA in series + 1N5817 Schottky + 500 mA polyfuse | `psu_system` (top of the plain-AA-series progression) | 2026-09-11 — GP26 read ~1.9V through the output's 10 kΩ/5.1 kΩ divider, matching the ~0.338 ratio's prediction. An earlier ~0.14V fault on a different breadboard was never pinned to one component — rebuilding the same circuit on a second breadboard fixed it immediately (see `README.md` § Troubleshooting) |
 | `oscillators/ne555_astable/` | NE555 astable square-wave oscillator, 3296 trimpot timing | tier1 `OSC`, first per-unit NE555 batch validation | 2026-09-13 — oscillation confirmed (113/109 zero-crossings across two readings, ~1.5kHz, inside the expected 649Hz–2.9kHz trim range) via `measurement_tools/oscillation_probe/`. **Output divider fixed**: root cause was a mis-picked 220Ω resistor standing in for one of the two intended 10kΩ legs; swapped for a verified 10kΩ, GP26 now reads a real ~2.2V half-swing instead of pinning at 3.300V — see `README.md` § Validation |
 | `measurement_tools/oscillation_probe/` | Burst-sampled GP26 reader that reports min/max/swing and a zero-crossing count — confirms genuine toggling where `raw_voltage_probe`'s averaging can't | general-purpose probe, built 2026-09-12 for `ne555_astable`'s bring-up | 2026-09-12 — used live against the `ne555_astable` bench build (see that row above) |
+| `signal_conditioning/electric_field_probe/` | Bare-electrode electrostatic sensor: 1MΩ/1MΩ bias divider to VCC/2, TL082 unity-gain follower | tier5 `EPFIELD` — spacetime-research sensor node, see `docs/spacetime_circuits_dependency.md` | 2026-09-15 — TL082 follower confirmed live (rest ~1.693–1.701V vs. simulated 1.650V, a small stable offset, not railed — resolves the earlier "hasn't been confirmed below spec'd supply" caveat). A piezo-igniter spark and a triboelectric (rubbed tape) test charge both produced no deflection beyond that same offset — consistent with the design's own predicted sensitivity ceiling from the 1MΩ (not GΩ) bias divider, not a wiring fault; see that circuit's own README § Bench findings for the diagnosis and concrete next steps |
 
 ---
 
@@ -172,7 +173,6 @@ sequence this drives.
 | `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit **not yet ordered**, not yet built — see `docs/TODO-arcticoder.md`) |
 | `signal_conditioning/transimpedance_amplifier/` | PT334-6C photodiode + LM358 current-to-voltage converter | tier2 `TIA` (fed from `psu_low_v2`; no current downstream urgency — see `docs/TODO-arcticoder.md`) |
 | `measurement_tools/capacitance_bridge/` | RC charge-time capacitance meter (known `Rref` vs. unknown `Cx`, timed against a 63.2%-of-Vin threshold) | tier3 `CAPBRIDGE`, targets the 1µF–470µF electrolytic kit (see its own README § Range) |
-| `signal_conditioning/electric_field_probe/` | Bare-electrode electrostatic sensor: 1MΩ/1MΩ bias divider to VCC/2, TL082 unity-gain follower | tier5 `EPFIELD` — a direct spacetime-research sensor node, see `docs/spacetime_circuits_dependency.md` |
 | `signal_conditioning/charge_amplifier/` | 12mm piezo disc + TL082 inverting charge amp (`Cf`/`Rf_bias` feedback), VCC/2-biased for bipolar swing | tier5 `CHGAMP` — a direct spacetime-research sensor node |
 | `safety/thermal_monitor/` | MF52AT NTC divider (centers at VCC/2 at 25°C) + GPIO-driven alarm LED | safety `THERM` ("Thermal Monitoring with Alarm Threshold") |
 | `signal_conditioning/phase_detector/` | SN74HC86N XOR gate comparing `ne555_astable`'s output tap against an independent Pico PWM reference, RC-lowpassed | tier4 `PHASED`, feeds tier6 `LOCKIN` (undesigned) |
@@ -186,9 +186,9 @@ with real components yet. For the PSU rows, the polyfuses they depend on
 are no longer the blocker — both batches passed validation via
 `ammeter_10ohm`/`ammeter_1ohm` above — so what remains is just the
 physical build; `transimpedance_amplifier`, `capacitance_bridge`,
-`electric_field_probe`, `charge_amplifier`, `thermal_monitor`, and
-`phase_detector` all run off `psu_pico_rail` (or need no PSU at all) and
-have no battery-PSU dependency. Everything else in
+`charge_amplifier`, `thermal_monitor`, and `phase_detector` all run off
+`psu_pico_rail` (or need no PSU at all) and have no battery-PSU
+dependency. Everything else in
 `docs/general_purpose_circuit_dependency.md` /
 `docs/spacetime_circuits_dependency.md` (most safety monitoring, most of
 tiers 1–9) hasn't been worked out to netlist stage at all — folders for
