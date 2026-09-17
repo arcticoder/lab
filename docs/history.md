@@ -4123,3 +4123,15 @@ I ran six targeted searches across three independent published families of small
 Combined with the electric-field-probe diagnosis, everything is written up in the repo's own docs (README/breadboard.md/TODO-arcticoder.md/TODO-completed.md and three kb files) and in my own cross-session memory, so this doesn't need re-litigating next time.
 <!-- ------ -->
 ---
+Reverted that stray, unintended edit to history.md. Everything else is exactly as documented above. I won't commit --- let me know if you'd like these committed.
+
+Summary
+-------
+
+Diagnosed the TIA "no light response" result: a stable ~0.38V reading identical under ambient light and flashlight doesn't match any of TIA's own listed failure modes (missing `Rf`, reversed photodiode) --- it's the signature of the LM358 not getting VCC at all. Since `psu_low_v2` was assembled but its own standalone validation (the GP26 divider check already documented in its README) was never run before powering the TIA, that's the more likely culprit. **Next step for you: run `psu_low_v2`'s own validation check standalone before touching the TIA wiring.** Also flagged (from zooming into both breadboard photos) an undocumented slide switch and diode near the LM358 that aren't in either `breadboard.md` --- worth checking that switch is actually ON if it's in the power path.
+
+For the piezo: added **flux to the top of the shopping list** in `TODO-arcticoder.md` (real blocker, not speculative) --- a fluxless solder attempt destroyed one unit. Updated `inventory.md`/`parts_reference.md` (19 of 20 piezos remain) and added the missing "solder leads on first" step plus a flux warning to `charge_amplifier/breadboard.md`, since the bare disc's poor heat conductivity means a fluxless joint risks cracking/depoling it before it takes.
+
+Updated `README.md`'s circuit tables/tree to reflect both circuits as physically assembled (not "designed, not built"), and wrote a new `docs/kb/bench_photo_diagnostics_notes.md` (LLM-only) capturing the diagnostic heuristic and the photo-zoom technique for future sessions.
+<!-- ------ -->
+---

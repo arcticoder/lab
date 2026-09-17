@@ -93,3 +93,31 @@ never moves regardless of light level, either the feedback resistor is
 missing (check for a very high/noisy reading, effectively open-loop), the
 photodiode is wired backwards (anode/cathode swapped), or the LM358 isn't
 getting power on pin 8/pin 4.
+
+**Bench result, 2026-09-16:** physically assembled
+(`breadboard.jpg`), powered from `psu_low_v2` (assembled the same day,
+see that circuit's own README). `main.py` output:
+
+```
+Ambient room light:  ~0.380–0.383V
+Phone flashlight:    ~0.380–0.384V
+```
+
+No measurable difference between the two — the flashlight had no
+effect. This is a stable, non-zero reading that doesn't move regardless
+of the stimulus, which doesn't match any of the three failure modes
+listed above (an open feedback loop reads high/noisy, not a stable
+small value; a reversed photodiode still produces *some* light-relative
+change; either would still respond to a flashlight even if with the
+wrong sign or magnitude). It's a better match for the LM358 not
+receiving VCC at all: an unpowered dual op-amp between a live GND rail
+and a live ADC-sensed output pin can settle to a small stable "phantom"
+voltage via its own internal ESD/leakage paths, independent of whatever
+its inputs are doing. Since `psu_low_v2` was assembled but never
+independently validated (see that circuit's README § Validation), that
+rail — not this circuit's wiring — is the more likely suspect. Next
+step: run `psu_low_v2`'s own validation check standalone before
+re-touching this circuit. Also worth checking: the breadboard photos
+show a slide switch and a diode near this circuit that aren't part of
+the wiring in `breadboard.md` — confirm what they belong to and that
+the switch (if it's in the power path) is ON.

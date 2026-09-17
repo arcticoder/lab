@@ -54,6 +54,16 @@ unconnected. V− (pin 4) goes to GND — single-supply build.
 Two terminals, no fixed polarity convention (unlike a diode) — either
 lead can go to either node.
 
+**The bare disc has no pre-attached leads.** Before it can plug into
+the breadboard, solder a short lead onto each of its two contacts (the
+center ceramic face and the metal backing plate). **Use rosin flux
+(paste or pen) and a quick, low-heat touch** — a 2026-09-16 attempt
+without flux destroyed a unit: the ceramic disc conducts heat poorly,
+so without flux to help the joint wet quickly, the extra dwell time
+needed cracks the ceramic or depoles the piezo effect before the solder
+takes. See
+[parts_reference.md#piezo-element-12mm-disc](../../docs/parts_reference.md#piezo-element-12mm-disc).
+
 ---
 
 ## Wiring steps

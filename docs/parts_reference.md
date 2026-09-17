@@ -488,18 +488,29 @@ not the case today — see `docs/TODO-agent.md` and
 
 ## Piezo element, 12mm disc
 
-20 received 2026-09-12 (ordered 2026-09-03); untested. See
-[orders.md](orders.md#piezo-element-12mm-disc). 2-terminal ceramic disc
-element (brass or copper backing plate + piezoceramic layer), no fixed
-polarity convention like a diode — used either as a driven
-buzzer/actuator or, wired into a charge-amplifier front end, as a
+20 received 2026-09-12 (ordered 2026-09-03); 19 remain (1 destroyed, see
+below). See [orders.md](orders.md#piezo-element-12mm-disc). 2-terminal
+ceramic disc element (brass or copper backing plate + piezoceramic
+layer), no fixed polarity convention like a diode — used either as a
+driven buzzer/actuator or, wired into a charge-amplifier front end, as a
 charge-output transducer (mechanical flex/vibration → small charge
-signal). Used (1 of 20) in
+signal). Used in
 [signal_conditioning/charge_amplifier](../signal_conditioning/charge_amplifier/)
-(tier5 `CHGAMP`, designed/simulated 2026-09-13, not yet physically
-assembled). No diameter-specific capacitance or resonant-frequency spec
-is available from the listing — measure or look up once the physical
-part is on hand.
+(tier5 `CHGAMP`, designed/simulated 2026-09-13). No diameter-specific
+capacitance or resonant-frequency spec is available from the listing —
+measure or look up once the physical part is on hand.
+
+**Soldering caveat (2026-09-16 bench finding):** the disc has no
+pre-attached leads — wiring it into a breadboard requires soldering
+thin leads directly onto the ceramic disc's two contacts first. A
+fluxless attempt destroyed one unit: without flux, wetting the joint
+takes enough extra heat/dwell time on the disc's own poorly-conductive
+ceramic that it's easy to crack the ceramic layer or depole the
+piezoelectric effect before the joint takes. Use rosin flux (paste or
+pen) and a quick, low-heat touch; see
+[signal_conditioning/charge_amplifier/breadboard.md](../signal_conditioning/charge_amplifier/breadboard.md)
+for the step. Applies to any future use of this batch, not just
+`CHGAMP`.
 
 ---
 

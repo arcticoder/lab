@@ -110,7 +110,16 @@ voltage):
 - Reversed battery leads: GP26 reads **~0 V** — the Schottky blocks, no
   current reaches the divider.
 
-Not yet confirmed on real hardware — record the actual reading here once
-this circuit is assembled and run (see `docs/TODO-arcticoder.md`'s
-"Ready to build now" section for build status, including the 1N5817
-per-unit check this build still depends on).
+**Status, 2026-09-16:** physically assembled (`breadboard.jpg`), but
+this divider check itself hasn't been run yet — assembly moved straight
+to powering `transimpedance_amplifier` instead. That circuit's own
+bench test came back with a symptom (output completely unresponsive to
+light, stable at ~0.38V) that's consistent with this rail not actually
+reaching the LM358 — see
+[transimpedance_amplifier/README.md](../../signal_conditioning/transimpedance_amplifier/README.md#validation).
+**Run the GP26 divider check above next**, standalone (LM358
+disconnected or not), before assuming anything about the TIA circuit's
+own wiring — it'll confirm or rule out this rail as the cause. Also
+worth a look: the breadboard photo shows a slide switch and a diode
+whose state/role isn't obvious from this file's wiring steps alone —
+confirm the switch (if it's in series in the power path) is ON.

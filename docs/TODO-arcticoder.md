@@ -50,7 +50,20 @@ section stays at the top rather than after the bench-work sections —
 finding it buried past several pages of build tasks meant it kept getting
 skipped in practice.
 
-**No order needed right now — hold off on a top-up.** The entire
+**Soldering flux (rosin flux paste or a flux pen) — add to the next
+order, or pick up locally if that's faster.** Not previously stocked or
+on order. Discovered as a real blocker 2026-09-16: attempting to solder
+leads onto a bare piezo disc (see `CHGAMP` bullet below) without flux
+destroyed that unit (see
+[parts_reference.md#piezo-element-12mm-disc](parts_reference.md#piezo-element-12mm-disc)
+and [inventory.md](inventory.md) for the updated count — 19 of 20
+remain, only usable for a retry once flux is on hand). This is the one
+new item that should jump the "hold off on a top-up" stance below, since
+it's a real dependency for a task already in progress, not a
+speculative add — but it's cheap/small enough that a local hardware or
+craft store may beat AliExpress transit time; use judgment.
+
+**No other order needed right now — hold off on a top-up otherwise.** The entire
 2026-09-03 batch (TL082, MF52AT thermistor, IRLZ44N MOSFET, piezo disc,
 SN74HC86N XOR gate, KY-003 Hall module) arrived 2026-09-12. The NE555
 batch validation (all 10 units) completed 2026-09-13, and the same day
@@ -140,16 +153,23 @@ designed, simulated, smoke-tested, and documented 2026-09-13 — see
 its bench-assembly bullet below.
 
 - [ ] **`signal_conditioning/charge_amplifier` (tier5 `CHGAMP`) —
-      physically assemble.** Folder/netlist/breadboard guide/smoke test
-      now exist (2026-09-13). Powered from `psu_pico_rail`. This is a
+      physically assemble. Blocked on flux — see the shopping-list item
+      at the top of this file.** Folder/netlist/breadboard guide/smoke
+      test exist (2026-09-13). Powered from `psu_pico_rail`. This is a
       spacetime-tier sensor node, grouped here per this file's intro,
       not because it's more urgent than anything else in this section.
-      **Worth trying next**: `electric_field_probe` (`EPFIELD`, same
-      tier) was physically assembled and bench-tested 2026-09-15 —
-      TL082 confirmed working, but its resistive bias-divider approach
-      showed no measurable response to a piezo-spark or triboelectric
-      test charge (see that circuit's own README § Bench findings).
-      `CHGAMP`'s charge-integrating (capacitor-feedback) topology is a
+      **2026-09-16 attempt:** tried soldering leads onto the bare piezo
+      disc without flux — destroyed that unit (see
+      `parts_reference.md#piezo-element-12mm-disc`; 19 of 20 remain).
+      The disc has no pre-attached leads, so this step was always
+      needed, just under-documented — `breadboard.md` now spells out
+      the flux requirement. **Worth trying next once flux is on hand**:
+      `electric_field_probe` (`EPFIELD`, same tier) was physically
+      assembled and bench-tested 2026-09-15 — TL082 confirmed working,
+      but its resistive bias-divider approach showed no measurable
+      response to a piezo-spark or triboelectric test charge (see that
+      circuit's own README § Bench findings). `CHGAMP`'s
+      charge-integrating (capacitor-feedback) topology is a
       fundamentally different, more sensitive approach to the same kind
       of signal — may succeed where `EPFIELD`'s did not.
 - [ ] **1N5817 Schottky diodes — still need a per-unit forward-drop check
@@ -167,10 +187,23 @@ its bench-assembly bullet below.
       than pre-validating the whole batch upfront; see
       `psu_4xaa/README.md` § Validation for the Pico-divider technique
       (same approach applies to any circuit using this diode).
-- [ ] **`power_supplies/psu_low_v2` — physically assemble.** Wire-stripper
-      blocker resolved 2026-09-03. RXEF050 polyfuse batch already
-      validated (`measurement_tools/ammeter_1ohm/`). Depends on the
-      1N5817 diode check directly above — nothing else is blocking this.
+- [ ] **`power_supplies/psu_low_v2` — physically assembled 2026-09-16
+      (`breadboard.jpg`), but its own § Validation step (the
+      raw_voltage_probe divider check, GP26) was skipped — run that
+      next, before touching `TIA` again.** Wire-stripper blocker
+      resolved 2026-09-03. RXEF050 polyfuse batch already validated
+      (`measurement_tools/ammeter_1ohm/`). The 1N5817 diode check two
+      bullets above still needs doing here, retroactively — a
+      non-conducting diode is one concrete way this rail could be
+      putting out ~0V, which is exactly the kind of thing the GP26
+      divider check below would catch. See the `TIA` bullet below: its
+      bench test came back with a symptom
+      (a stable reading, unchanged whether the photodiode was covered,
+      lit ambient, or lit with a flashlight) that's the classic
+      signature of the LM358 not receiving power at all — that reads
+      like an unvalidated `psu_low_v2` output rather than a `TIA`
+      wiring fault. Confirm this rail is actually delivering ~2.8V
+      before re-checking anything downstream of it.
 - [ ] **`power_supplies/psu_3xaa` — confirm and assemble.** `README.md`
       and `breadboard.md` are already complete and don't reference
       `psu_low_v2` for anything — it's a separate 3×AA holder chain, not
@@ -179,15 +212,24 @@ its bench-assembly bullet below.
       status); doesn't need `psu_low_v2` assembled first and can be done
       before, after, or in parallel with it.
 - [ ] **`signal_conditioning/transimpedance_amplifier` (tier2, `TIA`) —
-      physically assemble.** Folder/netlist/breadboard guide/smoke test
-      now exist (2026-09-13). Per
+      physically assembled and bench-tested 2026-09-16
+      (`breadboard.jpg`), but the light-response check failed — see
+      that circuit's own README § Validation for the recorded readings.
+      Do not re-wire this yet — see the `psu_low_v2` bullet above for
+      the more likely culprit.** Folder/netlist/breadboard guide/smoke
+      test exist (2026-09-13). Per
       [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
       (`psu_low --> tier2` edge), its supply-rail prerequisite is
-      `psu_low_v2` (two bullets above), not `psu_3xaa`. No current
-      downstream consumer specifically calling for a `TIA` (tier4/tier5
-      now have some designed nodes — `PHASED`, `EPFIELD`, `CHGAMP` — but
-      none of them actually use a transimpedance amplifier) — build
-      whenever you feel like it.
+      `psu_low_v2` (bullet above), not `psu_3xaa`. Output read a stable
+      ~0.38V both under ambient room light and a phone flashlight
+      pointed directly at the photodiode — no response at all, which
+      points at the LM358 not getting VCC rather than a photodiode or
+      `Rf` fault (a genuine dark/light difference would show even with
+      a wiring error in the feedback network). **Also worth a look
+      before re-testing**: the breadboard photos show a slide switch
+      and a diode on the shared board that aren't in either circuit's
+      `breadboard.md` — confirm the switch (if it's actually in the
+      power path) is in the ON position.
 - [ ] **`measurement_tools/capacitance_bridge` (tier3, `CAPBRIDGE`) —
       physically assemble.** Folder/netlist/breadboard guide/smoke test
       now exist (2026-09-13), targeting the aluminum electrolytic

@@ -167,11 +167,11 @@ sequence this drives.
 
 | Folder | Circuit | Tier |
 |--------|---------|------|
-| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (RXEF050 polyfuse validated — see `ammeter_1ohm/` above — and the wire-stripper blocker is resolved; not yet physically assembled) |
+| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (physically assembled 2026-09-16; its own GP26 divider validation hasn't been run yet — see `docs/TODO-arcticoder.md`) |
 | `power_supplies/psu_3xaa/` | 3×AA + Schottky + 500 mA polyfuse | `psu_system` (between `psu_low` and `psu_4xaa`) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
 | `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit **not yet ordered**, not yet built — see `docs/TODO-arcticoder.md`) |
-| `signal_conditioning/transimpedance_amplifier/` | PT334-6C photodiode + LM358 current-to-voltage converter | tier2 `TIA` (fed from `psu_low_v2`; no current downstream urgency — see `docs/TODO-arcticoder.md`) |
+| `signal_conditioning/transimpedance_amplifier/` | PT334-6C photodiode + LM358 current-to-voltage converter | tier2 `TIA` (fed from `psu_low_v2`; physically assembled and bench-tested 2026-09-16 — output didn't respond to light at all, likely the untested `psu_low_v2` rail rather than this circuit's own wiring — see that circuit's README § Validation) |
 | `measurement_tools/capacitance_bridge/` | RC charge-time capacitance meter (known `Rref` vs. unknown `Cx`, timed against a 63.2%-of-Vin threshold) | tier3 `CAPBRIDGE`, targets the 1µF–470µF electrolytic kit (see its own README § Range) |
 | `signal_conditioning/charge_amplifier/` | 12mm piezo disc + TL082 inverting charge amp (`Cf`/`Rf_bias` feedback), VCC/2-biased for bipolar swing | tier5 `CHGAMP` — a direct spacetime-research sensor node |
 | `safety/thermal_monitor/` | MF52AT NTC divider (centers at VCC/2 at 25°C) + GPIO-driven alarm LED | safety `THERM` ("Thermal Monitoring with Alarm Threshold") |
@@ -181,8 +181,12 @@ Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
 schematic, a breadboard wiring guide, and a `smoke_test.py` (all but
 `active_current_limiter` also have a `main.py`, same reasoning as the
-PSU rows above having none), but none have been physically assembled
-with real components yet. For the PSU rows, the polyfuses they depend on
+PSU rows above having none). Most haven't been physically assembled
+with real components yet — the two exceptions are `psu_low_v2` and
+`transimpedance_amplifier` (both assembled 2026-09-16, still in this
+table rather than the bench-tested one above because neither has a
+*passing* validation result yet, not because they're unbuilt; see their
+rows above and `docs/TODO-arcticoder.md`). For the PSU rows, the polyfuses they depend on
 are no longer the blocker — both batches passed validation via
 `ammeter_10ohm`/`ammeter_1ohm` above — so what remains is just the
 physical build; `transimpedance_amplifier`, `capacitance_bridge`,
@@ -293,7 +297,7 @@ power_supplies/
         smoke_test.py
         README.md
 
-    psu_low_v2/               2xAA + Schottky + 500 mA polyfuse (designed, not built)
+    psu_low_v2/               2xAA + Schottky + 500 mA polyfuse (built 2026-09-16, own validation pending)
         psu_low_v2.spice
         schematic.png         (generated, gitignored)
         breadboard.md
@@ -337,10 +341,11 @@ signal_conditioning/
         smoke_test.py
         README.md
 
-    transimpedance_amplifier/ PT334-6C photodiode + LM358 current-to-voltage converter (designed, not built)
+    transimpedance_amplifier/ PT334-6C photodiode + LM358 current-to-voltage converter (built & bench-tested 2026-09-16, output didn't respond to light — see README)
         transimpedance_amplifier.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        breadboard.jpg
         main.py
         smoke_test.py
         README.md
