@@ -4153,3 +4153,20 @@ All docs-only changes, no code touched, so smoke tests aren't affected. Here's t
 Nothing new needs ordering --- `psu_3xaa` (needs only its own diode check) is next up on your list.
 <!-- ------ -->
 ---
+`TODO-arcticoder.md`'s "Ready to build now" section is now a real decisive ranking, not a menu. Here's the answer to your actual question --- what's most important --- and why:
+
+**#1: `CHGAMP` (charge amplifier)** --- once flux is on hand (already the top item in "Next AliExpress order"). It's the one bullet that's both a real, named prerequisite for the next design-worthy circuit (tier6 `LOCKIN`, per the dependency graph) *and* already mid-attempt with a known fix ready to apply.
+
+**#2: `PHASED` (needs `ne555_astable` reassembled first)** --- the other real prerequisite `LOCKIN` needs. Once `CHGAMP` and `PHASED` are both bench-confirmed, `LOCKIN` stops being an undesigned placeholder and becomes an actual startable design task.
+
+**#3--4: 1N5817 diode check → `psu_3xaa`** --- the only bullet on the list that's a literal stated hard-blocker for another bullet, and quick to clear.
+
+**#5--7: `THERM` → `ACTIVELIM` → `CAPBRIDGE`** --- each satisfies a real dependency-graph edge, just to tiers that are themselves still undesigned; ordered by which subgraph the graph doc itself declares first, not by feel.
+
+**Tail (no real edge to anything, ordered by ascending effort):** `psu_ultralow_v1` demo → `psu_medlow_usbc` CC-pin check → CD4066 switches 2--4 → glass-fuse jig → `psu_medlow_lm317` order decision → `fuse_test_voltmeter` cleanup.
+
+The ranking rule (spelled out in the file itself now, not just in my head) is mechanical: real stated dependencies first, then real dependency-graph edges toward the single most literature-justified next design target (`LOCKIN`), then sunk-cost-in-progress items, then any other real edge, then pure standalone chores by effort. That's a graph fact, not a claim about which circuit is "closer to the research goal" --- that framing stays out of scope per your own earlier correction, and I documented the distinction in `kb/circuit_lifecycle_and_repo_scope.md` so a future session can tell the two apart.
+
+I also repealed the old "menu, pick whatever" convention in `kb/todo_list_conventions.md` and logged why, so this doesn't drift back next time. No, I don't need an arxiv folder or more specificity from you --- the existing dependency graphs had enough real edges to decide this outright.
+<!-- ------ -->
+---

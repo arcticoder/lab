@@ -26,9 +26,23 @@ from these three points. See also
    themselves — it exists to build and validate the *equipment* the
    experiments will eventually use. Don't add urgency/prioritization
    language to a bench-work item because it's "closer to the real
-   objective" — there is no in-repo objective to rank against; a
-   dependency-graph grouping reason (e.g. "these are the spacetime-tier
-   nodes") is fine to state, a priority claim on top of it is not.
+   objective" — there is no in-repo objective to rank against that way.
+
+   **Narrower than it first reads (revised 2026-09-17):** this only bars
+   ranking by *narrative closeness to the outside research goal*.
+   Ranking `TODO-arcticoder.md`'s "Ready to build now" bullets by
+   mechanical dependency-graph facts — does finishing bullet A unblock
+   bullet B on the same list, is A a real named prerequisite for the next
+   design-ready node, is A already mid-attempt with a fix in hand — is
+   fine and is now the standing convention for that section (see
+   [todo_list_conventions.md](todo_list_conventions.md)'s 2026-09-17
+   entry). The test: would the same ranking argument hold if this repo's
+   downstream consumer were swapped for an unrelated one? If yes (it's
+   about which node the graph shows gating which other node), it's a
+   mechanical claim and it's fine to state and act on. If the argument
+   only works by naming the FTL-research goal itself ("do this first
+   because it's closer to solving X"), it's a narrative claim and stays
+   out.
 
 ## Every circuit is ephemeral — parts are shared inventory, not permanent installs
 

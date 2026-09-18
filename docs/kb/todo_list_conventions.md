@@ -201,7 +201,7 @@ asked to build something specific — see the `TIA`/`CAPBRIDGE` precedent),
 then add the bench-assembly bullet to `TODO-arcticoder.md` once real
 files back it.
 
-## "Ready to build now" is a no-urgency menu, not a mandatory queue, when nothing downstream needs its contents yet (established 2026-09-13)
+## "Ready to build now" is a no-urgency menu, not a mandatory queue, when nothing downstream needs its contents yet (established 2026-09-13, **superseded 2026-09-17 — see the entry near the end of this file**)
 
 Separately from the file-creation split above, the user also pushed back
 on `TODO-arcticoder.md` reading like "a laundry list" even after the
@@ -261,7 +261,7 @@ first.** Only propose the more precise/literal version once something
 concrete actually needs the improvement the simpler version can't
 provide.
 
-## "Ready to build now" being a no-urgency menu is a snapshot, not a permanent verdict — re-check it whenever the downstream tiers actually get designed (established 2026-09-13, same day as the entry above)
+## "Ready to build now" being a no-urgency menu is a snapshot, not a permanent verdict — re-check it whenever the downstream tiers actually get designed (established 2026-09-13, same day as the entry above; **superseded 2026-09-17 — see the entry near the end of this file**)
 
 The entry above ("'Ready to build now' is a no-urgency menu... when
 nothing downstream needs its contents yet") was correct as of that
@@ -297,7 +297,7 @@ undesigned), re-check whether that item's own framing/urgency in
 "generic, skippable busywork" once it's actually become a real
 prerequisite for something.
 
-## Don't frame "ready to build now" items by closeness to the spacetime-research objective, and don't assume a shared part needs duplicating (2026-09-14)
+## Don't frame "ready to build now" items by closeness to the spacetime-research objective, and don't assume a shared part needs duplicating (2026-09-14; **narrowed 2026-09-17 — see the entry near the end of this file: ranking by mechanical dependency-graph facts is fine, only ranking by narrative closeness to the outside research goal is barred**)
 
 User correction, 2026-09-14: this file's own intro (and several bullets)
 had drifted into saying the `EPFIELD`/`CHGAMP`/`PHASED` bullets were
@@ -366,3 +366,83 @@ downstream consumer, build whenever you feel like it" reading is fine
 as-is — the ambiguity specifically bites on spacetime-tier nodes because
 those carry an extra "why does this exist at all" question the
 general-purpose ones don't.
+
+## "Ready to build now" is a ranked queue, not a menu — the "no urgency" framing is repealed (2026-09-17)
+
+The two "no-urgency menu" entries above (2026-09-13) and the "don't frame
+by closeness to the research objective" entry (2026-09-14) together
+produced a section whose own intro told the reader to "pick whatever you
+feel like... with no scheduling cost to skipping this entire section
+indefinitely." The user pushed back hard and explicitly, for the second
+time, on this exact framing (first flagged, evidently, before this file's
+history captured it — they referenced having asked before): presenting
+bench work as an unranked menu means it doesn't get built. Their own
+words: "If you just give me a 'menu of what you *could* spend bench time
+on, not a backlog you're behind on' then I won't build the circuits...
+This is why the dependency graphs exist." The instruction was concrete:
+prioritize, put the most important item at the top, and if a genuine tie
+can't be broken, say so explicitly and make resolving *that* the top
+task — not fall back to "no priority" as a default.
+
+**The actual problem with the old framing wasn't that ranking is
+impossible — it's that the only kind of ranking argument this repo's
+scope allows (see [[circuit_lifecycle_and_repo_scope]]) is "closeness to
+the outside FTL-research objective," and that one really is out of
+scope.** But that's not the only kind of ranking available. The
+dependency graphs (`general_purpose_circuit_dependency.md`/
+`spacetime_circuits_dependency.md`) encode real, checkable edges between
+nodes, independent of any claim about the outside research goal's
+priorities — which node gates which other node is a fact about this
+repo's own graph, not a value judgment about physics. Five criteria,
+applied in order, produce a total order without inventing anything:
+
+1. A bullet unblocks another bullet already in the same list (a stated,
+   not inferred, dependency — see the TIA-correction entry above on the
+   inferred-dependency failure mode to avoid).
+2. A bullet is a real, named prerequisite (per the dependency-graph docs)
+   for the single most literature-backed next *design* target currently
+   identified. As of 2026-09-17 that's tier6 `LOCKIN` —
+   `spacetime_circuits_dependency.md`'s "Why these tiers" section names it
+   as the strongest-justified next node, gated on `PHASED` +
+   `EPFIELD`/`CHGAMP` + `OSC`. `EPFIELD`/`OSC` are already satisfied, so
+   whichever of `PHASED`/`CHGAMP` isn't yet bench-confirmed ranks at the
+   top. This criterion is graph-mechanical, not narrative: it names a
+   node in *this repo's own* dependency graph, not the outside research
+   goal — see [[circuit_lifecycle_and_repo_scope]]'s revised point 3 for
+   the exact test that distinguishes the two.
+3. A bullet is already mid-attempt with a documented, ready-to-apply fix
+   (sunk cost) — e.g. `CHGAMP`'s destroyed piezo disc, root-caused to a
+   missing-flux step that's now fixed in `breadboard.md`.
+4. A bullet satisfies any other real graph edge, even to a tier that's
+   itself still undesigned (e.g. `THERM --> tier2`, `ACTIVELIM
+   -.required.-> psu_medhigh`) — both edges are real, neither destination
+   is buildable yet, so this criterion alone can't break a tie between
+   them. When it can't, fall back to the order the two dependency-graph
+   docs themselves declare their subgraphs in (e.g. `safety` before
+   `protection`) — a real, checkable, arbitrary-free tiebreak, not "pick
+   whichever."
+5. No real edge to anything currently on the graph — order by ascending
+   bench effort (a single measurement before a repetitive batch check
+   before building a test jig from scratch).
+
+Applied 2026-09-17 to `TODO-arcticoder.md`'s "Ready to build now": new
+order is `CHGAMP` (criteria 2+3) → `PHASED` (criterion 2) → 1N5817 diode
+check (criterion 1, the list's only literal stated hard-blocker pair) →
+`psu_3xaa` → `THERM` (criterion 4, `safety` subgraph declared first) →
+`ACTIVELIM` (criterion 4, `protection` subgraph declared second) →
+`CAPBRIDGE` (criterion 5) → the standalone-validation tail
+(`psu_ultralow_v1` demo → `psu_medlow_usbc` CC-pin check → CD4066
+switches 2–4 → glass-fuse jig → `psu_medlow_lm317` order decision →
+`fuse_test_voltmeter` cleanup, ascending effort). The file's intro and
+the section's own intro were both rewritten to state the ranking rule
+inline rather than pointing here for it, since the user reads
+`TODO-arcticoder.md` directly and shouldn't have to trust an unstated
+rule.
+
+**Rule for future sessions: don't reintroduce "menu, not a queue" /
+"no urgency" framing into this section.** If a future pass finds the
+five criteria above producing a genuine unbreakable tie (not just
+"several items all seem fine, whatever"), the correct move per the
+user's own instruction is to say so explicitly *and add resolving that
+tie as the actual top task* — never to default back to "pick whatever
+you feel like."
