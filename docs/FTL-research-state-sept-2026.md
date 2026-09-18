@@ -868,22 +868,22 @@ That's still unresolved.
 
 I'd characterize the September 2026 state this way:
 
-| Problem                                                  | Status                          |
+| Problem                                                  | Status                          |
 | -------------------------------------------------------- | ------------------------------- |
-| Mathematical FTL metric                                  | **Solved**                      |
-| Passenger can follow timelike trajectory inside metric   | **Solved in idealized metrics** |
-| Classical subluminal positive-energy warp geometry       | **Demonstrated**                |
-| Reduced exotic energy for some geometries                | **Demonstrated**                |
-| Observer-independent energy-condition analysis           | **Much improved**               |
-| Dynamical collapse/evolution simulations                 | **Demonstrated**                |
-| FTL geometry with physically acceptable \(T_{\mu\nu}\)   | **Not demonstrated**            |
-| Quantum-field source satisfying required negative energy | **Not demonstrated**            |
-| Stable formation of FTL bubble                           | **Not demonstrated**            |
-| Acceleration to FTL                                      | **Not demonstrated**            |
-| Controlled FTL steering                                  | **Not demonstrated**            |
-| Global causal consistency of an operational FTL system   | **Unresolved**                  |
-| Experimental observation of FTL                          | **None established**            |
-| Quantum-gravity theory capable of deciding the issue     | **Absent**                      |
+| Mathematical FTL metric                                  | **Solved**                      |
+| Passenger can follow timelike trajectory inside metric   | **Solved in idealized metrics** |
+| Classical subluminal positive-energy warp geometry       | **Demonstrated**                |
+| Reduced exotic energy for some geometries                | **Demonstrated**                |
+| Observer-independent energy-condition analysis           | **Much improved**               |
+| Dynamical collapse/evolution simulations                 | **Demonstrated**                |
+| FTL geometry with physically acceptable \(T_{\mu\nu}\)   | **Not demonstrated**            |
+| Quantum-field source satisfying required negative energy | **Not demonstrated**            |
+| Stable formation of FTL bubble                           | **Not demonstrated**            |
+| Acceleration to FTL                                      | **Not demonstrated**            |
+| Controlled FTL steering                                  | **Not demonstrated**            |
+| Global causal consistency of an operational FTL system   | **Unresolved**                  |
+| Experimental observation of FTL                          | **None established**            |
+| Quantum-gravity theory capable of deciding the issue     | **Absent**                      |
 
 The important change since **June 21, 2025** is therefore not that we've suddenly found a warp drive.
 
@@ -944,7 +944,7 @@ And, somewhat unusually for this subject, several of those questions are now ame
 **Developments:** Constant-velocity subluminal solutions requiring no exotic matter (Fuchs et al., 2024) and the derivation of momentum/energy radiation costs for steering them (An T. Le, 2026).
 
 *   **Experimental Verification:** Verifying the conservation-law constraints (such as the Bondi-Sachs momentum limits) requires macroscopic, frictionless, radiation-propelled systems in ultra-high vacuum environments. By precisely tracking mass loss against acceleration ($-\dot{m} \ge 3m|a|$), the fundamental kinematics of photon-rocket recoil and steering radiation can be experimentally isolated.
-*   **Dawson Institute's Contribution:** Constructing highly sensitive macroscopic torsion balances housed in standard vacuum chambers. By using off-the-shelf high-power LEDs to drive continuous radiation pressure, a hobbyist can map the continuous mass-energy/momentum transfer curves required to change a system's vector without classical propellant, creating a low-energy model of the steering constraints.
+*   **Dawson Institute's Contribution:** Constructing highly sensitive macroscopic torsion balances housed in standard vacuum chambers. By using off-the-shelf high-power LEDs to drive continuous radiation pressure, we can map the continuous mass-energy/momentum transfer curves required to change a system's vector without classical propellant, creating a low-energy model of the steering constraints.
 
 ## Dynamical Evolution and Collapse Signatures
 
@@ -981,7 +981,7 @@ And, somewhat unusually for this subject, several of those questions are now ame
 **Developments:** The text emphasizes that generating a superluminal bubble is insufficient; the resulting spacetime must maintain global causal consistency to prevent the formation of closed causal curves when interacting with standard relativistic motion. 
 
 *   **Experimental Verification:** Directly testing causal loops requires creating closed timelike curves, which is experimentally out of reach. However, verification is performed using analog gravity models. By routing acoustic waves in fluids or light in metamaterials through specific periodic boundary conditions, researchers can simulate causal loops to test if the "vacuum" (the background medium) becomes catastrophically unstable due to continuous self-interference, as predicted by quantum field theory.
-*   **Dawson Institute's Contribution:** Building analog optical "event horizons" using standard fiber optic spools, low-power continuous-wave lasers, and optical splitters. By routing signals into intentional feedback loops that simulate causal self-interference, a hobbyist can map signal phase instability and noise amplification, studying the classical analogs to the quantum instabilities that restrict chronology-violating geometries.
+*   **Dawson Institute's Contribution:** Building analog optical "event horizons" using standard fiber optic spools, low-power continuous-wave lasers, and optical splitters. By routing signals into intentional feedback loops that simulate causal self-interference, we can map signal phase instability and noise amplification, studying the classical analogs to the quantum instabilities that restrict chronology-violating geometries.
 
 ## Quantum Gravity and Gravitational Entanglement
 
@@ -995,4 +995,4 @@ And, somewhat unusually for this subject, several of those questions are now ame
 **Developments:** The `chat.md` text details a computational pipeline—combining symbolic algebra, automatic differentiation, numerical relativity, machine learning, and interval verification—being used to attack the geometry search space, classify causal dynamical triangulations, and sample covariant loop quantum gravity spaces. 
 
 *   **Experimental Verification:** Verification in this domain is rigorously algorithmic. It involves using interval mathematics for continuum certification to mathematically prove that the energy conditions computed for a simulated geometry are not artifacts of floating-point errors, coordinate choices, or limited observer sampling.
-*   **Dawson Institute's Contribution:** This is natively a hobbyist-accessible domain. Individuals can utilize consumer GPUs to train machine learning models to navigate quantum-gravity configuration spaces. By writing custom loss functions that specifically penalize generated geometries containing Hawking-Ellis Type IV stress-energy, a hobbyist can directly execute automated geometry searches and contribute optimization scripts to open-source numerical relativity repositories.
+*   **Dawson Institute's Contribution:** This is natively we-accessible domain. Individuals can utilize consumer GPUs to train machine learning models to navigate quantum-gravity configuration spaces. By writing custom loss functions that specifically penalize generated geometries containing Hawking-Ellis Type IV stress-energy, we can directly execute automated geometry searches and contribute optimization scripts to open-source numerical relativity repositories.
