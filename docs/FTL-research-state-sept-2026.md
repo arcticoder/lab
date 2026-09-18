@@ -964,7 +964,7 @@ And, somewhat unusually for this subject, several of those questions are now ame
 
 ## Modified Gravity and Spin-Torsion Coupling
 
-**Developments:** The `chat.md` document outlines attempts to evade classical energy conditions using modified gravity, such as Einstein-Gauss-Bonnet theory or Einstein-Cartan theory, where spin-torsion coupling is explored to compensate for exotic stress-energy requirements. 
+**Developments:** Earlier we outlined attempts to evade classical energy conditions using modified gravity, such as Einstein-Gauss-Bonnet theory or Einstein-Cartan theory, where spin-torsion coupling is explored to compensate for exotic stress-energy requirements. 
 
 *   **Experimental Verification:** Einstein-Cartan theory predicts that intrinsic quantum spin couples directly to the torsion of spacetime. Experimental verification involves searching for anomalous, non-magnetic spin-spin interactions between macroscopic objects. This is typically done using ultra-sensitive torsion balances containing spin-polarized test masses to see if they experience forces outside standard general relativity.
 *   **Dawson Institute's Contribution:** Constructing low-cost torsion pendulums utilizing spin-polarized materials, such as specific toroidal ferromagnetic cores that possess a net intrinsic electron spin but zero external magnetic field. While detecting cosmological torsion is unlikely, engineering the magnetic shielding and vibration isolation required to isolate theoretical spin-gravity couplings replicates the precise methodology of experimental macroscopic gravity research.
@@ -992,7 +992,7 @@ And, somewhat unusually for this subject, several of those questions are now ame
 
 ## The AI and Computational Verification Stack
 
-**Developments:** The `chat.md` text details a computational pipeline—combining symbolic algebra, automatic differentiation, numerical relativity, machine learning, and interval verification—being used to attack the geometry search space, classify causal dynamical triangulations, and sample covariant loop quantum gravity spaces. 
+**Developments:** Earlier we detailed a computational pipeline—combining symbolic algebra, automatic differentiation, numerical relativity, machine learning, and interval verification—being used to attack the geometry search space, classify causal dynamical triangulations, and sample covariant loop quantum gravity spaces. 
 
 *   **Experimental Verification:** Verification in this domain is rigorously algorithmic. It involves using interval mathematics for continuum certification to mathematically prove that the energy conditions computed for a simulated geometry are not artifacts of floating-point errors, coordinate choices, or limited observer sampling.
-*   **Dawson Institute's Contribution:** This is natively we-accessible domain. Individuals can utilize consumer GPUs to train machine learning models to navigate quantum-gravity configuration spaces. By writing custom loss functions that specifically penalize generated geometries containing Hawking-Ellis Type IV stress-energy, we can directly execute automated geometry searches and contribute optimization scripts to open-source numerical relativity repositories.
+*   **Dawson Institute's Contribution:** We can utilize consumer GPUs to train machine learning models to navigate quantum-gravity configuration spaces. By writing custom loss functions that specifically penalize generated geometries containing Hawking-Ellis Type IV stress-energy, we can directly execute automated geometry searches and contribute optimization scripts to open-source numerical relativity repositories.
