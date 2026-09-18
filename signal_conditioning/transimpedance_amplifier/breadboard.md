@@ -65,8 +65,8 @@ pin 4. This sets the reference the feedback loop drives pin 2 toward.
 
 ### 3. Wire the photodiode
 
-- PT334-6C **anode** (shorter lead) → GND rail (same rail as pin 4/pin 3).
-- PT334-6C **cathode** (longer lead) → the row holding LM358 pin 2
+- PT334-6C **anode** (longer lead) → GND rail (same rail as pin 4/pin 3).
+- PT334-6C **cathode** (shorter lead) → the row holding LM358 pin 2
   (inverting input).
 
 ### 4. Wire the feedback resistor

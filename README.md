@@ -152,6 +152,8 @@ photo of the as-built jig where one was taken (see each circuit's own
 | `oscillators/ne555_astable/` | NE555 astable square-wave oscillator, 3296 trimpot timing | tier1 `OSC`, first per-unit NE555 batch validation | 2026-09-13 — oscillation confirmed (113/109 zero-crossings across two readings, ~1.5kHz, inside the expected 649Hz–2.9kHz trim range) via `measurement_tools/oscillation_probe/`. **Output divider fixed**: root cause was a mis-picked 220Ω resistor standing in for one of the two intended 10kΩ legs; swapped for a verified 10kΩ, GP26 now reads a real ~2.2V half-swing instead of pinning at 3.300V — see `README.md` § Validation |
 | `measurement_tools/oscillation_probe/` | Burst-sampled GP26 reader that reports min/max/swing and a zero-crossing count — confirms genuine toggling where `raw_voltage_probe`'s averaging can't | general-purpose probe, built 2026-09-12 for `ne555_astable`'s bring-up | 2026-09-12 — used live against the `ne555_astable` bench build (see that row above) |
 | `signal_conditioning/electric_field_probe/` | Bare-electrode electrostatic sensor: 1MΩ/1MΩ bias divider to VCC/2, TL082 unity-gain follower | tier5 `EPFIELD` — spacetime-research sensor node, see `docs/spacetime_circuits_dependency.md` | 2026-09-15 — TL082 follower confirmed live (rest ~1.693–1.701V vs. simulated 1.650V, a small stable offset, not railed — resolves the earlier "hasn't been confirmed below spec'd supply" caveat). A piezo-igniter spark and a triboelectric (rubbed tape) test charge both produced no deflection beyond that same offset — consistent with the design's own predicted sensitivity ceiling from the 1MΩ (not GΩ) bias divider, not a wiring fault; see that circuit's own README § Bench findings for the diagnosis and concrete next steps |
+| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` tier | 2026-09-17 — GP26 read 1.007V average (20 readings) through the output's 10 kΩ/5.1 kΩ divider, matching the ~1.0V correct-orientation target. Root cause of an earlier no-reading gap: the Schottky's cathode band paint had worn off and it was installed backward on a guess — flipped once this check caught it; see `README.md` § Validation |
+| `signal_conditioning/transimpedance_amplifier/` | PT334-6C photodiode + LM358 current-to-voltage converter | tier2 `TIA` (fed from `psu_low_v2`) | 2026-09-17 — genuine light-dependent output confirmed: ~0.505–0.510V under ambient room light, ~0.72–0.78V under a phone flashlight (higher held close to the photodiode). Superseded a 2026-09-16 flat, light-independent ~0.38V reading that was traced to the `psu_low_v2` rail above, not this circuit's own wiring — see `README.md` § Validation |
 
 ---
 
@@ -167,11 +169,9 @@ sequence this drives.
 
 | Folder | Circuit | Tier |
 |--------|---------|------|
-| `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` (physically assembled 2026-09-16; its own GP26 divider validation hasn't been run yet — see `docs/TODO-arcticoder.md`) |
 | `power_supplies/psu_3xaa/` | 3×AA + Schottky + 500 mA polyfuse | `psu_system` (between `psu_low` and `psu_4xaa`) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
 | `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit **not yet ordered**, not yet built — see `docs/TODO-arcticoder.md`) |
-| `signal_conditioning/transimpedance_amplifier/` | PT334-6C photodiode + LM358 current-to-voltage converter | tier2 `TIA` (fed from `psu_low_v2`; physically assembled and bench-tested 2026-09-16 — output didn't respond to light at all, likely the untested `psu_low_v2` rail rather than this circuit's own wiring — see that circuit's README § Validation) |
 | `measurement_tools/capacitance_bridge/` | RC charge-time capacitance meter (known `Rref` vs. unknown `Cx`, timed against a 63.2%-of-Vin threshold) | tier3 `CAPBRIDGE`, targets the 1µF–470µF electrolytic kit (see its own README § Range) |
 | `signal_conditioning/charge_amplifier/` | 12mm piezo disc + TL082 inverting charge amp (`Cf`/`Rf_bias` feedback), VCC/2-biased for bipolar swing | tier5 `CHGAMP` — a direct spacetime-research sensor node |
 | `safety/thermal_monitor/` | MF52AT NTC divider (centers at VCC/2 at 25°C) + GPIO-driven alarm LED | safety `THERM` ("Thermal Monitoring with Alarm Threshold") |
@@ -181,15 +181,15 @@ Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
 schematic, a breadboard wiring guide, and a `smoke_test.py` (all but
 `active_current_limiter` also have a `main.py`, same reasoning as the
-PSU rows above having none). Most haven't been physically assembled
-with real components yet — the two exceptions are `psu_low_v2` and
-`transimpedance_amplifier` (both assembled 2026-09-16, still in this
-table rather than the bench-tested one above because neither has a
-*passing* validation result yet, not because they're unbuilt; see their
-rows above and `docs/TODO-arcticoder.md`). For the PSU rows, the polyfuses they depend on
+PSU rows above having none). None of these have been physically
+assembled with real components yet (`psu_low_v2` and
+`transimpedance_amplifier` were the two exceptions as of 2026-09-16, and
+both moved to the bench-tested table above once their validation checks
+passed 2026-09-17 — see their rows there and `docs/TODO-arcticoder.md`).
+For the PSU rows, the polyfuses they depend on
 are no longer the blocker — both batches passed validation via
 `ammeter_10ohm`/`ammeter_1ohm` above — so what remains is just the
-physical build; `transimpedance_amplifier`, `capacitance_bridge`,
+physical build; `capacitance_bridge`,
 `charge_amplifier`, `thermal_monitor`, and `phase_detector` all run off
 `psu_pico_rail` (or need no PSU at all) and have no battery-PSU
 dependency. Everything else in
@@ -297,7 +297,7 @@ power_supplies/
         smoke_test.py
         README.md
 
-    psu_low_v2/               2xAA + Schottky + 500 mA polyfuse (built 2026-09-16, own validation pending)
+    psu_low_v2/               2xAA + Schottky + 500 mA polyfuse (built & bench-tested 2026-09-17)
         psu_low_v2.spice
         schematic.png         (generated, gitignored)
         breadboard.md
@@ -341,7 +341,7 @@ signal_conditioning/
         smoke_test.py
         README.md
 
-    transimpedance_amplifier/ PT334-6C photodiode + LM358 current-to-voltage converter (built & bench-tested 2026-09-16, output didn't respond to light — see README)
+    transimpedance_amplifier/ PT334-6C photodiode + LM358 current-to-voltage converter (built & bench-tested 2026-09-17, real light response confirmed)
         transimpedance_amplifier.spice
         schematic.png         (generated, gitignored)
         breadboard.md

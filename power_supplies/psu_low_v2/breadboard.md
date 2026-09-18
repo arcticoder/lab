@@ -34,7 +34,13 @@ polyfuse → output.
 ### 2. Place the Schottky and polyfuse
 
 Insert the Schottky (cathode stripe toward the fuse) and polyfuse in series
-on the positive rail, downstream of holder 2.
+on the positive rail, downstream of holder 2. **If the cathode stripe
+isn't legible** (one unit in this batch has worn/faded paint — see
+[README.md § Validation](README.md#validation) and
+[docs/parts_reference.md#1n5817-schottky-diode](../../docs/parts_reference.md#1n5817-schottky-diode)),
+don't guess: wire it either way, then run the GP26 divider check below
+before trusting the build — a near-0V reading means it's backward, ~1.0V
+means it's correct.
 
 ### 3. Connect the battery pair
 

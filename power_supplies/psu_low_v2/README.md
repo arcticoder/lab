@@ -19,6 +19,8 @@ Spec: 3.0 V, <300 mA, ~0.9 W. See
 | `schematic.png` | Generated schematic image (gitignored — see repo `README.md`) |
 | `breadboard.md` | Step-by-step breadboard wiring |
 | `smoke_test.py` | Runs the netlist and asserts safe/expected values — see repo `README.md` § Smoke-testing |
+| `breadboard.jpg` | Photo of the as-assembled build (2026-09-16), before the Validation check below was run |
+| `breadboard2.jpg` | Photo taken alongside the passing 2026-09-17 validation run (Schottky flipped to correct orientation) — looks visually identical to `breadboard.jpg` since the worn cathode band gives no visible stripe either way |
 
 § Validation below reads GP26 with
 [`measurement_tools/raw_voltage_probe`](../../measurement_tools/raw_voltage_probe/)'s
@@ -110,16 +112,28 @@ voltage):
 - Reversed battery leads: GP26 reads **~0 V** — the Schottky blocks, no
   current reaches the divider.
 
-**Status, 2026-09-16:** physically assembled (`breadboard.jpg`), but
-this divider check itself hasn't been run yet — assembly moved straight
-to powering `transimpedance_amplifier` instead. That circuit's own
-bench test came back with a symptom (output completely unresponsive to
-light, stable at ~0.38V) that's consistent with this rail not actually
-reaching the LM358 — see
-[transimpedance_amplifier/README.md](../../signal_conditioning/transimpedance_amplifier/README.md#validation).
-**Run the GP26 divider check above next**, standalone (LM358
-disconnected or not), before assuming anything about the TIA circuit's
-own wiring — it'll confirm or rule out this rail as the cause. Also
-worth a look: the breadboard photo shows a slide switch and a diode
-whose state/role isn't obvious from this file's wiring steps alone —
-confirm the switch (if it's in series in the power path) is ON.
+**Confirmed on real hardware 2026-09-17: GP26 averaged 1.007 V** over 20
+readings (`raw_voltage_probe/main.py`; see `breadboard2.jpg` for the
+as-tested build), matching the ~1.0 V correct-orientation figure above.
+**Root cause of the 2026-09-16 gap, found and
+fixed**: the Schottky's cathode-band paint had worn off, so its
+orientation was installed by guesswork and went in backward — which
+would behave like the "reversed" case above (GP26 near 0V, current
+blocked), consistent with the flat, powerless-looking symptom `TIA`
+showed downstream before this fix (no GP26 reading was taken on
+`psu_low_v2` itself before the diode was flipped). Re-seating it the
+other way around and re-running the check produced the passing reading
+below. This also confirms
+the downstream diagnosis in
+[transimpedance_amplifier/README.md](../../signal_conditioning/transimpedance_amplifier/README.md#validation)
+was correct: that circuit's flat, light-independent ~0.38V reading was
+this rail not reaching the LM358, not a `TIA` wiring fault — re-testing
+`TIA` after this fix now shows a real light response (see that file).
+
+**Note for reuse**: this specific diode has no legible cathode band —
+don't rely on the printed stripe if it's pulled for `psu_3xaa` or
+another build later; re-confirm orientation electrically (this same
+GP26 divider check, or continuity against a known-good unit) rather
+than guessing again. See
+[docs/parts_reference.md#1n5817-schottky-diode](../../docs/parts_reference.md#1n5817-schottky-diode)
+for how it's identified in the bin.

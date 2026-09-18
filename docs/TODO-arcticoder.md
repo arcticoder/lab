@@ -173,63 +173,27 @@ its bench-assembly bullet below.
       fundamentally different, more sensitive approach to the same kind
       of signal — may succeed where `EPFIELD`'s did not.
 - [ ] **1N5817 Schottky diodes — still need a per-unit forward-drop check
-      for whichever units go into `psu_low_v2`/`psu_3xaa` specifically.**
-      The diode already installed in `psu_4xaa` is now past
-      continuity/orientation-only trust: re-ran the divider check
-      2026-09-13 after finding and fixing wiring issues on a rebuild
-      (`psu_4xaa/validation_breadboard2.jpg`) and got GP26 ≈ 1.990 V,
-      matching the ~1.9 V target — that specific diode's forward-conduction
-      behavior is confirmed. It's identifiable in the batch by curled legs
-      and no tape (every other 1N5817 is still straight-legged and taped).
-      **Still open:** the same check, on whichever diode(s) actually go
-      into `psu_low_v2` and `psu_3xaa` (both bullets directly below — this
-      still gates both) — plan is to check each at assembly time rather
-      than pre-validating the whole batch upfront; see
-      `psu_4xaa/README.md` § Validation for the Pico-divider technique
-      (same approach applies to any circuit using this diode).
-- [ ] **`power_supplies/psu_low_v2` — physically assembled 2026-09-16
-      (`breadboard.jpg`), but its own § Validation step (the
-      raw_voltage_probe divider check, GP26) was skipped — run that
-      next, before touching `TIA` again.** Wire-stripper blocker
-      resolved 2026-09-03. RXEF050 polyfuse batch already validated
-      (`measurement_tools/ammeter_1ohm/`). The 1N5817 diode check two
-      bullets above still needs doing here, retroactively — a
-      non-conducting diode is one concrete way this rail could be
-      putting out ~0V, which is exactly the kind of thing the GP26
-      divider check below would catch. See the `TIA` bullet below: its
-      bench test came back with a symptom
-      (a stable reading, unchanged whether the photodiode was covered,
-      lit ambient, or lit with a flashlight) that's the classic
-      signature of the LM358 not receiving power at all — that reads
-      like an unvalidated `psu_low_v2` output rather than a `TIA`
-      wiring fault. Confirm this rail is actually delivering ~2.8V
-      before re-checking anything downstream of it.
+      for whichever unit goes into `psu_3xaa` specifically.** Two of 20
+      are now confirmed: `psu_4xaa`'s (2026-09-13, GP26 ≈ 1.990V,
+      identifiable by curled legs/no tape) and `psu_low_v2`'s
+      (2026-09-17, GP26 ≈ 1.007V — see that circuit's own README
+      § Validation). **`psu_low_v2`'s unit has no legible cathode band**
+      (paint worn off) and was actually installed backward on a guess at
+      first; the divider check caught it and it was flipped. It can't be
+      re-identified by eye if it's ever pulled for another build — see
+      `docs/parts_reference.md#1n5817-schottky-diode`. **Still open:** the
+      same divider check on whichever diode goes into `psu_3xaa` (bullet
+      directly below — still gates it) — plan is to check each at
+      assembly time rather than pre-validating the whole batch upfront;
+      see `psu_4xaa/README.md` § Validation for the Pico-divider
+      technique (same approach applies to any circuit using this diode).
 - [ ] **`power_supplies/psu_3xaa` — confirm and assemble.** `README.md`
       and `breadboard.md` are already complete and don't reference
       `psu_low_v2` for anything — it's a separate 3×AA holder chain, not
-      an extension of it. Only depends on the 1N5817 diode check two
-      bullets above (same diode batch, same unvalidated-forward-drop
-      status); doesn't need `psu_low_v2` assembled first and can be done
-      before, after, or in parallel with it.
-- [ ] **`signal_conditioning/transimpedance_amplifier` (tier2, `TIA`) —
-      physically assembled and bench-tested 2026-09-16
-      (`breadboard.jpg`), but the light-response check failed — see
-      that circuit's own README § Validation for the recorded readings.
-      Do not re-wire this yet — see the `psu_low_v2` bullet above for
-      the more likely culprit.** Folder/netlist/breadboard guide/smoke
-      test exist (2026-09-13). Per
-      [general_purpose_circuit_dependency.md](general_purpose_circuit_dependency.md)
-      (`psu_low --> tier2` edge), its supply-rail prerequisite is
-      `psu_low_v2` (bullet above), not `psu_3xaa`. Output read a stable
-      ~0.38V both under ambient room light and a phone flashlight
-      pointed directly at the photodiode — no response at all, which
-      points at the LM358 not getting VCC rather than a photodiode or
-      `Rf` fault (a genuine dark/light difference would show even with
-      a wiring error in the feedback network). **Also worth a look
-      before re-testing**: the breadboard photos show a slide switch
-      and a diode on the shared board that aren't in either circuit's
-      `breadboard.md` — confirm the switch (if it's actually in the
-      power path) is in the ON position.
+      an extension of it. Only depends on the 1N5817 diode check above
+      (same diode batch, same unvalidated-forward-drop status for the
+      remaining 18 units); doesn't need `psu_low_v2` assembled first and
+      can be done before, after, or in parallel with it.
 - [ ] **`measurement_tools/capacitance_bridge` (tier3, `CAPBRIDGE`) —
       physically assemble.** Folder/netlist/breadboard guide/smoke test
       now exist (2026-09-13), targeting the aluminum electrolytic

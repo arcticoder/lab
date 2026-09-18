@@ -201,3 +201,28 @@ matching, so don't assume one file makes the other redundant.
   in that circuit's own README § Bench findings; the GΩ resistor is now
   a standing candidate in `TODO-arcticoder.md`'s "Next AliExpress order"
   section.
+
+## 2026-09-17
+
+- **`power_supplies/psu_low_v2` § Validation check — passed, and
+  `signal_conditioning/transimpedance_amplifier` (tier2 `TIA`) —
+  re-tested and confirmed working.** `psu_low_v2`'s GP26 divider check
+  (assembled 2026-09-16, left unrun) came back 1.007V average over 20
+  readings, matching the ~1.0V correct-orientation target. Root cause of
+  the gap: the Schottky's cathode band paint had worn off, so its
+  orientation was guessed and installed backward — flipping it fixed the
+  rail. Re-running `TIA`'s `main.py` afterward gave a genuine
+  light-dependent response (~0.505–0.510V ambient, ~0.72–0.78V under a
+  phone flashlight, higher held close) in place of the earlier flat,
+  light-independent ~0.38V reading — confirming the prior diagnosis that
+  the unvalidated `psu_low_v2` rail, not `TIA`'s own wiring, was the
+  cause (see `docs/kb/bench_photo_diagnostics_notes.md`). Both circuits
+  moved from `README.md`'s "designed, not yet built" table to "built &
+  bench-tested." Removed both bullets from `TODO-arcticoder.md`; the
+  1N5817 diode bullet there was updated to reflect `psu_low_v2`'s unit
+  now being confirmed-good (though unmarkable by eye — see
+  `docs/parts_reference.md#1n5817-schottky-diode`), with only `psu_3xaa`'s
+  diode check still open. Also fixed an unrelated pre-existing
+  contradiction in `transimpedance_amplifier/breadboard.md`'s PT334-6C
+  wiring table (anode/cathode were swapped relative to its own prose and
+  `parts_reference.md`) while touching that file.

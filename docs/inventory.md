@@ -203,7 +203,7 @@ For the `lab/` repo's spacetime research PSU tiers (`psu_ultralow`,
 |------------------------------------------|----------|--------------------------------------------------------------------|
 | Polyfuse RXEF005 (0.05A / 50mA)         | 20       | Received 2026-08-21; validated 2026-08-30 — all 20 units PASS (trip + reset confirmed) via `lab/measurement_tools/ammeter_10ohm/`, superseding the earlier `fuse_test_voltmeter` voltage-probe approach |
 | Polyfuse RXEF050 (0.5A / 500mA)         | 20       | Received 2026-08-21; validated 2026-08-30 — all 20 units PASS (trip + reset confirmed) via `lab/measurement_tools/ammeter_1ohm/` |
-| 1N5817 Schottky diode (1A 20V, DO-41)   | 20       | Received 2026-08-21; untested — verify forward drop/orientation per unit before use in `psu_low_v2` |
+| 1N5817 Schottky diode (1A 20V, DO-41)   | 20       | Received 2026-08-21; 2 of 20 confirmed-good via GP26 divider check (`psu_4xaa`'s unit — curled legs/no tape; `psu_low_v2`'s unit — no legible cathode band, was installed backward at first, then corrected). Remaining 18 straight-legged/taped, untested — verify forward drop/orientation per unit before use in `psu_3xaa` or elsewhere; see `parts_reference.md#1n5817-schottky-diode` |
 | AA battery holder (1×AA, single-cell)  | 5        | Received 2026-08-21; ready for direct use in `psu_ultralow_v1`/`psu_low_v2`. Confirmed-working temporary lead termination (2026-08-28, ahead of the wire stripper order arriving): twist a non-covered 0.25cm jump wire around each bare holder lead and wrap in electrical tape — no soldering/crimping needed. Treat as a stand-in until leads are stripped/soldered to Dupont connectors, not a wiring defect if seen on a breadboard. |
 
 ---

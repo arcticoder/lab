@@ -31,6 +31,35 @@ service powering the next circuit in the chain. Don't let the
 downstream circuit's own troubleshooting list anchor the diagnosis if
 none of its listed causes actually predict the observed symptom.
 
+**Confirmed 2026-09-17 — the diagnosis was correct.** `psu_low_v2`'s own
+GP26 divider check found its Schottky diode installed backward (see
+below), and fixing it made `TIA` respond to light normally (~0.505–0.51V
+ambient, ~0.72–0.78V flashlight — see that circuit's own README
+§ Validation). Worth remembering as a validated pattern, not just a
+hypothesis, for the next "stable + stimulus-independent" report on this
+bench.
+
+## Worn/illegible polarity markings on a reused part are a standing risk, not a one-off
+
+Root cause of the above: the specific 1N5817 Schottky in `psu_low_v2`
+has no legible cathode band (the paint wore off), so its orientation was
+installed by guesswork — and the guess was wrong. This is a real risk
+specific to this repo's ephemeral-circuit convention
+(`circuit_lifecycle_and_repo_scope.md`): parts get pulled from a shared
+bin and reinstalled repeatedly, and a marking that degrades over one or
+more assembly cycles can't be trusted the next time, even if it was
+legible originally. **When triaging a future power/orientation-shaped
+symptom, ask whether the relevant diode/LED/electrolytic-cap's polarity
+mark is still actually legible in the photo/description before trusting
+"installed per the marking" as ruled out.** This specific unit's fix
+was verified electrically (a divider check reading the expected target
+voltage), not visually — that's the general pattern to reach for when a
+marking can't be trusted: confirm orientation by the same kind of
+divider/continuity check already documented for that circuit, rather
+than re-inspecting the part by eye. See
+`docs/parts_reference.md#1n5817-schottky-diode` for how this specific
+unit is now flagged so a future session doesn't re-trust its band either.
+
 ## Photo-based breadboard verification: crop before trusting a `breadboard.md` diff against reality
 
 When a user reports a bench result and attaches a `breadboard.jpg`,

@@ -4135,3 +4135,21 @@ For the piezo: added **flux to the top of the shopping list** in `TODO-arcticode
 Updated `README.md`'s circuit tables/tree to reflect both circuits as physically assembled (not "designed, not built"), and wrote a new `docs/kb/bench_photo_diagnostics_notes.md` (LLM-only) capturing the diagnostic heuristic and the photo-zoom technique for future sessions.
 <!-- ------ -->
 ---
+Confirmed the prior session's diagnosis: `psu_low_v2`'s own GP26 divider check (previously flagged as skipped) came back 1.007V average over 20 readings, matching the ~1.0V correct-orientation target --- but the diode had actually been installed backward at first. Its cathode band paint had worn off, so orientation had been guessed; the divider check caught it and it was flipped before this reading. Re-running `transimpedance_amplifier`'s `main.py` afterward now shows a genuine light-dependent response (~0.505--0.510V ambient, ~0.72--0.78V under a phone flashlight, rising further held close) in place of the earlier flat ~0.38V phantom reading --- confirming the rail, not `TIA`'s own wiring, was the cause all along.
+
+Updated: both circuits' READMEs (§ Validation), `README.md`'s tables/tree (moved to "built & bench-tested"), `docs/TODO-arcticoder.md` (removed both now-done bullets, updated the 1N5817 bullet to reflect `psu_low_v2`'s unit being confirmed-good but unmarkable by eye going forward), `docs/TODO-completed.md`, `docs/parts_reference.md`/`docs/inventory.md` (per-unit Schottky tracking), and `docs/kb/bench_photo_diagnostics_notes.md` (closed the loop on the earlier diagnosis, plus a new general note on worn/illegible polarity markings being a recurring risk for parts reused across this repo's ephemeral builds). Also fixed an unrelated pre-existing bug found while touching `transimpedance_amplifier/breadboard.md`: its PT334-6C wiring table had anode/cathode swapped relative to its own prose and `parts_reference.md`.
+<!-- ------ -->
+---
+All docs-only changes, no code touched, so smoke tests aren't affected. Here's the summary:
+
+**Both circuits now confirmed working --- root cause was a mismarked diode.**
+
+-   `psu_low_v2`'s GP26 divider check finally passed: 1.007V average, matching the ~1.0V correct-orientation target. The cause of the earlier gap was that the Schottky's cathode band paint had worn off, so its orientation was guessed and installed backward --- flipping it fixed the rail.
+-   Retesting `transimpedance_amplifier` afterward confirmed the earlier diagnosis was right: it now shows genuine light-dependent output (~0.505--0.510V ambient, ~0.72--0.78V under a flashlight, rising further when held close), replacing the earlier flat ~0.38V "phantom" reading that indicated the LM358 wasn't getting power.
+-   Also fixed an unrelated pre-existing bug I noticed while touching `transimpedance_amplifier/breadboard.md`: its PT334-6C wiring table had anode/cathode swapped relative to its own prose and `parts_reference.md`.
+
+**Docs updated**: both circuits' READMEs, moved to `README.md`'s "built & bench-tested" table, `TODO-arcticoder.md` (removed both done bullets, updated the 1N5817 bullet --- only `psu_3xaa`'s diode still needs checking), `TODO-completed.md`, `parts_reference.md`/`inventory.md` (flagged that this specific diode can't be visually re-identified if reused later), and a new kb note on worn/illegible polarity markings being a recurring risk for parts reused across ephemeral builds.
+
+Nothing new needs ordering --- `psu_3xaa` (needs only its own diode check) is next up on your list.
+<!-- ------ -->
+---

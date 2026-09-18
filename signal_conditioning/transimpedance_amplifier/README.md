@@ -115,9 +115,29 @@ and a live ADC-sensed output pin can settle to a small stable "phantom"
 voltage via its own internal ESD/leakage paths, independent of whatever
 its inputs are doing. Since `psu_low_v2` was assembled but never
 independently validated (see that circuit's README § Validation), that
-rail — not this circuit's wiring — is the more likely suspect. Next
-step: run `psu_low_v2`'s own validation check standalone before
-re-touching this circuit. Also worth checking: the breadboard photos
-show a slide switch and a diode near this circuit that aren't part of
-the wiring in `breadboard.md` — confirm what they belong to and that
-the switch (if it's in the power path) is ON.
+rail — not this circuit's wiring — was the more likely suspect.
+
+**Confirmed on real hardware 2026-09-17 — diagnosis was correct.**
+`psu_low_v2`'s own GP26 divider check (run standalone per the note
+above) found its Schottky diode installed backward — its cathode-band
+paint had worn off, so orientation had been guessed. Re-seating the
+diode fixed the rail; re-running this circuit's `main.py` afterward
+gave a genuine light-dependent response:
+
+```
+Ambient room light:  ~0.505–0.510V
+Phone flashlight:    ~0.721–0.778V (higher still, held close to the photodiode)
+```
+
+This is real photocurrent response, not the earlier flat phantom
+voltage — the circuit's own wiring was correct all along. Both readings
+sit below the simulated 1.0V design point, and that's expected, not a
+concern: 1.0V was never a calibrated target, just an *illustrative*
+10µA photocurrent chosen to land safely inside the LM358's headroom
+(see § Expected behaviour above) — actual ambient/flashlight
+illuminance on this bench was never measured against it, and the real
+photodiode's output scales with whatever light actually reaches it.
+No further wiring changes needed here. The slide switch noted on the
+shared breadboard photos is still unaccounted for by either circuit's
+`breadboard.md` — worth confirming its role (and that it's ON, if it's
+in the power path) if any future symptom looks power-related again.

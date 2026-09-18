@@ -125,8 +125,24 @@ trip/reset check before trusting one near an LED.
 See [manuals/schottky-rectifier-diodes-in5817-1a20v-do-41.md](manuals/schottky-rectifier-diodes-in5817-1a20v-do-41.md).
 1A / 20V, DO-41, ~0.45V forward drop. Cathode-banded end.
 
-20 received 2026-08-21, not yet validated per-unit — see
-[orders.md](orders.md#1n5817-schottky-diode-1a-20v-do-41).
+20 received 2026-08-21. Two units now confirmed-good via a GP26 divider
+check (the correct-orientation reading matching a known target voltage
+— see `psu_4xaa`/`psu_low_v2`'s own README § Validation for each check):
+
+- `psu_4xaa`'s unit (confirmed 2026-09-13, ~1.990V) — identifiable by
+  curled legs and no tape.
+- `psu_low_v2`'s unit (confirmed 2026-09-17, ~1.007V) — **has no legible
+  cathode band** (paint worn off); it was actually installed backward at
+  first on a guess, then flipped once the divider check caught it. Since
+  it can't be visually re-identified once mixed back into the bin
+  (ephemeral-circuit convention — see
+  `kb/circuit_lifecycle_and_repo_scope.md`), don't trust its orientation
+  by eye if it's pulled for a future build (e.g. `psu_3xaa`); re-confirm
+  electrically the same way.
+
+Remaining 18 units still straight-legged, taped, and unvalidated —
+verify forward drop/orientation per unit before use in `psu_3xaa` or
+elsewhere; see [orders.md](orders.md#1n5817-schottky-diode-1a-20v-do-41).
 
 ---
 
