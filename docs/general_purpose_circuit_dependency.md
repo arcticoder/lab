@@ -2,8 +2,9 @@
 
 See [spacetime_circuits_dependency.md](spacetime_circuits_dependency.md)
 for the spacetime-research-specific tiers (field/gravitation sensor
-interfaces, HV pulse generation, calorimetric/energy measurement) that
-build on the foundation below.
+interfaces, HV pulse generation, calorimetric/energy measurement,
+force/displacement-balance readout, particle-counting timing, and
+optical-source driving) that build on the foundation below.
 
 ```mermaid
 graph TD
@@ -150,7 +151,7 @@ graph TD
         THERMOAMP["Thermocouple Amplifier"]
     end
 
-    SPACETIME["Spacetime-specific tiers (5/7/8): field/gravitation sensor interfaces, HV pulse generation, calorimetric/energy measurement — see spacetime_circuits_dependency.md"]
+    SPACETIME["Spacetime-specific tiers (5/7/8): field/gravitation sensor interfaces, HV pulse generation, calorimetric/energy measurement, force/displacement-balance readout, particle-counting timing, optical-source driving — see spacetime_circuits_dependency.md"]
 
     %% Pico rail feeds low-current bring-up work directly (interim, while
     %% wire strippers are in transit for psu_ultralow/psu_low)

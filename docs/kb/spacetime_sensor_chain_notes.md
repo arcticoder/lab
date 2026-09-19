@@ -291,3 +291,104 @@ usable without needing the banned names in the query either, and is the
 pattern to repeat for follow-up scans (e.g. going deeper on `LVDTAMP`'s
 displacement-sensor requirements, or on the still-unaddressed
 force/displacement-balance gap noted above).
+
+## Second literature pass, 2026-09-18 — mapping a spacetime-geometry-research survey's "Experimental Validation" section onto new tier5/7 nodes, structural graph change done at explicit user direction
+
+Session context: the user provided `docs/FTL-research-state-sept-2026.md`
+— a document surveying, as of September 2026, the state of spacetime-
+geometry research and (from its line 931 "Experimental Validation" section
+onward) a list of proposed physical-validation approaches — and gave two
+explicit instructions: (1) the existing tier5/7/8 rationale reads as too
+process/procedure-focused and needed to trace to real scientific-progress
+targets from that document, and (2) unlike the 2026-09-14/09-15 default
+("flag a graph gap, let the human decide whether to add a node" — see
+`kb/circuit_lifecycle_and_repo_scope.md`), this session was an explicit
+one-time authorization to add new tier-graph nodes directly, including
+non-electronic mechanical/optical build objectives inside the mermaid
+diagrams themselves. Result: five new nodes in
+`spacetime_circuits_dependency.md` — `FORCEBAL`, `SIPMFE`, `LASERDRV`
+(tier5/7 circuits) and `VIBISO`, `RIPPLETANK` (new `mech` subgraph,
+non-circuit). See that file's "Why these new tiers" section for the
+citations and reasoning; this entry is the session's own working notes
+behind it.
+
+Each proposed apparatus in
+the source document is paired with a named theoretical development (a
+specific metric/geometry-family name, a named open-source geometry-search
+program, named-author paper citations) — none of that naming made it into
+any current-state doc or this kb entry either, same standing convention.
+Concretely: no named metric/geometry family, no named modified-gravity
+theory, no named geometry-search software, no named researcher, and no
+institute name appears anywhere in `spacetime_circuits_dependency.md`'s
+new section, this entry, or the TODO files — every apparatus below is
+described purely by what it physically measures. **If a future session is
+asked to name the institute directly** (e.g. for proper attribution/credit
+on work that turns out to be the user's own), that's a real, separate
+decision to make explicitly with the user at that time — don't infer it
+from this entry alone.
+
+**Full mapping, source-document bullet → this bench's graph**:
+
+- Torsion balance + continuous radiation-pressure drive (steering/momentum-
+  transfer characterization) → new `FORCEBAL` (mechanical structure) +
+  new `LASERDRV` (LED/laser-diode drive source).
+- Torsion pendulum with spin-polarized shielded ferromagnetic core (searching
+  for anomalous macroscopic spin-coupling forces) → same `FORCEBAL`
+  structure, giving `HALLAMP` (still backlog, needs a linear/analog Hall
+  sensor) a second concrete role once built — shielding verification,
+  same pattern as `EPFIELD`'s ion-wind-confound role from the 2026-09-15
+  pass — + new `VIBISO`.
+- Cosmic-ray muon detection (SiPM + scintillator + GPS-disciplined timing,
+  feeding a distributed timing-anomaly search network) → new `SIPMFE`,
+  feeding already-named general-purpose `TIMEINT`/`JITTER` (tier6, both
+  still undesigned but no longer generic placeholders — see
+  `TODO-arcticoder.md`'s updated Backlog entry).
+- Desktop optical interferometer / optical-lever displacement sensing
+  (vibration-isolation and phase-shift measurement skill-building) → reuses
+  new `LASERDRV` + general-purpose `TIA` (tier2, already built &
+  bench-tested) feeding `DA` (tier4, still undesigned) — no new
+  "position-sensing photodiode" node, `TIA`+`DA` already cover it — + new
+  `VIBISO`.
+- Fiber-optic feedback-loop phase-noise/instability measurement (a classical
+  analog for self-interference instability) → reuses `LASERDRV` + `TIA` +
+  already-named general-purpose `LOCKIN` (tier6, still undesigned) — no new
+  node.
+- 2D ripple tank with variable-depth topography (shallow-water wave analog
+  for a curved-background propagation demo) → new `RIPPLETANK`, reusing
+  tier1 `SIMPGEN` (itself still backlog/undesigned — `pico/leds/gpio_pwm_led/`
+  is a documented stand-in in the meantime) as wave driver and
+  `PHASED`/`LOCKIN` for electronic phase-shift readout instead of the
+  source document's own visual/strobe-light method.
+- Geometry-search automation, gravitational-wave-observatory data analysis,
+  Monte Carlo/interval-verification computational stack, atom-interferometry
+  matter-wave entanglement tests → **excluded entirely, no graph node**.
+  The first three are pure software (numerical relativity libraries,
+  signal-processing/ML over public interferometer data, GPU-based geometry
+  search) with no circuit to design — the user stated this repo does
+  real-world experimental validation only, and has already done the
+  computational/simulation side of this work elsewhere. Matter-wave/cold-atom
+  interferometry was explicitly named in the source document itself as
+  needing industrial-scale equipment out of reach of a hobbyist bench —
+  the desktop optical-interferometer alternative it also proposes is the
+  one that made it into this graph (via `LASERDRV`/`TIA`/`DA`/`VIBISO`
+  above).
+
+**Search queries used** (generic functional terms, same pattern as the
+2026-09-15 pass — repeat this style for any follow-up scan rather than
+querying a named theory/program/institute): "DIY SiPM silicon
+photomultiplier cosmic ray muon detector scintillator design hobbyist,"
+"optical lever seismometer gravimeter vibration isolation design low
+frequency ground noise," "torsion balance radiation pressure photon rocket
+recoil measurement apparatus design," "fiber optic Sagnac loop phase noise
+feedback measurement laser instability analog," "shallow water ripple tank
+variable depth analog gravity wave refraction demonstration."
+
+**What this didn't touch**: the repo-scope boundary itself
+(`kb/circuit_lifecycle_and_repo_scope.md`'s three layers — design/
+bench-validate/actual-experiments-elsewhere) is unchanged; these five
+nodes are equipment-building targets like every other tier5–8 node, not a
+claim that this repo now runs experiments. `TODO-agent.md` was
+deliberately **not** given a design task for any of the three new
+circuits (`FORCEBAL`/`SIPMFE`/`LASERDRV`) — each needs a real sourced part
+before a netlist means anything, same precedent as `LVDTAMP` sitting in
+backlog rather than `TODO-agent.md` today.

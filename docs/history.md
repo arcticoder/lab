@@ -4170,3 +4170,21 @@ The ranking rule (spelled out in the file itself now, not just in my head) is me
 I also repealed the old "menu, pick whatever" convention in `kb/todo_list_conventions.md` and logged why, so this doesn't drift back next time. No, I don't need an arxiv folder or more specificity from you --- the existing dependency graphs had enough real edges to decide this outright.
 <!-- ------ -->
 ---
+You pushed back on `spacetime_circuits_dependency.md`/`general_purpose_circuit_dependency.md`: too much process/procedure, not enough real scientific-progress target, and pointed me at `docs/FTL-research-state-sept-2026.md` --- specifically its line-931-onward "Experimental Validation" section --- as the thing to build the graphs toward. You also explicitly authorized adding new tier-graph nodes directly this session (normally I'd only flag a gap and let you decide), including non-electronic build objectives in the mermaid diagrams where warranted.
+
+**Five new nodes added to `spacetime_circuits_dependency.md`**, each grounded in a fresh literature scan (five targeted searches, generic functional terms, no named theory in any query --- same discipline as the 2026-09-15 pass):
+
+- **`FORCEBAL`** (tier5) --- a torsion/beam-balance displacement readout. This resolves the exact gap flagged 2026-09-15 ("no node names the mechanical balance itself, only `LVDTAMP`'s sensor half") --- two independent literature threads now converge on it: the earlier small-force/anomalous-thrust scan, and this pass's radiation-pressure-steering and spin-torsion apparatus.
+- **`SIPMFE`** (tier5) --- a SiPM/scintillator particle-counting front-end, for cosmic-ray muon detection. A genuinely new sensing modality (photon/particle counting, not analog signal conditioning) --- nothing else on this graph covers it. Bias runs ~24--30V DC, comfortably under your 50V threshold.
+- **`LASERDRV`** (tier7) --- a constant-current LED/laser-diode driver. Shared building block for `FORCEBAL`'s radiation-pressure variant and for optical-lever/interferometer/fiber-loop sensing chains built from already-existing `TIA`/`DA`.
+- **`VIBISO`** and **`RIPPLETANK`** --- new non-circuit `mech` subgraph, per your explicit go-ahead: a vibration/seismic isolation platform and a 2D variable-depth ripple tank (analog-gravity wave-refraction demo). Both likely buildable from household materials, no order needed.
+
+Source-document bullets that are pure software (geometry-search automation, gravitational-wave-observatory data analysis, the computational verification stack) were deliberately excluded --- no circuit to design, and you've already done that side of the work elsewhere. Matter-wave/cold-atom interferometry was excluded too (the source document itself says it needs industrial equipment); its desktop optical-interferometer alternative is what made it into the graph instead, via `LASERDRV`/`TIA`/`DA`/`VIBISO`.
+
+As with every prior pass, **no named theory, geometry family, program, researcher, or the source document's own institute framing appears anywhere** --- every new node is described purely by what it physically measures, same discipline as the existing "Why these tiers" section.
+
+**Docs updated**: `spacetime_circuits_dependency.md` (five new nodes + new "Why these new tiers" section, and the 2026-09-15 backlog-gap paragraph marked resolved), `general_purpose_circuit_dependency.md` (pointer text only), `TODO-arcticoder.md` ("Next AliExpress order" gets a real new shopping list --- SiPM module + scintillator, a higher-power LED/laser diode, torsion fiber + mirror, all zero-hardware; `VIBISO`/`RIPPLETANK` flagged as likely no-purchase-needed; Backlog section updated for all five nodes), `TODO-agent.md` (new entry explaining why none of the three new circuits are startable design tasks yet --- each needs a real sourced part first, same precedent `LVDTAMP` already sets), and `docs/kb/spacetime_sensor_chain_notes.md` (full session notes: the mapping table, the filtered-out institute/named-theory framing, and the search queries used).
+
+Nothing physically changed on the bench --- this was a docs/planning session. Next real action is yours: decide on the new shopping-list items (SiPM + scintillator is the one genuinely new part class), or start with `VIBISO`/`RIPPLETANK` from what's already around the apartment.
+<!-- ------ -->
+---
