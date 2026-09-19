@@ -37,6 +37,28 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
 
 ## Open items
 
+### `FORCEBAL` / `SIPMFE` / `LASERDRV` — new tier5/7 nodes (2026-09-18), blocked on part sourcing, not file-creation work
+
+Added to `spacetime_circuits_dependency.md` 2026-09-18 (see that file's
+"Why these new tiers" section) at the user's explicit direction, alongside
+two non-circuit mechanical build objectives (`VIBISO`, `RIPPLETANK`, no
+`TODO-agent.md` item — nothing to design/simulate for those). Same
+situation as `HVPULSE` below in one respect (not startable yet) but for a
+different reason: this isn't a scope judgment call, it's that **none of
+the three have a specific part sourced yet**, and this file's own workflow
+(design/simulate against a real component's real values, the same way
+every completed entry below was built) needs one to mean anything —
+`FORCEBAL`'s design depends on which displacement-sensing approach gets
+picked (an ordered LVDT, or a capacitive plate read by `CAPBRIDGE` —
+designed/simulated, not yet physically assembled — see
+`TODO-arcticoder.md`'s "Next AliExpress order" section),
+and `SIPMFE`/`LASERDRV` both need an actual SiPM/laser-diode part number
+before bias/drive values can be simulated. **Don't start a netlist for any
+of the three from the tier-graph label alone** — check
+`TODO-arcticoder.md`'s "Next AliExpress order" and "Blocked" sections
+first; move this entry to a real open item once a part from any of them
+is confirmed received.
+
 ### `HVPULSE` — tier7/8 high-voltage pulse generator
 
 **Still blocked on a scope decision, not a part.** The only IRLZ44N

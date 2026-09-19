@@ -62,26 +62,28 @@ it's a real dependency for a task already in progress, not a
 speculative add — but it's cheap/small enough that a local hardware or
 craft store may beat AliExpress transit time; use judgment.
 
-**No other order needed right now — hold off on a top-up otherwise.** The entire
-2026-09-03 batch (TL082, MF52AT thermistor, IRLZ44N MOSFET, piezo disc,
-SN74HC86N XOR gate, KY-003 Hall module) arrived 2026-09-12. The NE555
-batch validation (all 10 units) completed 2026-09-13, and the same day
-`EPFIELD`, `CHGAMP`, `THERM`, `PHASED`, and `ACTIVELIM` all went from
-"parts on hand, no folder" to fully designed/simulated/documented — see
-[TODO-completed.md](TODO-completed.md). As of 2026-09-13, "Ready to build
-now" holds 16 items against parts/circuits already on hand (up from 11
-that morning — the 5 items above just finished design, not new parts
-arriving; only `HVPULSE` remains in [TODO-agent.md](TODO-agent.md), and
-that's blocked on a scope decision, not file-creation work — see that
-file's remaining open item and
-[docs/kb/todo_list_conventions.md](kb/todo_list_conventions.md)); only the
-GY-521 module, CY7C68013A board, and color-ring inductor reorder from the
-2026-09-10 batch are still in transit — see [orders.md](orders.md).
-**Build/validation rate, not part supply, is the bottleneck right now**,
-so a top-up order would just make the pipeline longer than the bench can
-work through. Revisit once that backlog has shrunk meaningfully (roughly
-half), not on a fixed calendar schedule — the items below stay as the
-standing candidates for whenever that top-up is actually warranted.
+**Old backlog vs. new tier5/7 nodes — two different answers as of
+2026-09-18.** The entire 2026-09-03 batch (TL082, MF52AT thermistor,
+IRLZ44N MOSFET, piezo disc, SN74HC86N XOR gate, KY-003 Hall module)
+arrived 2026-09-12. The NE555 batch validation (all 10 units) completed
+2026-09-13, and the same day `EPFIELD`, `CHGAMP`, `THERM`, `PHASED`, and
+`ACTIVELIM` all went from "parts on hand, no folder" to fully
+designed/simulated/documented — see [TODO-completed.md](TODO-completed.md).
+As of 2026-09-13, "Ready to build now" held 16 items against
+parts/circuits already on hand; only the GY-521 module, CY7C68013A board,
+and color-ring inductor reorder from the 2026-09-10 batch are still in
+transit — see [orders.md](orders.md). **For that existing backlog,
+build/validation rate, not part supply, is still the bottleneck** — no
+reason to top up any of the items already covered above.
+
+**That reasoning doesn't extend to the three tier5/7 nodes added
+2026-09-18** (`FORCEBAL`, `SIPMFE`, `LASERDRV` — see
+`spacetime_circuits_dependency.md`'s "Why these new tiers" section for the
+literature grounding): each has **zero hardware sourced**, the same status
+`LVDTAMP` was already flagged at below — this isn't a build/validation-rate
+problem, it's a real ordering gap for a mechanical-dependency reason (a
+zero-hardware tier-graph node), not a narrative one. `SIPMFE` in particular
+needs a genuinely new part class nothing else on this bench uses.
 
 - [ ] **Linear/analog Hall-effect sensor (e.g. 49E), 5–10pk** — the
       KY-003/A3144 module already received only covers digital
@@ -102,6 +104,8 @@ standing candidates for whenever that top-up is actually warranted.
       out a beam/pendulum's displacement via a capacitive or inductive
       sensor — an LVDT is a hobbyist-scale stand-in for that role, at
       far coarser resolution than the nN-scale published instruments.
+      **Not the only option for `FORCEBAL`'s readout** (see the bullet
+      below) — worth deciding both together.
 - [ ] *(contingent — try `CHGAMP` and the free retest first, see that
       bullet above and `electric_field_probe/README.md` § Bench
       findings)* **GΩ-range resistor** — `EPFIELD`'s 1MΩ bias divider
@@ -123,6 +127,53 @@ standing candidates for whenever that top-up is actually warranted.
       pass before it has a scope at all — see
       [TODO-agent.md](TODO-agent.md)'s remaining open item. Ordering
       this now wouldn't unblock anything regardless.
+
+**New for the 2026-09-18 tier5/7 additions — zero hardware sourced for
+any of these three:**
+
+- [ ] **SiPM (silicon photomultiplier) breakout module, small active area
+      (1×1mm–3×3mm class), 1–2pcs — for tier5 `SIPMFE`.** Needed for the
+      new SiPM/scintillator particle-counting front-end node. Published
+      hobbyist designs bias these around 24–30V DC (some modules include
+      an onboard boost from 5V) — comfortably under this bench's 50V DC
+      threshold (see `kb/circuit_lifecycle_and_repo_scope.md`). A genuinely
+      new part class — nothing already on hand substitutes.
+- [ ] **Small plastic scintillator tile/paddle (or equivalent
+      scintillating block) — for tier5 `SIPMFE`, same node as above.**
+      Pairs with the SiPM module; needed for the same reason, buy together.
+      A GPS module for cross-station event timestamping is a real
+      enhancement for this node but not needed for a first single-detector
+      bench validation — hold off on that specifically until a first
+      pulse-counting result exists to build on.
+- [ ] *(no urgency — on-hand 5mm LEDs already give a $0 first test, see
+      below)* **High-power LED or low-power laser diode module — for
+      tier7 `LASERDRV`.** The on-hand 5mm red/blue/green/white/yellow LEDs
+      (10 each, `inventory.md`) can drive a first `LASERDRV`
+      proof-of-concept for free, but their optical output is well below
+      the "high-power LED" published apparatus assumes for a measurable
+      radiation-pressure force on `FORCEBAL` — a dedicated higher-output
+      source is the real eventual need, just not a blocker for starting.
+- [ ] *(cheap/small — local hardware or craft store may beat AliExpress
+      transit, same judgment call as the flux item above)* **Thin torsion
+      fiber (fine fishing line or wire) and a small front-surface mirror —
+      for tier5 `FORCEBAL`.** Not currently on hand or on order. A
+      capacitive-plate displacement readout for `FORCEBAL` can reuse
+      `CAPBRIDGE` (tier3 — designed/simulated/smoke-tested, not yet
+      physically assembled, already queued as "Ready to build now" item 7
+      below) instead of buying an LVDT — worth trying that route
+      (foil/scrap-copper plates) before deciding on the LVDT bullet above.
+
+**Two 2026-09-18 mechanical build objectives that likely need no order at
+all** — `VIBISO` (vibration/seismic isolation platform: a weighted
+platform on soft-compliance feet, e.g. rubber pads or partially-inflated
+inner tubes/balloons — household materials) and `RIPPLETANK` (a shallow
+tray/baking dish, water, and a glass or acrylic sheet as the submerged
+depth-step insert). Its wave driver doesn't need tier1 `SIMPGEN` either —
+that node is itself still backlog/undesigned (see Backlog section below) —
+`pico/leds/gpio_pwm_led/` (already built in the sibling `pico/` repo) is
+SIMPGEN's own documented "optional alternative" and can drive a small
+motor/speaker dipper directly. Check what's already around the apartment
+before adding either `VIBISO` or `RIPPLETANK` to a cart.
 
 ## Ready to build now — parts on hand, ranked by what it unlocks
 
@@ -386,26 +437,51 @@ how each node connects before starting one.
       the 49E is still needed for the op-amp circuit as scoped — see
       "Blocked" above). `LVDTAMP` remains fully backlogged — no
       transducer sourced yet (see "Next AliExpress order" above for its
-      2026-09-15 literature-backed justification).
-- [ ] **Possible missing tier5 node: precision force/displacement-balance
-      readout.** A 2026-09-15 literature scan (see
-      `spacetime_circuits_dependency.md`'s "Why these tiers" section)
-      found that every published small-force experimental family centers
-      on a mechanical beam/torsion balance read out by a capacitive or
-      inductive displacement sensor — `LVDTAMP` covers the sensor half of
-      that, but the balance structure itself has no node anywhere in
-      this graph. Not added as a new node without your say — this is a
-      structural graph change, not a design task Claude should decide
-      alone. Worth a decision whenever you're ready: add a node (and
-      what it should be named/scoped as), or decide `LVDTAMP` alone is
-      close enough and skip it.
-- [ ] **Tier 6**: `LOCKIN`, `AAF`, `TIMEINT`, `JITTER` undesigned.
+      2026-09-15 literature-backed justification). **New 2026-09-18:**
+      `FORCEBAL` and `SIPMFE` are also fully backlogged — zero hardware
+      sourced for either, see "Next AliExpress order" above and
+      `spacetime_circuits_dependency.md`'s "Why these new tiers" section
+      for the justification. Neither is a `TODO-agent.md` design task yet
+      — that file's own workflow expects a specific sourced part (a
+      specific SiPM model's bias/pulse spec, a chosen displacement-sensing
+      approach for `FORCEBAL`) before a netlist can mean anything, same
+      precedent as every other backlog tier5 node above.
+- [x] ~~Possible missing tier5 node: precision force/displacement-balance
+      readout.~~ **Resolved 2026-09-18**: added as `FORCEBAL`, at your own
+      explicit direction this session (not a unilateral Claude call — see
+      `spacetime_circuits_dependency.md`'s "Why these new tiers" section).
+      `LVDTAMP` remains one real way to instrument it; a capacitive-plate
+      approach read by `CAPBRIDGE` (designed/simulated, not yet physically
+      assembled — see "Ready to build now" item 7) is the other, and
+      doesn't require ordering anything new (see "Next AliExpress order"
+      above).
+- [ ] **Tier 6**: `LOCKIN`, `AAF`, `TIMEINT`, `JITTER` undesigned. **New
+      as of 2026-09-18**: `TIMEINT`/`JITTER` now have a concrete near-term
+      consumer once `SIPMFE` above is sourced (coincidence timing between
+      two scintillator paddles, and jitter in that timing) — still
+      undesigned, but no longer just a generic DAQ placeholder; see
+      `spacetime_circuits_dependency.md`'s "Why these new tiers" section.
 - [ ] **Tier 7** (spacetime): `RFPWR`, `MIXER`, `SWEEP` completely
-      unaddressed; no parts identified. Lowest priority of the spacetime
-      tiers — nothing currently depends on this starting.
+      unaddressed; no parts identified — still lowest priority of the
+      original spacetime tiers, nothing currently depends on these
+      starting. **New 2026-09-18**: `LASERDRV` also backlogged, zero
+      hardware sourced (though on-hand 5mm LEDs give a free first test —
+      see "Next AliExpress order" above) — this one does have a real
+      near-term consumer (`FORCEBAL`'s radiation-pressure-driven variant,
+      and the optical-lever/interferometer/fiber-loop chain built from
+      general-purpose `TIA`/`DA`), unlike `RFPWR`/`MIXER`/`SWEEP`.
 - [ ] **Tier 8** (spacetime): `CALORIF`, `PWRFACT`, `ENGINT`, `NOISEFIG`
       completely unaddressed; no parts identified. Same low-priority
-      status as tier 7.
+      status as tier 7's original three nodes.
+- [ ] **Mechanical/optical build objectives (new 2026-09-18,
+      `spacetime_circuits_dependency.md`'s `mech` subgraph)**: `VIBISO`
+      and `RIPPLETANK` — neither is a circuit (no netlist/smoke_test
+      applies), and neither likely needs an AliExpress order at all, see
+      "Next AliExpress order" above. Not a `TODO-agent.md` item either —
+      there's no file-creation step analogous to a netlist for a
+      mechanical build; whether either gets its own `README.md`/build
+      notes once attempted is a call to make when you actually build one,
+      not before.
 - [ ] **Tier 9**: `SAMHOLD`, `ADCDRV`, `REFGEN2` undesigned. `MUX` is
       partially covered by `cd4066_switch_tester` component validation,
       but the actual multiplexer circuit isn't built.
