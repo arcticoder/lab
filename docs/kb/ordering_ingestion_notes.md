@@ -45,21 +45,13 @@ ambiguous and will misidentify the part in a future session.
 
 ## `inventory.md` lives in this repo now, not `pico/` (moved 2026-09-07)
 
-Originally `pico/docs/inventory.md`, in the sibling `pico/` repo — a
-separate git repo, so every edit needed its own add/commit there, distinct
-from this repo's own commits. Moved to `docs/inventory.md` (this repo) per
-explicit user request: most of the day-to-day ordering/inventory work
-happens from `lab/`, and switching repos just to update quantities was
-friction with no upside. `pico/docs/inventory.md` is now a one-line
-pointer back to this file, kept so `pico/`'s own generic circuit BOMs
-(`buttons/gpio_interrupt_button/bom.md` etc.) still resolve a path without
-requiring `lab/` to be cloned alongside `pico/` — but note that pointer
-file is *not* kept in sync automatically; if `inventory.md`'s path or
-this repo's relationship to `pico/` changes again, check that stub too.
-Still the shared master parts inventory across both projects, even though
-most of its existing content (SunFounder Thales kit) predates and is
-unrelated to the spacetime lab build — that hasn't changed, only which
-repo owns the file.
+See
+[repo_docs_conventions.md](repo_docs_conventions.md)'s matching entry for
+the full reasoning (repo-switching friction) and the caveat that
+`pico/docs/inventory.md`'s one-line pointer back to this file is not kept
+in sync automatically. Still the shared master parts inventory across
+both projects, even though most of its existing content (SunFounder
+Thales kit) predates and is unrelated to the spacetime lab build.
 
 ## Photo-transcribed pinouts can contain OCR/transcription slips
 
@@ -161,21 +153,21 @@ both `orders.md` and `parts_reference.md` so a future session doesn't
 mistake the absence of a URL for an oversight in transcription and try
 to "fix" it by guessing one.
 
-## The user's order date wasn't stated in the order text itself, and a first guess at it can be wrong even when framed as a low-effort default (2026-08-30)
+## A multiple-choice clarifying question with a "different value" option can return just that option's own label, not the free text it implies (recurring: 2026-08-30, 2026-09-03)
 
-When ingesting the inductor/ceramic-cap/electrolytic-cap batch, the
-user's message gave full listing text for all three items but no order
-date. Asking "today's date, or a different date?" got "Different date"
-selected back with no date actually supplied in that same answer — the
-option's label alone came back, not free text — so a second, more
-specific question ("what is the actual date") was needed to get
-2026-08-30 (matching the same-day resistor-kit/photodiode order already
-in `orders.md`). Lesson: when a multiple-choice clarifying question
-includes an option like "different value" that implies the user will
-type something, don't assume the returned answer contains that
-free-text value — check whether the answer is just the option's own
-label before proceeding, and re-ask more narrowly (e.g. list plausible
-concrete dates as the options) if so.
+Twice now, asking "today's date, or a different date?" as a multiple-choice
+question got the option's own label back ("Different date" / "A different
+date") with no actual date attached — not free text. Both times, a second,
+narrower question listing concrete candidate dates (e.g. "2026-09-02/03/04?")
+got the real answer (2026-08-30 for the inductor/ceramic-cap/electrolytic-cap
+batch; 2026-09-03 for the TL082/MF52AT/KY-003/etc. batch). This is a
+recurring interaction-pattern gotcha with this style of clarifying question,
+not a one-off. General lesson: when a multiple-choice question includes an
+option like "different value" that implies the user will type something,
+don't assume the returned answer contains that free-text value — check
+whether the answer is just the option's own label before proceeding, and
+default to listing concrete candidate values up front instead of an
+open-ended "or something else" escape hatch, especially for dates.
 
 ## An "assortment" listing can mean the buyer picked specific values, not that a random assortment shipped (found 2026-09-03, metal film resistor kit)
 
@@ -226,18 +218,6 @@ plausible pack size; got "1 unit." General lesson: don't assume every
 item in a batch message follows the same transcription pattern as its
 neighbors — check each one individually for a selection line before
 assuming a value can be read off the listing title/spec.
-
-## Order date can require the same "returned answer is just the option's own label" re-ask as before (2026-09-03 batch, again)
-
-Same failure mode as the 2026-08-30 entry above, recurring: asking "today,
-or a different date?" as a multiple-choice question got "A different
-date" back with no date value attached — the option's label alone, not
-free text. A second, narrower question listing concrete candidate dates
-(2026-09-02/03/04) got the actual answer (2026-09-03). This is evidently
-a recurring interaction-pattern gotcha with this style of clarifying
-question, not a one-off — default to listing concrete date options up
-front rather than an "or a different date" escape hatch, when the
-question is specifically about a date.
 
 ## A gap-analysis list from `docs/history.md` can get fully closed in one batch — cross-reference gap items by number when ingesting an order that fills them
 
@@ -399,12 +379,3 @@ heading is worth doing — this file has no automated consistency check,
 and the failure mode (real solder-handling advice attached to the wrong
 part) could mislead a bench session if never caught.
 
-## `psu_medlow_lm317/README.md` claims "on order" for the SFE Breadboard Power Supply Kit, but no matching entry exists in `orders.md` or either inventory
-
-Found 2026-09-03, not resolved. The kit is a RobotShop item (not
-AliExpress, unlike everything actually tracked in `orders.md`), which may
-be why it was never logged there — but that means its claimed "on order"
-status is unverifiable from the docs alone. Flagged to the user rather
-than silently trusting or silently correcting the README's claim; if a
-future session needs to know whether `psu_medlow_lm317` is actually
-buildable soon, ask the user rather than trusting that status line.

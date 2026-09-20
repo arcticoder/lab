@@ -509,11 +509,17 @@ scrolling past settled non-actions to find the real one.
   That narration belongs in `TODO-completed.md` (what got decided/done)
   or this kb file (why the file is structured the way it is), not in the
   live checklist.
-- Within any section, actionable items go first; deferred/no-urgency
-  items get their own clearly-labeled subsection below them (e.g. "Next
-  order"'s "Deferred — not on the shopping list, no action needed") so a
-  top-to-bottom read never has to step over a settled non-action to reach
-  the next real one.
+- Deferred/no-urgency/reference-only material (things considered and
+  declined, blocked items, backlog) goes in its own section placed
+  **after every actionable section in the whole file — "Ready to build
+  now" included, not just the handful of bullets under "Next order"**
+  (corrected 2026-09-19, second pass same day: the first pass moved
+  "Deferred" below "Next order"'s own 3 bullets but left it sitting
+  *above* the much longer "Ready to build now" ranked list, so a
+  top-to-bottom read still hit six settled non-actions before reaching
+  the real build queue — exactly the complaint this rule exists to
+  prevent, just at a different scale). Current file order:
+  Next order → Ready to build now → Blocked → Deferred → Backlog.
 - Before restating the ranking method, the literature justification, or
   a past decision's reasoning inline in `TODO-arcticoder.md`, check
   whether it already lives in this file or
@@ -563,3 +569,59 @@ threshold (`kb/circuit_lifecycle_and_repo_scope.md`) and `HVPULSE`'s
 `TODO-agent.md` are the same discipline applied elsewhere — a
 capability/hazard gap gets named and left as the user's call, not
 smoothed over.
+
+## A real criterion-1 pair (X unblocks Y) doesn't earn priority if Y itself has no real downstream value (2026-09-19)
+
+The five-criteria ranking (above) correctly flagged "1N5817 diode check
+→ `psu_3xaa`" as a real, stated dependency pair (criterion 1) and
+ranked the pair ahead of `THERM`/`ACTIVELIM` (criterion 4). That was a
+mistake the user caught directly: `psu_3xaa` has **no real downstream
+consumer** — nothing on this bench needs a 4.5V rail specifically
+(`ne555_astable`'s own README already ruled `psu_3xaa` out for the one
+thing it was tried against: it sags to ~4.02V under load, below the
+NE555's 4.5V minimum, so `psu_4xaa` covers that need instead), and
+`THERM`'s own bullet plainly states it runs off `psu_pico_rail`, not
+`psu_3xaa` — so the pair's adjacency to `THERM` implied a relationship
+that doesn't exist. **Lesson: criterion 1 (unblocks another bullet)
+only earns a *high* rank if that other bullet itself clears criterion
+2/3/4 — i.e., has a real edge to something else that matters. A pair
+where both ends are criterion-5 (no real edge to anything, ascending
+effort) stays a criterion-5 pair and belongs in the effort-ordered tail,
+not ahead of criterion-4 items just because the internal pair-ordering
+logic is real.** `psu_3xaa` (and the diode check that gates it) moved to
+the standalone tail; framed there as a one-time hardware confirmation of
+an already-designed circuit (per
+[[circuit_lifecycle_and_repo_scope]]'s "don't stage inventory for a
+future build" rule), not as unlocking anything.
+
+## Before adding a paid alternative to cart, check whether its free/on-hand twin already works (2026-09-19)
+
+`power_supplies/psu_medlow` has two alternative implementations:
+`psu_medlow_usbc` (a passive USB-C breakout, already built, zero
+additional cost, smoke-tests red only because CC1/CC2 termination is
+unconfirmed) and `psu_medlow_lm317` (the SparkFun Breadboard Power
+Supply Kit, not yet ordered, costs money). The kit had been sitting in
+"Next order" as a bare "add to cart" bullet with no acknowledgment that
+its own sibling implementation might make it unnecessary. **Lesson:
+when two `-.alternative.->` edges in the dependency-graph docs point at
+the same node and one side is free/already on hand while the other
+costs money, the free side's outstanding validation step (here: clipping
+`resistance_measurement`'s leads onto the two CC pins) gets promoted
+ahead of its own normal ascending-effort tail position, specifically
+because it gates a live purchase decision** — a real edge into the
+purchasing section, distinct from (and not to be confused with) ranking
+by closeness to the outside research goal.
+
+## When a sourcing blocker can be eliminated instead of solved, prefer that (2026-09-19)
+
+`CHGAMP` was blocked on flux (no acceptable non-AliExpress,
+non-RobotShop retailer found — see the flux-exclusion entry above). The
+user's own resolution: buy a piezo disc with pre-attached leads instead
+of continuing to look for a flux source, since the flux was only ever
+needed to solder leads onto the bare-disc batch. **Lesson: when a
+blocker is "can't source consumable X for step Y," check whether a
+different purchase removes step Y entirely before continuing to search
+for X** — cheaper in both money and this bench's own multi-week
+transit-time cost than solving the original sourcing problem. The 19
+bare discs already on hand aren't wasted; they stay as reserve stock for
+any future use that doesn't need pre-attached leads.
