@@ -523,14 +523,18 @@ fluxless attempt destroyed one unit: without flux, wetting the joint
 takes enough extra heat/dwell time on the disc's own poorly-conductive
 ceramic that it's easy to crack the ceramic layer or depole the
 piezoelectric effect before the joint takes. Use rosin flux (paste or
-pen) and a quick, low-heat touch; see
-[signal_conditioning/charge_amplifier/breadboard.md](../signal_conditioning/charge_amplifier/breadboard.md)
-for the step. Applies to any future use of this batch, not just
-`CHGAMP`. **The `CHGAMP` build attempt was paused as a result** — no
-flux on hand yet, so the remaining 19 discs (and the rest of that
-build's parts) went back to inventory rather than sitting mid-assembly;
-see [inventory.md](inventory.md) and
-[TODO-arcticoder.md](TODO-arcticoder.md).
+pen) and a quick, low-heat touch. Applies to any future use of this
+batch, not just `CHGAMP`. **The `CHGAMP` build attempt was paused as a
+result** — no acceptable non-AliExpress/non-RobotShop flux source was
+found (see [orders.md](orders.md) and
+[kb/todo_list_conventions.md](kb/todo_list_conventions.md) for why), so
+the remaining 19 discs (and the rest of that build's parts) went back to
+inventory rather than sitting mid-assembly. **2026-09-19 decision: retry
+with a leaded piezo disc from AliExpress instead of sourcing flux for
+this bare-disc batch** — see [TODO-arcticoder.md](TODO-arcticoder.md)'s
+"Next order" section. The 19 bare discs stay in inventory, unused, as a
+reserve stock (still useful for anything that doesn't need pre-attached
+leads).
 
 ---
 

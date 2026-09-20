@@ -684,19 +684,6 @@ trusting a wattage/rating spec that was invented to satisfy a smoke-test
 number, especially in a repo whose whole premise is "no part beyond what's
 already on hand."
 
-## AA battery holder leads: twisted bare jump wire + electrical tape is an accepted temporary termination, not a wiring defect (2026-08-28)
-
-Ahead of the wire-stripper order (`pico/docs/inventory.md`) arriving, the
-user terminated one AA battery holder's bare leads by twisting a
-non-covered 0.25cm jump wire around each lead and wrapping the joint in
-electrical tape — no soldering, no crimp, no Dupont connector. This was
-confirmed electrically sound in an actual `psu_ultralow_v1`-shaped build
-(battery + RXEF005 fuse + slide switch). Treat this construction as a
-valid, intentional stand-in when reviewing this or similar breadboard
-photos/wiring going forward — not as something to flag or suggest
-re-wiring — until the leads get properly stripped and terminated to
-Dupont connectors once the stripper/crimper tool arrives.
-
 ## `breadboard.md` files written as general/batch procedures are unusable as bench instructions for one physical unit — split off a `quickstart.md` (2026-08-28)
 
 `measurement_tools/fuse_test_voltmeter/breadboard.md` was written to cover
@@ -728,128 +715,29 @@ a circuit's `breadboard.md` actually has more than one branch a bench
 user has to track (as fuse_test_voltmeter's did with 2 tiers × 3 stages),
 not for single-path circuits that don't need it.
 
-## `fuse_test_voltmeter` RXEF005 real-hardware run: sub-second self-clearing trips + below-predicted resting voltage read as PTC chattering near the trip threshold, not a fault (2026-08-28)
+## `fuse_test_voltmeter`'s GP15 arm/disarm switch: one throw + internal pull-down, not both rails wired to the switch (2026-08-28)
 
-First real `mpremote run main.py` log on an actual RXEF005 (no deliberate
-short applied) showed two `*** FUSE TRIPPED ***` events that each cleared
-within 1–2 samples of the 0.2s `SAMPLE_INTERVAL_S` (first: 0.467V→0.210V
-then reset, ~0.4s tripped; second: 0.476V then reset, ~0.2s tripped) —
-nothing like the ~2 minute cool-down `breadboard.md`/`quickstart.md`
-document. The resting (non-tripped) voltage also sat at ~1.04V for most of
-the run, not the ~1.4V `quickstart.md`/SPICE predicts for a fresh 1.5V
-cell across a cold fuse.
+Added a second, independent GPIO input (GP15) wired to an SPDT slide
+switch, specifically so that deliberately disconnecting the battery to
+stop a test doesn't print `*** FUSE TRIPPED ***` — a real trip and an
+intentional power-down are otherwise indistinguishable to `main.py`
+(both collapse GP26 to ~0V). Design choice worth preserving: the switch
+is **not** wired into the battery's power path (not in series with the
+fuse under test) — it's a separate signal-only circuit read by a second
+GPIO, so its own contact resistance never confounds the fuse
+current/voltage this jig exists to characterize. `main.py` gates
+trip/reset detection and the onboard LED on this ARMED state; voltage
+still streams every cycle regardless of ARMED/DISARMED. GP15 was picked
+because it's unused elsewhere in the repo and sits next to a physical
+GND pin (pin 18) for a short jumper run — there's no central
+pin-allocation table for this repo, just per-circuit docstrings, so
+check `main.py`/`breadboard.md` GPIO usage across the repo first if a
+future circuit needs a spare digital input.
 
-Working diagnosis (not independently instrumented/confirmed — no way to
-separately measure fuse temperature or exact battery voltage on this
-bench): both symptoms are consistent with the fuse chattering right at its
-trip threshold rather than doing a single clean trip-and-latch. This jig's
-own docs already establish that a plain 10 Ω load draws ~150mA on a 50mA
-fuse (3x rated, see the "cold reading" entry above) — enough for a good
-unit to self-trip from the resting load alone, with no short needed. If
-the post-trip holding current is only marginally below what's needed to
-keep the PTC element hot, it can partially cool, drop back into
-conduction, reheat, and re-trip on a ~sub-second-to-second thermal time
-constant — a real, documented PTC failure/near-threshold mode, distinct
-from the full-latch case where remaining current is negligible and actual
-room-temperature cooldown (the ~2 minute figure) is what's needed to
-reset. The below-1.4V resting reading fits the same story: a fuse that
-never truly returns to a cold baseline (still slightly warm/elevated in
-resistance between chatter cycles) would read low exactly like this
-without requiring the battery itself to be weak.
-
-Consequence for interpreting future logs against this jig: a trip that
-clears in under ~1s (a few samples at `SAMPLE_INTERVAL_S = 0.2`) without
-the user having deliberately shorted and then released the load resistor
-is *not* the same event as the documented short→trip→2min-cooldown→reset
-cycle in `breadboard.md`/`README.md`'s "Expected behaviour" sections —
-don't map log timestamps against the ~2 minute figure unless a deliberate
-short was actually applied and removed. The deliberate-short test remains
-the actual pass/fail signal (`breadboard.md` step 2 / `quickstart.md`
-"Pass / fail"): a fuse that won't hold a trip for the full ~2 minutes
-*after a genuine short* is a real fail; self-clearing chatter under the
-plain resting 3x-rated load is a separate, expected-per-docs phenomenon
-and shouldn't be read as a defect on its own. `quickstart.md` was updated
-2026-08-28 with a short paragraph covering this, since it only had the
-"may self-trip" half of the story (from `breadboard.md`) and nothing about
-the fast self-clearing case.
-
-## `fuse_test_voltmeter` second real-hardware run (different fuse, same day) weakens the "still-warm PTC" explanation for the sub-1.4V resting reading — battery chemistry is a better first hypothesis (2026-08-28)
-
-The entry above hypothesized that the ~1.04V resting reading (vs. ~1.4V
-predicted) was the fuse never fully returning to a cold baseline between
-chatter cycles — plausible, but explicitly flagged there as unconfirmed
-and only explaining *post-trip* low readings. A second run the same day,
-with a fresh/different 50 mA fuse, showed the same ~1.0–1.08V resting
-value from the *very first* sample — before any trip had occurred at all,
-so there'd been no chance yet for the fuse to be pre-warmed by a prior
-chatter cycle. The user also independently noted they'd now seen this on
-two different physical fuses and didn't think it was fuse-specific. Two
-independent units producing the identical below-prediction baseline from
-a cold start points away from a fuse-specific PTC-memory effect and
-toward something common to both trials instead — the battery, or the
-loop's total series resistance.
-
-Working hypothesis, not yet confirmed on this bench (no multimeter
-available — see README.md "Validation" intro): 1.4V assumes a fresh 1.5V
-alkaline cell with near-zero internal resistance. If the AA in the holder
-is actually a 1.2V-nominal NiMH rechargeable, the same 10 Ω/cold-fuse
-divider math predicts ~1.14V — already most of the ~1.0–1.08V observed gap
-— with the remainder plausibly ordinary sag under the ~150 mA this load
-draws (3x the fuse's rating; see the entries above). `quickstart.md`'s
-troubleshooting section now suggests a cheap way to check this without a
-meter: with ARMED off, move the GP26/GND probe jumpers directly onto the
-battery holder's leads (bypassing fuse and resistor) to read open-circuit
-voltage — ~1.5V is alkaline, ~1.2–1.3V is NiMH or a partly-discharged
-cell. If a future session gets this diagnostic run, record the result
-here and update/retire whichever hypothesis (still-warm PTC vs. battery
-chemistry) it points away from — right now neither is confirmed, they're
-just the two live candidates.
-
-## `fuse_test_voltmeter` gained a GP15 arm/disarm switch (SPDT slide switch) to stop battery insertion/removal from reading as a false trip (2026-08-28)
-
-The user's real-hardware runs kept ending with `*** FUSE TRIPPED ***`
-printed at the very end of the log, from deliberately disconnecting the
-battery to stop the test — a real trip and an intentional power-down are
-indistinguishable to `main.py` purely from the voltage collapsing to
-~0V, since both look identical on GP26. Fixed by adding a second,
-independent GPIO input (GP15) wired to an SPDT slide switch: common (pin
-2) to GP15, one throw (pin 1) to GND, the other throw (pin 3) to 3V3(OUT).
-Because both throws are driven (never floating), no pull resistor is
-needed and the pin always reads a definite HIGH (armed) or LOW (disarmed)
-— this sidesteps the exact floating-input bug the deleted
-`switch_pin_identifier` circuit hit (see the GND-reference entry above).
-
-Design choice worth preserving: the switch is **not** wired into the
-battery's power path (i.e., not in series with the fuse under test) —
-it's a separate signal-only circuit read by a second GPIO. Putting it in
-the power path would have added the switch's own contact resistance to
-the very loop whose current/voltage this jig exists to characterize,
-which would confound the fuse test it's supposed to validate. `main.py`
-now gates trip/reset detection and the onboard LED on this ARMED state
-(`armed` variable in `main()`); voltage still streams every cycle
-regardless of ARMED/DISARMED, only the trip/reset print and LED are
-suspended while disarmed. GP15 was picked because it's unused elsewhere
-in this repo (GP14–16 were freed when `switch_pin_identifier` was deleted)
-and sits next to a physical GND pin (pin 18, per the entry above) for a
-short GND jumper run. If a future circuit here also needs a spare digital
-input, check `main.py`/`breadboard.md` GPIO usage across the repo first —
-there's no central pin-allocation table, just per-circuit docstrings.
-
-One footgun worth flagging to a future session touching this circuit: if
-the operator forgets to flip to ARMED before shorting the resistor during
-an actual fuse test, the voltage collapse still happens and still prints
-as a raw number, but `*** FUSE TRIPPED ***` and the LED won't fire —
-easy to misread as "it didn't trip" when actually the switch was just
-left in the wrong position. Both `breadboard.md` and `quickstart.md` now
-call out sliding to ARMED once the circuit has settled, before the short
-step, but there's no code-side safeguard against forgetting it.
-
-## `fuse_test_voltmeter`'s arm switch: wiring both outer pins to GND *and* 3V3 was an unnecessary design — corrected to one throw + internal pull-down (2026-08-28)
-
-**Supersedes the wiring rationale in the entry above** ("common (pin 2) to
-GP15, one throw (pin 1) to GND, the other throw (pin 3) to 3V3(OUT)... no
-pull resistor needed"). The user caught that this design permanently wires
-both power rails onto the switch at once — the switch's own mechanism
+The first cut wired both switch outer pins live (pin 1 to GND, pin 3 to
+3V3(OUT)) on the reasoning that neither pull resistor was then needed.
+The user caught that this design permanently wires both power rails onto
+the switch at once — the switch's own mechanism
 never bridges both outer pins to each other (it only ever connects the
 common pin to *one* outer pin at a time, per the `switch_pin_identifier`
 entry above confirming it's a standard SPDT-style part), so GND and 3V3
@@ -880,6 +768,15 @@ switch's other throw if the pin's role genuinely needs an actively-driven
 (not just pulled) level in both positions — e.g. driving a load that pulls
 more current than an internal pull resistor can source/sink, not a plain
 digital input like this one.
+
+One footgun still worth flagging for this circuit: if the operator
+forgets to flip to ARMED before shorting the resistor during an actual
+fuse test, the voltage collapse still happens and still prints as a raw
+number, but `*** FUSE TRIPPED ***` and the LED won't fire — easy to
+misread as "it didn't trip" when actually the switch was just left in
+the wrong position. `breadboard.md`/`quickstart.md` call out sliding to
+ARMED before the short step, but there's no code-side safeguard against
+forgetting it.
 
 ## `ne555_astable` output-divider fault survived a plausible visual re-wire — re-seating R1/R2 in series + bridging the two ground rails changed nothing (2026-09-12)
 
@@ -943,283 +840,6 @@ similar "deliberately short two nodes by hand" step, prefer the
 same jumper-in-breadboard-rows approach over hand contact from the start
 rather than waiting for a reliability complaint.
 
-## `fuse_test_voltmeter` bench setup grew a second slide switch *in the battery power path itself* — a new candidate confound distinct from the still-open battery-chemistry hypothesis (2026-08-28)
-
-Neither `quickstart.md`/`breadboard.md` nor the two "sub-1.4V resting
-voltage" kb entries above account for this: the user's physical bench now
-has **two** slide switches, not one. GP15's arm/disarm switch is still
-signal-only as designed (confirmed live via `mpremote connect /dev/ttyACM0
-exec` — reads 0 with battery out, matches the physical position). The
-second switch is the user's own addition, wired in series in the actual
-battery → fuse → resistor loop, added deliberately so power doesn't reach
-the circuit the instant the battery is seated (fine-grained control over
-when the test starts). This is exactly the kind of thing the arm-switch
-design rationale two entries above warned against doing *to that switch*
-("putting it in the power path would have added the switch's own contact
-resistance to the very loop whose current/voltage this jig exists to
-characterize") — except here it's a second, separate switch the user
-added on their own initiative, so that warning never reached them.
-
-A run with both switches "on" and current flowing showed a steady,
-non-chattering ~1.09V→1.085V resting reading, no trip/reset events at all
-over ~26s. That's notably *more* stable/lower-current-looking than the
-two prior logged runs (which at least self-tripped and chattered near
-threshold) — consistent with additional series resistance (this switch's
-contacts, on top of whatever the battery-chemistry hypothesis already
-predicts) pushing the loop current further below the fuse's trip
-threshold, not just closer to it.
-
-Not yet confirmed which factor dominates (recommended next step, given to
-the user: with ARMED off, move the GP26/GND probe jumpers directly onto
-the battery holder's leads — bypassing fuse, resistor, *and* this power
-switch — and read open-circuit voltage; this isolates battery chemistry
-from switch/wiring resistance, and was already the standing diagnostic
-from the entry above, still applicable here). If a future session gets
-that result: record it here, and if the power switch turns out to be a
-meaningful contributor, consider whether `quickstart.md`/`breadboard.md`
-should explicitly warn against putting any user-added manual power switch
-in-loop (same rationale as the existing arm-switch design note) rather
-than only implicitly relying on the reader to generalize it themselves.
-
-## `fuse_test_voltmeter` open-circuit diagnostic result: battery chemistry hypothesis ruled out, user's own power switch is the remaining suspect (resolved 2026-08-28)
-
-The entry above's recommended diagnostic was run: GP26/GND jumpers moved
-straight onto the AA battery holder's leads (fuse, resistor, and the
-user's own in-loop power switch all bypassed), fresh battery, both
-DISARMED and ARMED. Result: a steady **~1.605–1.608V**, settling from an
-initial ~1.72V transient (contact-bounce as the jumpers were seated —
-expected, not a fault; it's the same "unsteady reading during DISARMED
-settling is expected" behavior the README already documents for the
-normal fuse-loop case, just observed here in the open-circuit variant
-instead).
-
-This confirms alkaline, decisively — not NiMH (which would read
-1.2–1.3V). ~1.6V is *higher* than the 1.5V nominal `quickstart.md`'s
-troubleshooting section originally described as the alkaline-confirming
-value, but that's expected: a fresh cell with literally nothing loading it
-(the Pico's ADC input draws negligible current) commonly rests somewhat
-above its 1.5V nominal — the 1.4V figure elsewhere in the docs already
-assumes the 10Ω *loaded* case, not open-circuit. `quickstart.md` was
-updated same-day to say "1.5–1.65V confirms alkaline" instead of "close to
-1.5V", so a future >1.5V open-circuit reading isn't misread as suspicious.
-
-Consequence: the battery-chemistry hypothesis from the two entries above
-is now ruled out as the explanation for the earlier ~1.09V *in-loop*
-reading (full battery → fuse → resistor → user's power switch path). With
-a ~1.6V source and only cold-fuse + 10Ω-load resistance, the loaded
-reading should track proportionally *above* the ~1.43V SPICE figure, not
-land at ~1.09V — so the gap is real series resistance somewhere in the
-loop that isn't accounted for in the netlist. The user's own
-manually-added power switch (see the entry above — wired in series in the
-actual power path, not signal-only like the GP15 arm switch) is the
-leading remaining suspect, stacked on top of the fuse's own cold
-resistance. Not yet isolated on its own (e.g. by comparing the loop
-reading with that switch jumpered/bypassed vs. in-circuit) — if a future
-session gets that comparison, record the result here. This is also a
-concrete data point for the still-open question the entry above raised:
-whether `quickstart.md`/`breadboard.md` should explicitly warn against
-adding any manual power switch into the battery loop.
-
-Also confirmed live via `mpremote connect /dev/ttyACM0 exec` while the
-battery was physically removed (holder leads open, GP26/GND jumpers still
-seated on them, both slide switches left "on"): the ADC read a **stable
-~0.017V** across 10 samples (raw ~320–352/65535), not noisy/floating
-garbage. Worth knowing for future sessions debugging a similarly
-"disconnected" node on this bench: a GP26-class input wired only to a
-short breadboard jumper stub, with no battery or other source attached,
-apparently settles to a low, repeatable value here rather than picking up
-ambient EMI — don't assume a small nonzero-but-stable reading on a
-nominally floating pin proves an unintended connection exists; on this
-bench it doesn't.
-
-## `fuse_test_voltmeter` in-loop reading recovered to ~1.497V — the ~1.09V mystery from the entries above looks resolved (2026-08-28)
-
-A later run (`mpremote run main.py`, full loop: battery → fuse → 10Ω
-resistor, GP15 arm switch) showed a steady **~1.496–1.499V** in both the
-`-- DISARMED --` and `-- ARMED --` phases, with the arm switch toggling
-cleanly (both banner lines printed, unlike some earlier sessions where
-`-- ARMED --` never appeared at all). No short was applied in this run,
-so this is the cold/unloaded-by-short baseline only — the deliberate-short
-trip/reset check from `quickstart.md` was not exercised.
-
-This number lines up with the open-circuit finding two entries above: that
-same battery rests at ~1.6V open-circuit (not the 1.5V nominal the SPICE
-model assumes), so the loaded prediction scales up from ~1.43V to roughly
-1.6/1.5 × 1.43 ≈ **1.53V** — ~1.497V observed is a close match, well
-within plausible cold-fuse/contact-resistance variance. That closes the
-gap that the "user's own power switch" entry above left open as the
-leading unresolved suspect for the earlier ~1.09V reading.
-
-The photo (`breadboard.jpg`) taken alongside this run shows only one
-switch in the whole build — a small slide switch on the main breadboard
-consistent with the 2-wire GP15 arm switch — with no second switch
-visible in series with the fuse/resistor loop on the small red
-breadboard. So the earlier "extra, undocumented power switch wired in
-series with the fuse" (see the entry several above this one, describing
-the breadboard photo where it was first spotted) appears to have been
-removed from the physical build at some point between that session and
-this one; nothing in the conversation log narrates the removal
-explicitly, so treat this as inferred from the photo, not confirmed by
-the user's own words. If a future session sees the ~1.09V-class low
-reading recur, re-check for a stray switch or connector in the power
-path before re-opening the battery-chemistry line of investigation, since
-that one is now fairly well exhausted (open-circuit ~1.6V confirmed
-alkaline twice).
-
-Also re-confirmed live (`mpremote exec`, battery physically unplugged,
-slide switch left "on"/armed): GP26 read a steady ~0.014–0.017V across 10
-samples — the same low, repeatable floor documented in the entry above,
-not new information, just reproduced on a later date with a different
-mpremote invocation style (inline `exec` script vs. the connect+exec form
-used previously).
-
-**Still open:** the deliberate-short trip/reset test from `quickstart.md`
-(bridge the resistor's two rows, expect `*** FUSE TRIPPED ***`, wait ~2
-min, expect `*** fuse reset ***`) has not been run since the reading
-recovered to ~1.497V. Until that passes, `fuse_test_voltmeter` should be
-described as "wiring/voltage confirmed" rather than "fully passes its own
-pass/fail criteria" — see `lab/README.md`'s built-&-bench-tested table,
-which was updated 2026-08-28 to say exactly that rather than claiming a
-full pass.
-
-## `fuse_test_voltmeter` deliberate-short attempt (2026-08-28, later same day): resistor physically removed + jumper installed, but the loop never showed a short at all
-
-User removed the 10Ω resistor entirely and seated a jumper across the same
-two breadboard rows it had occupied (the intended equivalent of shorting
-it — see the "hand-touching two bare leads" kb entry above, which is why a
-seated jumper was used instead of hand contact). Sequence: DISARMED +
-battery out → battery in → `mpremote run main.py` → switch to ARMED.
-Logged output (`mpremote run main.py`, ~107 samples over ~21s): a smooth
-monotonic climb from 1.360V → 1.386V during `-- DISARMED --`, continuing
-to climb after `-- ARMED --` up to a 1.401–1.404V plateau. **No trip
-message ever printed, and the reading never dropped below ~1.36V.**
-
-This is diagnostic, not just "short didn't trip yet": a genuine 0Ω bridge
-across the probe/ground nodes forces the ADC-probe voltage toward 0V
-*immediately* via Ohm's law, before the fuse's PTC element has any time to
-heat up and go high-Z — the collapse is supposed to be near-instant and is
-independent of whether the fuse has tripped yet. The logged values instead
-sit squarely in the normal *unshorted* cold-reading range this same
-`quickstart.md` documents (~1.4V, see the entry above), with a shape (slow
-climb then plateau) that looks like ordinary battery-settling after
-insertion, not a shorted node. Conclusion: **the shorting jumper was not
-actually completing a low-resistance bridge between the two rows during
-this run** — most likely seated in the wrong rows (off by one from where
-the resistor's legs actually landed) or making poor/partial contact,
-rather than any deliberate-short logic problem in `main.py` or a fuse
-fault. This is a *different* failure mode from the resistance-based
-"~1.0–1.1V" confound investigated in the entries above (that was about a
-loaded-but-real path with extra series resistance; this is about a
-shorting path that doesn't appear to exist electrically at all).
-
-Also re-confirmed live during this session, after the user removed the
-battery again and left the arm switch "on" (`mpremote connect /dev/ttyACM0
-exec`, 10 samples): steady **~0.017V**, matching the established
-no-source floor from the entries above exactly. This isolates the fault
-to the shorting jumper specifically — the Pico-side GP26/GND/GP15 wiring
-and firmware are behaving exactly as previously validated, both before and
-after the anomalous run.
-
-**Recommended next step for a future session or the user**: reseat the
-shorting jumper, double-checking it lands in the *exact* two rows the
-resistor's legs occupied (not an adjacent row), with battery in and
-switch ARMED; expect a near-instant collapse toward 0V and `*** FUSE
-TRIPPED ***` within a second or two of seating it, not a gradual change.
-If it still doesn't collapse, suspect the jumper wire itself (bad crimp/
-broken conductor) over the breadboard rows. Until this passes,
-`fuse_test_voltmeter`'s pass/fail criteria per its own `quickstart.md`
-remain unmet — don't upgrade the `lab/README.md` bench-tested note past
-"wiring/voltage confirmed" on the basis of this run.
-
-## `fuse_test_voltmeter` rewire (fuse moved straight onto the power rail, extra jumper/power wire removed) — baseline re-confirmed, short test still not attempted (2026-08-28, later same day)
-
-User removed the jumper and the additional power wire that had been
-routing to the fuse and instead seated the fuse's leg directly in the
-power rail (`breadboard.jpg` updated to match). This is a wiring
-simplification, not the shorting-jumper fix recommended in the entry
-immediately above — no short was applied in this run either; the
-resistor was still in circuit, untouched.
-
-Sequence: DISARMED + battery out → battery in → `mpremote run main.py` →
-switch to ARMED partway through. Logged output: `-- DISARMED --` settled
-around 1.33–1.34V, dipped to ~0.95–1.2V for a handful of samples right at
-the switch-flip transition (consistent with physical handling/contact
-noise from flipping the slide switch, not a new symptom), then
-`-- ARMED --` began at 0.954V and climbed smoothly over ~150 samples
-(~30s at the 0.2s sample interval) to a **~1.384–1.386V plateau**, still
-inching upward at the last logged samples. No `TRIPPED`/`reset` message
-printed anywhere in the log.
-
-This is the same slow-climb-then-plateau shape documented in the
-deliberate-short-attempt entry above (there it topped out ~1.401–1.404V)
-and is consistent with ordinary battery-settling behavior after
-insertion/handling, not a short and not a fault — see that entry's
-reasoning for why a real short would collapse the reading near-instantly
-instead. The ~1.384–1.386V plateau itself sits a bit below both the
-~1.497V "resolved" baseline and the ~1.401–1.404V unshorted-attempt
-plateau from the entries above; the spread across all three runs
-(1.36–1.50V) is within the contact-resistance/battery-settling variance
-already established for this jig, not evidence the rewire changed
-anything electrically.
-
-Also re-confirmed live (`mpremote exec` against `/dev/ttyACM0`, battery
-physically unplugged, arm switch left "on"): GP26 steady at
-**~0.016–0.018V** across 5 samples, matching the established no-source
-floor exactly — the Pico-side wiring/firmware is unaffected by the fuse
-rewire.
-
-**Still open, unchanged from the entry above**: the deliberate-short
-trip/reset test has still not been exercised on this build — this run
-didn't touch the resistor or attempt a bridge at all, it only confirmed
-the cold baseline survived the fuse-to-rail simplification. Moving the
-fuse directly onto the rail does remove one jumper's worth of contact
-resistance from the loop, which may make a subsequent short attempt more
-likely to succeed if the earlier inconclusive attempt really was a
-seating/contact issue as suspected — worth trying the short again now
-that this simplification is in place, per the "reseat the shorting
-jumper" guidance above.
-
-## `fuse_test_voltmeter` resistor removal breaks trip detection, not just adds load — and the "still in circuit" claim about `breadboard.jpg` in the entry above was never actually re-verified against the image (2026-08-28, later same day; kb entry written 2026-08-28 after being promised in `history.md:3500` and dropped for one session)
-
-The user physically removed the 10Ω resistor entirely and wired the fuse's
-far leg straight onto the battery-minus rail (a jumper across where the
-resistor used to sit). Per [main.py](../../measurement_tools/fuse_test_voltmeter/main.py#L8-L11),
-GP26 probes the fuse's far leg and GND probes the resistor's far leg — the
-resistor is what makes those two distinct nodes. With it gone, they're the
-same physical node, wired straight to battery-. That node reads ~0V by
-definition regardless of whether the fuse is intact or tripped: there's no
-longer a divider for the ADC to see across. `LOW_VOLTAGE = 0.5` in main.py
-then reports permanent-trip unconditionally. **This is a structural
-measurement gap, not a load/current issue** — no amount of re-running the
-short test, reseating jumpers, or unplug/replug live-checks (which only
-verify the Pico-side ADC/firmware floor, not the fuse) can produce a valid
-trip/reset result on this wiring. The resistor needs to go back in
-*somewhere*, or trip status needs to be read a different way (multimeter/
-continuity check directly across the fuse), before this jig's pass/fail
-criteria from `quickstart.md` mean anything again.
-
-**Process failure worth flagging for future sessions**: the entry
-immediately above this one (and `history.md:3487`) asserted the
-`breadboard.jpg` committed at `a8de156` "explicitly left the 10Ω resistor
-in place," and that assertion was carried forward as settled fact rather
-than re-checked against the actual image each time it was cited. On
-inspection (cropped/zoomed the actual file), the small red breadboard in
-that photo shows only the polyfuse and jumper wires — no resistor is
-visible in it at all. Whether the original claim was a misread of a blurry
-photo or the resistor was already gone by that commit, the lesson is the
-same: a claim about *what an image shows* is not safe to reuse
-session-to-session without re-opening and re-looking at the file — it
-should be re-verified every time it's load-bearing for a diagnosis, the
-same way a code claim gets re-grepped rather than trusted from memory.
-
-Also: the kb entry documenting this resistor-removal finding was promised
-in `history.md:3500` ("I'll log this... unless you tell me otherwise") and
-then not written — `git log -1 -- docs/history.md` showed the commit that
-added that promise (`446ed0f`) touched only `docs/history.md`, not this
-file. If a turn's summary says something was logged to this file, verify
-it actually landed (`git diff`/`git log -1 -- <this file>`) before telling
-the user it's done, rather than trusting the stated intent.
-
 ## Don't offer "get a multimeter" as an alternative to restoring the sense resistor — it's a false dichotomy that made the user (rightly) furious (2026-08-28)
 
 `history.md:3498` and `:3508` phrased the fix as an either/or: "the resistor
@@ -1252,59 +872,16 @@ changes, and no additional tool is needed to answer "is the fuse
 tripping" — say so plainly instead of hedging toward external test
 equipment.
 
-## `fuse_test_voltmeter` first real TRIPPED→reset cycles with the resistor genuinely restored: recovery is fast (~15–25s) and plateaus below the confirmed baseline, not instant and not necessarily a fail yet (2026-08-28, later same day)
-
-With the resistor back in place per the entry above and a shorting jumper
-seated alongside it (bridging its two rows, per `quickstart.md`), the user
-got two genuine `*** FUSE TRIPPED ***` → `*** fuse reset ***` cycles in one
-`mpremote run main.py` log — the first time this jig has logged an actual
-short-then-recover sequence rather than a false negative (wrong rows, see
-two entries above) or a structural gap (resistor missing, see entry
-above). Both cycles: reading held at ~0.016–0.02V while the jumper was
-seated (indistinguishable from this jig's established no-source floor,
-~0.014–0.018V — expected, since bridging the resistor pulls GP26 toward
-GND directly regardless of the fuse's own state, per the "resistor is the
-sensor" callout in `quickstart.md`), then on jumper removal `*** fuse
-reset ***` printed immediately followed by a real, sample-by-sample climb
-— 0.927V→1.096V over ~100 samples and 1.053V→~1.098V over ~90 samples
-(both ~0.2s/sample) — not an instant square jump. The user's framing
-("miracle superfuse that heals itself instantly") is the second time a
-fast recovery has read as suspicious on this bench; the entries above
-already cover cases where no short actually landed at all, this is the
-first case with a real short and a real (if fast) recovery.
-
-Two things distinguish this from a full documented trip-and-latch: the
-recovery took ~15–25s, not the ~2 minute figure `quickstart.md`/`README.md`
-give for a genuine latch-and-cool; and both plateaus (~1.096V, ~1.098V)
-sit noticeably below this jig's own confirmed-good baseline with the same
-alkaline battery (~1.497V, see the "resolved" entry above; ~1.4–1.5V
-observed across three separate cold-baseline runs that same day). Working
-read: the fuse warmed under the ~2A short enough to cross `LOW_VOLTAGE =
-0.5` but didn't fully latch into a high-Z open state — a partial/marginal
-trip, not the clean full trip the ~2 minute recovery figure assumes.
-Not yet isolated whether the sub-baseline plateau is the fuse still
-partway through cooling (would keep climbing given more idle time) or a
-separate marginal-contact issue independent of the fuse (this bench has
-hit stray series resistance before — see the "user's own power switch"
-entry above, later resolved as unrelated). Recommended next step: after
-the next reset, leave the circuit untouched for the full ~2 minutes and
-see whether the reading keeps climbing toward ~1.4–1.5V (fuse still
-recovering, consistent with a genuine-if-slow trip) or flatlines near
-~1.09V (points to wiring/contact resistance, not the fuse). If a future
-session gets that result, record it here — this determines whether
-`quickstart.md`'s "if a fuse won't hold a trip for the full ~2 minutes,
-that's a fail" criterion actually applies to this unit yet, or whether the
-fast-recovery pattern needs to be re-tested with a wiring confound ruled
-out first.
-
 ## `fuse_test_voltmeter`'s open trip/reset question was bypassed, not resolved — the user built current-measuring `ammeter_10ohm`/`ammeter_1ohm` instead and validated both fuse batches that way (2026-08-30)
 
-Every entry above this one traces one long debugging thread on
-`fuse_test_voltmeter`'s voltage-probe approach to detecting a polyfuse
-trip, ending with the resistor-removal structural gap (still unfixed) and
-an open question about whether a fast-but-real trip/reset cycle should
-count as a pass. None of that thread was actually closed out. Instead, the
-user built two new, separate jigs —
+A long debugging thread on `fuse_test_voltmeter`'s voltage-probe approach
+to detecting a polyfuse trip (chattering near threshold, battery-vs-switch
+confounds, a mis-seated shorting jumper) never actually got closed out —
+it ended with a real structural gap: with the sense resistor physically
+removed from the loop, GP26's probe node and the GND probe node collapse
+to the same physical node, so the reading pins at ~0V regardless of the
+fuse's actual state, permanently reporting a trip. Instead, the user
+built two new, separate jigs —
 [measurement_tools/ammeter_10ohm/](../../measurement_tools/ammeter_10ohm/)
 and
 [measurement_tools/ammeter_1ohm/](../../measurement_tools/ammeter_1ohm/) —
@@ -1317,9 +894,8 @@ Both jigs were used to bench-test all 40 polyfuses in
 (confirmed trip on short, confirmed reset on short removal).
 
 Consequence for future sessions: `fuse_test_voltmeter`'s own structural
-bug (resistor removed, probe/GND nodes collapsed to one node — see the
-"resistor removal breaks trip detection" entry above) is **still
-unfixed** and its own pass/fail criteria from `quickstart.md` have still
+bug (described above) is **still unfixed** and its own pass/fail criteria
+from `quickstart.md` have still
 never actually passed on that specific build. Don't treat the ammeter
 jigs' PASS results as evidence that `fuse_test_voltmeter` itself got
 fixed — they're a completely independent measurement approach on
@@ -1643,118 +1219,6 @@ frequency, capacitance), that's a gap to name explicitly rather than
 reflexively pointing at `resistance_measurement` because it's the closest
 existing fit.
 
-## GitHub repo description/topics for `arcticoder/lab` and `arcticoder/pico` were empty until 2026-09-05
-
-Both repos had `""` for `description` and `null` for `repositoryTopics`
-(checked via `gh repo view OWNER/REPO --json description,repositoryTopics`)
-until the user asked to populate them. Set via `gh repo edit OWNER/REPO
---description "..." --add-topic foo --add-topic bar` (repeatable
-`--add-topic`, not a single comma-joined string). `lab`'s description/
-topics describe it as physics-lab test/measurement circuits (SPICE,
-breadboard, smoke-tested); `pico`'s describe it as the general-purpose
-sibling repo (MicroPython, SPICE, breadboard, no lab-specific framing) —
-matching the one-directional `lab/` → `pico/` relationship already
-documented above (general-purpose infra lives in `pico/`, physics-bench-
-specific framing stays in `lab/`). Per the "no fringe-science terms" rule
-at the top of this file, neither repo's topics/description name a specific
-theory or mention faster-than-light travel — topics are all
-generic/technical (`raspberry-pi-pico`, `ngspice`, `circuit-design`, etc.).
-If asked to update these again, keep that same split rather than drifting
-lab-specific framing into `pico`'s metadata or vice versa.
-
-## `*-arcticoder*.md` suffix marks a human-facing TODO checklist, distinct from any future LLM-facing TODO file (established 2026-09-05, corrected same day)
-
-Added six files — three per dependency graph, mirroring
-`arcticoder/aqei-bridge`'s `docs/TODO.md` / `docs/TODO-backlog.md` /
-`docs/TODO-BLOCKED.md` split as literally as this repo's content allows:
-
-- `general_purpose_circuit_dependency-arcticoder.md` (active queue,
-  ~ `TODO.md`) / `-arcticoder-BLOCKED.md` (~ `TODO-BLOCKED.md`, "Still
-  Blocked" + "Unblocked (resolved)" sections) / `-arcticoder-backlog.md`
-  (~ `TODO-backlog.md`, undesigned long-tail, promote up when actionable)
-- Same three-file pattern for `spacetime_circuits_dependency*`.
-
-**First attempt at this (same day) collapsed all three sections into one
-file per graph with headers instead of separate files — the user rejected
-it explicitly ("doesn't resemble this even slightly") and it had to be
-redone as six files.** The lesson: when a user points at an existing
-multi-file template and says "follow this format," match the *file
-boundaries*, not just the content grouping — a single file with `##`
-section headers standing in for what the template does as separate files
-is not the same format even if the prose content is equivalent chapter for
-chapter. If asked to extend this template further (e.g. a third dependency
-graph gets added later), replicate the same three-file split again rather
-than reverting to one file per graph.
-
-There is deliberately no fourth `-completed` file per graph: the task that
-created these files explicitly said not to include already-completed
-work, and `README.md`'s "built & bench-tested" table plus `docs/history.md`
-already serve the role `TODO-completed.md` plays in aqei-bridge. When a
-checklist item is completed, delete it from whichever of the three files
-it's in (don't check the box and leave it, and don't create a completed
-archive here) — active queue, BLOCKED, and backlog all track *remaining*
-work only.
-
-The `-arcticoder` marker itself is deliberate and should be preserved on
-any future edits: it signals "a human works through this list," as
-opposed to a hypothetical future `*-llm.md` or similarly-named file that
-would hold tasks meant for an LLM session to execute directly. Do not
-merge the two kinds of TODO content into one file if that second kind of
-file is ever created.
-
-Content rule inherited from the "pure mermaid, no prose" convention above:
-these checklists live in their own sibling files, not inside the `.md`
-dependency graphs themselves — a node's build status still belongs in
-that node's own bracketed label text in the mermaid file (e.g. "not yet
-built"), and the arcticoder checklists only add the *next concrete
-action* on top of that status.
-
-Sourcing the actual checklist content required cross-referencing three
-places at once: `README.md`'s "built & bench-tested" / "designed, not yet
-built" tables (what's physically done), `docs/orders.md`'s "Received" vs.
-"On order" section headers (what's on hand vs. still in transit — the
-section a part sits under is the authoritative signal, not narrative text
-elsewhere describing it as e.g. "just arrived"), and `docs/history.md`'s
-most recent entries (for the latest gap-analysis priority order and any
-status corrections not yet reflected in the other two files, e.g.
-`psu_medlow_lm317`'s order status being walked back from "on order" to
-"not yet ordered"). All three can disagree with each other during an
-in-progress session — trust whichever was written most recently.
-
-## The six-file `*-arcticoder*.md` split (entry above) was reversed back to one `docs/TODO-arcticoder.md` the very next day (2026-09-06) — don't re-split without being asked again
-
-This directly contradicts the entry immediately above, which records the
-user rejecting a collapsed single-file version and demanding the six-file
-aqei-bridge-style split. One day later, the user asked the opposite: "you've
-left all TODO items strewn throughout [three of the six files] ... perhaps
-finish what I asked you to do by having just the one TODO file rather than
-3+ files." The two requests aren't actually the same axis of complaint —
-the 2026-09-05 rejection was about collapsing *within* one dependency
-graph's three stages (active/BLOCKED/backlog) into `##` headers in one
-file; the 2026-09-06 request was about having the checklist scattered
-*across* both dependency graphs (general-purpose and spacetime) at all,
-regardless of how each graph's own stages are organized. Resolved by
-merging all six files (both graphs × active/BLOCKED/backlog) plus the
-original personal-items `TODO-arcticoder.md` into a single
-`docs/TODO-arcticoder.md`, with `##` section headers for each stage
-(Ready to build / Needs validation / Open issues / Blocked / Next parts to
-buy / Backlog / Personal items) — deliberately the same "one file, headers
-for sections" shape the user rejected in the 2026-09-05 entry above, but
-this time it's what was explicitly asked for, not a substitution offered
-in place of a literal multi-file request.
-
-Lesson: a structural preference stated once (six files, matching a named
-external template) is not a permanent constraint if the user's next
-session asks for something that conflicts with it — the most recent
-explicit instruction wins, even over a documented, deliberately-reasoned
-past decision in this very file. Don't cite the 2026-09-05 entry as a
-reason to resist or second-guess a later, clearer instruction to
-consolidate; do flag the reversal (as this entry does) so a future session
-understands why the file count changed twice in two days, rather than
-assuming one of the two sessions made a mistake. If asked to split this
-back out again in the future, ask which axis is meant (per-graph sections,
-per-stage files, or both) rather than assuming either prior shape.
-
 ## `psu_4xaa` real-hardware validation run (2026-09-06): wrong script run, and the raw voltage doesn't validate either — still "designed, not built"
 
 The user built `psu_4xaa`'s validation divider (two 10 kΩ resistors,
@@ -1800,9 +1264,10 @@ powered. Two separate problems, not one:
    in its *actual* intended mode this time (clip its own R_x leg + GND
    return across each suspect node pair) rather than repeating the
    mismatched-circuit run above; also worth open-circuit-probing the
-   battery pack directly (bypassing Schottky/fuse) the way the
-   `fuse_test_voltmeter` battery-chemistry entry above describes, in case
-   the cells themselves are weak/miswired.
+   battery pack directly (bypassing Schottky/fuse) — a fresh alkaline
+   pack should rest noticeably above its nominal per-cell voltage with
+   nothing loading it, while a NiMH-chemistry or weak/miswired pack reads
+   low — in case the cells themselves are weak/miswired.
 
 3. **Ground wire.** The user also reported the circuit "didn't start
    working at all" until they added a wire from the PSU's ground rail to
@@ -1932,90 +1397,6 @@ automatically — if `lab/docs/inventory.md` moves again, or the
 relationship between the two repos changes, that stub needs a matching
 update, and it's easy to forget precisely because it's rarely opened
 once `lab/` is actually cloned alongside `pico/`.
-
-## `TODO-arcticoder.md` is now the sole ordering authority — Claude picks what's next, not the user's own initiative (established 2026-09-07)
-
-Before this date, the user had been independently choosing what to build
-next based on what seemed like the logical progression (e.g. picking
-"4xAA PSU, then ne555_astable" on their own initiative) rather than
-consulting `TODO-arcticoder.md` section-by-section. The user explicitly
-handed ordering control to Claude as of this date and said this
-instruction is now baked into their personal prompt template, so it will
-recur across future sessions without being repeated in full each time —
-treat any session opening with language like "I'm switching to using
-TODO-arcticoder.md as my sole guide" as a re-statement of this same
-standing instruction, not a new decision to re-litigate.
-
-Practical consequence: `TODO-arcticoder.md` itself now opens with an
-explicit "work top-to-bottom, one section at a time" rule (added this
-same date) — whichever section is first to still have an unchecked item
-is next, and within that section the first bullet is next. This means
-**section and bullet order inside the file is itself part of the
-prioritization** — burying a genuinely-ready task under a later heading,
-or leaving it lower within its own section, means the user won't do it
-next even if it's technically actionable. When closing out or adding
-items, actively re-sort rather than just appending: a "ready to build"
-item that turns out to be blocked on something (see the next entry)
-needs to physically move to a "Blocked" section, not just get a note
-added while staying in place — the user reads top-to-bottom and stops at
-the first thing in the first section, without reading ahead for caveats.
-
-## A "ready to build" TODO item can be blocked by another item in the same file, not just by an external shipment (established 2026-09-07, `ne555_astable`/`psu_4xaa`)
-
-`TODO-arcticoder.md` previously had only one flavor of "Blocked" section
-(waiting on a part shipment). The user caught a case that doesn't fit
-that mold: `oscillators/ne555_astable`'s bench-build task sat under
-"Ready to build now," but its own README already documents that it's
-powered from `power_supplies/psu_4xaa` specifically because `psu_3xaa`
-sags under its minimum voltage — and `psu_4xaa`'s own bench-test/
-validation task was *also* on the list, unfinished, just sorted lower
-down. So `ne555_astable` was never actually ready — it was blocked on a
-sibling TODO item, not on a part in transit.
-
-Added a second section, "Blocked — waiting on a bench validation"
-(distinct from "Blocked — waiting on a shipment"), and moved
-`ne555_astable` there with an explicit "Blocked on: `power_supplies/
-psu_4xaa` bench-test" pointer back to the top of "Ready to build now"
-(where `psu_4xaa`'s task was promoted to the first bullet, per the
-top-to-bottom ordering rule in the entry above). General lesson: when
-scanning `TODO-arcticoder.md` for reordering or closing out an item,
-check whether a "ready" circuit's own README names a specific power
-supply / upstream dependency, and cross-check that dependency's own TODO
-status before trusting the "ready to build now" placement — a circuit
-can be fully designed and even physically mid-assembled while still
-being blocked on something else in the same file.
-
-## Completed TODO items move to `TODO-completed.md`, not deleted (established 2026-09-07, mirrors `aqei-bridge`)
-
-`TODO-arcticoder.md` previously instructed deleting a completed item
-outright once `README.md`'s "built & bench-tested" table captured the
-circuit's real-world status. The user reversed this explicitly: deleted
-items are too easy to lose track of, and there's no way to later confirm
-"was X actually done, or never started" without digging through git
-history / `docs/history.md`. The new convention, modeled on the sibling
-`aqei-bridge` repo's `docs/TODO-completed.md` /
-`docs/TODO-BLOCKED.md` (the user added `aqei-bridge` as a permanent
-workspace folder specifically so this format would be visible as a
-reference): move a finished item out of `TODO-arcticoder.md` into
-[TODO-completed.md](../TODO-completed.md) under a `## YYYY-MM-DD` heading
-for the closure date, as a short bullet, rather than deleting it.
-
-This is a distinct record from `README.md`'s "built & bench-tested"
-table / `docs/history.md`: those describe a *circuit's* real-world
-status (has it been assembled, has its smoke test passed), while
-`TODO-completed.md` describes the *TODO item's* lifecycle (was it on the
-active list, and when did it come off, and via which session). Don't
-treat one as making the other redundant, and don't backfill
-`TODO-completed.md` with items that were deleted under the old
-(pre-2026-09-07) convention — there's no reliable way to reconstruct
-exactly when those closed, so the file starts empty from this date
-forward rather than trying to be a complete history.
-
-`aqei-bridge` (`/home/echo_/Code/asciimath/aqei-bridge`) is now a
-permanent additional working directory for this reason — check its
-`docs/TODO-completed.md` / `docs/TODO-BLOCKED.md` again if
-`TODO-arcticoder.md`'s conventions need to evolve further, rather than
-inventing a new format from scratch.
 
 ## `gp26_raw_voltage.py` moved out of `psu_4xaa/` into its own `measurement_tools/raw_voltage_probe/` (2026-09-07)
 
