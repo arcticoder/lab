@@ -50,17 +50,18 @@ finding it buried past several pages of build tasks meant it kept getting
 skipped in practice.
 
 **Soldering flux (rosin flux paste or a flux pen) — add to the next
-order, or pick up locally if that's faster.** Not previously stocked or
-on order. Discovered as a real blocker 2026-09-16: attempting to solder
-leads onto a bare piezo disc (see `CHGAMP` bullet below) without flux
-destroyed that unit (see
+AliExpress order.** Not previously stocked or on order. Discovered as a
+real blocker 2026-09-16: attempting to solder leads onto a bare piezo
+disc (see `CHGAMP` bullet below) without flux destroyed that unit (see
 [parts_reference.md#piezo-element-12mm-disc](parts_reference.md#piezo-element-12mm-disc)
 and [inventory.md](inventory.md) for the updated count — 19 of 20
 remain, only usable for a retry once flux is on hand). This is the one
-new item that should jump the "hold off on a top-up" stance below, since
+item that should jump the "hold off on a top-up" stance below, since
 it's a real dependency for a task already in progress, not a
-speculative add — but it's cheap/small enough that a local hardware or
-craft store may beat AliExpress transit time; use judgment.
+speculative add. **2026-09-19: you'd rather wait out AliExpress transit
+than make a store run, even for something this cheap/small** — batch it
+into the same order as the tier5/7 shopping-list items below rather
+than treating it as a special local-purchase case.
 
 **Old backlog vs. new tier5/7 nodes — two different answers as of
 2026-09-18.** The entire 2026-09-03 batch (TL082, MF52AT thermistor,
@@ -131,37 +132,68 @@ needs a genuinely new part class nothing else on this bench uses.
 **New for the 2026-09-18 tier5/7 additions — zero hardware sourced for
 any of these three:**
 
-- [ ] **SiPM (silicon photomultiplier) breakout module, small active area
-      (1×1mm–3×3mm class), 1–2pcs — for tier5 `SIPMFE`.** Needed for the
-      new SiPM/scintillator particle-counting front-end node. Published
-      hobbyist designs bias these around 24–30V DC (some modules include
-      an onboard boost from 5V) — comfortably under this bench's 50V DC
-      threshold (see `kb/circuit_lifecycle_and_repo_scope.md`). A genuinely
-      new part class — nothing already on hand substitutes.
-- [ ] **Small plastic scintillator tile/paddle (or equivalent
-      scintillating block) — for tier5 `SIPMFE`, same node as above.**
-      Pairs with the SiPM module; needed for the same reason, buy together.
-      A GPS module for cross-station event timestamping is a real
-      enhancement for this node but not needed for a first single-detector
-      bench validation — hold off on that specifically until a first
-      pulse-counting result exists to build on.
-- [ ] *(no urgency — on-hand 5mm LEDs already give a $0 first test, see
-      below)* **High-power LED or low-power laser diode module — for
-      tier7 `LASERDRV`.** The on-hand 5mm red/blue/green/white/yellow LEDs
-      (10 each, `inventory.md`) can drive a first `LASERDRV`
-      proof-of-concept for free, but their optical output is well below
-      the "high-power LED" published apparatus assumes for a measurable
-      radiation-pressure force on `FORCEBAL` — a dedicated higher-output
-      source is the real eventual need, just not a blocker for starting.
-- [ ] *(cheap/small — local hardware or craft store may beat AliExpress
-      transit, same judgment call as the flux item above)* **Thin torsion
-      fiber (fine fishing line or wire) and a small front-surface mirror —
-      for tier5 `FORCEBAL`.** Not currently on hand or on order. A
-      capacitive-plate displacement readout for `FORCEBAL` can reuse
-      `CAPBRIDGE` (tier3 — designed/simulated/smoke-tested, not yet
-      physically assembled, already queued as "Ready to build now" item 7
-      below) instead of buying an LVDT — worth trying that route
-      (foil/scrap-copper plates) before deciding on the LVDT bullet above.
+- [ ] *(deferred by you 2026-09-19 — revisit later, not currently on the
+      shopping list)* **SiPM (silicon photomultiplier) breakout module,
+      small active area (1×1mm–3×3mm class), 1–2pcs — for tier5
+      `SIPMFE`.** Needed for the new SiPM/scintillator particle-counting
+      front-end node. Published hobbyist designs bias these around
+      24–30V DC (some modules include an onboard boost from 5V) —
+      comfortably under this bench's 50V DC threshold (see
+      `kb/circuit_lifecycle_and_repo_scope.md`). A genuinely new part
+      class — nothing already on hand substitutes. **Even the bare sensor
+      is expensive enough that you've chosen to hold off on this node
+      entirely for now** — not a rejection of `SIPMFE`, just not an
+      active shopping-list item until you decide otherwise.
+- [ ] *(deferred alongside the SiPM bullet above 2026-09-19 — it only
+      pairs with that module, no reason to buy it alone)* **Small plastic
+      scintillator tile/paddle (or equivalent scintillating block) — for
+      tier5 `SIPMFE`, same node as above.** A GPS module for
+      cross-station event timestamping would be a further enhancement on
+      top of both, same reasoning.
+- [ ] *(no urgency, and the laser-diode half is now off the table — see
+      below)* **High-power LED — for tier7 `LASERDRV`.** The on-hand 5mm
+      red/blue/green/white/yellow LEDs (10 each, `inventory.md`) can drive
+      a first `LASERDRV` proof-of-concept for free right now, no purchase
+      needed. **2026-09-19: you raised an eye-safety concern about the
+      laser-diode option this bullet originally paired with LEDs as an
+      alternative.** Fair concern, and an honest answer: a diffuse LED
+      (even a bright one) carries no meaningful eye hazard the way a
+      laser diode does — a laser (even a low-power Class 3R/3B module,
+      which is the class typically sold as a "laser diode module") can
+      cause retinal damage from a direct or *specular* reflection (the
+      `FORCEBAL` mirror bullet below is exactly that kind of reflective
+      surface), and doing that safely needs real engineering controls
+      (an enclosure, a beam dump, wavelength-rated laser safety goggles,
+      keeping the beam path below eye level) that aren't in place on this
+      bench today. That's not something to wave through as "safe enough"
+      without those controls. **Decision: stay on the free LED path for
+      `LASERDRV`'s first proof-of-concept indefinitely; the laser-diode
+      upgrade is off the shopping list until/unless you decide to invest
+      in the enclosure/goggles/beam-dump controls that would make it
+      genuinely safe** — a dedicated *higher-power LED* (still not a
+      laser) remains the real eventual need for a measurable
+      radiation-pressure force on `FORCEBAL`, and stays on the table
+      without that safety question attached.
+- [ ] *(not currently on the shopping list — see the note below on why
+      `FORCEBAL` doesn't need this to proceed)* **Thin torsion fiber
+      (fine fishing line or wire) and a small front-surface mirror — for
+      a torsion-pendulum build of tier5 `FORCEBAL`.** Not currently on
+      hand or on order, and not added to the next AliExpress order.
+      **2026-09-19: `FORCEBAL`'s own node name is "Torsion/**Beam-Balance**
+      Displacement Readout" — a knife-edge beam balance (a rigid arm on a
+      pivot, no suspension fiber at all) is the other mechanical form the
+      node already allows**, and pairs with a capacitive-plate readout via
+      `CAPBRIDGE` (tier3 — designed/simulated/smoke-tested, already queued
+      as "Ready to build now" below) using foil/scrap-copper plates —
+      the same "household materials, no purchase" precedent this file
+      already uses for `VIBISO`/`RIPPLETANK` below. **That route needs
+      nothing from AliExpress and nothing from a store — it's buildable
+      once you're ready to try it.** The fiber+mirror bullet stays here
+      only for the *torsion* variant specifically (a torsion pendulum is
+      more sensitive than a beam balance, per the literature cited in
+      `spacetime_circuits_dependency.md`) — worth adding to a future
+      AliExpress order only if the beam-balance/capacitive route proves
+      insufficient once tried.
 
 **Two 2026-09-18 mechanical build objectives that likely need no order at
 all** — `VIBISO` (vibration/seismic isolation platform: a weighted
@@ -174,6 +206,35 @@ that node is itself still backlog/undesigned (see Backlog section below) —
 SIMPGEN's own documented "optional alternative" and can drive a small
 motor/speaker dipper directly. Check what's already around the apartment
 before adding either `VIBISO` or `RIPPLETANK` to a cart.
+
+**2026-09-19: what else has to exist to actually run an experiment on
+either, once built.** Neither needs anything *ordered* to physically
+build (see above), but "build the platform/tank" and "run an experiment
+with it" are different milestones:
+
+- **`VIBISO`** is a mechanical prerequisite *for other nodes*
+  (`FORCEBAL`, `LASERDRV` — see `spacetime_circuits_dependency.md`), not
+  an experiment in its own right — there's nothing to read out from an
+  isolation platform by itself. To actually *quantify* how well it
+  isolates (rather than just judging it by eye/feel), the natural
+  instrument is tier5 `ACCELIF` (an accelerometer interface, comparing
+  vibration on vs. off the platform) — currently **blocked**, waiting on
+  the GY-521 module already in transit (see "Blocked" below). Until that
+  arrives, `VIBISO` can still be built and used qualitatively (as the
+  mechanical base under a future `FORCEBAL`/`LASERDRV` build), just not
+  bench-measured for its own isolation performance.
+- **`RIPPLETANK`** needs a wave driver to do anything at all — tier1
+  `SIMPGEN` is itself undesigned, but `pico/leds/gpio_pwm_led/` (already
+  built in the sibling `pico/` repo) is its documented stand-in and can
+  drive a small motor/speaker dipper directly, no new build required.
+  Reading wavefront phase shift *electronically* instead of by eye would
+  use tier4 `PHASED` — **now bench-tested as of today (2026-09-19, see
+  "Ready to build now" section)** — feeding tier6 `LOCKIN` for a clean
+  synchronous readout, but `LOCKIN` itself is still undesigned. Net: a
+  first qualitative `RIPPLETANK` demo (visual wave refraction, driven by
+  the sibling repo's PWM dipper) needs no further build at all; an
+  electronic phase-shift readout is a real future step gated on `LOCKIN`,
+  not a blocker for trying the tank itself.
 
 ## Ready to build now — parts on hand, ranked by what it unlocks
 
@@ -190,8 +251,9 @@ applied in order until one criterion decides between two bullets:
    identified — tier6 `LOCKIN` (see
    [spacetime_circuits_dependency.md](spacetime_circuits_dependency.md)'s
    "Why these tiers" section). `LOCKIN` needs `PHASED` + `EPFIELD`/`CHGAMP`
-   + `OSC`; `EPFIELD` and `OSC` are already satisfied, so `PHASED` and
-   `CHGAMP` are the two remaining physical-assembly steps standing between
+   + `OSC`; `EPFIELD`, `OSC`, and now `PHASED` (bench-tested 2026-09-19,
+   see `README.md`'s "built & bench-tested" table) are all satisfied, so
+   `CHGAMP` is the one remaining physical-assembly step standing between
    today and `LOCKIN` becoming a real, startable `TODO-agent.md` design
    task instead of a backlog placeholder.
 3. Is it already mid-attempt with a documented fix ready to apply (sunk
@@ -208,9 +270,10 @@ This is a mechanical read of the dependency graph, not a claim about
 which circuit matters more to the research this equipment eventually
 supports (see
 [kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md))
-— criteria 1–2 just happen to put the two spacetime-tier bullets first
-because they're the ones the graph actually shows gating the next open
-design question, not because they're spacetime-tier. See
+— criteria 1–2 just happen to put `CHGAMP` first because it's the one
+bullet the graph actually shows still gating the next open design
+question (`LOCKIN`) now that `PHASED` is bench-tested, not because it's
+spacetime-tier. See
 [kb/todo_list_conventions.md](kb/todo_list_conventions.md) for the fuller
 reasoning and why this replaced the previous "menu, pick whatever"
 framing (2026-09-17).
@@ -225,11 +288,11 @@ open item.
       physically assemble. Blocked on flux — see the shopping-list item
       at the top of this file.** Folder/netlist/breadboard guide/smoke
       test exist (2026-09-13). Powered from `psu_pico_rail`. **Ranked #1**:
-      criteria 2+3 above both point here — it's one of the two remaining
-      real prerequisites for `LOCKIN` (with `PHASED` below), and it's
-      already mid-attempt with a known, cheap fix. **2026-09-16 attempt:**
-      tried soldering leads onto the bare piezo disc without flux —
-      destroyed that unit (see
+      criteria 2+3 above both point here — with `PHASED` now bench-tested
+      (2026-09-19, see below and `README.md`), this is the *one* remaining
+      real prerequisite for `LOCKIN`, and it's already mid-attempt with a
+      known, cheap fix. **2026-09-16 attempt:** tried soldering leads onto
+      the bare piezo disc without flux — destroyed that unit (see
       `parts_reference.md#piezo-element-12mm-disc`; 19 of 20 remain).
       The disc has no pre-attached leads, so this step was always
       needed, just under-documented — `breadboard.md` now spells out
@@ -242,20 +305,6 @@ open item.
       charge-integrating (capacitor-feedback) topology is a
       fundamentally different, more sensitive approach to the same kind
       of signal — may succeed where `EPFIELD`'s did not.
-- [ ] **`signal_conditioning/phase_detector` (tier4, `PHASED`) —
-      physically assemble.** Folder/netlist/breadboard guide/smoke
-      test/`main.py` now exist (2026-09-13). **Requires
-      `oscillators/ne555_astable` wired on a breadboard** — this circuit
-      taps its existing output divider rather than building a fresh
-      NE555 stage; if `ne555_astable` has already been broken back down
-      to inventory since its own 2026-09-13 batch validation (see
-      `README.md`'s "built & bench-tested" convention on returning parts
-      once nothing else needs them wired), re-assemble it first.
-      **Ranked #2, right behind `CHGAMP`**: this is the other real,
-      named prerequisite `LOCKIN` needs (`PHASED --> LOCKIN` in
-      `general_purpose_circuit_dependency.md`) — once this and `CHGAMP`
-      are both bench-confirmed, designing `LOCKIN` stops being blocked
-      on undesigned inputs and becomes a real `TODO-agent.md` task.
 - [ ] **1N5817 Schottky diodes — still need a per-unit forward-drop check
       for whichever unit goes into `psu_3xaa` specifically.** Two of 20
       are now confirmed: `psu_4xaa`'s (2026-09-13, GP26 ≈ 1.990V,
@@ -265,7 +314,7 @@ open item.
       (paint worn off) and was actually installed backward on a guess at
       first; the divider check caught it and it was flipped. It can't be
       re-identified by eye if it's ever pulled for another build — see
-      `docs/parts_reference.md#1n5817-schottky-diode`. **Ranked #3
+      `docs/parts_reference.md#1n5817-schottky-diode`. **Ranked #2
       (criterion 1 — the only bullet on this list that's a literal, stated
       hard blocker for another bullet here, and it's quick: reuse the
       Pico-divider technique already proven twice).** **Still open:** the
@@ -285,7 +334,7 @@ open item.
       Folder/netlist/breadboard guide/smoke test/`main.py` now exist
       (2026-09-13). Powered from `psu_pico_rail`. Fills the safety
       `THERM` gap (the existing thermistor in `inventory.md` is flagged
-      "suspect faulty"). **Ranked #5 (criterion 4)**: `THERM --> tier2` is
+      "suspect faulty"). **Ranked #4 (criterion 4)**: `THERM --> tier2` is
       a real edge in the dependency graph, even though tier2's remaining
       nodes (`VM`/`AM`/`FREQC`) are themselves still undesigned — ranks
       above `CAPBRIDGE` below, which has no forward edge at all; ranks
@@ -303,7 +352,7 @@ open item.
       a second unit is only needed if both must be assembled at once,
       not the case today (see
       [kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md)).
-      **Ranked #6 (criterion 4)**: `ACTIVELIM -.required.-> psu_medhigh`/
+      **Ranked #5 (criterion 4)**: `ACTIVELIM -.required.-> psu_medhigh`/
       `psu_high` are real edges, but both PSU tiers are themselves
       backlog with no folder — same "real edge, nothing built against it
       yet" status as `THERM` above, which leads it under the
@@ -322,7 +371,7 @@ open item.
       now exist (2026-09-13), targeting the aluminum electrolytic
       capacitor kit (1µF–470µF) — see its `README.md` § Range for why the
       pF/nF ceramic assortment isn't in scope for this design. No PSU
-      needed (runs off the Pico's own GPIO/3V3). **Ranked #7 (criterion
+      needed (runs off the Pico's own GPIO/3V3). **Ranked #6 (criterion
       5)**: no edge to anything currently on the graph — the last "real
       circuit" bullet before the standalone validation tail below.
 
@@ -429,7 +478,8 @@ how each node connects before starting one.
 - [ ] **Tier 2**: `VM`, `AM`, `FREQC` undesigned as dedicated circuits
       (distinct from the bootstrap ammeter jigs).
 - [ ] **Tier 4**: `IA`, `DA`, `DEMOD` still undesigned. (`PHASED` is
-      done — see "Ready to build now" above.)
+      done — bench-tested 2026-09-19, see `README.md`'s "built &
+      bench-tested" table.)
 - [ ] **Tier 5** (spacetime): `EPFIELD` and `CHGAMP` are done — see
       "Ready to build now" above. `ACCELIF` is still blocked on the
       GY-521 module, not yet received (see "Blocked" above). `HALLAMP` is
@@ -452,7 +502,7 @@ how each node connects before starting one.
       `spacetime_circuits_dependency.md`'s "Why these new tiers" section).
       `LVDTAMP` remains one real way to instrument it; a capacitive-plate
       approach read by `CAPBRIDGE` (designed/simulated, not yet physically
-      assembled — see "Ready to build now" item 7) is the other, and
+      assembled — see "Ready to build now," ranked #6) is the other, and
       doesn't require ordering anything new (see "Next AliExpress order"
       above).
 - [ ] **Tier 6**: `LOCKIN`, `AAF`, `TIMEINT`, `JITTER` undesigned. **New

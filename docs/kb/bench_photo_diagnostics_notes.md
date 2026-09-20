@@ -39,6 +39,35 @@ ambient, ~0.72–0.78V flashlight — see that circuit's own README
 hypothesis, for the next "stable + stimulus-independent" report on this
 bench.
 
+## A moving-but-narrow reading over a short sampling window is a real pass, not a stuck value — for a *deliberately non-phase-locked* design specifically
+
+`phase_detector` (`PHASED`, tier4) is designed so its two square-wave
+inputs (`ne555_astable`'s own oscillator and an independent Pico PWM
+reference, see that circuit's README § Design notes) are **not**
+phase-locked on purpose — the pass criterion is that the filtered output
+*moves* over time as their relative phase drifts, not that it settles at
+a specific voltage. 2026-09-19 bench run: `main.py` (0.2s between
+20-sample reads) captured 0.871V–1.546V across ~17 prints, roughly 3.5s
+of wall-clock time — a real ~0.67V swing, clearly not pinned, but far
+short of the full ~0–3.3V range `README.md`/`breadboard.md` describe.
+**Don't misread a narrow-but-moving band as a partial failure.** Two
+free-running oscillators nominally at the same frequency drift in and
+out of phase at a rate set by how close their actual frequencies are —
+arbitrarily slow if they happen to be very close. A few seconds of
+capture is nowhere near enough to guarantee catching a full sweep; it
+only needs to show *some* real movement to confirm the XOR gate is
+genuinely responding to relative phase rather than one input in
+isolation. The diagnostic question for this specific design is binary —
+did it move at all, yes/no — not "how much of the full range did it
+cover in this one run." Only a value that's truly flat across the whole
+capture (matching `README.md`'s own "if the reading sits pinned"
+failure case) should trigger the voltage-margin/gate-power
+troubleshooting steps in that circuit's own docs. This is a distinct
+failure-signature class from the "flat reading = no power" heuristic
+above — that one's about a circuit meant to hold a stable value; this
+one's about a circuit meant to never hold still, where the only real
+failure is *not* moving.
+
 ## Worn/illegible polarity markings on a reused part are a standing risk, not a one-off
 
 Root cause of the above: the specific 1N5817 Schottky in `psu_low_v2`

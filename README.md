@@ -154,6 +154,7 @@ photo of the as-built jig where one was taken (see each circuit's own
 | `signal_conditioning/electric_field_probe/` | Bare-electrode electrostatic sensor: 1MΩ/1MΩ bias divider to VCC/2, TL082 unity-gain follower | tier5 `EPFIELD` — spacetime-research sensor node, see `docs/spacetime_circuits_dependency.md` | 2026-09-15 — TL082 follower confirmed live (rest ~1.693–1.701V vs. simulated 1.650V, a small stable offset, not railed — resolves the earlier "hasn't been confirmed below spec'd supply" caveat). A piezo-igniter spark and a triboelectric (rubbed tape) test charge both produced no deflection beyond that same offset — consistent with the design's own predicted sensitivity ceiling from the 1MΩ (not GΩ) bias divider, not a wiring fault; see that circuit's own README § Bench findings for the diagnosis and concrete next steps |
 | `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` tier | 2026-09-17 — GP26 read 1.007V average (20 readings) through the output's 10 kΩ/5.1 kΩ divider, matching the ~1.0V correct-orientation target. Root cause of an earlier no-reading gap: the Schottky's cathode band paint had worn off and it was installed backward on a guess — flipped once this check caught it; see `README.md` § Validation |
 | `signal_conditioning/transimpedance_amplifier/` | PT334-6C photodiode + LM358 current-to-voltage converter | tier2 `TIA` (fed from `psu_low_v2`) | 2026-09-17 — genuine light-dependent output confirmed: ~0.505–0.510V under ambient room light, ~0.72–0.78V under a phone flashlight (higher held close to the photodiode). Superseded a 2026-09-16 flat, light-independent ~0.38V reading that was traced to the `psu_low_v2` rail above, not this circuit's own wiring — see `README.md` § Validation |
+| `signal_conditioning/phase_detector/` | SN74HC86N XOR gate compares `ne555_astable`'s output tap against an independent Pico PWM reference, RC-lowpassed | tier4 `PHASED`, feeds tier6 `LOCKIN` (undesigned) | 2026-09-19 — filtered output confirmed moving (0.871–1.546V over a ~3.5s window, not pinned at one extreme) as the two non-phase-locked oscillators drift, the real pass criterion per this circuit's own README § Validation. Required re-assembling `ne555_astable` first (broken back down to inventory since its own 2026-09-13 validation) |
 
 ---
 
@@ -175,22 +176,22 @@ sequence this drives.
 | `measurement_tools/capacitance_bridge/` | RC charge-time capacitance meter (known `Rref` vs. unknown `Cx`, timed against a 63.2%-of-Vin threshold) | tier3 `CAPBRIDGE`, targets the 1µF–470µF electrolytic kit (see its own README § Range) |
 | `signal_conditioning/charge_amplifier/` | 12mm piezo disc + TL082 inverting charge amp (`Cf`/`Rf_bias` feedback), VCC/2-biased for bipolar swing | tier5 `CHGAMP` — a direct spacetime-research sensor node |
 | `safety/thermal_monitor/` | MF52AT NTC divider (centers at VCC/2 at 25°C) + GPIO-driven alarm LED | safety `THERM` ("Thermal Monitoring with Alarm Threshold") |
-| `signal_conditioning/phase_detector/` | SN74HC86N XOR gate comparing `ne555_astable`'s output tap against an independent Pico PWM reference, RC-lowpassed | tier4 `PHASED`, feeds tier6 `LOCKIN` (undesigned) |
 | `protection/active_current_limiter/` | IRLZ44N + 0.1Ω sense resistor + LM358 comparator, hard-trip at 2A | general-purpose `ACTIVELIM`, protects `psu_medhigh`/`psu_high` (both backlog) |
 Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
 schematic, a breadboard wiring guide, and a `smoke_test.py` (all but
 `active_current_limiter` also have a `main.py`, same reasoning as the
 PSU rows above having none). None of these have been physically
-assembled with real components yet (`psu_low_v2` and
-`transimpedance_amplifier` were the two exceptions as of 2026-09-16, and
-both moved to the bench-tested table above once their validation checks
-passed 2026-09-17 — see their rows there and `docs/TODO-arcticoder.md`).
+assembled with real components yet (`psu_low_v2`,
+`transimpedance_amplifier`, and `phase_detector` were exceptions as of
+2026-09-16/2026-09-19, and all three moved to the bench-tested table
+above once their validation checks passed — see their rows there and
+`docs/TODO-arcticoder.md`).
 For the PSU rows, the polyfuses they depend on
 are no longer the blocker — both batches passed validation via
 `ammeter_10ohm`/`ammeter_1ohm` above — so what remains is just the
 physical build; `capacitance_bridge`,
-`charge_amplifier`, `thermal_monitor`, and `phase_detector` all run off
+`charge_amplifier`, and `thermal_monitor` all run off
 `psu_pico_rail` (or need no PSU at all) and have no battery-PSU
 dependency. Everything else in
 `docs/general_purpose_circuit_dependency.md` /
@@ -366,10 +367,11 @@ signal_conditioning/
         smoke_test.py
         README.md
 
-    phase_detector/          SN74HC86N XOR phase detector + RC lowpass (tier4 PHASED, designed, not built)
+    phase_detector/          SN74HC86N XOR phase detector + RC lowpass (tier4 PHASED, built & bench-tested 2026-09-19)
         phase_detector.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        breadboard.jpg
         main.py
         smoke_test.py
         README.md
