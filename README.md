@@ -351,7 +351,7 @@ signal_conditioning/
         smoke_test.py
         README.md
 
-    electric_field_probe/    bare-electrode electrostatic sensor, TL082 follower (tier5 EPFIELD, designed, not built)
+    electric_field_probe/    bare-electrode electrostatic sensor, TL082 follower (tier5 EPFIELD, built & bench-tested 2026-09-15)
         electric_field_probe.spice
         schematic.png         (generated, gitignored)
         breadboard.md

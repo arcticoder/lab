@@ -526,7 +526,11 @@ piezoelectric effect before the joint takes. Use rosin flux (paste or
 pen) and a quick, low-heat touch; see
 [signal_conditioning/charge_amplifier/breadboard.md](../signal_conditioning/charge_amplifier/breadboard.md)
 for the step. Applies to any future use of this batch, not just
-`CHGAMP`.
+`CHGAMP`. **The `CHGAMP` build attempt was paused as a result** — no
+flux on hand yet, so the remaining 19 discs (and the rest of that
+build's parts) went back to inventory rather than sitting mid-assembly;
+see [inventory.md](inventory.md) and
+[TODO-arcticoder.md](TODO-arcticoder.md).
 
 ---
 

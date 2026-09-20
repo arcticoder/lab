@@ -31,7 +31,7 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
    like `TIA`/`CAPBRIDGE` turned out to be.
 3. Update this file's own item count/status references elsewhere (this
    file's own intro doesn't currently carry one, but `TODO-arcticoder.md`'s
-   "Next AliExpress order" section does — check it).
+   "Next order" section does — check it).
 
 ---
 
@@ -51,11 +51,11 @@ every completed entry below was built) needs one to mean anything —
 `FORCEBAL`'s design depends on which displacement-sensing approach gets
 picked (an ordered LVDT, or a capacitive plate read by `CAPBRIDGE` —
 designed/simulated, not yet physically assembled — see
-`TODO-arcticoder.md`'s "Next AliExpress order" section),
+`TODO-arcticoder.md`'s "Next order" section),
 and `SIPMFE`/`LASERDRV` both need an actual SiPM/laser-diode part number
 before bias/drive values can be simulated. **Don't start a netlist for any
 of the three from the tier-graph label alone** — check
-`TODO-arcticoder.md`'s "Next AliExpress order" and "Blocked" sections
+`TODO-arcticoder.md`'s "Next order" and "Blocked" sections
 first; move this entry to a real open item once a part from any of them
 is confirmed received.
 

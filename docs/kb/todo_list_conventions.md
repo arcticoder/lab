@@ -465,6 +465,78 @@ time can't accommodate, say so and let the user decide, but the
 recommendation itself should stop at "add to the next AliExpress
 order," not extend to where else it could be bought.
 
+## Don't let a "why" ever go stale into a false "in progress" — and keep analysis out of the checklist itself (2026-09-19)
+
+Two separate but related corrections, both from the same session.
+
+**1. `CHGAMP` had drifted into reading as an in-progress build with a
+"cheap fix ready to apply," when the real state was: attempted once
+2026-09-16 without flux, failed (destroyed a piezo disc), and the user
+**stopped working on it and returned every part to inventory** — not
+"paused mid-fix, will finish once flux arrives" the way the file's own
+"Ranked #1... already mid-attempt with a known, cheap fix" language
+implied. The user caught this by asking directly: "How is
+`signal_conditioning/charge_amplifier` 'in progress'?" **Lesson: a
+"sunk-cost, mid-attempt" framing (criterion 3 in the ranking rule below)
+is only accurate while the human is actually still attempting the build.
+Once they've explicitly stopped and put parts back, the bullet moves to
+"Blocked" like any other real-world-dependency item — don't keep it in
+"Ready to build now" on the strength of a fix that exists on paper but
+hasn't been tried again.** Resolution (confirmed via direct question):
+retry later once flux is sourced — this is a *paused*, not *abandoned*,
+node; `TODO-arcticoder.md`'s "Blocked" section now carries it, and
+`inventory.md`/`parts_reference.md` were corrected to describe the parts
+as returned rather than "for the retry" mid-build.
+
+**2. The file itself had accumulated multi-paragraph ranking-rationale,
+arrival-date narrative, and session-history asides that duplicate this
+kb file, `spacetime_circuits_dependency.md`'s "Why these tiers" sections,
+and `TODO-completed.md`.** The user's own words: "I appreciate the
+exhaustive backstory but this is really what your knowledgebase is for.
+I just need you to tell me what to do, and provide justification.
+Justification doesn't mean 'we had a conversation on september 18',
+justification means 'this will allow you to do X type of research
+alongside Y circuit'." Separately: deferred/no-urgency shopping-list
+items (SiPM+scintillator, the laser-diode-adjacent LED note, the torsion
+fiber+mirror) had been interleaved into "Next AliExpress order" ahead of
+genuinely actionable items — the user reads top-to-bottom and objected to
+scrolling past settled non-actions to find the real one.
+
+**Rule for future sessions:**
+- Every checklist bullet gets a checklist item plus **one line of
+  justification** in the "this unlocks X" / "this is needed for Y" shape
+  — never a re-narration of which session decided what on which date.
+  That narration belongs in `TODO-completed.md` (what got decided/done)
+  or this kb file (why the file is structured the way it is), not in the
+  live checklist.
+- Within any section, actionable items go first; deferred/no-urgency
+  items get their own clearly-labeled subsection below them (e.g. "Next
+  order"'s "Deferred — not on the shopping list, no action needed") so a
+  top-to-bottom read never has to step over a settled non-action to reach
+  the next real one.
+- Before restating the ranking method, the literature justification, or
+  a past decision's reasoning inline in `TODO-arcticoder.md`, check
+  whether it already lives in this file or
+  `spacetime_circuits_dependency.md`/`general_purpose_circuit_dependency.md`
+  — if so, a one-line pointer replaces the restatement, it doesn't sit
+  alongside it.
+
+## Flux is excluded from AliExpress for a different reason than the general "no hardware store talk" rule — don't conflate the two (2026-09-19)
+
+The existing "no hardware store talk" convention (below) is about not
+proposing a *local* purchase to save transit time — the user is fine
+waiting out AliExpress shipping. **Flux is a separate, narrower
+exclusion**: the user doesn't want AliExpress-sourced flux specifically,
+for a toxicity/quality concern ("it's poisonous enough already just
+buying from canadian sellers"), not a transit-time tradeoff. RobotShop
+(an online Canadian retailer, not a local store — the SparkFun
+Breadboard Power Supply Kit is going there) was proposed as an
+alternative but doesn't carry flux. **Don't write flux into an
+AliExpress shopping list, and don't assume RobotShop is the fallback for
+it** — it's tracked in `TODO-arcticoder.md`'s "Next order" section as its
+own open sourcing decision (which non-AliExpress, non-RobotShop retailer)
+rather than folded into either existing order channel.
+
 ## Laser-diode/eye-safety questions get an honest capability-gap answer, not a reassurance (2026-09-19)
 
 The user asked, about a laser-diode option for `LASERDRV`: "I value my

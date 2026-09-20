@@ -312,7 +312,7 @@ session, not a unilateral Claude decision (the 2026-09-15 pass's
 "flag the gap, let the human decide" precedent still holds as the default;
 this session is a stated exception, see `docs/history.md`). None of the
 five have any hardware sourced yet — see `TODO-arcticoder.md`'s "Next
-AliExpress order" section for the resulting shopping list, and
+order" section for the resulting shopping list, and
 `docs/kb/spacetime_sensor_chain_notes.md` for this pass's fuller session
 notes, including the full list of source-document validation paths
 deliberately excluded as software-only/out-of-scope.
