@@ -274,3 +274,45 @@ matching, so don't assume one file makes the other redundant.
   `VIBISO`'s isolation; the sibling repo's `pico/leds/gpio_pwm_led/` for
   `RIPPLETANK`'s wave driver, no new build needed for a first qualitative
   demo).
+- **Resolved 2026-09-18: possible missing tier5 node (precision
+  force/displacement-balance readout).** Added as `FORCEBAL` at your own
+  explicit direction — see `spacetime_circuits_dependency.md`'s "Why
+  these new tiers" section. `LVDTAMP` is one way to instrument it; a
+  capacitive-plate readout via `CAPBRIDGE` (designed/simulated, ranked in
+  `TODO-arcticoder.md`'s "Ready to build now") is the other, and needs no
+  new purchase. (Moved here from `TODO-arcticoder.md`'s Backlog section,
+  where it had sat as a checked-off historical note instead of being
+  logged and removed.)
+- **`CHGAMP` status corrected — it was never "in progress," and the
+  attempt is paused, not active.** `TODO-arcticoder.md` had drifted into
+  presenting `CHGAMP` as `LOCKIN`'s in-progress remaining prerequisite;
+  the actual state is that the 2026-09-16 bare-piezo soldering attempt
+  failed (no flux on hand), and the build was stopped there — all its
+  parts (TL082, piezo disc, resistors, capacitor) went back to inventory
+  rather than staying mid-assembly. Moved the bullet from "Ready to build
+  now" to "Blocked" (blocked on flux sourcing, not on-hand parts), and
+  corrected `inventory.md`'s TL082/piezo rows and
+  `parts_reference.md`'s piezo entry to match. Confirmed decision: retry
+  later once flux is sourced, not abandon the node.
+- **Flux sourcing: not AliExpress, and RobotShop doesn't carry it.**
+  You've ruled out AliExpress for flux specifically (a toxicity/quality
+  concern distinct from the general "wait out AliExpress transit"
+  preference), and RobotShop — where the SparkFun Breadboard Power Supply
+  Kit is going instead — doesn't sell it. `TODO-arcticoder.md`'s "Next
+  order" section now tracks flux as its own open sourcing decision (which
+  non-AliExpress, non-RobotShop retailer) rather than folding it into the
+  AliExpress shopping list.
+- **`TODO-arcticoder.md` restructured to cut backstory out of the
+  checklist itself.** The file had accumulated multi-paragraph
+  ranking-rationale, arrival-date narrative, and session-history asides
+  that duplicated content already in `kb/todo_list_conventions.md`,
+  `spacetime_circuits_dependency.md`'s "Why these tiers" sections, and
+  this file. Trimmed every bullet to a checklist item plus a one-line
+  "why," with the ranking method and literature justification left as
+  pointers rather than restated. Also fixed the "Ready to build now"
+  section reading like it had settled, lower-priority items ahead of
+  higher-priority ones (the deferred 2026-09-18 shopping-list items had
+  been interleaved into "Next AliExpress order" ahead of active items) —
+  deferred items are now grouped in their own "Deferred" subsection below
+  the actionable ones. See `kb/todo_list_conventions.md`'s matching
+  2026-09-19 entry for the fuller reasoning.

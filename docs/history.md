@@ -4218,3 +4218,16 @@ Done. Here's how each item landed:
 All of this is written into `TODO-arcticoder.md`, `TODO-completed.md`, `README.md`, `docs/history.md`, and two `docs/kb/` notes (bench-photo diagnostics, TODO conventions) for future reference.
 <!-- ------ -->
 ---
+I've corrected all four issues across the repo. Summary:
+
+**1. Flux & piezos.** Flux is no longer folded into the AliExpress list — `TODO-arcticoder.md`'s "Next order" section now tracks it as its own open decision ("source from a Canadian retailer that isn't AliExpress or RobotShop"), since RobotShop doesn't carry it. The SFE kit is marked as going to your RobotShop cart instead of "decide whether to order."
+
+On the piezo question — honest answer: you don't need piezos for anything abstractly labeled "FTL research." The concrete claim is narrower: `CHGAMP` (charge amplifier) is the one remaining physical build standing between now and `LOCKIN` (a lock-in/synchronous-detection amplifier) becoming a real, startable design task — that's a real edge in this bench's own dependency graph, not a narrative one. The piezo disc itself is just the cheapest available charge-generating stimulus to prove the charge-amp topology on real hardware; nothing else on hand produces a charge signal to test it against. If you'd rather not deal with bare-disc soldering at all, that's a legitimate call — you said retry later with flux, so I kept it as a real but paused node rather than dropping it.
+
+**2. CHGAMP status.** It was wrongly presented as "in progress" — fixed. It's now in "Blocked" (blocked on flux sourcing), and `inventory.md`/`parts_reference.md` were corrected to say the build was attempted, failed without flux, and all its parts (TL082, piezo, resistors, capacitor) went back to inventory — not "mid-fix, about to finish."
+
+**3 & 4. File structure.** Rewrote `TODO-arcticoder.md` from scratch: every bullet is now a checklist item plus one line of justification, no session-history narrative. The reasoning/ranking-methodology/literature-justification content that used to be pasted inline now just gets a pointer to `kb/todo_list_conventions.md` or `spacetime_circuits_dependency.md`'s "Why these tiers" sections (which already had it). Deferred/no-urgency items (SiPM+scintillator, high-power LED, torsion fiber+mirror, second MOSFET) are grouped in their own "Deferred" subsection below the actionable items instead of interleaved above them. File dropped from 542 lines to ~210.
+
+I also logged the corrected history in `TODO-completed.md` and added two dated `kb/todo_list_conventions.md` entries so future sessions don't repeat either mistake (the false "in progress" framing, and re-bloating the checklist with backstory).
+<!-- ------ -->
+---
