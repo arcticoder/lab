@@ -446,3 +446,48 @@ five criteria above producing a genuine unbreakable tie (not just
 user's own instruction is to say so explicitly *and add resolving that
 tie as the actual top task* — never to default back to "pick whatever
 you feel like."
+
+## Don't suggest a local hardware/craft-store run as an alternative to AliExpress, even for cheap items (2026-09-19)
+
+Two "Next AliExpress order" bullets (soldering flux; torsion fiber +
+mirror) had been written with a "cheap/small enough that a local
+hardware or craft store may beat AliExpress transit time; use judgment"
+qualifier. The user's own feedback, given directly: "No hardware store
+talk. I don't mind waiting for aliexpress." **Rule for future
+sessions: never propose or hedge toward a local-store purchase in this
+file, regardless of item cost or how much transit time it would save.**
+The user has an explicit preference for consolidating everything into
+AliExpress orders and is fine with the multi-week transit tradeoff —
+don't reintroduce the "or pick up locally" framing on some future cheap
+item on the theory that it's obviously convenient; it isn't a live
+option here. If an item is genuinely time-sensitive in a way transit
+time can't accommodate, say so and let the user decide, but the
+recommendation itself should stop at "add to the next AliExpress
+order," not extend to where else it could be bought.
+
+## Laser-diode/eye-safety questions get an honest capability-gap answer, not a reassurance (2026-09-19)
+
+The user asked, about a laser-diode option for `LASERDRV`: "I value my
+vision. Unless you can assure me this can be done safely?" **Rule for
+future sessions on this bench: don't answer a direct safety question
+about a real hazard (laser eye exposure, high voltage, etc.) with a
+blanket reassurance just because the underlying circuit is
+well-understood or low-power on paper.** The honest answer here was
+specific: a diffuse LED carries no meaningful eye hazard, but even a
+low-power laser diode module (the class actually sold under that name)
+introduces a real specular-reflection hazard — worsened here since
+`FORCEBAL`'s own mirror bullet is exactly the kind of reflective surface
+that turns a contained beam into a stray one — and doing it safely needs
+engineering controls (enclosure, beam dump, wavelength-rated goggles)
+that don't exist on this bench. The resolution wasn't "yes it's safe" or
+a refusal to engage — it was naming the specific gap and defaulting to
+the already-adequate LED-only path (already documented as sufficient for
+a first `LASERDRV` proof-of-concept) until the user decides the
+controls are worth building. See `TODO-arcticoder.md`'s `LASERDRV`
+bullet and `TODO-completed.md`'s 2026-09-19 entry for the resulting
+decision. General pattern: this bench's own 50V/30V high-voltage
+threshold (`kb/circuit_lifecycle_and_repo_scope.md`) and `HVPULSE`'s
+"needs a real safety design pass from the human" gate in
+`TODO-agent.md` are the same discipline applied elsewhere — a
+capability/hazard gap gets named and left as the user's call, not
+smoothed over.

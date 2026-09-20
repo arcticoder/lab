@@ -226,3 +226,51 @@ matching, so don't assume one file makes the other redundant.
   contradiction in `transimpedance_amplifier/breadboard.md`'s PT334-6C
   wiring table (anode/cathode were swapped relative to its own prose and
   `parts_reference.md`) while touching that file.
+
+## 2026-09-19
+
+- **`oscillators/ne555_astable` — reassembled and `signal_conditioning/
+  phase_detector` (tier4 `PHASED`) — physically assembled and
+  bench-tested.** `ne555_astable` had been broken back down to inventory
+  since its 2026-09-13 batch validation (per this repo's ephemeral-
+  circuit convention), so it was rebuilt first per its own
+  `breadboard.md` (powered from `psu_4xaa`) before `phase_detector` could
+  tap its output divider. `main.py` streamed the RC-lowpassed XOR output
+  continuously; the reading moved (0.871V–1.546V over a ~3.5s sample
+  window) rather than pinning at one extreme, which is the real pass
+  criterion per `README.md`'s Validation section — the two oscillators
+  aren't phase-locked, so a genuinely responding gate shows a moving
+  reading, not a specific target voltage. The observed band is narrower
+  than the full ~0–3.3V range `README.md`/`breadboard.md` describe, which
+  is expected for a short capture window against two close, slowly-
+  drifting frequencies (see `docs/kb/bench_photo_diagnostics_notes.md`
+  for the same-reading-window nuance) — not a sign of a problem, since it
+  did move. A `breadboard.jpg` photo of the as-built jig was saved.
+  Circuit broken back down afterward (Pico unplugged), per the same
+  ephemeral-circuit convention. Moved `phase_detector` from `README.md`'s
+  "designed, not yet built" table to "built & bench-tested"; removed its
+  bullet from `TODO-arcticoder.md`'s "Ready to build now" (`CHGAMP` is
+  now the sole remaining `LOCKIN` prerequisite, still blocked on flux —
+  see that file's ranked list, renumbered #1–#6 accordingly).
+- **Five 2026-09-18 tier5/7 shopping-list items resolved into explicit
+  decisions, not left as open questions** (see
+  `TODO-arcticoder.md`'s "Next AliExpress order" and "mech" paragraph for
+  the reasoning behind each): SiPM module and scintillator tile/paddle
+  (`SIPMFE`) deferred — the sensor alone is expensive enough that you're
+  holding off on the whole node for now, revisit later. Laser-diode
+  option for `LASERDRV` taken off the table indefinitely over a real
+  eye-safety gap (no enclosure/beam-dump/laser-rated goggles on this
+  bench) — staying on the free on-hand-LED path; a plain higher-power LED
+  (not a laser) remains a legitimate future upgrade without that safety
+  question attached. Torsion fiber + mirror for `FORCEBAL` also taken off
+  the shopping list — `FORCEBAL`'s own node name allows a knife-edge
+  beam-balance mechanical form (no suspension fiber) paired with a
+  `CAPBRIDGE` capacitive-plate readout (foil/scrap-copper, no purchase),
+  so the node is buildable now without ordering anything; the torsion
+  variant stays a possible future upgrade if the beam-balance/capacitive
+  route proves insufficient. Also clarified what `VIBISO`/`RIPPLETANK`
+  each still need to go from "built" to "used in an experiment"
+  (`ACCELIF`, still blocked on the in-transit GY-521, for quantifying
+  `VIBISO`'s isolation; the sibling repo's `pico/leds/gpio_pwm_led/` for
+  `RIPPLETANK`'s wave driver, no new build needed for a first qualitative
+  demo).
