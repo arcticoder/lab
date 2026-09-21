@@ -996,3 +996,44 @@ And, somewhat unusually for this subject, several of those questions are now ame
 
 *   **Experimental Verification:** Verification in this domain is rigorously algorithmic. It involves using interval mathematics for continuum certification to mathematically prove that the energy conditions computed for a simulated geometry are not artifacts of floating-point errors, coordinate choices, or limited observer sampling.
 *   **Dawson Institute's Contribution:** We can utilize consumer GPUs to train machine learning models to navigate quantum-gravity configuration spaces. By writing custom loss functions that specifically penalize generated geometries containing Hawking-Ellis Type IV stress-energy, we can directly execute automated geometry searches and contribute optimization scripts to open-source numerical relativity repositories.
+
+# Engineering Hurdles
+**Sourcing Exotic Spacetime Geometries (Sections 1–4, 12, 16: Hurdles 1–2)**
+The manuscript highlights that while computational tools like WarpAX can map Hawking-Ellis Type IV stress-energy or find geometries with reduced negative energy (like the Rodal Type I geometry), generating this stress-energy remains physically unresolved.
+
+* **Engineering Hurdle:** There is currently no known metamaterial, plasma, or field generator capable of producing macroscopic negative energy density or a stress-energy tensor lacking a timelike eigenvector. We cannot manufacture the "impossible source" that classical general relativity demands for these specific mathematical geometries.
+
+**Subluminal Steering and Acceleration (Sections 5–6, 16: Hurdles 6–7)**
+Positive-energy, subluminal warp geometries still require extreme physical propulsion to accelerate and steer, governed by mass-loss constraints such as $-\dot m \ge 3m\vert{}a\vert{}$ via photon-rocket recoil.
+
+* **Engineering Hurdle:** Operating within these constraints would require an onboard energy conversion and thrust system capable of perfectly collimated, ultra-high-intensity photon emission. The immediate barrier is thermal management: material science cannot currently provide containment or directional structures that would not be instantly vaporized by the waste heat of such a drive.
+
+**Dynamical Evolution and Coupled Field Equations (Section 7, 16: Hurdles 4–5, 8)**
+Transitioning from a static metric to a dynamically evolving spacetime cycle (create, accelerate, cruise, steer, decelerate, destroy) requires solving coupled source equations where physical matter dictates the geometry in real-time.
+
+* **Engineering Hurdle:** We lack a mechanism to globally coordinate the rapid injection, manipulation, and withdrawal of extreme gravitational sources. Even if the necessary exotic fields existed, engineering an active feedback control system to suppress mathematical instabilities ($\Re(\lambda)\leq0$) across the entire bubble to prevent a gravitational-wave radiation cascade or collapse during flight is currently impossible.
+
+**Quantum Energy Inequalities (Section 8, 16: Hurdle 3)**
+Quantum field theory strictly bounds the relationship between the duration and magnitude of negative energy states.
+
+* **Engineering Hurdle:** Macroscopic engineering of the quantum vacuum is severely restricted. Scaling phenomena like the Casimir effect to astrophysical magnitudes, while simultaneously extending their duration to human timescales, fundamentally violates the known quantum energy inequalities. Overcoming this would require the ability to artificially stabilize highly excited, massive macroscopic quantum states against immediate decay.
+
+**Modified Gravity and Quantum-Inspired Regularization (Sections 9–10)**
+Proposals attempting to evade classical constraints using Einstein-Cartan spin-torsion coupling or T-duality regularizations demand extreme physical parameters to alter standard energy accounting.
+
+* **Engineering Hurdle:** To utilize a mechanism like spin-torsion coupling, engineers would need to construct a structural medium possessing an astronomically high, perfectly aligned intrinsic spin density. No physical material can maintain such coherent spin states at the macro-scale without violently depolarizing or undergoing gravitational collapse.
+
+**Global Causal Consistency (Section 11, 16: Hurdle 9)**
+Controllable FTL propagation risks creating closed causal curves when interacting with ordinary relativistic motion, raising fatal chronology problems.
+
+* **Engineering Hurdle:** An FTL navigation system would need to instantaneously map the global causal structure of the surrounding universe to avoid intersecting trajectories that violate causality. Designing a sensor array and flight computer capable of continuously calculating and reacting to the causal topology limits of spacetime represents a completely unresolved barrier in both information theory and control systems.
+
+**Experimental Quantum Gravity Interferometry (Sections 13–14, 16: Hurdle 10)**
+To determine if the underlying theory gap can be closed, experiments such as paired atom interferometry must test whether gravity itself is capable of mediating quantum entanglement.
+
+* **Engineering Hurdle:** The primary barrier is environmental decoherence. Isolating mesoscopic test masses from all stray electromagnetic fields, thermal photons, and seismic vibrations so thoroughly that infinitesimally weak gravitational coupling becomes the dominant measurable interaction requires cryogenic and vacuum technologies operating at the absolute limits of current capability.
+
+**Translating the AI Computational Stack (Section 15)**
+The automated computational pipeline (symbolic algebra, automatic differentiation, numerical relativity, interval bounds, ML) is highly advanced for searching configuration spaces and verifying mathematical limits.
+
+* **Engineering Hurdle:** The AI stack optimizes abstract mathematical configuration spaces but cannot output a physical blueprint. The barrier is crossing the "source gap": translating a verified geometric tensor into a specific, engineerable arrangement of physical matter, electromagnetism, or strong-force interactions that nature actually permits.
