@@ -18,6 +18,47 @@ matching, so don't assume one file makes the other redundant.
 
 ---
 
+## 2026-09-21
+
+- **Disassembled `signal_conditioning/phase_detector` +
+  `oscillators/ne555_astable`.** Both bench-tested (2026-09-19); nothing
+  else under construction needed them wired, so SN74HC86N, NE555, and the
+  3296 trimpot returned to inventory per this repo's ephemeral-circuit
+  convention. Removed from `TODO-arcticoder.md`'s "Ready to build now"
+  (was item 1); remaining items renumbered 1–13.
+- **`GY-521` (MPU6050), `EZ-USB FX2LP CY7C68013A` (SCOPELA), and the
+  color-ring inductor assortment reorder all received 2026-09-20.** All
+  three moved from "on order" to "received" in `orders.md`,
+  `inventory.md`, and `parts_reference.md`. `SCOPELA` needs no circuit
+  design (the board itself is the purchase) — added as a zero-cost
+  plug-in verification to `TODO-arcticoder.md`'s "Ready to build now".
+  `ACCELIF` (tier5) and `INDBRIDGE` (tier3) both need a netlist designed
+  against the new part before anything can be physically assembled —
+  removed from `TODO-arcticoder.md`'s "Blocked" section and added as new
+  open items in `TODO-agent.md` instead.
+- **Piezo disc (leaded, 12mm ×12) and linear/analog Hall sensor (49E
+  ×10) added to the same AliExpress cart**, not yet checked out — logged
+  in `orders.md`'s new "In cart" stage and `TODO-arcticoder.md`'s "Next
+  order" section, cross-referenced in "Blocked" (`CHGAMP`/`HALLAMP`).
+- **Moved the SparkFun Breadboard Power Supply Kit bullet from "Next
+  order" to "Deferred"** in `TODO-arcticoder.md` — its own text already
+  said to hold off pending a free continuity check, so it didn't belong
+  in the top (action-needed) section; fixed the cross-reference from the
+  check's own bullet to point at its new location.
+- **Reviewed `docs/FTL-research-state-sept-2026.md`'s "Engineering
+  Hurdles" section against both dependency-graph files** — no new node
+  or edit warranted; existing `FORCEBAL`/`LASERDRV`/`CALORIF`/`VIBISO`/
+  `RFRAD` already cover the bench-relevant subset (radiation-pressure
+  steering, thermal measurement, seismic/EM isolation), the rest
+  (exotic-matter sourcing, causal-structure computation, quantum-vacuum
+  engineering) is materials-science/theoretical-physics work with no
+  buildable apparatus. Full reasoning in
+  `kb/spacetime_sensor_chain_notes.md`'s matching 2026-09-21 entry.
+- **The "don't name a specific theory/institute" doc convention is
+  lifted**, per explicit user direction — it was a holdover from an
+  earlier, narrower complaint. `kb/repo_docs_conventions.md`'s matching
+  entry updated; no existing doc needed retroactive renaming.
+
 ## 2026-09-10
 
 - Checked out the AliExpress cart: CY7C68013A / EZ-USB FX2LP USB logic

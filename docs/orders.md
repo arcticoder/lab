@@ -15,6 +15,35 @@ the converted `.md` files are tracked).
 
 ---
 
+## In cart (not yet checked out)
+
+### Piezo element, 12mm disc, leaded (pre-attached wires)
+
+- Listing: "12mm 12x8x0.55mm Piezoelectric Diaphragm Piezo Disc with Wire
+  Leads" — [item 1005003133740770](https://www.aliexpress.com/item/1005003133740770.html).
+- 12 selected. Replaces the flux-sourcing plan for the bare 12mm discs
+  received 2026-09-12 (see that entry below) — a fluxless solder attempt
+  on the bare batch destroyed one unit 2026-09-16, and buying leaded
+  stock sidesteps the problem entirely instead of sourcing flux. Fills
+  the tier5 `CHGAMP` blocker in
+  [TODO-arcticoder.md](TODO-arcticoder.md)'s "Next order" section.
+- Added to cart: 2026-09-21.
+
+### Linear/analog Hall-effect sensor (49E, TO-92)
+
+- Listing: "49E TO-92 AH49E OH49E SS49E S49E Linear Hall-Effect IC" —
+  [item 32912682330](https://www.aliexpress.com/item/32912682330.html).
+- 10 selected. Fills the tier5 `HALLAMP` gap the on-hand KY-003/A3144
+  module only partially covers (that module is digital switch-output
+  only; `HALLAMP`'s op-amp amplifier design needs a genuinely
+  linear/analog Hall element). See
+  [TODO-arcticoder.md](TODO-arcticoder.md)'s "Next order" section — no
+  bench build is currently blocked on this, it's a shipping-pipeline
+  bundle with the piezo disc above, not a build-priority purchase.
+- Added to cart: 2026-09-21.
+
+---
+
 ## Received
 
 ### SYB-170 Mini Breadboard — 6-in-1 pack (black selected)
@@ -366,6 +395,65 @@ the converted `.md` files are tracked).
   [parts_reference.md](parts_reference.md#ky-003-a3144-hall-sensor-breakout-module).
 - Ordered: 2026-09-03. Logged received: 2026-09-12.
 
+### GY-521 (MPU6050) 3-axis gyro/accelerometer module
+
+- Listing: "1~10PCS EGBO GY-521 GY521 MPU 6050 MPU6050 MPU 6050 Module 3
+  Axis Analog Gyro Sensor + Accelerometer for arduino DIY KIT" —
+  https://www.aliexpress.com/item/1005001863121268.html — selected variant
+  "1pcs Compatible".
+- 1 received. MPU-6050 chip, 3.3–5V supply (onboard low-dropout
+  regulator), standard I2C, built-in 16-bit ADC, gyro range
+  ±250/500/1000/2000°/s, accel range ±2/4/8/16g, 2.54mm pin pitch,
+  immersion-gold PCB. Board ~2.1×1.5cm (1.64cm wide including pin pads).
+  Untested.
+- Substitutes for the originally-scoped ADXL335 to fill the tier5
+  `ACCELIF` gap — see
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
+  2026-09-03 gap-analysis cross-reference entry. Design/simulate task now
+  open in [TODO-agent.md](TODO-agent.md).
+- Ordered: 2026-09-10. Logged received: 2026-09-20.
+
+### EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
+
+- Listing: "EZ-USB FX2LP CY7C68013A USB Core Board Development Board USB
+  Logic Analyzer With I2C Serial SPI Interface Module Mini USB" —
+  https://www.aliexpress.com/item/1005008695596102.html.
+- 1 received. Board built around a CY7C68013A-56PVXC (low-power, enhanced
+  8051 core, 16KB program RAM, 48MHz, USB2.0 480Mbps, backward-compatible
+  USB1.1), with an onboard 24LC128 EEPROM (16K) for firmware/VID/PID
+  storage and in-system USB programming — no external programmer needed.
+  All GPIOs broken out on 2.54mm headers. Board size 55.24×41.68mm overall
+  (46.73×34.62mm hole-to-hole), positioning hole Ø3.15mm, weight ~13.11g.
+  Operating temperature −40 to +85°C.
+- This board *is* the `SCOPELA` tier purchase itself, not a sub-part of
+  it — see
+  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
+  "CY7C68013A board" entry. `sigrok`'s `fx2lafw` firmware supports it out
+  of the box — no circuit design needed, just a plug-in verification, now
+  in [TODO-arcticoder.md](TODO-arcticoder.md)'s "Ready to build now".
+- Ordered: 2026-09-10. Logged received: 2026-09-20.
+
+### Color-ring inductor assortment (0307, 1/4W) reorder
+
+- Listing: "12values Color Ring Inductor Assortment 0307 1/4W 0.25W 0410
+  1/2W 0510 1W 1UH 10UH 100UH Inductors Inductors Assorted Set Kit" —
+  https://www.aliexpress.com/item/32988801481.html (variant selected:
+  "0307-120PCS-1lot") — same listing and variant as the cancelled order
+  below; still the cheapest available option as of 2026-09-10, so ordered
+  again rather than sourcing an alternate listing.
+- 120 received (12 values × 10pcs): 1µH, 10µH, 22µH, 33µH, 47µH, 100µH,
+  150µH, 220µH, 330µH, 470µH, 560µH, 1mH. Axial, color-ring-coded,
+  epoxy-coated, 0307 package (1/4W/0.25W). Rated dielectric withstand
+  250V AC rms, operating temperature −25 to 85°C. Same spec as the
+  cancelled order — see
+  [parts_reference.md](parts_reference.md#color-ring-inductor-assortment-0307-14w).
+  Untested — color-band values not yet cross-checked against a known
+  reading.
+- Supports: tier3 `INDBRIDGE` (inductance bridge) directly, and any
+  future filter/oscillator tank-circuit use. Design/simulate task now
+  open in [TODO-agent.md](TODO-agent.md).
+- Ordered: 2026-09-10. Logged received: 2026-09-20.
+
 ---
 
 ## Cancelled
@@ -400,66 +488,7 @@ the converted `.md` files are tracked).
 
 ## On order (placed, not yet received)
 
-### GY-521 (MPU6050) 3-axis gyro/accelerometer module
-
-- Listing: "1~10PCS EGBO GY-521 GY521 MPU 6050 MPU6050 MPU 6050 Module 3
-  Axis Analog Gyro Sensor + Accelerometer for arduino DIY KIT" —
-  https://www.aliexpress.com/item/1005001863121268.html — selected variant
-  "1pcs Compatible".
-- 1 ordered — the earlier "quantity not yet confirmed" caveat from the
-  cart-stage entry is resolved by this variant string.
-- MPU-6050 chip, 3.3–5V supply (onboard low-dropout regulator), standard
-  I2C, built-in 16-bit ADC, gyro range ±250/500/1000/2000°/s, accel range
-  ±2/4/8/16g, 2.54mm pin pitch, immersion-gold PCB. Board ~2.1×1.5cm
-  (1.64cm wide including pin pads).
-- Substitutes for the originally-scoped ADXL335 to fill the tier5
-  `ACCELIF` gap — see
-  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
-  2026-09-03 gap-analysis cross-reference entry (this was the last of the
-  7 gap-analysis items still open).
-- Sat in cart since 2026-09-09, same cart/order as the CY7C68013A board
-  above; checked out 2026-09-10.
-- Ordered: 2026-09-10.
-
-### EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
-
-- Listing: "EZ-USB FX2LP CY7C68013A USB Core Board Development Board USB
-  Logic Analyzer With I2C Serial SPI Interface Module Mini USB" —
-  https://www.aliexpress.com/item/1005008695596102.html.
-- 1 ordered. Board built around a CY7C68013A-56PVXC (low-power, enhanced
-  8051 core, 16KB program RAM, 48MHz, USB2.0 480Mbps, backward-compatible
-  USB1.1), with an onboard 24LC128 EEPROM (16K) for firmware/VID/PID
-  storage and in-system USB programming — no external programmer needed.
-  All GPIOs broken out on 2.54mm headers. Board size 55.24×41.68mm overall
-  (46.73×34.62mm hole-to-hole), positioning hole Ø3.15mm, weight ~13.11g.
-  Operating temperature −40 to +85°C.
-- This board *is* the `SCOPELA` tier purchase itself, not a sub-part of
-  it — see
-  [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
-  "CY7C68013A board" entry. `sigrok`'s `fx2lafw` firmware supports it out
-  of the box.
-- Sat in cart since 2026-09-09 ($0.31 short of the $10 free-shipping
-  minimum, alongside the GY-521 below); checked out 2026-09-10 once the
-  inductor reorder below was added to clear that threshold — all three
-  shipped as one order.
-- Ordered: 2026-09-10.
-
-### Color-ring inductor assortment (0307, 1/4W) reorder
-
-- Listing: "12values Color Ring Inductor Assortment 0307 1/4W 0.25W 0410
-  1/2W 0510 1W 1UH 10UH 100UH Inductors Inductors Assorted Set Kit" —
-  https://www.aliexpress.com/item/32988801481.html (variant selected:
-  "0307-120PCS-1lot") — same listing and variant as the cancelled order
-  below; still the cheapest available option as of 2026-09-10, so ordered
-  again rather than sourcing an alternate listing.
-- 120 ordered (12 values × 10pcs): 1µH, 10µH, 22µH, 33µH, 47µH, 100µH,
-  150µH, 220µH, 330µH, 470µH, 560µH, 1mH. Axial, color-ring-coded,
-  epoxy-coated, 0307 package (1/4W/0.25W). Rated dielectric withstand
-  250V AC rms, operating temperature −25 to 85°C. Same spec as the
-  cancelled order — see
-  [parts_reference.md](parts_reference.md#color-ring-inductor-assortment-0307-14w).
-- Added to the CY7C68013A/GY-521 cart to clear the $10 free-shipping
-  minimum (was $0.31 short with just those two items).
-- Supports: tier3 `INDBRIDGE` (inductance bridge) directly, and any
-  future filter/oscillator tank-circuit use.
-- Ordered: 2026-09-10.
+Nothing currently in this stage as of 2026-09-21 — the 2026-09-10 batch
+(GY-521, CY7C68013A, inductor reorder) all arrived 2026-09-20; see
+"Received" above. The piezo disc and 49E Hall sensor are one stage
+earlier, still "In cart" above pending checkout.

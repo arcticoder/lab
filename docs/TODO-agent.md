@@ -37,6 +37,43 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
 
 ## Open items
 
+### `ACCELIF` (tier5) — GY-521/MPU6050 received 2026-09-20, design/simulate now startable
+
+Was sitting in `TODO-arcticoder.md`'s "Blocked" section on the in-transit
+GY-521 module; that arrived 2026-09-20, so this file's own workflow
+condition (a real sourced part to design against) is now satisfied —
+same trigger that started `EPFIELD`/`CHGAMP`/`THERM`/`PHASED`/`ACTIVELIM`
+2026-09-13. Design/simulate an I2C interface to the MPU-6050 (3.3–5V
+supply, SDA/SCL + 3V3 + GND, 16-bit ADC per axis, accel range
+±2/4/8/16g — see `docs/parts_reference.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module`
+for the full spec) against `psu_pico_rail` (already built, no PSU
+purchase needed first). No analog front-end needed — the breakout board
+already carries its own ADC, so this is closer in shape to
+`cd4066_switch_tester`'s Pico-driven digital-interface pattern than to
+the op-amp analog circuits designed 2026-09-13. Feeds `VIBISO`'s
+isolation-quality bench measurement once built (see
+`TODO-arcticoder.md`'s "Ready to build now" item 4) — that's the reason
+this was sourced in the first place, not a general-purpose accelerometer
+need.
+
+### `INDBRIDGE` (tier3, inductance bridge) — color-ring inductor assortment received 2026-09-20, design/simulate now startable
+
+Was sitting in `TODO-arcticoder.md`'s "Blocked" section on the reordered
+inductor assortment (original order cancelled by AliExpress 2026-09-07,
+reordered 2026-09-10); that arrived 2026-09-20. Design/simulate an
+inductance bridge (known-reference-vs-unknown-leg topology, same family
+as the already-built `measurement_tools/resistance_measurement/` divider
+and the designed-but-unbuilt `measurement_tools/capacitance_bridge/` RC
+timing approach) against the 12-value, 1µH–1mH color-ring inductor
+assortment — see
+`docs/parts_reference.md#color-ring-inductor-assortment-0307-14w` for
+values and the still-unverified color-band-to-value caveat (read the
+physical bands the same way as resistor color codes, per that entry,
+until a build can cross-check one against a known value). No PSU
+purchase needed — check whether `psu_pico_rail` suffices or whether the
+bridge needs an AC excitation source not yet on the bench before
+assuming it's a no-purchase build.
+
 ### `FORCEBAL` / `SIPMFE` / `LASERDRV` — new tier5/7 nodes (2026-09-18), blocked on part sourcing, not file-creation work
 
 Added to `spacetime_circuits_dependency.md` 2026-09-18 (see that file's

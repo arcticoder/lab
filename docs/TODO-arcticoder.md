@@ -30,16 +30,13 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ## Next order — action needed
 
-- [ ] **Add a piezo disc with pre-attached leads to your AliExpress
-      cart** (replaces the flux-sourcing plan below). Yes — say it
-      plainly: `CHGAMP` is tier5 in this bench's spacetime-research
-      chain, which `spacetime_circuits_dependency.md` itself already
-      states exists "in support of experiments toward faster-than-light
-      travel" (no specific theory or institute named, per this repo's
-      standing convention — see `kb/repo_docs_conventions.md`). The
-      concrete mechanism: `CHGAMP` is the last unbuilt link before
-      `LOCKIN` — the strongest-justified next *design* target on this
-      whole bench (see that same file's "Why these tiers" section:
+- [ ] **Piezo disc with pre-attached leads — in cart, not yet checked
+      out.** [12× 12mm piezo elements with leads attached](https://www.aliexpress.com/item/1005003133740770.html),
+      added to cart 2026-09-21 (replaces the flux-sourcing plan below).
+      `CHGAMP` is tier5 in this bench's spacetime-research chain — the
+      last unbuilt link before `LOCKIN`, the strongest-justified next
+      *design* target on this whole bench (see
+      `spacetime_circuits_dependency.md`'s "Why these tiers" section:
       synchronous/lock-in detection is the standard technique the cited
       literature uses to pull a small periodic force signal out of
       noise, and `PHASED`/`EPFIELD` are the other two prerequisites,
@@ -52,31 +49,20 @@ status lives in `README.md`'s "built & bench-tested" table.
       RobotShop both ruled out — see `docs/kb/todo_list_conventions.md`)
       goes away rather than getting solved. The 19 remaining bare discs
       and the rest of `CHGAMP`'s parts (1 TL082, resistors, capacitor)
-      stay in inventory unused.
-- [ ] **Linear/analog Hall-effect sensor (e.g. 49E), 5–10pk — add to
-      next AliExpress order.** Honest state of this one: nothing on this
+      stay in inventory unused. **Action needed: check out the cart.**
+- [ ] **Linear/analog Hall-effect sensor (49E) — in cart, not yet
+      checked out.** [10× 49E TO-92 linear Hall-effect ICs](https://www.aliexpress.com/item/32912682330.html),
+      added to cart 2026-09-21. Honest state of this one: nothing on this
       bench is currently *blocked* on it — the KY-003/A3144 module
       already on hand is digital switch-output only, so it doesn't
       unlock the `HALLAMP` op-amp circuit as scoped, and `HALLAMP`
       itself has no other bullet on this list waiting on it. It's here
       because it's cheap, it will definitely be needed eventually (there
-      is no on-hand substitute), and AliExpress transit runs a few
-      weeks — bundling a low-urgency-but-certain item into whatever
-      order goes out next costs nothing extra. That's a shipping-pipeline
-      argument, not a build-priority one.
-
-**Not on the shopping list yet — pending a free check (see "Ready to
-build now" tail below):**
-
-- SparkFun Breadboard Power Supply Kit (5V/3.3V, LM317) for
-  `power_supplies/psu_medlow_lm317` — **hold off.** This is one of two
-  alternative paths to the same `psu_medlow` tier; the other,
-  `psu_medlow_usbc`, is already built and sitting on the bench needing
-  only a zero-cost continuity check (item 7 below, promoted to the top
-  of the "Ready to build now" standalone tail) to know whether it
-  already works. Buying this kit before that check risks paying for a
-  part you don't need. Add it to the RobotShop cart only if that check
-  shows `psu_medlow_usbc` can't bring up VBUS.
+      is no on-hand substitute), and bundling a low-urgency-but-certain
+      item into the same cart as the piezo disc above costs nothing
+      extra. That's a shipping-pipeline argument, not a build-priority
+      one. **Action needed: check out the cart (same cart as the piezo
+      disc above).**
 
 ## Ready to build now — parts on hand, ranked by what it unlocks
 
@@ -87,19 +73,12 @@ graph edge, ascending bench effort otherwise) — not by closeness to any
 outside research goal. Full method:
 [kb/todo_list_conventions.md](kb/todo_list_conventions.md).
 
-1. [ ] **Disassemble `phase_detector` + `ne555_astable`.** Bench-tested
-       2026-09-19 (today) — see `README.md`'s bench-tested table entry.
-       Per this repo's ephemeral-circuit convention (nothing stays wired
-       once its own bench check passes and nothing else currently under
-       construction needs it — see `README.md` § Circuits — built &
-       bench-tested), and nothing below needs any of their parts
-       (SN74HC86N, NE555, 3296 trimpot): return them to inventory now.
-2. [ ] **`safety/thermal_monitor` (`THERM`) — physically assemble.**
+1. [ ] **`safety/thermal_monitor` (`THERM`) — physically assemble.**
        Folder/netlist/breadboard/smoke test exist. Powered from
        `psu_pico_rail` (already built — no PSU purchase or build
        required first). Fills the safety gap flagged by the existing
        thermistor's "suspect faulty" status.
-3. [ ] **`protection/active_current_limiter` (`ACTIVELIM`) — physically
+2. [ ] **`protection/active_current_limiter` (`ACTIVELIM`) — physically
        assemble.** Uses the only IRLZ44N on hand (returns to inventory
        once its bench check passes, per this repo's ephemeral-circuit
        convention — see [kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md)).
@@ -108,7 +87,7 @@ outside research goal. Full method:
        divider. **Known limitation, not a defect**: this is a hard-trip
        limiter with no hysteresis, so expect chatter right at the 2A trip
        boundary — see that circuit's README § Design notes.
-4. [ ] **`measurement_tools/capacitance_bridge` (`CAPBRIDGE`) —
+3. [ ] **`measurement_tools/capacitance_bridge` (`CAPBRIDGE`) —
        physically assemble.** Targets the aluminum electrolytic capacitor
        kit (1µF–470µF). No PSU needed (runs off the Pico's own GPIO/3V3).
 
@@ -120,13 +99,14 @@ lead/contact-resistance precision, which nothing on this bench does yet.
 
 **Mechanical builds — no purchase needed:**
 
-5. [ ] **`VIBISO`** (vibration isolation platform) — a weighted platform
+4. [ ] **`VIBISO`** (vibration isolation platform) — a weighted platform
        on soft-compliance feet (rubber pads, partially-inflated inner
        tubes/balloons). Check what's around the apartment first. Buildable
        now as a mechanical base for `FORCEBAL`/`LASERDRV`; can't be
-       bench-*measured* for isolation quality until `ACCELIF` arrives
-       (see "Blocked" below).
-6. [ ] **`RIPPLETANK`** (2D ripple tank) — a shallow tray/baking dish,
+       bench-*measured* for isolation quality until `ACCELIF` is
+       designed and built (part received 2026-09-20 — design task now
+       tracked in `TODO-agent.md`, not a purchase blocker anymore).
+5. [ ] **`RIPPLETANK`** (2D ripple tank) — a shallow tray/baking dish,
        water, and a glass/acrylic sheet as the submerged depth-step
        insert. Wave driver: `pico/leds/gpio_pwm_led/` (already built in
        the sibling `pico/` repo) drives a small motor/speaker dipper
@@ -138,14 +118,22 @@ lead/contact-resistance precision, which nothing on this bench does yet.
 ordered by which check informs the biggest decision first, then
 ascending bench effort:**
 
-7. [ ] **`power_supplies/psu_medlow_usbc` — clip
+6. [ ] **`power_supplies/psu_medlow_usbc` — clip
        [measurement_tools/resistance_measurement](../measurement_tools/resistance_measurement/)
        onto the two CC pins.** Promoted to the top of this tail because
-       the answer directly decides the SparkFun-kit purchase above: if
-       VBUS comes up with correct CC1/CC2 termination, `psu_medlow` is
-       done for free and that purchase is dropped for good; if not, add
-       the kit to cart. `smoke_test.py` fails on purpose until this is
+       the answer directly decides the SparkFun-kit purchase in
+       "Deferred" below: if VBUS comes up with correct CC1/CC2
+       termination, `psu_medlow` is done for free and that purchase is
+       dropped for good; if not, move the kit from "Deferred" back into
+       "Next order." `smoke_test.py` fails on purpose until this is
        resolved.
+7. [ ] **`SCOPELA` — plug in the CY7C68013A board (received 2026-09-20)
+       and confirm `sigrok`/PulseView detects it via `fx2lafw`.** No
+       assembly needed — this board *is* the purchase, not a component
+       (see `kb/ordering_ingestion_notes.md`). Zero-cost, lowest-effort
+       check in this tail; check whether it included an 8-wire Dupont
+       test-clip cable and whether it's USB-A dongle-style or needs its
+       own Micro-USB cable.
 8. [ ] **1N5817 Schottky diode — per-unit forward-drop check for
        whichever unit goes into `psu_3xaa`.** Two of 20 already confirmed
        (`psu_4xaa`, `psu_low_v2`); reuse the same Pico-divider technique
@@ -178,28 +166,34 @@ ascending bench effort:**
 ## Blocked — waiting on a shipment or a sourcing decision
 
 - [ ] **`CHGAMP`** (tier5, charge amplifier). Blocked on: a leaded piezo
-      disc, not yet ordered (see "Next order" above). Attempted
-      2026-09-16 with the bare-disc batch: no pre-attached leads, and a
-      fluxless solder attempt destroyed one unit. Build paused — all its
-      parts (TL082, piezo disc, resistors, capacitor) went back to
-      inventory rather than sitting mid-assembly. Retry once the leaded
-      piezo arrives.
-- [ ] **`INDBRIDGE`** (tier3, inductance bridge). Blocked on: color-ring
-      inductor assortment, reordered 2026-09-10 (original order cancelled
-      by AliExpress 2026-09-07), not yet received.
-- [ ] **`SCOPELA`** (logic analyzer). Blocked on: CY7C68013A / EZ-USB
-      FX2LP board, ordered 2026-09-10, not yet received. `sigrok`'s
-      `fx2lafw` firmware supports it out of the box.
-- [ ] **`ACCELIF`** (tier5). Blocked on: GY-521 (MPU6050) module, ordered
-      2026-09-10, not yet received. Substitutes for the originally-scoped
-      ADXL335.
+      disc, in cart but not yet checked out (see "Next order" above).
+      Attempted 2026-09-16 with the bare-disc batch: no pre-attached
+      leads, and a fluxless solder attempt destroyed one unit. Build
+      paused — all its parts (TL082, piezo disc, resistors, capacitor)
+      went back to inventory rather than sitting mid-assembly. Retry once
+      the leaded piezo arrives.
 - [ ] **`HALLAMP`** (tier5) — partially unlocked (KY-003/A3144 module
       received), but that part is digital switch-output only. Needs the
-      linear/analog Hall sensor from "Next order" above to build the
-      op-amp amplifier circuit as scoped.
+      linear/analog Hall sensor in cart in "Next order" above (not yet
+      checked out) to build the op-amp amplifier circuit as scoped.
+
+`INDBRIDGE`, `SCOPELA`, and `ACCELIF` all received their blocking part on
+2026-09-20 and are no longer listed here — `SCOPELA` is a zero-cost
+plug-in verification now in "Ready to build now" above (item 7);
+`INDBRIDGE`/`ACCELIF` both still need a netlist designed against the new
+part before there's anything to physically assemble, tracked as open
+design items in `TODO-agent.md`, not here.
 
 ## Deferred — considered and declined, no action needed
 
+- SparkFun Breadboard Power Supply Kit (5V/3.3V, LM317) for
+  `power_supplies/psu_medlow_lm317` — **hold off.** This is one of two
+  alternative paths to the same `psu_medlow` tier; the other,
+  `psu_medlow_usbc`, is already built and sitting on the bench needing
+  only a zero-cost continuity check ("Ready to build now" item 6 above)
+  to know whether it already works. Buying this kit before that check
+  risks paying for a part you don't need. Move it to "Next order" only
+  if that check shows `psu_medlow_usbc` can't bring up VBUS.
 - TL431A precision shunt reference (5 on hand, untested) — optional
   precision upgrade to the tier1 `REF` divider, not a purchase.
 - LVDT transducer — the only tier5 node with zero hardware, instruments
@@ -262,5 +256,6 @@ how each node connects before starting one.
       but the actual multiplexer circuit isn't built.
 - [ ] **Concurrent measurement tools**: `SCOPEUSBSER`, `SCOPEDSO`,
       `SCOPEBENCH`, `PRECBOX`, `LOADBANK`, `NOISEGEN`, `TESTSIG`,
-      `THERMOAMP` — undesigned/unsourced. (`SCOPELA` has a part on order
-      — see "Blocked" above.)
+      `THERMOAMP` — undesigned/unsourced. (`SCOPELA`'s board is received
+      — see "Ready to build now" item 7 above — but it's a plug-in tool,
+      not a circuit; none of these dedicated designs exist yet.)
