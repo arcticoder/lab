@@ -1,4 +1,4 @@
-# KB: bench-photo diagnostics and failure-signature notes (2026-09-16)
+# KB: bench-photo diagnostics and failure-signature notes (2026-09-16, updated 2026-09-21)
 
 Process notes for future LLM sessions triaging a "built it, tested it,
 got a weird reading" report. Not end-user content — see
@@ -119,6 +119,72 @@ lesson:** when a photo shows a component absent from the documented
 wiring, say so explicitly and ask/flag rather than silently trust
 either the photo interpretation or the written guide — breadboards
 reused across ephemeral builds can carry over undocumented parts.
+
+## A single wildly-implausible sample surrounded by physically-sane readings is a handling glitch, not a wiring fault
+
+`thermal_monitor` (`THERM`) bench run, 2026-09-21: during a sustained
+finger-pinch warming test, 27 of 28 `main.py` prints traced a smooth,
+monotonic divider response (10362Ω→8106Ω, 24.2°C→29.8°C as the MF52AT
+warmed). One print mid-sequence read 3.253V/698639Ω/−47.4°C — a
+physically nonsensical value (an NTC can't produce a negative absolute
+resistance-derived temperature this way; 698kΩ implies the MID node sat
+almost at VCC, i.e. `Rntc` momentarily looked close to open-circuit) —
+then the very next sample snapped back to a value consistent with the
+ongoing warming trend. **Read this pattern as a single momentary contact
+glitch, not a real excursion or a wiring defect**: `main.py` takes a
+20-sample average per print but does nothing across prints (no
+outlier rejection, no debounce), so one bad print means the divider's
+MID node briefly saw a bad connection — physically plausible here
+specifically because the test protocol is fingers pinching a
+through-hole leaded component seated in loose breadboard rows, which is
+exactly the kind of handling that can momentarily lift a lead. The
+general diagnostic question: does the surrounding data tell a coherent
+physical story except for one (or a few) isolated samples? If yes, don't
+chase the outlier as a wiring bug — note it and move on. This is a
+distinct failure-signature class from both entries above: not "flat +
+insensitive" (no power) and not "narrow but moving" (a real, if small,
+signal) — this is "one sample breaks continuity with its neighbors,"
+which reads as a transient mechanical/contact event.
+
+**Real consequence worth flagging, not fixing reflexively:** `main.py`
+sets the alarm LED directly off each print's own reading
+(`temp_c >= ALARM_THRESHOLD_C`), with no debounce across prints. This
+run's glitch happened to read *cold* (harmless), but a same-class glitch
+that read *hot* instead would have driven a spurious momentary alarm
+trip with no wiring fault behind it. Worth a debounce/consecutive-reads
+guard before this circuit is trusted as an unattended safety monitor
+(not needed just to confirm the sensor path works, which this run
+already did) — noted as an open, non-urgent item in `TODO-agent.md`
+rather than fixed reflexively here, since it's a design choice (how many
+consecutive over-threshold reads should it take?) not obviously implied
+by the one glitch observed.
+
+## Photo-based verification can't always distinguish a thermistor bead from a resistor, or confirm a lead is seated
+
+Cropped `safety/thermal_monitor/breadboard.jpg` (2026-09-21, same
+technique as the entry below) looking for the MF52AT thermistor
+specifically. Found: the LED, its 220Ω current-limit resistor, and what
+is presumably the second in-circuit resistor (`Rref`, 10kΩ) — both of
+the latter are ordinary axial color-band resistors, visually
+indistinguishable from each other in the photo. **No component
+distinctly identifiable as the thermistor bead was found** — the MF52AT
+is a small epoxy-dipped axial part that can look like a third resistor
+at this photo's resolution, and one candidate lead (following the wire
+that continues past the second resistor) appears in the crop to curl
+off the edge of the breadboard into open air over the cutting mat,
+rather than terminating in a populated hole. Given the electrical data
+from the same session shows a clearly-intact, physically-responsive
+divider (see the entry above), **the data is stronger evidence of correct
+wiring at test time than this photo is evidence of a problem** — most
+likely explanation is the photo was taken at a slightly different moment
+than the `mpremote run main.py` capture (e.g. thermistor lead
+momentarily freed for the finger-pinch handling described in that
+session's own log). Flagged rather than resolved, per this file's
+existing "say so explicitly" convention — don't silently assume the
+photo is stale, but don't treat it as contradicting a data-backed PASS
+either. Worth a fresh, deliberately-framed close-up photo next time this
+circuit is reassembled, if a canonical wiring-reference image matters
+more than it did for this pass.
 
 ## Bare piezo disc soldering: needs flux, or it depoles/cracks before the joint takes
 

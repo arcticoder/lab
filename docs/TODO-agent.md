@@ -37,6 +37,24 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
 
 ## Open items
 
+### `THERM` — main.py has no debounce on the alarm decision, non-urgent
+
+Surfaced 2026-09-21 during `THERM`'s bench-test run (see
+`kb/bench_photo_diagnostics_notes.md`'s matching entry): a momentary
+contact glitch during finger-pinch handling produced one wildly-off
+sample (698639Ω/−47.4°C) sandwiched between physically-sane readings.
+Harmless this time (the glitch read cold, not hot), but `main.py`'s
+alarm LED currently fires off a single print's reading with no
+consecutive-reads guard, so a same-class glitch reading *hot* would
+trigger a spurious momentary trip with no real over-temperature behind
+it. Not blocking `THERM`'s own PASS (the sensor/divider path is
+confirmed working) and not urgent — this bench doesn't yet run `THERM`
+unattended against a real hazard. Worth a small debounce (e.g. N
+consecutive over-threshold reads before lighting the LED) before this
+circuit is ever trusted as an unattended monitor; pick N against how
+often this kind of breadboard contact glitch actually recurs rather than
+guessing a number now.
+
 ### `ACCELIF` (tier5) — GY-521/MPU6050 received 2026-09-20, design/simulate now startable
 
 Was sitting in `TODO-arcticoder.md`'s "Blocked" section on the in-transit
@@ -52,7 +70,7 @@ already carries its own ADC, so this is closer in shape to
 `cd4066_switch_tester`'s Pico-driven digital-interface pattern than to
 the op-amp analog circuits designed 2026-09-13. Feeds `VIBISO`'s
 isolation-quality bench measurement once built (see
-`TODO-arcticoder.md`'s "Ready to build now" item 4) — that's the reason
+`TODO-arcticoder.md`'s "Ready to build now" item 3) — that's the reason
 this was sourced in the first place, not a general-purpose accelerometer
 need.
 
