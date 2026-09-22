@@ -20,6 +20,22 @@ matching, so don't assume one file makes the other redundant.
 
 ## 2026-09-21
 
+- **`safety/thermal_monitor` (`THERM`) — physically assembled and
+  bench-tested, PASS.** Ambient baseline stable (1.708–1.713V /
+  10723–10790Ω / 23.3–23.5°C); a sustained finger pinch produced a
+  monotonic, physically-consistent response (resistance 10362Ω→8106Ω,
+  temperature 24.2°C→29.8°C) as the thermistor warmed, and the alarm LED
+  correctly stayed off the whole run (never reached
+  `ALARM_THRESHOLD_C=40.0`) — a real alarm *trip* hasn't been
+  bench-tested yet, only the divider/temperature-conversion path. One
+  transient single-sample outlier mid-run (698639Ω, −47.4°C) attributed
+  to a momentary contact disturbance from handling the thermistor, not a
+  wiring fault — see `kb/bench_photo_diagnostics_notes.md`'s matching
+  entry for the full diagnosis and a flagged main.py robustness gap it
+  surfaced. Removed from `TODO-arcticoder.md`'s "Ready to build now"
+  (was item 1); remaining items renumbered 1–12, including the two
+  internal "item N above" cross-references and one in `TODO-agent.md`.
+  Moved to `README.md`'s "built & bench-tested" table.
 - **Disassembled `signal_conditioning/phase_detector` +
   `oscillators/ne555_astable`.** Both bench-tested (2026-09-19); nothing
   else under construction needed them wired, so SN74HC86N, NE555, and the

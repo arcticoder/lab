@@ -4290,3 +4290,20 @@ Worked through all 10 items from your feedback:
 Nothing is at the top of `TODO-arcticoder.md` requiring an order beyond checking out the existing cart (piezo + Hall sensor).
 <!-- ------ -->
 ---
+`THERM` is validated and documented. Summary:
+
+**Bench result: PASS.** Ambient baseline (1.708–1.713V / ~10.7–10.8kΩ / 23.3–23.5°C) is stable and close to the simulated VCC/2 midpoint. The finger-pinch test shows a clean, monotonic warming response (resistance 10362Ω→8106Ω, temperature 24.2°C→29.8°C) — confirms the divider and beta-equation conversion are both wired and working correctly. Alarm LED correctly stayed off throughout (never reached the 40°C threshold).
+
+One data point (698639Ω / −47.4°C) sandwiched in the pinch sequence is a physically impossible single-sample glitch, not a real excursion — most likely a momentary lifted contact from handling the thermistor mid-test. It self-corrected on the very next sample. Worth knowing: `main.py` has no debounce, so a same-class glitch reading *hot* instead of cold could trigger a spurious alarm — logged as a non-urgent open item in [TODO-agent.md](lab/docs/TODO-agent.md) rather than fixed reflexively, since it's a design call (how many consecutive reads to require) not answered by one glitch.
+
+I also cropped `breadboard.jpg` to check it against `breadboard.md`'s wiring steps (per the existing kb technique) and couldn't conclusively pick out the thermistor bead as distinct from the two resistors, and one lead looked like it curls off the board edge in the photo. The electrical data is much stronger evidence than the photo, so I'm treating this as a documentation-timing note, not a wiring concern — flagged in the kb rather than guessed at.
+
+Updated:
+- `README.md` — moved `THERM` into the "built & bench-tested" table with the real numbers, updated the repo tree.
+- `docs/TODO-arcticoder.md` — removed the `THERM` bullet (top of "Ready to build now" is now `ACTIVELIM`), renumbered items 1–12 and fixed the internal cross-references.
+- `docs/TODO-completed.md` / `docs/TODO-agent.md` — dated completion entry and the new debounce follow-up item.
+- `docs/kb/bench_photo_diagnostics_notes.md` — two new entries for future sessions: the "one implausible sample among sane ones = handling glitch" signature, and the photo-vs-thermistor-identification limit.
+
+`breadboard.jpg` is sitting in the working tree untracked — didn't touch git, since you didn't ask for a commit.
+<!-- ------ -->
+---

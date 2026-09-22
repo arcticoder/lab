@@ -155,6 +155,7 @@ photo of the as-built jig where one was taken (see each circuit's own
 | `power_supplies/psu_low_v2/` | 2×AA + Schottky + 500 mA polyfuse | `psu_low` tier | 2026-09-17 — GP26 read 1.007V average (20 readings) through the output's 10 kΩ/5.1 kΩ divider, matching the ~1.0V correct-orientation target. Root cause of an earlier no-reading gap: the Schottky's cathode band paint had worn off and it was installed backward on a guess — flipped once this check caught it; see `README.md` § Validation |
 | `signal_conditioning/transimpedance_amplifier/` | PT334-6C photodiode + LM358 current-to-voltage converter | tier2 `TIA` (fed from `psu_low_v2`) | 2026-09-17 — genuine light-dependent output confirmed: ~0.505–0.510V under ambient room light, ~0.72–0.78V under a phone flashlight (higher held close to the photodiode). Superseded a 2026-09-16 flat, light-independent ~0.38V reading that was traced to the `psu_low_v2` rail above, not this circuit's own wiring — see `README.md` § Validation |
 | `signal_conditioning/phase_detector/` | SN74HC86N XOR gate compares `ne555_astable`'s output tap against an independent Pico PWM reference, RC-lowpassed | tier4 `PHASED`, feeds tier6 `LOCKIN` (undesigned) | 2026-09-19 — filtered output confirmed moving (0.871–1.546V over a ~3.5s window, not pinned at one extreme) as the two non-phase-locked oscillators drift, the real pass criterion per this circuit's own README § Validation. Required re-assembling `ne555_astable` first (broken back down to inventory since its own 2026-09-13 validation) |
+| `safety/thermal_monitor/` | MF52AT NTC divider (centers at VCC/2 at 25°C) + GPIO-driven alarm LED | safety `THERM` ("Thermal Monitoring with Alarm Threshold") | 2026-09-21 — ambient baseline stable at 1.708–1.713V / 10723–10790Ω / 23.3–23.5°C (close to the simulated VCC/2 midpoint, matching room temp being a couple degrees under the MF52AT's 25°C reference point); a sustained finger pinch drove a monotonic, physically-consistent response — resistance fell 10362Ω→8106Ω and reported temperature rose 24.2°C→29.8°C. Alarm LED correctly stayed off throughout (`ALARM_THRESHOLD_C=40.0`, never reached) — a true alarm trip hasn't been bench-tested yet. One transient outlier mid-run (3.253V/698639Ω/−47.4°C, one sample, self-corrected next reading) attributed to a momentary contact disturbance from handling the thermistor rather than a wiring fault — see `kb/bench_photo_diagnostics_notes.md`'s matching 2026-09-21 entry |
 
 ---
 
@@ -175,7 +176,6 @@ sequence this drives.
 | `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit **not yet ordered**, not yet built — see `docs/TODO-arcticoder.md`) |
 | `measurement_tools/capacitance_bridge/` | RC charge-time capacitance meter (known `Rref` vs. unknown `Cx`, timed against a 63.2%-of-Vin threshold) | tier3 `CAPBRIDGE`, targets the 1µF–470µF electrolytic kit (see its own README § Range) |
 | `signal_conditioning/charge_amplifier/` | 12mm piezo disc + TL082 inverting charge amp (`Cf`/`Rf_bias` feedback), VCC/2-biased for bipolar swing | tier5 `CHGAMP` — a direct spacetime-research sensor node |
-| `safety/thermal_monitor/` | MF52AT NTC divider (centers at VCC/2 at 25°C) + GPIO-driven alarm LED | safety `THERM` ("Thermal Monitoring with Alarm Threshold") |
 | `protection/active_current_limiter/` | IRLZ44N + 0.1Ω sense resistor + LM358 comparator, hard-trip at 2A | general-purpose `ACTIVELIM`, protects `psu_medhigh`/`psu_high` (both backlog) |
 Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
@@ -190,8 +190,8 @@ above once their validation checks passed — see their rows there and
 For the PSU rows, the polyfuses they depend on
 are no longer the blocker — both batches passed validation via
 `ammeter_10ohm`/`ammeter_1ohm` above — so what remains is just the
-physical build; `capacitance_bridge`,
-`charge_amplifier`, and `thermal_monitor` all run off
+physical build; `capacitance_bridge` and
+`charge_amplifier` both run off
 `psu_pico_rail` (or need no PSU at all) and have no battery-PSU
 dependency. Everything else in
 `docs/general_purpose_circuit_dependency.md` /
@@ -377,10 +377,11 @@ signal_conditioning/
         README.md
 
 safety/
-    thermal_monitor/         MF52AT NTC divider + GPIO alarm LED (safety THERM, designed, not built)
+    thermal_monitor/         MF52AT NTC divider + GPIO alarm LED (safety THERM, built & bench-tested 2026-09-21)
         thermal_monitor.spice
         schematic.png         (generated, gitignored)
         breadboard.md
+        breadboard.jpg
         main.py
         smoke_test.py
         README.md
