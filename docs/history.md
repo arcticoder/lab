@@ -4272,3 +4272,21 @@ Sizes confirmed and match the agent's report. The kb pruning is done.
 That closes out this session's work: `TODO-arcticoder.md` reorganized with real justifications and the psu_3xaa/Deferred-placement bugs fixed, the flux→piezo swap threaded through `inventory.md`/`parts_reference.md`, three lessons added to `kb/todo_list_conventions.md`, `history.md` logged, and the kb trimmed. Still open: your call on the `FTL-research-state-sept-2026.md` "Dawson Institute" naming from my last message.
 <!-- ------ -->
 ---
+This all looks complete and consistent. Let me give a summary of everything done.
+
+## Summary
+
+Worked through all 10 items from your feedback:
+
+1. **Fringe-science naming restriction lifted** — updated `kb/repo_docs_conventions.md` and my own memory files to reflect this; nothing needed retroactive renaming since existing docs were already generic.
+2. **Piezo discs (12×, leaded)** — logged in `orders.md`'s new "In cart" stage and `TODO-arcticoder.md`, with the checkout link. Action still needed on your end: check out the cart.
+3. **49E Hall sensors (10×)** — same, same cart.
+4. **SparkFun PSU kit** — moved from "Next order" (top) to "Deferred," since your own stated logic was to hold off pending a free check.
+5. **GitHub discoverability** — added 6 topics to `arcticoder/lab` (`open-source-hardware`, `embedded-systems`, `instrumentation`, `sensors`, `signal-processing`, `analog-circuits`); description was already solid, left as-is.
+6–8. **GY-521, CY7C68013A, color-ring inductors** — moved from "on order" to "received" across `orders.md`, `inventory.md`, `parts_reference.md`, and `TODO-arcticoder.md`'s Blocked section. `SCOPELA` (the logic analyzer board) needs no circuit design — just a plug-in check, now item 7 in "Ready to build now." `ACCELIF`/`INDBRIDGE` do need designing, so I opened them as new items in `TODO-agent.md`.
+9. **Disassembly item** — marked complete, moved to `TODO-completed.md`, remaining "Ready to build now" items renumbered 1–13 (checked all cross-references stayed consistent).
+10. **FTL-research-state engineering hurdles** — reviewed against both dependency graphs; concluded no new node is warranted (existing `FORCEBAL`/`LASERDRV`/`CALORIF`/`VIBISO`/`RFRAD` already cover the bench-relevant subset; the rest is materials-science/theoretical-physics work outside a benchtop lab's scope). Full reasoning logged in `kb/spacetime_sensor_chain_notes.md` for future sessions.
+
+Nothing is at the top of `TODO-arcticoder.md` requiring an order beyond checking out the existing cart (piezo + Hall sensor).
+<!-- ------ -->
+---

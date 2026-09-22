@@ -278,11 +278,11 @@ relative to LEDs.
 
 ## Color-ring inductor assortment (0307, 1/4W)
 
-**Reordered 2026-09-10** — the original 120-unit order (placed
-2026-08-30) was cancelled by AliExpress/the seller over a shipping issue
-before shipping (refund processed); the same listing/variant was still
-the cheapest available option, so it was ordered again rather than
-sourcing an alternate listing. Not yet received. See
+**Reordered 2026-09-10, received 2026-09-20** — the original 120-unit
+order (placed 2026-08-30) was cancelled by AliExpress/the seller over a
+shipping issue before shipping (refund processed); the same
+listing/variant was still the cheapest available option, so it was
+ordered again rather than sourcing an alternate listing. See
 [orders.md](orders.md#color-ring-inductor-assortment-0307-14w-reorder)
 for the reorder's own record and
 [orders.md](orders.md#color-ring-inductor-assortment-0307-14w) for the
@@ -292,6 +292,7 @@ also offers 0410 (1/2W) and 0510 (1W) packages under the same title, but
 those variants were **not** selected. 12 values × 10pcs: 1µH, 10µH, 22µH,
 33µH, 47µH, 100µH, 150µH, 220µH, 330µH, 470µH, 560µH, 1mH. Rated
 dielectric withstand 250V AC rms, operating temperature −25 to 85°C.
+Untested — physical units not yet cross-checked against this table.
 Read the color-ring code the same way as resistor color bands (the
 listing gives no photo of the actual band-to-value mapping) — verify
 against an LCR-adjacent bridge circuit once
@@ -299,7 +300,8 @@ against an LCR-adjacent bridge circuit once
 than trusting the band colors alone, since misprinted/faded bands on
 cheap bulk assortments are a known failure mode for color-coded passives.
 First candidate use: tier3 `INDBRIDGE` (inductance bridge) directly, or
-any future RF/filter/oscillator tank-circuit design.
+any future RF/filter/oscillator tank-circuit design. Design/simulate task
+now open in [TODO-agent.md](TODO-agent.md).
 
 ---
 
@@ -574,7 +576,9 @@ otherwise; see the caveat in
 
 ## EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
 
-1 ordered 2026-09-10, not yet received. See
+1 received 2026-09-20 (ordered 2026-09-10), untested — plug-in
+verification (does `sigrok`/PulseView detect it via `fx2lafw`) is in
+[TODO-arcticoder.md](TODO-arcticoder.md)'s "Ready to build now". See
 [orders.md](orders.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
 Built around a CY7C68013A-56PVXC: low-power enhanced-8051 core, 16KB
 program RAM, 48MHz main clock, USB2.0 480Mbps (backward-compatible
@@ -598,7 +602,8 @@ cable — the one in inventory is earmarked for the Pico).
 
 ## GY-521 (MPU6050) 3-axis gyro/accelerometer module
 
-1 ordered 2026-09-10, not yet received. See
+1 received 2026-09-20 (ordered 2026-09-10), untested. Design/simulate
+task open in [TODO-agent.md](TODO-agent.md). See
 [orders.md](orders.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module).
 MPU-6050 chip: 3.3–5V supply (onboard low-dropout regulator), standard
 I2C (SDA/SCL), built-in 16-bit ADC per axis. Gyro range

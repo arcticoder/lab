@@ -392,3 +392,55 @@ deliberately **not** given a design task for any of the three new
 circuits (`FORCEBAL`/`SIPMFE`/`LASERDRV`) — each needs a real sourced part
 before a netlist means anything, same precedent as `LVDTAMP` sitting in
 backlog rather than `TODO-agent.md` today.
+
+## Reviewed the "Engineering Hurdles" section of `FTL-research-state-sept-2026.md` (2026-09-21) — no new node warranted
+
+The user added a section to `docs/FTL-research-state-sept-2026.md`
+listing ten engineering-hurdle categories (exotic-matter/negative-energy
+sourcing, subluminal steering/thermal management, dynamical field-
+equation control, quantum energy inequalities, modified-gravity material
+requirements, global causal consistency, atom-interferometry
+decoherence isolation, and translating a computational geometry-search
+stack into physical hardware) and asked whether any of it should feed
+back into `spacetime_circuits_dependency.md`/`general_purpose_circuit_dependency.md`.
+Reviewed each against this bench's actual scope
+(`kb/circuit_lifecycle_and_repo_scope.md`'s design+bench-validate-only
+boundary) — conclusion: **no dependency-graph change needed.**
+
+Breakdown:
+- **Exotic-matter/negative-energy sourcing, quantum-vacuum-engineering
+  (Casimir-scale) limits, modified-gravity material requirements, global
+  causal-consistency computation** — all materials-science or
+  theoretical-physics barriers with no buildable sensor/actuator
+  apparatus implied; nothing a benchtop electronics lab instruments.
+  Same "pure computation/out of reach of a hobbyist bench" exclusion
+  already applied to the geometry-search/atom-interferometry items in
+  the 2026-09-18 pass above.
+- **Subluminal steering/acceleration (photon-rocket recoil) and its
+  thermal-management barrier** — already the direct justification for
+  `FORCEBAL`+`LASERDRV` (radiation-pressure torsion balance, added
+  2026-09-18 above) and `CALORIF` (tier8 calorimetric/thermal
+  measurement, already in the graph). The hurdle describes a
+  *scaled-up, sustained-operation* version of exactly what those two
+  nodes already instrument at benchtop scale — no new node, existing
+  ones already cover the measurement category.
+- **Atom-interferometry decoherence isolation** (the hurdle's own text:
+  isolating test masses from EM fields, thermal photons, and seismic
+  vibration) — already covered categorically by `VIBISO` (mechanical
+  vibration isolation, added 2026-09-18) on the seismic axis and by
+  `RFRAD` (RF radiation level detector, already in
+  `general_purpose_circuit_dependency.md`'s safety-monitoring backlog)
+  on the EM axis. The specific apparatus this hurdle names (cryogenic
+  paired atom interferometry) is itself excluded per the existing
+  "industrial-scale equipment out of reach of a hobbyist bench" carve-out
+  from the 2026-09-18 pass — only the *environmental-isolation*
+  sub-problem is bench-relevant, and that's already instrumented.
+- **Translating the AI/computational stack into a physical blueprint**
+  — restates, rather than adds to, the exotic-matter-sourcing hurdle
+  above (the "source gap" is the same missing physical apparatus either
+  way).
+
+No edits made to either dependency-graph file. If a future session is
+asked to revisit this, the reasoning above is the full review — don't
+re-derive it from the hurdles list alone without checking whether an
+existing tier5/7/8 node already covers the measurement category first.

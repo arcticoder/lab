@@ -24,6 +24,17 @@ or docs, describe them by circuit function (sensor interface, HV pulse,
 calorimetric measurement) rather than by which specific theory they'd
 support.
 
+**Lifted 2026-09-21.** The user explicitly reversed this: naming a
+specific theory, program, or institute in current-state docs (README,
+dependency graphs, kb prose) is fine now — the restriction above was, in
+their words, "just a holdover from some of the electrogravitics stuff."
+Nothing needs retroactively renaming; existing generic phrasing
+("spacetime research," functional node labels) is still accurate and
+doesn't need to change just because naming is now permitted. This entry
+is kept for the historical reasoning, not as a live rule — don't strip a
+name out of a new doc or kb entry on the strength of the paragraph above
+anymore.
+
 ## `spacetime_circuits_dependency.md` / `general_purpose_circuit_dependency.md` are pure mermaid, no prose (one exception — see the 2026-08-24 split entry below)
 
 Each file's body is a single mermaid `graph TD` block — no prose legend or
