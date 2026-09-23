@@ -15,6 +15,40 @@ the converted `.md` files are tracked).
 
 ---
 
+## Candidates found, not yet in any cart
+
+### USB-C PD trigger board (fixed/selectable, 5V/9V/12V/15V/20V)
+
+- Listing: "USB Type-c Pd Decoy Trigger Board 100w 5a 5v 9v 12v 15v 20v
+  Output Pd 2.0 3.0 Trigger Adapter Cable Connection Polling Detector" —
+  [item 1005002483864283](https://www.aliexpress.com/item/1005002483864283.html).
+  Found by search 2026-09-22, not vetted beyond the listing text — check
+  current price/stock/seller before adding to cart.
+- Needed to get `protection/active_current_limiter` (`ACTIVELIM`) any
+  supply voltage above the Lenovo 65W adapter's bare 5V USB default —
+  the adapter can't output its higher PD profiles (9–20V) without a PD
+  sink controller negotiating one, and none is on hand. 100W/5A rating
+  comfortably covers the adapter's 65W max. See
+  [TODO-arcticoder.md](TODO-arcticoder.md)'s "Next order" and "Blocked"
+  sections, and
+  [kb/bench_photo_diagnostics_notes.md](kb/bench_photo_diagnostics_notes.md)'s
+  `ACTIVELIM` entry for the full reasoning.
+
+### Power resistor assortment, 5W/10W ceramic wirewound
+
+- Listing: "10pcs/5pcs 5W 10W Ceramic Wirewound Resistor 0.1 0.22 0.15
+  0.5 2 5 8 10 15 20 25 47 100 470 1K Ohm 5 10 Watt Cement Resistance" —
+  [item 2251832677195042](https://www.aliexpress.com/i/2251832677195042.html).
+  Found by search 2026-09-22, not vetted beyond the listing text.
+- The other half of the `ACTIVELIM` bench-test gap above: a dummy load
+  resistor rated for the wattage a deliberate ≥2A fault test dissipates
+  (tens of watts depending on test voltage) — nothing on hand is rated
+  for that; the resistors already in inventory are small-signal kit
+  parts. Pick the exact value once the trigger board's actual output
+  voltage is bench-measured, not from this listing's range alone.
+
+---
+
 ## In cart (not yet checked out)
 
 ### Piezo element, 12mm disc, leaded (pre-attached wires)
