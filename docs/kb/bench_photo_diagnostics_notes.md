@@ -242,6 +242,14 @@ gap.** This is a one-off assembly mistake on an otherwise-correct design
 in kind from `ACTIVELIM`'s entry below, which is a genuine missing-part
 blocker.
 
+**Confirmed 2026-09-22 — the diagnosis was correct.** Reseating `Rref`'s
+lead and swapping `Cx` for a 47µF (25V) unit gave three consecutive
+readings (48.87µF/47.75µF/47.64µF) within the kit's ±20% tolerance of the
+47µF nominal. `CAPBRIDGE` moved to `README.md`'s "built & bench-tested"
+table. Same lesson as the `psu_low_v2`/`TIA` entry above: a floating-node
+diagnosis reached from a photo crop is worth trusting and re-testing
+against, not just a hypothesis to note and move past.
+
 ## `ACTIVELIM`'s real blocker is a missing current-capable *test source*, not `psu_medhigh` itself — don't conflate the two
 
 `ACTIVELIM`'s own docs (`README.md`/`breadboard.md`) describe it as

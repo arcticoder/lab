@@ -256,10 +256,26 @@ titled "CY7C68013A 24MHz 8-channel logic analyzer" or similar *is* the
 ship with an 8-wire Dupont test-clip cable included; if not, the
 existing M-M/M-F Dupont jumper stock in `inventory.md`
 covers it. Check whether the board is USB-A dongle-style (plugs
-straight into a port, no cable needed) or has its own Micro-USB port
-(would need a second Micro-USB cable, since the one already in
-inventory is earmarked for the Pico) before assuming no cable is
-needed.
+straight into a port, no cable needed) or has its own cable port before
+assuming no cable is needed.
+
+**Corrected 2026-09-22 — the port guess itself was wrong, and avoidably
+so.** This entry originally guessed the board "has its own Micro-USB
+port," reasoning from what the bench already had on hand rather than
+reading the listing. The actual listing title
+(`orders.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer`)
+already said "Mini USB" in plain text — missed because the ingestion
+pass read the title for the chip/product identity and stopped, without
+scanning it for the connector detail too. Caught only once the board was
+physically in hand and neither the Micro-USB nor USB-C cable on the
+bench fit. **General lesson: when a listing title names a specific cable
+type (Mini-USB, Micro-USB, USB-C, etc.), record that verbatim in
+`parts_reference.md` at ingestion time instead of inferring the connector
+from board photos or "most boards this size use X" — the title is a
+first-party spec, and skimming past it for a different detail (chip name,
+package) is the same failure mode as the "assortment" and "bundled
+part-number" entries elsewhere in this file: read the whole string
+before writing a claim from it.**
 
 ## `orders.md` gained a fourth lifecycle stage, "In cart (not yet checked out)" — distinct from "On order" (found 2026-09-09)
 

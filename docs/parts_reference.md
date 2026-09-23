@@ -81,20 +81,22 @@ noise/offset actually matters; LM358 is the budget/bring-up substitute.
 
 1 received 2026-08-24, blue variant. Board size 21.6×14.2mm, 2.54mm hole
 pitch, FR-4, double-sided (front/back plug testing). Breakout pads, as
-silkscreened:
+silkscreened, left to right:
 
 `CC2, D+, D-, SBU1, SBU2, CC1, VBUS, GND`
 
-> The AliExpress product photo's third-party transcription (in the order
-> notes) listed the second pad as `U+`. That's almost certainly a
-> transcription slip — no standard USB-C pinout has a `U+`, and `D+` is the
-> expected pad in that position alongside `D-`. Confirm against the
-> physical board silkscreen once it arrives before wiring anything to it.
-
-Two SMD resistors near the connector (labeled `512` and `215` on the
-photo) are almost certainly the CC1/CC2 pull-down or configuration-channel
-resistors used to advertise a fixed current/role to a USB-C source —
-verify values with a meter before assuming a specific standard resistance.
+**Resolved 2026-09-22** — confirmed against the listing's own full
+specifications-and-picture transcription (supplied directly, not
+re-derived): the second pad is `D+`, not `U+`. The earlier `U+` reading
+came from a third-party transcription in the order notes and was a
+transcription slip; no standard USB-C pinout has a `U+`, and `D+` is the
+expected pad alongside `D-`. Two SMD resistors near the connector
+(labeled `512` and `215`) are almost certainly the CC1/CC2 pull-down or
+configuration-channel resistors used to advertise a fixed current/role
+to a USB-C source — verify values with a Pico-based reading (e.g.
+`resistance_measurement`) rather than a multimeter (none on hand — see
+`kb/circuit_lifecycle_and_repo_scope.md`) before assuming a specific
+standard resistance.
 
 ---
 
@@ -578,7 +580,8 @@ otherwise; see the caveat in
 
 1 received 2026-09-20 (ordered 2026-09-10), untested — plug-in
 verification (does `sigrok`/PulseView detect it via `fx2lafw`) is in
-[TODO-arcticoder.md](TODO-arcticoder.md)'s "Ready to build now". See
+[TODO-arcticoder.md](TODO-arcticoder.md)'s "Blocked" section, pending a
+Mini-USB cable. See
 [orders.md](orders.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
 Built around a CY7C68013A-56PVXC: low-power enhanced-8051 core, 16KB
 program RAM, 48MHz main clock, USB2.0 480Mbps (backward-compatible
@@ -593,10 +596,12 @@ one — see
 [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
 "CY7C68013A board" entry. `sigrok`'s `fx2lafw` firmware (package
 `sigrok-firmware-fx2lafw` on Debian/Ubuntu) supports it directly with
-PulseView, no vendor software. Check on arrival whether the board
-included an 8-wire Dupont test-clip cable and whether it's USB-A
-dongle-style or has its own Micro-USB port (would need a second Micro-USB
-cable — the one in inventory is earmarked for the Pico).
+PulseView, no vendor software. **Uses a Mini-USB port, not Micro-USB** —
+the listing's own title said so ("...Module Mini USB"), missed on first
+read; confirmed 2026-09-22 attempting to plug it in and finding only
+Micro-USB and USB-C cables on hand, neither of which fits. A Mini-USB
+cable is now tracked in [TODO-arcticoder.md](TODO-arcticoder.md)'s "Next
+order" section.
 
 ---
 

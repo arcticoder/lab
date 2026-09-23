@@ -92,6 +92,22 @@ purchase needed — check whether `psu_pico_rail` suffices or whether the
 bridge needs an AC excitation source not yet on the bench before
 assuming it's a no-purchase build.
 
+### `SIMPGEN` stand-in motor/speaker driver — needed before `RIPPLETANK` is buildable
+
+Flagged 2026-09-22: `TODO-arcticoder.md`'s `RIPPLETANK` entry had
+overclaimed that `pico/leds/gpio_pwm_led/` "drives a small motor/speaker
+dipper directly" — it doesn't. That circuit only generates a GPIO-level
+PWM square wave (tier1 `SIMPGEN`'s documented stand-in, and `SIMPGEN`
+itself is still backlog/undesigned per
+`general_purpose_circuit_dependency.md`) — a Pico GPIO pin can't source a
+motor's actual drive current directly. Design/simulate a small driver
+stage (transistor switch off the PWM pin, flyback diode across the
+motor/actuator) before `RIPPLETANK`'s wave-driver bullet moves back to
+`TODO-arcticoder.md`'s "Ready to build now." No specific motor/actuator
+part is sourced yet — check what's actually on hand (small DC motor,
+vibration motor, speaker) before designing bias/current values against
+nothing.
+
 ### `FORCEBAL` / `SIPMFE` / `LASERDRV` — new tier5/7 nodes (2026-09-18), blocked on part sourcing, not file-creation work
 
 Added to `spacetime_circuits_dependency.md` 2026-09-18 (see that file's

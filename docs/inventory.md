@@ -99,6 +99,7 @@ new build, rather than by eye alone.
 | Breadboard (full)      | 1        | 830-point                                                 |
 | Breadboard (mini SYB-170) | 1     | 170-point, black; from a 6-in-1 color pack (AliExpress). See `lab/docs/orders.md` / `lab/docs/parts_reference.md` for full specs |
 | Micro USB Cable        | 1        | For Pico power + data                                     |
+| Mini-USB Cable         | 0        | Not on hand — needed for `SCOPELA`'s CY7C68013A board, see `lab/docs/TODO-arcticoder.md`'s "Next order" |
 
 ---
 
@@ -237,7 +238,7 @@ in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 | SN74HC86N quad 2-input XOR gate, DIP-14 | 1 | Received 2026-09-12 (ordered 2026-09-03). The only unit on hand is bench-tested PASS 2026-09-19 in `lab/signal_conditioning/phase_detector/` (tier4 `PHASED`, feeds tier6 `LOCKIN`) — only gate 1 of 4 on the chip was wired. Disassembled 2026-09-21 per this repo's ephemeral-circuit convention — back in inventory. See `lab/docs/parts_reference.md#sn74hc86n-quad-2-input-xor-gate`. |
 | KY-003 A3144 Hall sensor breakout module | 1 | Received 2026-09-12 (ordered 2026-09-03); untested. Fills the tier5 `HALLAMP` gap only partially — this is a digital switch-output Hall IC, not the linear analog sensor the gap called for. See `lab/docs/parts_reference.md#ky-003-a3144-hall-sensor-breakout-module`. |
 | GY-521 (MPU6050) 3-axis gyro/accelerometer module | 1 | Received 2026-09-20 (ordered 2026-09-10); untested. Substitutes for the originally-scoped ADXL335 to fill the tier5 `ACCELIF` gap. Design/simulate task open in `lab/docs/TODO-agent.md`. See `lab/docs/parts_reference.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module`. |
-| EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer) | 1 | Received 2026-09-20 (ordered 2026-09-10); untested. *Is* the `SCOPELA` tier purchase itself, not a component — no circuit design needed. `sigrok`'s `fx2lafw` firmware supports it out of the box; plug-in verification is in `lab/docs/TODO-arcticoder.md`'s "Ready to build now". See `lab/docs/parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer`. |
+| EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer) | 1 | Received 2026-09-20 (ordered 2026-09-10); untested. *Is* the `SCOPELA` tier purchase itself, not a component — no circuit design needed. `sigrok`'s `fx2lafw` firmware supports it out of the box; plug-in verification is blocked in `lab/docs/TODO-arcticoder.md` on a Mini-USB cable (board's port confirmed 2026-09-22, only Micro-USB/USB-C cables on hand). See `lab/docs/parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer`. |
 | Color-ring inductor assortment, 0307 1/4W (12 values, 1µH-1mH) — reorder | 120 | Received 2026-09-20 (ordered 2026-09-10); untested — color-band values not yet cross-checked against a known reading. Fills the tier3 `INDBRIDGE` gap; design/simulate task open in `lab/docs/TODO-agent.md`. See `lab/docs/parts_reference.md#color-ring-inductor-assortment-0307-14w`. |
 
 ---

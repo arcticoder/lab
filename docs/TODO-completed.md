@@ -18,6 +18,61 @@ matching, so don't assume one file makes the other redundant.
 
 ---
 
+## 2026-09-22
+
+- **`measurement_tools/capacitance_bridge` (`CAPBRIDGE`) — physically
+  assembled and bench-tested, PASS.** Reseated `Rref`'s far lead (was
+  resting on the breadboard's center divider ridge, not in the junction
+  hole — the near-zero/near-instant "Cx" readings from the first attempt
+  the same day were a floating ADC node, not a `main.py` bug, per
+  `kb/bench_photo_diagnostics_notes.md`'s matching entry), then swapped
+  `Cx` for a 47µF (25V) unit from the electrolytic kit: three consecutive
+  runs read 48.87µF/47.75µF/47.64µF, all within the kit's own ±20%
+  tolerance of nominal. Moved from `TODO-arcticoder.md`'s "Ready to build
+  now" to `README.md`'s "built & bench-tested" table; that section now
+  has only the `psu_medlow_usbc` CC-pin check left.
+- **`TODO-arcticoder.md` trimmed of several no-current-consumer bench-
+  validation bullets that had accumulated in the "standalone validation
+  tail."** The 1N5817 diode-drop check + `psu_3xaa` assembly,
+  `psu_ultralow_v1`'s demo power-on check, CD4066BCN switches 2–4, and
+  the glass-tube-fuse test jig all moved to "Deferred" — each is
+  genuinely parts-on-hand-but-nothing-needs-it-yet busywork, not staged
+  inventory for a real build. See
+  [kb/todo_list_conventions.md](kb/todo_list_conventions.md)'s new entry
+  refining the ranking criteria: criterion 5 alone no longer earns a
+  standing spot in "Ready to build now."
+- **`VIBISO` and `RIPPLETANK` moved from "Ready to build now" to
+  "Blocked."** `VIBISO`: holding off on the mechanical build itself until
+  `ACCELIF` exists to actually measure isolation quality, rather than
+  building a platform with nothing to bench-test it against yet.
+  `RIPPLETANK`: the file had overclaimed that `pico/leds/gpio_pwm_led/`
+  "drives a small motor/speaker dipper directly" — it only generates a
+  GPIO-level PWM signal; an actual motor/speaker driver stage (transistor
+  switch + flyback diode) doesn't exist yet. New design task opened in
+  `TODO-agent.md`. Noted for both: the on-hand Creality K1 (with PLA
+  filament stock) is a real fabrication option once either build becomes
+  actionable (platform feet for `VIBISO`; a precise stepped/sloped depth
+  insert for `RIPPLETANK`).
+- **`SCOPELA` moved back to "Blocked."** The CY7C68013A board uses a
+  Mini-USB port — its own listing title said so, missed at ingestion time
+  (see `kb/ordering_ingestion_notes.md`'s corrected entry) — and only
+  Micro-USB/USB-C cables are on hand. A Mini-USB cable is now in "Next
+  order," bundled into the same not-yet-checked-out cart as the piezo
+  disc/Hall sensor.
+- **USB-C 16-pin breakout board pinout resolved, not re-asked.**
+  `parts_reference.md` already had the full pad list and had already
+  flagged the `U+`/`D+` ambiguity as a likely transcription slip
+  (2026-08-24); confirmed `D+` against the listing's own full spec text.
+  See `kb/todo_list_conventions.md`'s new entry on checking existing docs
+  before re-asking for a spec already on file.
+- **PD trigger board bullet in "Next order" now states an explicit
+  voltage rule**: use the lowest selectable tap that still hits 2A
+  within the resistor assortment's 5W/10W rating (5V → 10W at 2A, well
+  within one resistor's rating; 20V → 40W, not), not the trigger board's
+  max. Hard ceiling regardless: never paired with anything but the
+  on-hand Lenovo 65W adapter, never a tap above what that adapter itself
+  outputs (20V/3.25A, 65W).
+
 ## 2026-09-21
 
 - **`safety/thermal_monitor` (`THERM`) — physically assembled and
