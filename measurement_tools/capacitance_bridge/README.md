@@ -109,3 +109,13 @@ of the value marked on the part. A result of "No 63.2% crossing" means
 either `Cx` is larger than the range table above supports at this `Rref`,
 or the junction isn't actually wired to both `Rref` and `Cx` (open
 circuit).
+
+**A result stuck near 0.00–0.01µF regardless of which `Cx` is installed**
+(seen 2026-09-22 with a 33µF `Cx`) points the other way: `Rref`'s far
+lead isn't actually making contact at the junction (e.g. resting next to
+the hole rather than in it, easy to miss by eye on a crowded breadboard),
+which leaves the ADC pin floating and picking up noise/coupling that
+crosses both thresholds almost instantly. Reseat that lead fully into
+the same hole as the ADC probe wire and `Cx`'s positive lead and rerun —
+don't treat this as a `main.py` bug without checking the physical joint
+first.

@@ -200,3 +200,78 @@ piezoelectric layer before the joint takes. Fixed now in
 carrying forward to any *other* bare piezo-disc handling in this repo
 (there are 19 left in the batch) — this is a property of the part, not
 specific to `CHGAMP`.
+
+## Failure signature: a near-zero, near-instant reading on an RC-timing circuit usually means a floating ADC node, not a code bug — and zooming into the photo can prove it
+
+`capacitance_bridge` (2026-09-22 bench run, 33µF `Cx`) printed
+`t63≈0.000–0.001s -> Cx≈0.00–0.01uF` on essentially every loop — three
+orders of magnitude off the ~3.3s a 100kΩ×33µF RC should take. `main.py`
+itself is correct (re-read line by line to confirm: discharge and charge
+both poll correctly, threshold math is right). A reading that's wrong by
+*that* much in the "too fast" direction, on a circuit whose whole design
+is measuring elapsed time, points at a much smaller effective time
+constant than intended — either the wrong `Rref` value, or (as here) the
+ADC node not actually being driven through `Rref` at all, only picking up
+whatever a floating high-impedance node happens to see (stray coupling
+from the adjacent drive-pin lead, ADC leakage), which crosses either
+threshold in far less than 1ms.
+
+**The breadboard photo confirmed it, but only after cropping/zooming —
+not from the full-frame image.** `Read`ing `breadboard.jpg` at full
+frame shows a resistor and a capacitor near the Pico's pins with wires
+converging on a plausible junction; at that resolution the wiring looks
+right. Cropping progressively tighter with PIL (`Image.crop` + a 5–8×
+resize, saved to the scratchpad dir, then `Read` again) on the resistor's
+far lead specifically showed it terminating on the breadboard's plastic
+center divider ridge — the raised strip between the two 5-hole blocks —
+rather than in the metal-lined hole a few mm away where the ADC probe
+wire and `Cx`'s positive lead were actually (correctly) seated. A lead
+resting on that ridge looks, at a glance and especially compressed in a
+full-frame photo, like it's "near" the junction; it makes zero electrical
+contact. **General technique for this repo going forward**: when a
+bench-photo diagnosis needs to confirm a *specific* lead-to-hole
+connection (not just "is a component present"), don't rely on the
+full-frame read — crop to just that lead's endpoint and resize up
+several times before judging seated-vs-not. The full frame is enough to
+identify parts and rough topology; it is not reliably enough resolution
+to tell "seated in the hole" from "resting beside it."
+
+**Don't conflate this with a `psu_medhigh`/`ACTIVELIM`-style sourcing
+gap.** This is a one-off assembly mistake on an otherwise-correct design
+(reseating the lead is the whole fix, no BOM/design change) — different
+in kind from `ACTIVELIM`'s entry below, which is a genuine missing-part
+blocker.
+
+## `ACTIVELIM`'s real blocker is a missing current-capable *test source*, not `psu_medhigh` itself — don't conflate the two
+
+`ACTIVELIM`'s own docs (`README.md`/`breadboard.md`) describe it as
+protection for `psu_medhigh`/`psu_high`, "both backlog, no folder yet" —
+worded in a way that reads like the build is blocked on those PSU tiers
+existing. It isn't, and the distinction matters: `psu_medhigh` doesn't
+need a `lab/power_supplies/` folder to exist as a source, because it's
+just the Lenovo 65W USB-C PD adapter (already on hand, per
+`docs/general_purpose_circuit_dependency.md`'s `PSUMEDHIGH` node) used
+directly — no regulation circuit needed, only the *wall adapter itself*.
+
+The real gap, confirmed 2026-09-22 by checking `docs/inventory.md` and
+`docs/orders.md` for anything current-capable: **nothing on this bench
+can currently push ≥2A into a load at any voltage**, which is what
+`ACTIVELIM`'s bench validation (its README's own § Validation) actually
+needs to find the real 2A trip point. The Lenovo adapter only outputs
+above its 5V/1.5A-ish USB default once a PD sink controller IC (e.g.
+CH224K, STUSB4500) negotiates a higher-power profile — none is on hand,
+and the only USB-C breakout on the bench (`psu_medlow_usbc`'s `TYPE-C
+Female Test Board`) is a passive pinout breakout with no PD silicon at
+all. Even the bare 5V/default path isn't confirmed working yet
+(`psu_medlow_usbc`'s own VBUS-comes-up check is still an open,
+unactioned item). And separately, no power resistor rated for the
+resulting wattage (tens of watts, depending on test voltage) is in
+inventory — the resistors on hand are small-signal kit parts, not power
+resistors.
+
+**Don't rank `ACTIVELIM` as "ready to build now" again until a PD
+trigger board and a suitable power resistor are actually received** —
+see `docs/TODO-arcticoder.md`'s "Next order"/"Blocked" sections for the
+two candidate parts identified for this. The LM358 comparator stage and
+the wiring in `breadboard.md` don't change once those arrive — only the
+load-path source does.

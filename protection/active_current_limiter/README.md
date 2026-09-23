@@ -157,3 +157,13 @@ would ever draw) drives it to the 0.2V trip threshold and the gate
 collapses toward 0V as the MOSFET cuts off. Expect chattering at the
 boundary itself — see Design notes above — not a clean single trip
 event.
+
+**Blocked as of 2026-09-22, not on `psu_medhigh` itself.** Finding the
+real trip point needs a load-path source that can actually push ≥2A,
+which is a lower bar than a finished `psu_medhigh` build (that tier is
+just the Lenovo 65W adapter used directly, no folder needed) but still
+unmet today: the adapter only outputs above its 5V/default fallback once
+a PD sink controller negotiates it (none on hand), and there's no power
+resistor on hand rated for the resulting dissipation either way. See
+[docs/TODO-arcticoder.md](../../docs/TODO-arcticoder.md)'s "Blocked"
+section for the two candidate parts that would unblock this.

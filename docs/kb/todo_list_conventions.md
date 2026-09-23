@@ -594,6 +594,32 @@ an already-designed circuit (per
 [[circuit_lifecycle_and_repo_scope]]'s "don't stage inventory for a
 future build" rule), not as unlocking anything.
 
+## Criterion 4's "real graph edge" check needs a "does the destination's own hardware actually exist to test against" sub-check (2026-09-22)
+
+The ranking that put `ACTIVELIM` at "Ready to build now" #1 (see the
+2026-09-17 application above) used a real, stated criterion-4 edge
+(`ACTIVELIM -.required.-> psu_medhigh`) — but never asked whether
+`ACTIVELIM`'s own bench validation (its README's § Validation, which
+needs a source that can push ≥2A into a load to find the real 2A trip
+point) was actually *possible* with what's on this bench. It wasn't:
+checking `inventory.md`/`orders.md` directly (2026-09-22) found nothing
+here can source ≥2A at any voltage — the Lenovo 65W adapter needs a PD
+sink controller to give anything above its 5V default (none on hand),
+and there's no power resistor rated for the fault-test dissipation
+either. **Lesson, same shape as the `psu_3xaa`/`THERM` correction above
+but on the *source* side instead of the consumer side: a criterion-4
+edge to an undesigned destination (`psu_medhigh`, no folder) can still
+be real, but "Ready to build now" additionally means the build's own
+validation step must be achievable with what's actually in inventory
+today — not just that some dependency-graph edge exists.** Don't infer
+"the PSU is backlog, so this is designed ahead of it and that's fine"
+from a circuit's own README without independently checking whether its
+*validation* method (as opposed to its wiring) has a real prerequisite
+too. `ACTIVELIM` moved to "Blocked" pending a PD trigger board + a
+power-resistor assortment (see `TODO-arcticoder.md`'s "Next order" and
+"Blocked" sections); `CAPBRIDGE` (criterion 5, no purchase needed to
+validate) took its place at #1.
+
 ## Before adding a paid alternative to cart, check whether its free/on-hand twin already works (2026-09-19)
 
 `power_supplies/psu_medlow` has two alternative implementations:

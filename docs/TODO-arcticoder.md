@@ -63,6 +63,24 @@ status lives in `README.md`'s "built & bench-tested" table.
       extra. That's a shipping-pipeline argument, not a build-priority
       one. **Action needed: check out the cart (same cart as the piezo
       disc above).**
+- [ ] **USB-C PD trigger board + a low-ohm power-resistor assortment —
+      not yet in any cart, found 2026-09-22.** `ACTIVELIM`'s bench check
+      (see "Blocked" below) needs a source that can actually push ≥2A
+      into a dummy load to find its real trip point — nothing on this
+      bench can do that today: the Lenovo 65W adapter only outputs
+      anything above its 5V/default fallback once a PD sink controller
+      negotiates it (see `docs/kb/bench_photo_diagnostics_notes.md`'s
+      newest entry for the full reasoning), and there's no resistor on
+      hand rated for the resulting wattage. Two candidates found by
+      search, not vetted beyond the listing text — check current
+      price/stock before adding to cart:
+      [USB-C PD/QC decoy trigger board, 100W/5A, 5V/9V/12V/15V/20V selectable](https://www.aliexpress.com/item/1005002483864283.html)
+      and
+      [10× 5W/10W ceramic wirewound resistor assortment, 0.1Ω–1kΩ including several single-digit-ohm values](https://www.aliexpress.com/i/2251832677195042.html).
+      Size which exact resistor value to use against whichever voltage
+      the trigger board actually outputs once bench-measured — same
+      "size against the bench-measured value, not a netlist constant"
+      approach as `ACTIVELIM`'s own TL431A reference divider.
 
 ## Ready to build now — parts on hand, ranked by what it unlocks
 
@@ -73,18 +91,18 @@ graph edge, ascending bench effort otherwise) — not by closeness to any
 outside research goal. Full method:
 [kb/todo_list_conventions.md](kb/todo_list_conventions.md).
 
-1. [ ] **`protection/active_current_limiter` (`ACTIVELIM`) — physically
-       assemble.** Uses the only IRLZ44N on hand (returns to inventory
-       once its bench check passes, per this repo's ephemeral-circuit
-       convention — see [kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md)).
-       Size the TL431A reference divider against the bench-measured
-       cathode voltage — see that circuit's `breadboard.md` § Reference
-       divider. **Known limitation, not a defect**: this is a hard-trip
-       limiter with no hysteresis, so expect chatter right at the 2A trip
-       boundary — see that circuit's README § Design notes.
-2. [ ] **`measurement_tools/capacitance_bridge` (`CAPBRIDGE`) —
+1. [ ] **`measurement_tools/capacitance_bridge` (`CAPBRIDGE`) —
        physically assemble.** Targets the aluminum electrolytic capacitor
        kit (1µF–470µF). No PSU needed (runs off the Pico's own GPIO/3V3).
+       **Already attempted 2026-09-22 — one wiring defect found, not yet
+       a pass.** `Rref`'s far lead wasn't actually seated in the junction
+       hole (it was resting on the breadboard's center divider, next to
+       the hole rather than in it — see
+       `docs/kb/bench_photo_diagnostics_notes.md`'s newest entry), which
+       left the ADC node floating and produced the near-zero, near-
+       instant "Cx" readings from that run. Reseat that lead fully into
+       the same hole as the ADC probe wire and `Cx`'s positive lead, then
+       rerun `main.py` before treating this as bench-tested either way.
 
 **No `OHMMETER` bullet on purpose** —
 `measurement_tools/resistance_measurement` (already built, in active use)
@@ -94,14 +112,14 @@ lead/contact-resistance precision, which nothing on this bench does yet.
 
 **Mechanical builds — no purchase needed:**
 
-3. [ ] **`VIBISO`** (vibration isolation platform) — a weighted platform
+2. [ ] **`VIBISO`** (vibration isolation platform) — a weighted platform
        on soft-compliance feet (rubber pads, partially-inflated inner
        tubes/balloons). Check what's around the apartment first. Buildable
        now as a mechanical base for `FORCEBAL`/`LASERDRV`; can't be
        bench-*measured* for isolation quality until `ACCELIF` is
        designed and built (part received 2026-09-20 — design task now
        tracked in `TODO-agent.md`, not a purchase blocker anymore).
-4. [ ] **`RIPPLETANK`** (2D ripple tank) — a shallow tray/baking dish,
+3. [ ] **`RIPPLETANK`** (2D ripple tank) — a shallow tray/baking dish,
        water, and a glass/acrylic sheet as the submerged depth-step
        insert. Wave driver: `pico/leds/gpio_pwm_led/` (already built in
        the sibling `pico/` repo) drives a small motor/speaker dipper
@@ -113,7 +131,7 @@ lead/contact-resistance precision, which nothing on this bench does yet.
 ordered by which check informs the biggest decision first, then
 ascending bench effort:**
 
-5. [ ] **`power_supplies/psu_medlow_usbc` — clip
+4. [ ] **`power_supplies/psu_medlow_usbc` — clip
        [measurement_tools/resistance_measurement](../measurement_tools/resistance_measurement/)
        onto the two CC pins.** Promoted to the top of this tail because
        the answer directly decides the SparkFun-kit purchase in
@@ -122,44 +140,61 @@ ascending bench effort:**
        dropped for good; if not, move the kit from "Deferred" back into
        "Next order." `smoke_test.py` fails on purpose until this is
        resolved.
-6. [ ] **`SCOPELA` — plug in the CY7C68013A board (received 2026-09-20)
+5. [ ] **`SCOPELA` — plug in the CY7C68013A board (received 2026-09-20)
        and confirm `sigrok`/PulseView detects it via `fx2lafw`.** No
        assembly needed — this board *is* the purchase, not a component
        (see `kb/ordering_ingestion_notes.md`). Zero-cost, lowest-effort
        check in this tail; check whether it included an 8-wire Dupont
        test-clip cable and whether it's USB-A dongle-style or needs its
        own Micro-USB cable.
-7. [ ] **1N5817 Schottky diode — per-unit forward-drop check for
+6. [ ] **1N5817 Schottky diode — per-unit forward-drop check for
        whichever unit goes into `psu_3xaa`.** Two of 20 already confirmed
        (`psu_4xaa`, `psu_low_v2`); reuse the same Pico-divider technique
        (see `psu_4xaa/README.md` § Validation).
-8. [ ] **`power_supplies/psu_3xaa` — confirm and assemble.** Blocked only
+7. [ ] **`power_supplies/psu_3xaa` — confirm and assemble.** Blocked only
        on the diode check above. Honest note: nothing currently on this
        bench needs a 4.5V rail specifically — `oscillators/ne555_astable`
        tried it first and ruled it out (sags to ~4.02V under load, below
        the NE555's 4.5V minimum), and `psu_4xaa` (6.0V, already built)
        already covers what this tier would. This is a one-time hardware
        confirmation of an already-designed circuit against real
-       parts, same category as item 9 below — not something anything
+       parts, same category as item 8 below — not something anything
        else is waiting on, and not staged inventory for a future build.
-9. [ ] **`power_supplies/psu_ultralow_v1`** — no assembled-circuit demo
+8. [ ] **`power_supplies/psu_ultralow_v1`** — no assembled-circuit demo
         has been run, only component-level validation. One power-on check.
-10. [ ] **CD4066BCN — switches 2–4 per chip still untested** (only switch
+9. [ ] **CD4066BCN — switches 2–4 per chip still untested** (only switch
         1 of each of the 10 chips has been run through
         `measurement_tools/cd4066_switch_tester/`). Not blocking anything
         above — needed before trusting a chip in a future `MUX`/`DEMOD`
         build.
-11. [ ] **Glass tube fuses (2A fast-blow, 10 on hand) — no test jig
+10. [ ] **Glass tube fuses (2A fast-blow, 10 on hand) — no test jig
         built.** Needs a jig from scratch. Not blocking anything above —
         needed before trusting one in the (backlog) `psu_medlow`
         protection path.
-12. [ ] *(optional cleanup, not a blocker)* **`fuse_test_voltmeter` trip
+11. [ ] *(optional cleanup, not a blocker)* **`fuse_test_voltmeter` trip
         detection is non-functional** since bench wiring diverged from
         its original design — `ammeter_10ohm`/`ammeter_1ohm` already
         cover polyfuse sorting instead.
 
 ## Blocked — waiting on a shipment or a sourcing decision
 
+- [ ] **`ACTIVELIM`** (`protection/active_current_limiter`) — moved here
+      2026-09-22, was previously ranked #1 in "Ready to build now."
+      **Not actually buildable-and-bench-testable yet**: its 2A trip
+      point can't be found without a source that can push ≥2A into a
+      dummy load, and nothing on this bench can do that — the Lenovo
+      65W adapter needs a PD sink controller to output anything above
+      its 5V default (none on hand), `psu_medlow_usbc`'s own 5V VBUS
+      isn't even confirmed working yet (item 4 above), and there's no
+      power resistor on hand rated for the resulting wattage either way.
+      This isn't the same claim as "needs `psu_medhigh`/`psu_high`
+      physically built" (that PSU tier is just the Lenovo adapter used
+      directly, no folder needed) — it's a missing current-capable test
+      *source*, which is a lower bar than a finished PSU tier but still
+      not satisfied today. See "Next order" above for the two candidate
+      parts (PD trigger board + power-resistor assortment) that would
+      unblock this. Once those are on hand: wiring itself doesn't
+      change (`breadboard.md` is unaffected), only the load-path source.
 - [ ] **`CHGAMP`** (tier5, charge amplifier). Blocked on: a leaded piezo
       disc, in cart but not yet checked out (see "Next order" above).
       Attempted 2026-09-16 with the bare-disc batch: no pre-attached
@@ -174,7 +209,7 @@ ascending bench effort:**
 
 `INDBRIDGE`, `SCOPELA`, and `ACCELIF` all received their blocking part on
 2026-09-20 and are no longer listed here — `SCOPELA` is a zero-cost
-plug-in verification now in "Ready to build now" above (item 7);
+plug-in verification now in "Ready to build now" above (item 5);
 `INDBRIDGE`/`ACCELIF` both still need a netlist designed against the new
 part before there's anything to physically assemble, tracked as open
 design items in `TODO-agent.md`, not here.
@@ -185,7 +220,7 @@ design items in `TODO-agent.md`, not here.
   `power_supplies/psu_medlow_lm317` — **hold off.** This is one of two
   alternative paths to the same `psu_medlow` tier; the other,
   `psu_medlow_usbc`, is already built and sitting on the bench needing
-  only a zero-cost continuity check ("Ready to build now" item 5 above)
+  only a zero-cost continuity check ("Ready to build now" item 4 above)
   to know whether it already works. Buying this kit before that check
   risks paying for a part you don't need. Move it to "Next order" only
   if that check shows `psu_medlow_usbc` can't bring up VBUS.
@@ -225,8 +260,9 @@ how each node connects before starting one.
       bench-tested" table.)
 - [ ] **PSU system**: `psu_medhigh`/`psu_high` — no PSU tier built around
       the Lenovo 65W adapter (on hand) or any industrial supply.
-      `ACTIVELIM` (their protection stage) is being built above, but
-      that's not the PSU tier itself.
+      `ACTIVELIM` (their protection stage) is designed/simulated and
+      waiting on a current-capable test source — see "Blocked" above —
+      but that's not the PSU tier itself.
 - [ ] **Bootstrap tier**: `LEDIND`, `SIMPLECNT`, `TUNINGFK`, `AUDIOSC`,
       `CRTSC`. (`PASSVM` is already done via `fuse_test_voltmeter`.)
 - [ ] **Tier 2**: `VM`, `AM`, `FREQC` — undesigned as dedicated circuits
@@ -253,5 +289,5 @@ how each node connects before starting one.
 - [ ] **Concurrent measurement tools**: `SCOPEUSBSER`, `SCOPEDSO`,
       `SCOPEBENCH`, `PRECBOX`, `LOADBANK`, `NOISEGEN`, `TESTSIG`,
       `THERMOAMP` — undesigned/unsourced. (`SCOPELA`'s board is received
-      — see "Ready to build now" item 6 above — but it's a plug-in tool,
+      — see "Ready to build now" item 5 above — but it's a plug-in tool,
       not a circuit; none of these dedicated designs exist yet.)
