@@ -27,8 +27,13 @@ the converted `.md` files are tracked).
 - Needed to get `protection/active_current_limiter` (`ACTIVELIM`) any
   supply voltage above the Lenovo 65W adapter's bare 5V USB default —
   the adapter can't output its higher PD profiles (9–20V) without a PD
-  sink controller negotiating one, and none is on hand. 100W/5A rating
-  comfortably covers the adapter's 65W max. See
+  sink controller negotiating one, and none is on hand. **Use the
+  lowest selectable tap that still hits 2A within the resistor
+  assortment's 5W/10W rating, not the board's max** (5V → 10W at 2A,
+  fine; 20V → 40W, too much for one resistor). Hard ceiling regardless:
+  never a tap above what the Lenovo adapter itself actually outputs
+  (20V/3.25A, 65W total) — the board's 100W/5A rating is a spec for a
+  bigger supply than this bench has, not a target. See
   [TODO-arcticoder.md](TODO-arcticoder.md)'s "Next order" and "Blocked"
   sections, and
   [kb/bench_photo_diagnostics_notes.md](kb/bench_photo_diagnostics_notes.md)'s
@@ -46,6 +51,15 @@ the converted `.md` files are tracked).
   for that; the resistors already in inventory are small-signal kit
   parts. Pick the exact value once the trigger board's actual output
   voltage is bench-measured, not from this listing's range alone.
+
+### Mini-USB cable
+
+- No specific listing picked yet — any basic Mini-USB (5-pin) cable.
+- `SCOPELA`'s CY7C68013A board (received 2026-09-20) uses a Mini-USB
+  port — its own listing title said so ("...Module Mini USB"), missed on
+  first read; confirmed 2026-09-22 when the board couldn't be plugged in
+  with the Micro-USB/USB-C cables on hand. See
+  [parts_reference.md](parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
 
 ---
 

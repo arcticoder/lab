@@ -4331,3 +4331,20 @@ That leaves the ADC node floating — no real resistive charge path from GP14 at
 I logged both findings in `docs/kb/bench_photo_diagnostics_notes.md` (including the crop-to-verify-seating technique for future sessions) and added a matching note to `capacitance_bridge/README.md`'s Validation section. `docs/history.md` has the full session summary.
 <!-- ------ -->
 ---
+Done. Summary of what changed across the 14 numbered points, no commit made (didn't ask you to):
+
+**CAPBRIDGE is now bench-tested, PASS** — the 47µF retest (48.87/47.75/47.64µF) confirmed the reseated-lead fix. Moved out of the checklist into `README.md`'s bench-tested table, `TODO-completed.md`, and the circuit's own README.
+
+**`TODO-arcticoder.md` — "Ready to build now" is now just one item** (the `psu_medlow_usbc` CC-pin check). Everything else that had no real current consumer — the 1N5817 diode check, `psu_3xaa`, the `psu_ultralow_v1` demo, CD4066 switches 2–4, the glass-fuse jig — moved to "Deferred," each with a one-line reason instead of a standing bullet. The "no `OHMMETER` bullet" paragraph is gone entirely (its reasoning already lived in kb).
+
+**`VIBISO` and `RIPPLETANK`** moved to "Blocked": `VIBISO` waits on `ACCELIF`; `RIPPLETANK` was overclaiming that the sibling repo's PWM-LED circuit could drive a motor — it can't, a driver stage doesn't exist yet, and I opened that design task in `TODO-agent.md`. Both now note the Creality K1 as a fabrication option once actionable.
+
+**`SCOPELA`** moved back to "Blocked" — the board needs Mini-USB, not Micro-USB (the listing title said so all along); added a Mini-USB cable to "Next order."
+
+**USB-C breakout pinout** — confirmed `D+` (not `U+`) from your spec; that data was already in `parts_reference.md`, so nothing new to ask.
+
+**PD trigger board** — added the actual engineering reason to prefer a low voltage tap (2A at 5V is 10W, fine for one resistor; at 20V it's 40W, not), plus a hard ceiling at the Lenovo adapter's own 65W output regardless of the board's 100W rating.
+
+Six `kb/` files got matching notes so a future session doesn't repeat any of this (checking existing docs before re-asking, reading full listing titles, not assuming a reused circuit covers a new load, and the refined ranking rule that "nothing needs this yet" belongs in Deferred, not a standing tail).
+<!-- ------ -->
+---

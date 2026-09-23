@@ -638,6 +638,82 @@ because it gates a live purchase decision** — a real edge into the
 purchasing section, distinct from (and not to be confused with) ranking
 by closeness to the outside research goal.
 
+## A criterion-5 item ("no real edge to anything") doesn't earn a standing spot in "Ready to build now" — it belongs in "Deferred" until something upstream needs it (2026-09-22)
+
+Through 2026-09-22, the five-criteria ranking's fallback (criterion 5:
+"no real edge to anything currently on the graph — order by ascending
+bench effort") had accumulated a growing "standalone validation tail" of
+bullets that all satisfied criterion 5 but never actually got any
+closer to being needed: a 1N5817 diode-drop check for whichever unit
+might someday go into `psu_3xaa`, `psu_3xaa` itself (no rail on this
+bench needs 4.5V), a `psu_ultralow_v1` demo power-on check (superseded
+by `psu_low_v2`), CD4066BCN switches 2–4 per chip (nothing downstream
+needs a second/third/fourth switch yet), and a glass-tube-fuse test jig
+(no circuit needs one built). None of these were *wrong* to rank last —
+criterion 5 correctly said "no real edge" — but keeping them as
+standing checklist bullets read as manufactured busywork, and the user
+said so directly and repeatedly across several of them in one pass
+("if it's not needed then why is it listed here," "if it's not needed
+until then, I'll build it when it's needed").
+
+**Rule going forward: criterion 5 is not itself sufficient to keep a
+bullet in "Ready to build now."** A criterion-5 item stays in that
+section only if there's a concrete reason to do it *now* despite having
+no current consumer (e.g. it's free/zero-effort and directly gates a
+live purchase decision, the way the `psu_medlow_usbc` CC-pin check gates
+the SparkFun-kit purchase — that's actually a criterion-1-adjacent edge
+into the ordering section, not a bare criterion-5 item, see the
+"before adding a paid alternative to cart" entry below). A pure "nothing
+needs this, but it's parts-on-hand busywork" item — batch-testing spares,
+demoing an already-superseded PSU tier, building a jig for a circuit
+that doesn't exist yet — moves to "Deferred" with a one-line "why not
+now," worded the same way this section's existing purchase-decline
+bullets already are. The validation itself still happens, just at the
+point something real actually needs it (the diode gets checked when
+pulled for a specific build, the CD4066 switch gets tested when a
+`MUX`/`DEMOD` build needs it) — not staged ahead of that need. This is
+the same "don't stage inventory for a future build" principle in
+[[circuit_lifecycle_and_repo_scope]], applied to *validation* bullets
+specifically rather than just physical-assembly ones.
+
+## Check `parts_reference.md`/`inventory.md` before asking the user to re-supply a spec they already gave (2026-09-22)
+
+The `psu_medlow_usbc` CC-pin-check bullet's own history had an open
+question about the USB-C breakout board's exact pad layout — but
+`parts_reference.md#usb-c-16-pin-test-breakout-board` already documented
+the full pad list (`CC2, D+, D-, SBU1, SBU2, CC1, VBUS, GND`) and had
+already flagged the one real ambiguity (a transcribed `U+` that's almost
+certainly `D+`) back on 2026-08-24. Re-asking the user for the board's
+specs instead of reading that entry first got, understandably, a
+pointed response. **Rule for future sessions: before asking the user to
+supply or re-confirm a physical part's spec/pinout, grep
+`parts_reference.md` and `inventory.md` for that part first** — if an
+entry already exists, use it (and resolve any flagged ambiguity from
+whatever new information prompted the question) instead of asking from
+scratch.
+
+## Don't assume a reused circuit covers a new build's power/drive stage without checking its own documented scope (2026-09-22)
+
+`TODO-arcticoder.md`'s `RIPPLETANK` bullet claimed
+`pico/leds/gpio_pwm_led/` "drives a small motor/speaker dipper
+directly" — checking that claim against
+`general_purpose_circuit_dependency.md` shows `gpio_pwm_led` is only
+ever documented as an alternative *signal source* for tier1 `SIMPGEN`
+(a PWM waveform generator), not a load driver; `SIMPGEN` itself is
+still backlog/undesigned, and nothing in this repo has ever put a motor
+or speaker directly on a Pico GPIO pin. A GPIO pin can source on the
+order of tens of mA at 3.3V logic level — nowhere near enough to
+actually turn a small motor or drive a speaker cone without a
+transistor-switch (or H-bridge) stage between the PWM pin and the load,
+plus a flyback diode for an inductive load. **Rule: before writing that
+an existing circuit/module "drives" or "powers" a component for a new
+build, check what that circuit's own README/dependency-graph entry
+actually documents it doing** — a signal generator is not a load driver,
+an ADC probe is not a power source, etc. — rather than assuming a
+superficially-relevant existing part covers a new requirement it was
+never scoped for. See `TODO-agent.md`'s new open item for the actual
+driver-stage design this exposed as missing.
+
 ## When a sourcing blocker can be eliminated instead of solved, prefer that (2026-09-19)
 
 `CHGAMP` was blocked on flux (no acceptable non-AliExpress,

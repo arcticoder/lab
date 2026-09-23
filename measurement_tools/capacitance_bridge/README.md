@@ -119,3 +119,10 @@ crosses both thresholds almost instantly. Reseat that lead fully into
 the same hole as the ADC probe wire and `Cx`'s positive lead and rerun —
 don't treat this as a `main.py` bug without checking the physical joint
 first.
+
+**Physically assembled and bench-tested, PASS (2026-09-22).** After
+reseating `Rref`'s lead per the above and swapping `Cx` for a 47µF (25V)
+electrolytic, three consecutive `mpremote run main.py` runs read
+48.87µF, 47.75µF, and 47.64µF — all within the kit's own ±20% tolerance
+of the 47µF nominal, and consistent with each other run to run. Moved to
+`README.md`'s "built & bench-tested" table.
