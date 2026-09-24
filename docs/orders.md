@@ -15,6 +15,24 @@ the converted `.md` files are tracked).
 
 ---
 
+## Decided, not yet ordered
+
+### SparkFun (SFE) Breadboard Power Supply Kit — RobotShop, not AliExpress
+
+- [ca.robotshop.com/products/sfe-breadboard-power-supply-kit](https://ca.robotshop.com/products/sfe-breadboard-power-supply-kit)
+  — LM317, 3.3V/5V switch-selectable, through-hole kit (soldering
+  required). Backs `power_supplies/psu_medlow_lm317`.
+- Decided 2026-09-23: it is the adjustable-rail PSU that follows
+  `psu_4xaa`, bought regardless of what the `psu_medlow_usbc` CC-pin
+  check finds. Separate order channel from the AliExpress cart, so the
+  AliExpress $10 free-shipping threshold doesn't apply to it.
+- Input is an unregulated 9–12V DC barrel jack (2.1mm, center-positive);
+  nothing on hand produces that. Candidate source: the 9V or 12V tap of
+  the PD trigger board below, off the Lenovo 65W adapter — if the
+  adapter's label lists that profile. Unverified.
+
+---
+
 ## Candidates found, not yet in any cart
 
 ### USB-C PD trigger board (fixed/selectable, 5V/9V/12V/15V/20V)
@@ -38,6 +56,9 @@ the converted `.md` files are tracked).
   sections, and
   [kb/bench_photo_diagnostics_notes.md](kb/bench_photo_diagnostics_notes.md)'s
   `ACTIVELIM` entry for the full reasoning.
+- Second use: its 9V/12V tap could feed the SparkFun kit's DC input
+  (see above). The tap is chosen per use — the lowest that works for
+  `ACTIVELIM`'s test, 9V or more for the kit.
 
 ### Power resistor assortment, 5W/10W ceramic wirewound
 
@@ -52,18 +73,14 @@ the converted `.md` files are tracked).
   parts. Pick the exact value once the trigger board's actual output
   voltage is bench-measured, not from this listing's range alone.
 
-### Mini-USB cable
-
-- No specific listing picked yet — any basic Mini-USB (5-pin) cable.
-- `SCOPELA`'s CY7C68013A board (received 2026-09-20) uses a Mini-USB
-  port — its own listing title said so ("...Module Mini USB"), missed on
-  first read; confirmed 2026-09-22 when the board couldn't be plugged in
-  with the Micro-USB/USB-C cables on hand. See
-  [parts_reference.md](parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
-
 ---
 
 ## In cart (not yet checked out)
+
+Cart is under AliExpress's $10 free-shipping threshold as of 2026-09-23;
+the PD trigger board and power-resistor assortment above are the real
+needs expected to close the gap. Everything in the cart plus whatever is
+added checks out as one batch.
 
 ### Piezo element, 12mm disc, leaded (pre-attached wires)
 
@@ -89,6 +106,16 @@ the converted `.md` files are tracked).
   bench build is currently blocked on this, it's a shipping-pipeline
   bundle with the piezo disc above, not a build-priority purchase.
 - Added to cart: 2026-09-21.
+
+### Mini-USB cable
+
+- No specific listing recorded — any basic Mini-USB (5-pin) cable.
+- `SCOPELA`'s CY7C68013A board (received 2026-09-20) uses a Mini-USB
+  port — its own listing title said so ("...Module Mini USB"), missed on
+  first read; confirmed 2026-09-22 when the board couldn't be plugged in
+  with the Micro-USB/USB-C cables on hand. See
+  [parts_reference.md](parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
+- Added to cart: 2026-09-23.
 
 ---
 
@@ -538,5 +565,5 @@ the converted `.md` files are tracked).
 
 Nothing currently in this stage as of 2026-09-21 — the 2026-09-10 batch
 (GY-521, CY7C68013A, inductor reorder) all arrived 2026-09-20; see
-"Received" above. The piezo disc and 49E Hall sensor are one stage
-earlier, still "In cart" above pending checkout.
+"Received" above. The piezo disc, 49E Hall sensor and Mini-USB cable are
+one stage earlier, still "In cart" above pending checkout.

@@ -70,11 +70,35 @@ can survive a visual check at build time.
 |------|---------|
 | `main.py` | MicroPython — reads GP28 (currently), averages ADC samples, computes and prints `R_x` against whatever `R_REF` is set to |
 | `breadboard.jpg` | Photo of the original 10Ω/GP26 shunt-characterization jig |
-| `breadboard2.jpg` | Photo of the current 10kΩ/GP28 config, on its own breadboard (2026-09-13) |
+| `breadboard2.jpg` | Photo of the 10kΩ/GP28 config, on its own breadboard (2026-09-13) |
+| `breadboard3.jpg` | Photo of the same 10kΩ/GP28 jig with a ribbon of Dupont probe leads running to the USB-C breakout board, set up to read its CC pins (2026-09-23) |
 
 No `.spice`/`smoke_test.py` here — this is a one-off measurement jig for
 characterizing a specific physical jumper chain, not a circuit with a
 fixed design target to assert against.
+
+---
+
+## Reading `main.py`'s output near the ends of its range
+
+The divider only resolves `R_x` well between roughly `R_REF/20` and
+`20 × R_REF` (about 500Ω–200kΩ at the current 10kΩ). Outside that, the
+ADC is reading close to 0V or close to the 3V3 rail, where a tiny voltage
+error becomes a huge resistance error.
+
+**An open `R_x` does not read a clean 3.300V.** Bench readings on
+2026-09-23 with nothing connected to the `R_x` leg were 3.254–3.262V
+(raw ADC mean ~64750/65535, individual samples scattered from ~62300 up to
+full scale), which the old `main.py` printed as `R_x` = 700kΩ–850kΩ,
+drifting between runs. That is not a real resistance. `main.py` now
+treats anything above 97% of `V_IN` (R_x above ~320kΩ at `R_REF` = 10kΩ)
+as "Circuit Open." If you see the drifting, several-hundred-kΩ numbers
+on an older copy of `main.py`, read them as open.
+
+**Before trusting a low reading on a new probe setup, do a positive
+control:** touch the two probe tips together and confirm `main.py` prints
+"Short to GND or 0 Ohms." An "open" result from a probe whose leads
+aren't actually seated tells you nothing about the part under test.
 
 ---
 

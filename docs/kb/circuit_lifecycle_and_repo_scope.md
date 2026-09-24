@@ -134,12 +134,11 @@ the scope boundary itself.
 ## Open question as of 2026-09-15: does this scope boundary still hold?
 
 The three-layer split above was established 2026-09-14 at the user's own
-explicit, heated request — quoted directly in this file's own history.
-One day later (2026-09-15), the user pushed back hard on the *result* of
-that same decision: seeing "no current downstream consumer" attached to
-`EPFIELD`/`CHGAMP` in `TODO-arcticoder.md` (layer 2 items, per this
-file), they asked "why am I building them then? Are we doing spacetime
-research or not?" and floated requiring a literature/preprint-backed
+explicit request. One day later (2026-09-15), the user questioned the
+*result* of that same decision: seeing "no current downstream consumer"
+attached to `EPFIELD`/`CHGAMP` in `TODO-arcticoder.md` (layer 2 items,
+per this file), they asked why those circuits were being built at all if
+the goal is spacetime research, and floated requiring a literature/preprint-backed
 research question to justify a circuit before it gets designed at all —
 which would mean layer 3 (the actual research question) starting to
 reach back into what layers 1-2 are allowed to do, the opposite

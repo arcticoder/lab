@@ -9,7 +9,10 @@ implementation of the `psu_medlow` tier alongside
 because a USB-C adapter already regulates to 5V; this one does its own
 regulation from a raw DC input, at the cost of extra parts to solder.
 
-**Status: not yet ordered, not yet built.** No physical unit has been
+**Status: decided 2026-09-23 to order from RobotShop (see
+[docs/orders.md](../../docs/orders.md)); not yet ordered, not yet built.**
+This is the adjustable-rail PSU that follows `psu_4xaa`, bought whether
+or not `psu_medlow_usbc` turns out to work. No physical unit has been
 acquired, assembled, or tested — see [breadboard.md](breadboard.md) for the
 caveat on the exact voltage-select switch wiring.
 
@@ -85,3 +88,9 @@ current-limiting resistor, unrelated to the feedback network — see
 - Input needs enough headroom above the selected output for the LM317's
   ~2–3V dropout — a 9V or 12V wall adapter works for either setting; a 5V
   adapter would not leave enough headroom for the 5V output setting.
+  Nothing on the bench makes 9–12V DC today; the candidate is the PD
+  trigger board's 9V/12V tap off the Lenovo 65W adapter (see
+  `docs/orders.md`), if that adapter's label lists such a profile. The
+  LM317 dissipates (V_in − V_out) × I as heat, so a 9V input into the 5V
+  setting at 300mA is ~1.2W in a TO-220 with no heatsink — it will run
+  hot to the touch.

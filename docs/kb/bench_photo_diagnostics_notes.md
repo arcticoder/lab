@@ -283,3 +283,53 @@ see `docs/TODO-arcticoder.md`'s "Next order"/"Blocked" sections for the
 two candidate parts identified for this. The LM358 comparator stage and
 the wiring in `breadboard.md` don't change once those arrive — only the
 load-path source does.
+
+## Resistance jig: a drifting several-hundred-kΩ reading is an open input, and it can't be told apart from a real ~800kΩ path (2026-09-23)
+
+`resistance_measurement` (GP28, `R_REF` = 10kΩ) printed 706kΩ–848kΩ,
+V = 3.254–3.262V, with the probe leads on the USB-C breakout. Read-only
+ADC probing over `mpremote` (400 samples per run, three runs):
+
+- Floating mean raw ~64750/65535 (98.8% of full scale), individual
+  samples from ~62300 up to a clipped 65535. That's the ADC's noisy top
+  end, not a divider working at 780kΩ: at `R_REF` = 10kΩ, 780kΩ and a
+  true open differ by ~1.3% of the rail, which is inside the ADC's own
+  error there.
+- Enabling the internal pull-down on GP28 dropped the mean to ~54000
+  (ratio 0.834). Solving `Rpd / (Rpd + R_REF)` for the RP2040's 50–80kΩ
+  pull-down gives `R_REF` of 10–16kΩ, consistent with the 10kΩ the config
+  says is fitted (a 220Ω or 1kΩ part would barely move). It does **not**
+  separate "open" from "~800kΩ" — both give the same ratio.
+- VSYS/3 on GP29 read 5.016V, so the USB supply is fine.
+
+The same ~3.25V open-input value showed up as `THERM`'s one-sample
+outlier on 2026-09-21 (3.253V, 698639Ω, −47.4°C, above): that reading
+was an open thermistor leg for one sample, which supports the
+contact-glitch explanation logged there. On this Pico's ADC, ~3.25V on a
+pulled-up divider node reads as "the lower leg is open," whichever
+circuit it turns up in.
+
+Two takeaways for future sessions:
+
+1. Above ~30×`R_REF` this jig cannot report a resistance. Treat any
+   drifting, run-to-run-inconsistent value up there as "open." `main.py`
+   now does (`OPEN_FRACTION` = 0.97, ~320kΩ at 10kΩ).
+2. "Open" from a probe setup only means something after a positive
+   control (probe tips touched together → "Short to GND or 0 Ohms").
+   `breadboard3.jpg` shows a ribbon of Dupont leads whose breadboard-end
+   pins look like they lie on the board rather than sit in holes; from a
+   photo alone that can't be settled, so the check was handed back as a
+   step with a positive control rather than declared a CC-pin result.
+
+Trap hit while probing: `machine.ADC(n)` reconfigures the pin to its
+analog function, so a `Pin(n, Pin.OUT, value=1)` followed by
+`ADC(n)` reads the pin *undriven*. There's no way in stock MicroPython to
+drive a GPIO and read it through the ADC in the same pin; a
+"driven-high vs floating" comparison isn't available. Don't build a test
+on it.
+
+`parts_reference.md`'s USB-C breakout entry carries the related
+inference that the two SMD parts marked `512` and `215` are both 5.1kΩ
+(`215` is `512` upside-down; a real 2.1MΩ isn't a plausible CC
+termination). Unmeasured as of this entry — if a later session has CC
+readings, replace the inference with them.

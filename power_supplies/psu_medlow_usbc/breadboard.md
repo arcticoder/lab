@@ -4,8 +4,9 @@
 is passive (traces only, no PD controller IC) — a USB-C source only drives
 VBUS once it sees CC1/CC2 sink termination, which this specific board may
 or may not have (see `README.md` Status and `docs/parts_reference.md` §
-USB-C 16-pin test breakout board). Check for VBUS with a meter after step 1
-before proceeding — if it's absent, this board needs CC1/CC2 pull-down
+USB-C 16-pin test breakout board). Check for VBUS after step 1 before proceeding
+(the Pico-based [raw_voltage_probe](../../measurement_tools/raw_voltage_probe/)
+is this bench's voltmeter) — if it's absent, this board needs CC1/CC2 pull-down
 resistors (5.1kΩ) added, or a dedicated PD sink controller IC (e.g.
 STUSB4500, CH224, TPS65987D) plus a downstream buck converter if targeting
 a voltage other than what gets negotiated.
