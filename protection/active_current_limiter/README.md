@@ -30,8 +30,9 @@ version:
 
 1. MOSFET Drain → protected load; Source → sense resistor `Rs` (0.1Ω) →
    GND.
-2. LM358 comparator: inverting input on the sense node, non-inverting
-   input on a 0.2V reference (from the TL431A, divided down), output to
+2. LM358 comparator, powered from 5V: inverting input on the sense node,
+   non-inverting input on a reference from the TL431A divided down
+   (0.2V for the 2A design point, 0.08V for the bench check), output to
    the MOSFET gate.
 
 ---
@@ -47,11 +48,18 @@ ngspice -b protection/active_current_limiter/active_current_limiter.spice
 --- ACTIVELIM Case 1 (normal, 12ohm load): load current, sense voltage, gate state ---
 i_load = 9.876543e-01
 v(3) = 9.876543e-02
-v(4) = 3.300000e+00
+v(4) = 3.500000e+00
 --- ACTIVELIM Case 2 (fault-level 3A sense test): sense voltage, comparator decision ---
 v(5) = 3.000000e-01
 v(6) = 0.000000e+00
+--- ACTIVELIM Case 3 (bench trip 0.08V): 0.625A no-trip sense/gate, 1.0A trip sense/gate ---
+v(7) = 6.250000e-02
+v(8) = 3.500000e+00
+v(9) = 1.000000e-01
+v(10) = 0.000000e+00
 ```
+
+Case 3 is the bench-check reference setting described under Validation.
 
 ---
 
@@ -103,13 +111,21 @@ limit (where chattering happens fast enough to still meaningfully limit
 average current) but not a substitute for a proper latching/foldback
 design if this ends up guarding something sensitive.
 
-**Reference voltage generation left as a real-hardware sizing step.**
-The `.spice` model uses an ideal 0.2V constant for the comparator
-reference; the real circuit derives it from the on-hand TL431A shunt
-reference divided down further (see `breadboard.md`'s § Reference
-divider) — the exact divider values depend on what Cathode voltage the
-TL431A ends up regulated to on the bench, which isn't something a fixed
-netlist constant can stand in for meaningfully.
+**Reference voltage.** The `.spice` model uses ideal constants for the
+comparator reference (0.2V for the design point, 0.08V for Case 3). The
+real circuit derives them from the on-hand TL431A tied as a 2.495V
+reference and divided down with kit resistors — `breadboard.md`'s
+§ Reference divider has the resistor values for each setting and the
+TL431A's minimum-cathode-current sizing.
+
+**The LM358 runs from 5V, not 3.3V (corrected 2026-09-23).** An LM358's
+output only pulls up to about Vcc − 1.5V. The first version of this
+design powered it from 3.3V "to match Pico logic levels" and modeled the
+output as a clean 0V/3.3V swing; on real silicon the gate would have
+reached ~1.8V, at the IRLZ44N's 1–2V threshold and nowhere near fully on
+(the MOSFET would sit in its resistive region and drop far more than the
+0.05Ω the model assumes). On 5V it reaches ~3.5V, so the model's high
+level is now 3.5V.
 
 **Why 2A, and why an illustrative 12V supply.** 2A is a working choice
 that leaves margin under the Lenovo 65W adapter's rated currents at
@@ -158,12 +174,29 @@ collapses toward 0V as the MOSFET cuts off. Expect chattering at the
 boundary itself — see Design notes above — not a clean single trip
 event.
 
-**Blocked as of 2026-09-22, not on `psu_medhigh` itself.** Finding the
-real trip point needs a load-path source that can actually push ≥2A,
-which is a lower bar than a finished `psu_medhigh` build (that tier is
-just the Lenovo 65W adapter used directly, no folder needed) but still
-unmet today: the adapter only outputs above its 5V/default fallback once
-a PD sink controller negotiates it (none on hand), and there's no power
-resistor on hand rated for the resulting dissipation either way. See
-[docs/TODO-arcticoder.md](../../docs/TODO-arcticoder.md)'s "Blocked"
-section for the two candidate parts that would unblock this.
+**What the on-hand source can and can't do.** The Lenovo 65W adapter's
+profiles are 5V/2A, 9V/2A, 15V/3A and 20V/3.25A, and it only outputs
+above USB default once a PD sink board negotiates one (the PD trigger
+board in `docs/TODO-arcticoder.md`'s "Next order"). Its 5V profile is
+rated 2A — the same number as this circuit's trip point — so a 2A trip
+can't be shown *exceeded* at 5V. The 15V profile can exceed 2A, but 15V
+into a load that draws 2.5A is ~37W, well past any single resistor in the
+power-resistor assortment (5W/10W), and a chattering limiter doesn't
+help enough to matter.
+
+**Bench check: scale the trip instead of the load.** Set the reference
+divider to the "Bench check" row in `breadboard.md` (~0.08V, ~0.8A trip)
+and use the PD trigger board's **5V** tap:
+
+1. 8Ω (10W wirewound) as the load: draws 0.625A, below the trip point.
+   The Pico ADC on the sense node reads ~0.0625V and the gate stays high.
+2. 5Ω as the load: draws 1.0A, above the trip point. The sense node
+   reads ~0.1V at the moment of trip and the gate drops.
+
+Same comparator, MOSFET and sense resistor as the 2A design; only the
+reference divider differs. Case 3 in the netlist and smoke test covers
+these two loads. Expect chattering at the boundary itself, as above.
+
+This validates the switching logic, not the 2A number: confirming the
+real 2A trip needs a source that can push more than 2A into a load,
+which nothing on this bench does at a wattage one resistor can take.

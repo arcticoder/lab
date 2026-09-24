@@ -31,25 +31,39 @@ notes for why `HVPULSE` wasn't attempted in this same pass regardless.
 | LM358P | dual op-amp, DIP-8 (used as a comparator) | 1 |
 | TL431A | precision shunt reference, TO-92 | 1 |
 | Resistor | 0.1 Ω (sense, `Rs`, 1W metal-film) | 1 |
-| Resistor | see § Reference divider below | 2 |
-| Resistor | 10 kΩ (TL431A pull-up) | 1 |
+| Resistor | 100 Ω (reference divider, bottom leg) | 1 |
+| Resistor | 1 kΩ (TL431A pull-up, and the divider's top leg for the 2A setting) | 2 |
+| Resistor | 2 kΩ (divider top leg, added in series with a 1 kΩ, for the bench-check setting) | 1 |
 | Dupont M-M jumper (red) | 12–20cm | 2 |
 | Dupont M-M jumper (black) | 12–20cm | 2 |
 
 ---
 
-## Reference divider (Vref = 0.2V)
+## Reference divider (Vref)
 
-The TL431A's internal bandgap reference is fixed at 2.495V between its
-Ref and Anode pins — see `docs/parts_reference.md#tl431a-precision-shunt-
-reference`. To get a 0.2V comparator reference, divide the TL431A's
-regulated Cathode output (set to some convenient value, e.g. 2.5V, by its
-own feedback divider per that part's own reference circuit) down further
-with a second divider feeding the LM358's non-inverting input. Work out
-the exact two resistor values against whichever Cathode voltage the
-TL431A ends up regulated to on the bench — this is a real hardware
-sizing step the `.spice` model deliberately skips (see `README.md`'s
-Design notes for why).
+The TL431A wired with its Ref pin tied to Cathode regulates Cathode to
+its 2.495V internal reference (see `docs/parts_reference.md#tl431a-
+precision-shunt-reference`). A two-resistor divider from Cathode to GND
+brings that down to the comparator's reference, `Vref = 2.495V × R_bot /
+(R_top + R_bot)`, and the trip current is `Vref / 0.1Ω`. `R_bot` is the
+100 Ω resistor either way; the top leg is what changes:
+
+| Setting | `R_top` | `Vref` | Trips at | Use |
+|---------|---------|--------|----------|-----|
+| Bench check | 2 kΩ + 1 kΩ in series | 0.080V | ~0.80A | The validation in `README.md` § Validation (5V source, 2A max) |
+| 2A design point | 1 kΩ + 100 Ω in series | 0.208V | ~2.08A | Needs a source that can actually push more than 2A |
+
+Both values come from ±5% kit resistors and the LM358's own input offset
+(a few mV, which is several percent of 0.08V), so expect the real trip
+point to land within roughly ±15% of the figure in the table — the bench
+check's two dummy loads (0.625A and 1.0A) are far enough either side of
+0.80A to tell that apart.
+
+The TL431A needs at least ~1mA flowing into its Cathode to regulate.
+From the 5V rail through a 1 kΩ pull-up that is (5V − 2.5V)/1kΩ = 2.5mA
+total, of which the bench-check divider takes ~0.8mA, leaving ~1.7mA.
+(A 10 kΩ pull-up, as an earlier version of this file specified, would
+leave 0.25mA and the reference would sag.)
 
 ---
 
@@ -58,7 +72,8 @@ Design notes for why).
 ### 1. Wire the load path
 
 - MOSFET Drain → the protected circuit's load return (whatever
-  `psu_medhigh`/`psu_high` load this eventually protects).
+  `psu_medhigh`/`psu_high` load this eventually protects; for the bench
+  check, a 10W wirewound dummy load — 8Ω, then 5Ω — from the 5V rail).
 - MOSFET Source → one leg of `Rs` (0.1Ω).
 - Other leg of `Rs` → GND.
 
@@ -71,25 +86,36 @@ Design notes for why).
 - LM358 pin 1 (output) → MOSFET Gate, directly (no series resistor
   needed at Pico-logic drive levels, but a ~100Ω series resistor is
   harmless insurance against gate-drive ringing if one's on hand).
-- Power LM358 (pin 8 VCC, pin 4 GND) from a rail matching the gate-drive
-  logic level intended (3.3V for direct Pico-GPIO-equivalent levels).
+- Power LM358 (pin 8 VCC, pin 4 GND) from **5V**, not 3.3V. The LM358's
+  output only pulls up to about Vcc − 1.5V, so on 3.3V the gate would
+  reach ~1.8V — at the IRLZ44N's 1–2V threshold, not fully on — while on
+  5V it reaches ~3.5V, which turns the MOSFET on properly. For the bench
+  check, use the same 5V rail that feeds the load; on a bench without a
+  separate 5V, the Pico's VBUS pin (physical pin 40) is a 5V source.
 
-### 3. Wire the TL431A reference
+### 3. Wire the TL431A reference and divider
 
-Per `docs/parts_reference.md#tl431a-precision-shunt-reference`: Cathode
-needs a pull-up resistor/current source (it only sinks, never sources)
-— a 10kΩ resistor from VCC to Cathode works. Ref and Anode set the
-regulated Cathode voltage via their own feedback divider — see that
-part's own reference-circuit configuration before wiring specific
-values.
+Per `docs/parts_reference.md#tl431a-precision-shunt-reference` for the
+pinout:
+
+- Cathode → a 1kΩ resistor → the 5V rail (the pull-up: the part only
+  sinks current, never sources it).
+- Ref → Cathode (tied together: the part then regulates Cathode to
+  2.495V).
+- Anode → GND.
+- Cathode → `R_top` (per the table in § Reference divider) → the
+  reference node → `R_bot` (100Ω) → GND. The reference node goes to LM358
+  pin 3.
 
 ---
 
 ## Expected behavior
 
-With the load drawing under 2A, the gate should read at the drive rail
-(fully on) and the sense node should read below 0.2V. Forcing a fault
-(a load drawing more than 2A) should trip the gate low and cut the
+With the load drawing less than the trip current (2A at the design
+setting, ~0.8A at the bench-check setting), the gate should read at the
+drive level (~3.5V, fully on) and the sense node should read below the
+reference (0.2V / 0.08V). Forcing a fault (a load drawing more than the
+trip current) should trip the gate low and cut the
 MOSFET off — but expect this to **chatter** (rapidly oscillate on/off)
 right at the trip boundary rather than cleanly latch off, since this is
 a simple comparator with no hysteresis or latch — see `README.md`'s

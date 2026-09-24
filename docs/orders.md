@@ -23,13 +23,24 @@ the converted `.md` files are tracked).
   — LM317, 3.3V/5V switch-selectable, through-hole kit (soldering
   required). Backs `power_supplies/psu_medlow_lm317`.
 - Decided 2026-09-23: it is the adjustable-rail PSU that follows
-  `psu_4xaa`, bought regardless of what the `psu_medlow_usbc` CC-pin
-  check finds. Separate order channel from the AliExpress cart, so the
-  AliExpress $10 free-shipping threshold doesn't apply to it.
-- Input is an unregulated 9–12V DC barrel jack (2.1mm, center-positive);
-  nothing on hand produces that. Candidate source: the 9V or 12V tap of
-  the PD trigger board below, off the Lenovo 65W adapter — if the
-  adapter's label lists that profile. Unverified.
+  `psu_4xaa` and the only `psu_medlow` implementation being built —
+  `psu_medlow_usbc` was shelved the same day. Separate order channel from
+  the AliExpress cart, so the AliExpress $10 free-shipping threshold
+  doesn't apply to it.
+- Input is an unregulated 9–12V DC barrel jack (2.1mm, center-positive).
+  Source: a spare DC wall adapter from the bench (one is plugged into a
+  drive enclosure; its label has not been read yet). It qualifies if the
+  label shows **all** of: (1) DC output (`⎓` or "DC", not "AC"), (2)
+  9–12V, (3) a single round barrel plug (not a 4-pin/Molex-style
+  connector), 5.5mm outer (the standard size for a 2.1mm jack) × 2.1mm inner (a 2.5mm inner-diameter plug is
+  loose in a 2.1mm jack; a 2.1mm plug won't seat on a 2.5mm one), (4)
+  centre-positive (`⊖–●–⊕` symbol, plug centre = +) and (5) at least
+  ~0.5A. A 12V adapter works; 9V runs the LM317 cooler (it dissipates
+  (Vin − Vout) × I). The kit's input diode blocks reverse polarity, so a
+  centre-negative adapter fails safe (no power) rather than damaging
+  anything. The PD trigger board below is no longer part of this path.
+  The barrel-jack size is the kit listing's spec as recorded here, not
+  measured.
 
 ---
 
@@ -42,23 +53,21 @@ the converted `.md` files are tracked).
   [item 1005002483864283](https://www.aliexpress.com/item/1005002483864283.html).
   Found by search 2026-09-22, not vetted beyond the listing text — check
   current price/stock/seller before adding to cart.
-- Needed to get `protection/active_current_limiter` (`ACTIVELIM`) any
-  supply voltage above the Lenovo 65W adapter's bare 5V USB default —
-  the adapter can't output its higher PD profiles (9–20V) without a PD
-  sink controller negotiating one, and none is on hand. **Use the
-  lowest selectable tap that still hits 2A within the resistor
-  assortment's 5W/10W rating, not the board's max** (5V → 10W at 2A,
-  fine; 20V → 40W, too much for one resistor). Hard ceiling regardless:
-  never a tap above what the Lenovo adapter itself actually outputs
-  (20V/3.25A, 65W total) — the board's 100W/5A rating is a spec for a
-  bigger supply than this bench has, not a target. See
+- Needed for `protection/active_current_limiter` (`ACTIVELIM`): the
+  Lenovo 65W adapter only outputs its PD profiles (5V/2A, 9V/2A, 15V/3A,
+  20V/3.25A) once a PD sink controller negotiates one, and none is on
+  hand. **The check uses the 5V tap** with the reference divider scaled
+  to a ~0.8A trip and two dummy loads (8Ω, 5Ω) — the adapter's 5V
+  profile is rated 2A, so a 2A trip can't be shown exceeded at 5V, and
+  15V into a 2.5A load is ~37W, past any single resistor here. Never a
+  tap above what the Lenovo adapter itself outputs (20V/3.25A, 65W
+  total): the board's 100W/5A rating is a spec for a bigger supply than
+  this bench has, not a target. Full reasoning in
+  `protection/active_current_limiter/README.md` § Validation. See
   [TODO-arcticoder.md](TODO-arcticoder.md)'s "Next order" and "Blocked"
   sections, and
   [kb/bench_photo_diagnostics_notes.md](kb/bench_photo_diagnostics_notes.md)'s
   `ACTIVELIM` entry for the full reasoning.
-- Second use: its 9V/12V tap could feed the SparkFun kit's DC input
-  (see above). The tap is chosen per use — the lowest that works for
-  `ACTIVELIM`'s test, 9V or more for the kit.
 
 ### Power resistor assortment, 5W/10W ceramic wirewound
 
@@ -66,12 +75,12 @@ the converted `.md` files are tracked).
   0.5 2 5 8 10 15 20 25 47 100 470 1K Ohm 5 10 Watt Cement Resistance" —
   [item 2251832677195042](https://www.aliexpress.com/i/2251832677195042.html).
   Found by search 2026-09-22, not vetted beyond the listing text.
-- The other half of the `ACTIVELIM` bench-test gap above: a dummy load
-  resistor rated for the wattage a deliberate ≥2A fault test dissipates
-  (tens of watts depending on test voltage) — nothing on hand is rated
-  for that; the resistors already in inventory are small-signal kit
-  parts. Pick the exact value once the trigger board's actual output
-  voltage is bench-measured, not from this listing's range alone.
+- The other half of the `ACTIVELIM` bench-test gap above: dummy load
+  resistors rated for the wattage the 5V check dissipates — nothing on
+  hand is rated for that; the resistors already in inventory are
+  small-signal kit parts. Values needed: **5Ω and 8Ω, 10W variant** (5V
+  into 5Ω is 5W — exactly the 5W variant's rating, so take the 10W
+  part; 8Ω is 3.1W). Both are in the listing's value list.
 
 ---
 
@@ -484,8 +493,9 @@ added checks out as one batch.
 - Substitutes for the originally-scoped ADXL335 to fill the tier5
   `ACCELIF` gap — see
   [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
-  2026-09-03 gap-analysis cross-reference entry. Design/simulate task now
-  open in [TODO-agent.md](TODO-agent.md).
+  2026-09-03 gap-analysis cross-reference entry. Designed/simulated
+  2026-09-23:
+  [signal_conditioning/accelerometer_interface](../signal_conditioning/accelerometer_interface/).
 - Ordered: 2026-09-10. Logged received: 2026-09-20.
 
 ### EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
@@ -525,8 +535,9 @@ added checks out as one batch.
   Untested — color-band values not yet cross-checked against a known
   reading.
 - Supports: tier3 `INDBRIDGE` (inductance bridge) directly, and any
-  future filter/oscillator tank-circuit use. Design/simulate task now
-  open in [TODO-agent.md](TODO-agent.md).
+  future filter/oscillator tank-circuit use. Designed/simulated
+  2026-09-23:
+  [measurement_tools/inductance_bridge](../measurement_tools/inductance_bridge/).
 - Ordered: 2026-09-10. Logged received: 2026-09-20.
 
 ---

@@ -32,61 +32,43 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 - [ ] **AliExpress: add the PD trigger board and the power-resistor
       assortment to the cart, then check out the whole cart.** The cart
-      is still under the $10 free-shipping threshold; both of these are
-      real needs (`ACTIVELIM`'s ≥2A bench check, below), so they close
-      the gap without padding. Already in the cart:
+      is still under the $10 free-shipping threshold; both are real
+      needs (`ACTIVELIM`'s bench check, below), so they close the gap
+      without padding. Already in the cart:
       [12× leaded 12mm piezo discs](https://www.aliexpress.com/item/1005003133740770.html)
-      (retry `CHGAMP` without soldering to a bare disc),
+      (`CHGAMP` retry),
       [10× 49E linear Hall sensors](https://www.aliexpress.com/item/32912682330.html)
-      (the only way to build `HALLAMP`; the on-hand KY-003 is
-      digital-only), and a Mini-USB cable (`SCOPELA`'s board takes
-      Mini-USB; only Micro-USB/USB-C cables are on hand). To add:
+      (`HALLAMP`), and a Mini-USB cable (`SCOPELA`). To add:
       [USB-C PD/QC decoy trigger board, 100W/5A, 5V/9V/12V/15V/20V selectable](https://www.aliexpress.com/item/1005002483864283.html)
-      and
-      [10× 5W/10W ceramic wirewound resistor assortment, 0.1Ω–1kΩ](https://www.aliexpress.com/i/2251832677195042.html)
-      — both found by search, not vetted beyond the listing text, so
-      check price/stock first. For the `ACTIVELIM` test use the lowest
-      tap that still gets 2A through a single 5W/10W resistor (5V →
-      10W), never a tap above what the on-hand Lenovo 65W adapter
-      outputs (20V/3.25A max). Pick the exact resistor once the
-      board's real output is bench-measured.
+      (makes the Lenovo adapter output its 5V tap) and
+      [5W/10W ceramic wirewound resistor assortment, 0.1Ω–1kΩ](https://www.aliexpress.com/i/2251832677195042.html)
+      (pick the **10W** variant, values **5Ω and 8Ω**). Both were found
+      by search, not vetted beyond the listing text — check price/stock
+      first. **Before checking out, read the label on the adapter plugged
+      into your drive enclosure** (see the RobotShop bullet): if it fails
+      any of that bullet's criteria, also add a 12V, ≥1A, 5.5×2.1mm,
+      centre-positive DC adapter to this same cart so it ships in the
+      same batch.
 - [ ] **RobotShop: order the
       [SparkFun Breadboard Power Supply Kit](https://ca.robotshop.com/products/sfe-breadboard-power-supply-kit)
       (5V/3.3V, LM317).** It's the adjustable-rail PSU that follows
-      `psu_4xaa`'s fixed 6V (`power_supplies/psu_medlow_lm317`). It
-      needs a 9–12V DC input and nothing on the bench makes one today:
-      read the Lenovo adapter's label for a 9V or 12V output profile —
-      if it has one, the PD trigger board above supplies that input
-      and no further part is needed.
+      `psu_4xaa`'s fixed 6V (`power_supplies/psu_medlow_lm317`). Its
+      input is a DC barrel jack; the drive-enclosure adapter works if its
+      label shows DC output, 9–12V, a single 5.5×2.1mm round plug, centre-positive
+      (`⊖–●–⊕`), and at least 0.5A — details in `orders.md`.
 
 ## Ready to build now — parts on hand
 
-1. [ ] **`power_supplies/psu_medlow_usbc` — read both CC pins with
-       [measurement_tools/resistance_measurement](../measurement_tools/resistance_measurement/).**
-       Closes the one deliberately-red `smoke_test.py` in the repo and
-       would give a second, free 5V path if VBUS comes up (the SparkFun
-       kit above is being bought either way). The jig you left set up
-       (`breadboard3.jpg`) currently reads open, which only proves the
-       probe leads aren't touching anything — it says nothing about the
-       CC pins yet. The two SMD parts on the breakout are marked `512`
-       and `215`; `215` is almost certainly `512` read upside-down, so
-       both CC pins should read ~5.1kΩ to GND.
-       1. Unplug the USB-C cable from the breakout — the jig drives the
-          pins from the Pico's 3V3, nothing else may power the board.
-       2. Probe lead A goes to the row where `R_REF` meets GP28; probe
-          lead B goes to a Pico GND pin.
-       3. `mpremote run main.py`, touch the two probe tips together:
-          it must print "Short to GND or 0 Ohms." If it doesn't, fix
-          the leads before going on.
-       4. Lead A on the `CC1` pad, lead B on the `GND` pad (pad order
-          on the silkscreen: `CC2, D+, D-, SBU1, SBU2, CC1, VBUS,
-          GND`). Note the reading. Repeat with lead A on `CC2`.
-       5. ~5.1kΩ on both (prints ~4.5k–5.7k, ~1.1V): the pull-downs are
-          already there — plug the adapter in and read VBUS with
-          [raw_voltage_probe](../measurement_tools/raw_voltage_probe/).
-          "Circuit Open" on a CC pin (with step 3 passed): wire one of
-          the 10 on-hand 5.1kΩ resistors from that pad to `GND`, then
-          read VBUS.
+1. [ ] **`signal_conditioning/accelerometer_interface` — wire the GY-521
+       to the Pico and run `main.py`.** It's the measurement side of
+       `VIBISO` (see "Blocked") and the first power-up of the untested
+       GY-521. Four jumpers, no soldering unless the module's header pins
+       came loose in the bag: `VCC`→3V3(OUT) (pin 36), `GND`→pin 38,
+       `SDA`→GP4 (pin 6), `SCL`→GP5 (pin 7); module lying still on the
+       bench; `mpremote run main.py`. All lines `[PASS]` is done; a
+       `WHO_AM_I` of `0x70`–`0x72` is a clone that still passes. Wiring
+       table and failure meanings:
+       [breadboard.md](../signal_conditioning/accelerometer_interface/breadboard.md).
 
 Nothing else queued behind this one right now — see
 [kb/todo_list_conventions.md](kb/todo_list_conventions.md) for the
@@ -94,12 +76,12 @@ ranking method this section uses whenever it has more than one item.
 
 ## Blocked — waiting on a shipment or a sourcing decision
 
-- [ ] **`ACTIVELIM`** (`protection/active_current_limiter`) — needs a
-      current-capable (≥2A) test source to find its real trip point;
-      nothing on this bench can do that today. Unblocked by the PD
-      trigger board + power resistor in "Next order" above — see
-      `docs/kb/bench_photo_diagnostics_notes.md`'s `ACTIVELIM` entry for
-      the full reasoning.
+- [ ] **`ACTIVELIM`** (`protection/active_current_limiter`) — needs the PD
+      trigger board (5V tap off the Lenovo adapter) and the 5Ω/8Ω power
+      resistors from "Next order" above. The check scales the trip to
+      ~0.8A because the adapter's 5V profile is rated 2A; the reference
+      divider values and the two-load procedure are in that circuit's
+      README § Validation.
 - [ ] **`CHGAMP`** (tier5, charge amplifier) — blocked on the leaded
       piezo disc in the AliExpress cart (see "Next order" above).
       A 2026-09-16 attempt with the bare-disc batch destroyed one unit
@@ -115,30 +97,30 @@ ranking method this section uses whenever it has more than one item.
       confirming `sigrok`/PulseView detects it via `fx2lafw` is the
       whole check, once the cable is in hand.
 - [ ] **`VIBISO`** (vibration isolation platform) — hold off on the
-      mechanical build itself until `ACCELIF` (design task open in
-      `TODO-agent.md`) exists to actually measure isolation quality; a
-      platform with nothing to bench-test it against isn't worth
-      building yet. For later: the on-hand Creality K1 (with PLA
+      mechanical build itself until `ACCELIF` (item 1 above) is
+      assembled and passing, so there is something to measure isolation
+      quality with. For later: the on-hand Creality K1 (with PLA
       filament stock) can print feet/platform parts once this is
       actionable.
-- [ ] **`RIPPLETANK`** (2D ripple tank) — needs an actual motor/speaker
-      driver circuit that doesn't exist yet. `pico/leds/gpio_pwm_led/`
-      only generates a GPIO-level PWM signal (tier1 `SIMPGEN`'s
-      undesigned stand-in) — a Pico GPIO pin can't drive a motor's
-      current directly without a transistor-switch + flyback-diode
-      stage, which hasn't been designed. Design task open in
-      `TODO-agent.md`; once done, the tray/water/depth-step-insert build
-      itself needs no purchase. For later: the on-hand Creality K1 (PLA
-      on hand) could print a precise stepped/sloped depth insert once
-      this is actionable.
-
-`INDBRIDGE` and `ACCELIF` both received their blocking part on
-2026-09-20 and need a netlist designed against it before there's
-anything to physically assemble — tracked as open design items in
-`TODO-agent.md`, not here.
+- [ ] **`RIPPLETANK`** (2D ripple tank) — needs a wave-dipper actuator
+      and its driver stage, and neither exists yet: no motor or speaker
+      is on hand (the only actuator is the 9G servo), and
+      `pico/leds/gpio_pwm_led/` only generates a GPIO-level PWM signal,
+      which can't drive a motor's current directly. What to build the
+      driver around is open in `TODO-agent.md`. For later: the on-hand
+      Creality K1 (PLA on hand) could print a precise stepped/sloped
+      depth insert once this is actionable.
 
 ## Deferred — considered and declined, no action needed
 
+- `measurement_tools/inductance_bridge` (`INDBRIDGE`) — designed and
+  simulated, parts on hand, but nothing on this bench uses an inductor
+  yet. Build it when a design needs a verified inductance, or when you
+  want the assortment's color bands cross-checked (good to about the
+  10nF reference capacitor's tolerance, ±10% or so).
+- `power_supplies/psu_medlow_usbc` and the USB-C breakout's CC-pin check
+  — shelved; the SparkFun kit is the `psu_medlow` implementation being
+  built, and the breakout board stays in inventory unused.
 - `power_supplies/psu_3xaa` + the remaining 1N5817 diode-drop checks —
   no current rail need (nothing on this bench needs 4.5V specifically;
   `psu_4xaa` at 6.0V already covers what this tier would). A diode gets

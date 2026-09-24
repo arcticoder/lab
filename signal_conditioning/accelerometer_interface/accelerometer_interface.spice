@@ -1,0 +1,60 @@
+* accelerometer_interface — GY-521 (MPU-6050) I2C bus + supply, ACCELIF
+*
+* The MPU-6050 has its own 16-bit ADC, so nothing analog is being
+* conditioned here. What can go wrong electrically is the I2C bus and the
+* supply, so those are what this netlist models:
+*
+*   1) Bus rise time. SDA and SCL are open-drain with a pull-up to 3.3V.
+*      The GY-521 carries its own pull-ups (a typical GY-521 layout uses
+*      4.7k — an ASSUMPTION, not measured on this board); the wiring
+*      capacitance (breadboard + jumpers + the two chip pins) is what they
+*      have to charge. I2C standard mode (100kHz) allows a 30%->70% rise
+*      of 1000ns, fast mode (400kHz) 300ns. Pico internal pull-ups
+*      (~50k) are in parallel and negligible, so they are not modeled.
+*   2) Supply. The module runs off psu_pico_rail (Pico 3V3(OUT), Rint =
+*      2ohm, ~100mA budget — see power_supplies/psu_pico_rail/). The
+*      MPU-6050 draws ~3.9mA; the board's power LED and regulator add a
+*      few more, so 10mA is modeled as the worst case.
+*
+* The bus is one open-drain line: a switch (Pico pad, ~50ohm) pulls the
+* line low and releases it at t=1us; the pull-up then charges the bus
+* capacitance. SDA and SCL are identical, so one line is simulated.
+
+Vdd   1 0 DC 3.3
+Rpu   1 2 4.7k
+Cbus  2 0 50p
+S1    2 0 3 0 SWMOD
+Vctl  3 0 PULSE(3.3 0 1u 1n 1n 200u 400u)
+.model SWMOD SW(Ron=50 Roff=1e9 Vt=1.65 Vh=0.1)
+
+* Supply from psu_pico_rail into the module
+Vrail 11 0 DC 3.3
+Rint  11 12 2
+Iboard 12 0 DC 10m
+
+.control
+set noaskquit
+* --- 1) rise time vs pull-up and bus capacitance ---
+foreach rp 2.2k 4.7k 10k
+  foreach cb 50p 100p 200p
+    alter rpu = $rp
+    alter cbus = $cb
+    tran 2n 8u
+    meas tran t30 WHEN v(2)=0.99 RISE=1
+    meas tran t70 WHEN v(2)=2.31 RISE=1
+    meas tran vlow FIND v(2) AT=0.5u
+    let rpn = $rp
+    let cbn = $cb
+    let tr = t70 - t30
+    echo "RISE $&rpn $&cbn $&tr $&vlow"
+  end
+end
+* --- 2) supply operating point ---
+op
+let vmod = v(12)
+let imod = (v(11) - v(12)) / 2
+echo "RAIL $&vmod $&imod"
+quit
+.endc
+
+.end

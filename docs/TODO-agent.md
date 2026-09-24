@@ -55,43 +55,6 @@ circuit is ever trusted as an unattended monitor; pick N against how
 often this kind of breadboard contact glitch actually recurs rather than
 guessing a number now.
 
-### `ACCELIF` (tier5) — GY-521/MPU6050 received 2026-09-20, design/simulate now startable
-
-Was sitting in `TODO-arcticoder.md`'s "Blocked" section on the in-transit
-GY-521 module; that arrived 2026-09-20, so this file's own workflow
-condition (a real sourced part to design against) is now satisfied —
-same trigger that started `EPFIELD`/`CHGAMP`/`THERM`/`PHASED`/`ACTIVELIM`
-2026-09-13. Design/simulate an I2C interface to the MPU-6050 (3.3–5V
-supply, SDA/SCL + 3V3 + GND, 16-bit ADC per axis, accel range
-±2/4/8/16g — see `docs/parts_reference.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module`
-for the full spec) against `psu_pico_rail` (already built, no PSU
-purchase needed first). No analog front-end needed — the breakout board
-already carries its own ADC, so this is closer in shape to
-`cd4066_switch_tester`'s Pico-driven digital-interface pattern than to
-the op-amp analog circuits designed 2026-09-13. Feeds `VIBISO`'s
-isolation-quality bench measurement once built (see
-`TODO-arcticoder.md`'s "Ready to build now" item 3) — that's the reason
-this was sourced in the first place, not a general-purpose accelerometer
-need.
-
-### `INDBRIDGE` (tier3, inductance bridge) — color-ring inductor assortment received 2026-09-20, design/simulate now startable
-
-Was sitting in `TODO-arcticoder.md`'s "Blocked" section on the reordered
-inductor assortment (original order cancelled by AliExpress 2026-09-07,
-reordered 2026-09-10); that arrived 2026-09-20. Design/simulate an
-inductance bridge (known-reference-vs-unknown-leg topology, same family
-as the already-built `measurement_tools/resistance_measurement/` divider
-and the designed-but-unbuilt `measurement_tools/capacitance_bridge/` RC
-timing approach) against the 12-value, 1µH–1mH color-ring inductor
-assortment — see
-`docs/parts_reference.md#color-ring-inductor-assortment-0307-14w` for
-values and the still-unverified color-band-to-value caveat (read the
-physical bands the same way as resistor color codes, per that entry,
-until a build can cross-check one against a known value). No PSU
-purchase needed — check whether `psu_pico_rail` suffices or whether the
-bridge needs an AC excitation source not yet on the bench before
-assuming it's a no-purchase build.
-
 ### `SIMPGEN` stand-in motor/speaker driver — needed before `RIPPLETANK` is buildable
 
 Flagged 2026-09-22: `TODO-arcticoder.md`'s `RIPPLETANK` entry had
@@ -100,13 +63,31 @@ dipper directly" — it doesn't. That circuit only generates a GPIO-level
 PWM square wave (tier1 `SIMPGEN`'s documented stand-in, and `SIMPGEN`
 itself is still backlog/undesigned per
 `general_purpose_circuit_dependency.md`) — a Pico GPIO pin can't source a
-motor's actual drive current directly. Design/simulate a small driver
-stage (transistor switch off the PWM pin, flyback diode across the
-motor/actuator) before `RIPPLETANK`'s wave-driver bullet moves back to
-`TODO-arcticoder.md`'s "Ready to build now." No specific motor/actuator
-part is sourced yet — check what's actually on hand (small DC motor,
-vibration motor, speaker) before designing bias/current values against
-nothing.
+motor's actual drive current directly.
+
+**Inventory checked 2026-09-23: no part on hand fits.** There is no DC
+motor, vibration motor, or speaker. What is on hand: a 9G servo, a
+passive and an active buzzer (2–5kHz resonant transducers, far above
+ripple-tank dipper frequencies), two S8050 NPN and two S8550 PNP
+transistors. So a transistor-switch + flyback-diode stage has nothing to
+drive yet, and designing bias/current values against no load would be
+designing against nothing. The two real routes:
+
+- **9G servo as the dipper (no purchase).** The Pico's 50Hz PWM drives
+  it directly; it sweeps a dipper a few times a second, which is the
+  right order for ripple-tank waves. The open question is its 5V supply:
+  a hobby servo pulls 100–250mA moving and 650mA+ stalled, above
+  `psu_pico_rail`'s ~100mA and `psu_4xaa`'s <300mA budgets, so it would
+  run from the Pico's VBUS pin (USB 5V, ~500mA shared with the Pico).
+  Not startable as a design until the user decides the servo is acceptable
+  as the dipper, since that changes the tank's wave character (angular
+  sweep, not a plunging dipper).
+- **A vibration motor or small speaker (purchase).** Then the transistor
+  switch + flyback design applies; it needs the part number first.
+
+Don't design either until the actuator is chosen. This is the user's
+call (a purchase or a mechanical-approach choice), not a file-creation
+task, so it stays here until they pick one.
 
 ### `FORCEBAL` / `SIPMFE` / `LASERDRV` — new tier5/7 nodes (2026-09-18), blocked on part sourcing, not file-creation work
 
@@ -180,6 +161,15 @@ strength of a netlist alone.
 
 ## Completed (moved out)
 
+- **2026-09-23**: `measurement_tools/inductance_bridge/` (`INDBRIDGE`)
+  and `signal_conditioning/accelerometer_interface/` (`ACCELIF`) —
+  designed, simulated, smoke-tested (green) and documented. Both
+  `main.py` files were exercised against host-side mocks only. See
+  [TODO-completed.md](TODO-completed.md) for the design decisions and
+  `TODO-arcticoder.md`'s "Ready to build now" / "Deferred" for their
+  assembly status. The same pass corrected `protection/active_current_
+  limiter/` (LM358 supply, TL431A pull-up, and a validation plan that
+  fits a 2A-rated source).
 - **2026-09-13**: `signal_conditioning/transimpedance_amplifier/` (`TIA`)
   and `measurement_tools/capacitance_bridge/` (`CAPBRIDGE`) — both
   designed, simulated (`ngspice -b`, confirmed against hand-derived

@@ -17,9 +17,14 @@
 * MOSFET modeled as an ideal switch (Ron=0.05, approximating IRLZ44N's
 * low-mOhm Rds(on) at Vgs=5V) rather than a vendor transistor-level
 * model, same technique ne555_astable.spice uses for its own discharge
-* transistor. Comparator modeled as an ideal rail-to-rail B-source (0V
-* or 3.3V, Pico-logic-compatible gate drive is plenty to fully enhance a
-* logic-level MOSFET).
+* transistor. Comparator modeled as an ideal B-source swinging 0V to
+* 3.5V. That high level is what an LM358 actually reaches on a 5V supply:
+* its output stage only pulls up to about Vcc - 1.5V (it is not
+* rail-to-rail), so on a 3.3V supply it would top out near 1.8V, right at
+* the IRLZ44N's 1-2V gate threshold and nowhere near fully on. The LM358
+* is therefore powered from 5V in the real build (see breadboard.md), and
+* the model's 3.5V follows from that. Low level is ~0V (the LM358 sinks
+* to within tens of mV of ground).
 *
 * This is a hard-trip (bang-bang) limiter, not continuous linear
 * foldback regulation — see README.md's Design notes for why, and for a
@@ -56,13 +61,26 @@ Vcc    1 0  DC 12
 Rload  1 2  12
 Sfet   2 3  4 0  SWMOD
 Rs     3 0  0.1
-Bctrl  4 0  V = (V(3) > 0.2) ? 0 : 3.3
+Bctrl  4 0  V = (V(3) > 0.2) ? 0 : 3.5
 .model SWMOD SW(Ron=0.05 Roff=1e9 Vt=1.65 Vh=0.1)
 
 * --- Case 2: open-loop sense check, fault-level current ---
 Itest    0 5  DC 3
 Rs_test  5 0  0.1
-Bctrl_test 6 0  V = (V(5) > 0.2) ? 0 : 3.3
+Bctrl_test 6 0  V = (V(5) > 0.2) ? 0 : 3.5
+
+* --- Case 3: bench-validation trip point (see README.md § Validation) ---
+* The only >=2A-capable source available is the Lenovo adapter, and its
+* 5V profile is rated 2A, so a 2A trip can't be exceeded at 5V. The bench
+* check instead sets the reference divider to ~0.08V (trip ~0.8A) and
+* uses two dummy loads at 5V: 8ohm draws 0.625A (must NOT trip), 5ohm
+* draws 1.0A (must trip). Open-loop like Case 2, same reason.
+Itest_ok   0 7  DC 0.625
+Rs_ok      7 0  0.1
+Bctrl_ok   8 0  V = (V(7) > 0.08) ? 0 : 3.5
+Itest_trip 0 9  DC 1.0
+Rs_trip    9 0  0.1
+Bctrl_trip 10 0 V = (V(9) > 0.08) ? 0 : 3.5
 
 .control
 op
@@ -71,6 +89,8 @@ let i_load = (v(1)-v(2))/12
 print i_load v(3) v(4)
 echo --- ACTIVELIM Case 2 (fault-level 3A sense test): sense voltage, comparator decision ---
 print v(5) v(6)
+echo --- ACTIVELIM Case 3 (bench trip 0.08V): 0.625A no-trip sense/gate, 1.0A trip sense/gate ---
+print v(7) v(8) v(9) v(10)
 quit
 .endc
 

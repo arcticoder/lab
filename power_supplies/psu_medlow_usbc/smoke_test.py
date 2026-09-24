@@ -15,7 +15,10 @@ CC1/CC2 sink termination or PD negotiation — whether the physical breakout
 board (passive, no PD controller IC) actually gets a source to drive VBUS
 at all is unverified (see README.md "Status"). That gap is checked below
 as a static design-completeness assertion, separate from the simulated
-electrical checks, and is expected to FAIL until it's resolved.
+electrical checks. It failed while this circuit was live; the circuit was
+shelved 2026-09-23 (psu_medlow_lm317 is the path forward), so the check
+is now reported as SKIP rather than FAIL — the gap itself is unchanged
+and unresolved, and flipping SHELVED back to False restores the failure.
 """
 
 import os
@@ -35,6 +38,11 @@ FUSE_RATING_A = 0.5
 # CC2 sink termination (5.1k pull-downs, or a PD sink controller IC) has
 # been physically confirmed present — see README.md "Status".
 PD_SINK_TERMINATION_CONFIRMED = False
+
+# Shelved 2026-09-23: not being built. The design check below is skipped
+# instead of failing so run_all_smoke_tests.py stays meaningful for the
+# circuits that are being built.
+SHELVED = True
 
 failures = []
 
@@ -69,15 +77,21 @@ check(
     "(this point is deliberately near the trip boundary by design)",
 )
 
-check(
-    "design — USB-C sink termination / PD negotiation confirmed present",
-    PD_SINK_TERMINATION_CONFIRMED,
-    "breakout board is passive (no PD controller IC); a USB-C source "
-    "only drives VBUS with valid CC1/CC2 sink termination, and whether "
-    "this board has it wired is unconfirmed (see README.md 'Status') — "
-    "the electrical checks above assume VBUS is already present and "
-    "cannot substitute for this",
-)
+if SHELVED and not PD_SINK_TERMINATION_CONFIRMED:
+    print(
+        "[SKIP] design — USB-C sink termination / PD negotiation confirmed present: "
+        "circuit shelved 2026-09-23, CC1/CC2 termination was never measured"
+    )
+else:
+    check(
+        "design — USB-C sink termination / PD negotiation confirmed present",
+        PD_SINK_TERMINATION_CONFIRMED,
+        "breakout board is passive (no PD controller IC); a USB-C source "
+        "only drives VBUS with valid CC1/CC2 sink termination, and whether "
+        "this board has it wired is unconfirmed (see README.md 'Status') — "
+        "the electrical checks above assume VBUS is already present and "
+        "cannot substitute for this",
+    )
 
 if failures:
     print(f"\n{len(failures)} check(s) failed: {failures}")

@@ -4376,3 +4376,38 @@ I also scrubbed verbatim quotes and tone descriptions of you from the existing k
 `breadboard3.jpg` is untracked and the Zone.Identifier file is already gitignored.
 <!-- ------ -->
 ---
+I've shelved the USB-C supply, designed both circuits, and rewritten `TODO-arcticoder.md`. Nothing is committed. All 19 smoke tests pass, but neither new circuit has been run on the Pico. No Pico was attached, so their `main.py` files ran against host-side mocks only.
+
+**Your points**
+- **1.1 / 5 / 6 / 7 / 8 / 9 / 10 (USB-C):** `psu_medlow_usbc` is shelved and its CC-pin item is gone from the TODO. The folder stays as a record, and its smoke test now reports the CC check as SKIP so it no longer fails the full run.
+- **1.2:** Nothing is wrong with the board that I know of. The problem was my earlier claim that a passive breakout just passes 5V. It only gets VBUS if the CC pull-downs are present, and nobody ever measured them. The board stays in inventory unused.
+- **6.1:** That step told you to unplug a USB-C cable that wasn't there. I've noted in the KB not to write steps that assume bench state I can't see.
+- **2.1:** The resistors are for the `ACTIVELIM` bench check, not the USB-C supply, so they stay in the order.
+- **4.1:** Your drive-enclosure adapter should work if its label shows all of these:
+  - DC output, 9–12V.
+  - A single round 5.5×2.1mm plug (not a Molex or mini-DIN connector).
+  - Centre-positive, the `⊖–●–⊕` symbol.
+  - At least 0.5A.
+  
+  The kit's input diode means a reversed adapter just gives no power. I've made the label read a step before AliExpress checkout, with a fallback: if it fails, add a 12V adapter to the same cart.
+- **11.1:** Done. `inductance_bridge` (`INDBRIDGE`) and `accelerometer_interface` (`ACCELIF`) each have a netlist, smoke test, `main.py`, `breadboard.md` and README.
+  - **`INDBRIDGE`** measures L by finding where the inductor and a 10nF capacitor resonate. An RL time constant is far too fast for the ADC.
+  - It is only as accurate as the 10nF capacitor (roughly ±10%). The 1µH inductor is the weak end.
+  - **`ACCELIF`** is just the GY-521 on I2C. There's no analog design, so the netlist checks bus timing and supply instead.
+
+**New problems I found in `ACTIVELIM`**
+- The Lenovo adapter's 5V profile is rated 2A, the same as the trip point. The old plan could never exceed a 2A trip at 5V.
+- The bench check now scales the trip to about 0.8A and uses 8Ω and 5Ω loads at 5V. The resistor order is now the 10W variant, values 5Ω and 8Ω.
+- The LM358 can't pull its output near a 3.3V rail, so it would not have fully turned on the MOSFET. It now runs from 5V.
+- The TL431A pull-up was too weak to regulate. It is now 1kΩ.
+
+**Your TODO now**
+1. Read the adapter label, then check out AliExpress with the PD trigger board and 10W 5Ω/8Ω resistors added to the cart. This is at the top.
+2. Order the SparkFun kit from RobotShop.
+3. Wire the GY-521 (Ready to build now).
+
+`INDBRIDGE` sits in Deferred because nothing on the bench uses an inductor yet.
+
+I also fixed the inventory, the orders and parts docs, and the dependency graphs, and added KB notes in `lab/docs/kb/`. The `RIPPLETANK` driver item is re-scoped: there's no motor or speaker on hand, only the 9G servo, so the actuator choice is yours.
+<!-- ------ -->
+---

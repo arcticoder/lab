@@ -64,6 +64,8 @@ ngspice -b signal_conditioning/charge_amplifier/charge_amplifier.spice
 ngspice -b safety/thermal_monitor/thermal_monitor.spice
 ngspice -b signal_conditioning/phase_detector/phase_detector.spice
 ngspice -b protection/active_current_limiter/active_current_limiter.spice
+ngspice -b measurement_tools/inductance_bridge/inductance_bridge.spice
+ngspice -b signal_conditioning/accelerometer_interface/accelerometer_interface.spice
 ```
 
 Run from the repo root. Each netlist prints an operating point at its
@@ -111,6 +113,8 @@ python signal_conditioning/charge_amplifier/smoke_test.py
 python safety/thermal_monitor/smoke_test.py
 python signal_conditioning/phase_detector/smoke_test.py
 python protection/active_current_limiter/smoke_test.py
+python measurement_tools/inductance_bridge/smoke_test.py
+python signal_conditioning/accelerometer_interface/smoke_test.py
 ```
 
 Or run all of them at once with `tools/run_all_smoke_tests.py`, which
@@ -173,15 +177,19 @@ sequence this drives.
 | Folder | Circuit | Tier |
 |--------|---------|------|
 | `power_supplies/psu_3xaa/` | 3×AA + Schottky + 500 mA polyfuse | `psu_system` (between `psu_low` and `psu_4xaa`) |
-| `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
-| `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit decided 2026-09-23, ordering from RobotShop; not yet built — see `docs/TODO-arcticoder.md`) |
+| `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` — **shelved 2026-09-23**: not being built; `psu_medlow_lm317` is the path forward. Kept as the record of the passive-breakout approach (see its README § Status) |
+| `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (the adopted implementation; kit decided 2026-09-23, ordering from RobotShop; not yet built — see `docs/TODO-arcticoder.md`) |
 | `signal_conditioning/charge_amplifier/` | 12mm piezo disc + TL082 inverting charge amp (`Cf`/`Rf_bias` feedback), VCC/2-biased for bipolar swing | tier5 `CHGAMP` — a direct spacetime-research sensor node |
 | `protection/active_current_limiter/` | IRLZ44N + 0.1Ω sense resistor + LM358 comparator, hard-trip at 2A | general-purpose `ACTIVELIM`, protects `psu_medhigh`/`psu_high` (both backlog) |
+| `signal_conditioning/accelerometer_interface/` | GY-521 (MPU-6050) on I2C0 — bus-timing/supply simulation plus a bring-up script (ID, gravity, noise, vibration RMS) | tier5 `ACCELIF` (designed 2026-09-23); the measurement side of `VIBISO` |
+| `measurement_tools/inductance_bridge/` | PWM-driven parallel LC resonance sweep: unknown inductor vs. a known 10nF, Schottky peak detector, Pico ADC | tier3 `INDBRIDGE` (designed 2026-09-23); targets the 1µH–1mH color-ring assortment |
 Each of these (except `psu_medlow_lm317`, a kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
 schematic, a breadboard wiring guide, and a `smoke_test.py` (all but
 `active_current_limiter` also have a `main.py`, same reasoning as the
-PSU rows above having none). None of these have been physically
+PSU rows above having none). `inductance_bridge`'s and
+`accelerometer_interface`'s `main.py` files were exercised against
+host-side mocks only, not the Pico. None of these have been physically
 assembled with real components yet (`psu_low_v2`,
 `transimpedance_amplifier`, and `phase_detector` were exceptions as of
 2026-09-16/2026-09-19, and all three moved to the bench-tested table
@@ -205,6 +213,8 @@ every row above.
 
 - `measurement_tools/fuse_test_voltmeter/`, `cd4066_switch_tester/`,
   `measurement_tools/capacitance_bridge/`,
+  `measurement_tools/inductance_bridge/`,
+  `signal_conditioning/accelerometer_interface/`,
   `signal_conditioning/voltage_reference_lm358/`, and
   `signal_conditioning/transimpedance_amplifier/` are the circuits here
   with Pico firmware (`main.py`) checked in. For more
@@ -282,6 +292,14 @@ measurement_tools/
         smoke_test.py
         README.md
 
+    inductance_bridge/       PWM-driven parallel-LC resonance sweep for the 1uH-1mH color-ring inductor assortment (tier3 INDBRIDGE, designed 2026-09-23, not built)
+        inductance_bridge.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        smoke_test.py
+        README.md
+
 power_supplies/
     psu_pico_rail/            Pico onboard 3.3V rail, ~100mA (interim, built & bench-tested)
         psu_pico_rail.spice
@@ -320,7 +338,7 @@ power_supplies/
         smoke_test.py
         README.md
 
-    psu_medlow_usbc/          5V USB-C + 500 mA polyfuse + bypass cap (designed, not built)
+    psu_medlow_usbc/          5V USB-C + 500 mA polyfuse + bypass cap (shelved 2026-09-23, not being built)
         psu_medlow_usbc.spice
         schematic.png         (generated, gitignored)
         breadboard.md
@@ -360,6 +378,14 @@ signal_conditioning/
 
     charge_amplifier/        12mm piezo disc + TL082 inverting charge amp (tier5 CHGAMP, designed, not built)
         charge_amplifier.spice
+        schematic.png         (generated, gitignored)
+        breadboard.md
+        main.py
+        smoke_test.py
+        README.md
+
+    accelerometer_interface/ GY-521 (MPU-6050) I2C interface + bring-up script (tier5 ACCELIF, designed 2026-09-23, not built)
+        accelerometer_interface.spice
         schematic.png         (generated, gitignored)
         breadboard.md
         main.py
