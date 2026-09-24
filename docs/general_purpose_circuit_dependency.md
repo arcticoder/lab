@@ -59,6 +59,9 @@ graph TD
         end
         
         subgraph psu_medlow ["Medium: 5V USB + Regulator OR 12V, 1–3A, 5–36W"]
+            %% status: the USB-adapter path (power_supplies/psu_medlow_usbc/)
+            %% was shelved 2026-09-23; PSUMEDLOWLM317 below is the
+            %% implementation being built
             PSUMEDLOW["USB Wall Adapter (5V 3A) OR 12V Sabrent USB-C Adapter"]
             %% status: not yet ordered, not yet built — see TODO-arcticoder.md
             %% "Ready to build now" and kb/ordering_ingestion_notes.md
@@ -110,6 +113,7 @@ graph TD
     subgraph tier3 ["Tier 3: Passive Components & Bridges"]
         OHMMETER["4-Wire Kelvin Ohmmeter"]
         CAPBRIDGE["Capacitance Bridge"]
+        %% status: designed/simulated 2026-09-23 (measurement_tools/inductance_bridge/), not built
         INDBRIDGE["Inductance Bridge"]
         TEMPCOMP["Temperature Compensation Circuit"]
     end

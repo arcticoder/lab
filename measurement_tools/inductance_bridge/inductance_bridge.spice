@@ -1,0 +1,89 @@
+* inductance_bridge — parallel-LC resonance sweep, INDBRIDGE
+*
+* Circuit topology:
+*   Pico GPIO (PWM square wave, node 1) --Rs(1k)--> node 2 (tank)
+*   tank = Lx (with its own winding resistance) || Cref(10nF) to GND
+*   node 2 --1N5817--> node 5 (detector) --Cd(10nF)|Rd(100k)--> GND
+*   Pico ADC reads node 5.
+*
+* Why resonance and not an RL time constant (the way capacitance_bridge
+* uses RC): tau = L/R for the assortment's 1uH-1mH parts is nanoseconds
+* to microseconds at any R the GPIO can drive, far under the ~10us
+* MicroPython ADC poll interval. The frequency at which a known Cref and
+* the unknown Lx resonate does not need a fast ADC — the Pico's PWM sets
+* the frequency and a diode peak detector turns the tank's amplitude into
+* a DC level the slow ADC can read. Sweep the PWM, find the amplitude
+* peak, and Lx = 1 / ((2*pi*f0)^2 * Cref).
+*
+* Parallel, not series, resonance: the tank amplitude can never exceed
+* the drive (a series tank's Q multiplication would put ~10V on the
+* ADC-facing node at 1mH), and the peak sharpness is set by the
+* inductor's own Q rather than by the GPIO's output resistance.
+*
+* This file holds two analyses:
+*   1) .ac fundamental-response sweep over all 12 assortment values (the
+*      square wave's fundamental is 4/pi * 1.65V = 2.1V peak; the odd
+*      harmonics only add smaller secondary peaks at f0/3, f0/5, ...).
+*      DCR values below are ESTIMATES for 0307 color-ring chokes, not
+*      measured — smoke_test.py checks the result holds at 3x these.
+*   2) A time-domain sweep at the 100uH design point with the real 3.3V
+*      square drive, Schottky detector and hold RC, confirming the DC
+*      level the ADC would read peaks at f0 and stays under 3.3V.
+*
+* Both run from the .control block; smoke_test.py parses the printed
+* SWEEP lines.
+
+Vdrv  1 0 DC 0 AC 2.1
+Rs    1 2 1k
+L1    2 3 100u
+Rdcr  3 0 2.5
+Cref  2 0 10n
+Cw    2 0 5p
+
+* --- time-domain copy of the 100uH design point (real square drive,
+* Schottky peak detector, RC hold), used by analysis 2 below ---
+.param fdrv=159k
+Bdrv  11 0 V = 3.3*(sin(2*3.14159265*fdrv*time) > 0 ? 1 : 0)
+Rs2   11 12 1k
+L2    12 13 100u
+Rdcr2 13 0 2.5
+Cref2 12 0 10n
+Cw2   12 0 5p
+D1    12 15 D1N5817
+Cd    15 0 10n
+Rd    15 0 100k
+.model D1N5817 D(IS=2e-6 N=1.1 RS=0.1 CJO=110p M=0.5 VJ=0.4 BV=20 TT=1n)
+
+.control
+set noaskquit
+* --- 1) fundamental response across the whole assortment ---
+* Winding-resistance estimate: DCR = 0.1ohm * (L / 1uH)^0.7 (0.1ohm at
+* 1uH up to ~12.6ohm at 1mH) — an assumption, not a measurement.
+foreach lv 1u 10u 22u 33u 47u 100u 150u 220u 330u 470u 560u 1m
+  let lnum = $lv
+  let dcr = 0.1 * (lnum / 1u) ^ 0.7
+  alter l1 = $lv
+  alter rdcr = $&dcr
+  ac lin 8000 20k 4meg
+  meas ac fpk MAX_AT vm(2)
+  meas ac vpk MAX vm(2)
+  echo "ACPEAK $&lnum $&dcr $&fpk $&vpk"
+end
+
+* --- 2) time-domain detector level vs drive frequency, 100uH / 10nF ---
+* Drive frequencies are ratios of the tank's ideal f0 (159.15kHz).
+foreach fr 0.33 0.8 0.9 0.95 1.0 1.05 1.1 1.25 2.0
+  let fd = $fr * 159.15k
+  let tstep = 1 / (fd * 40)
+  set fdv = $&fd
+  alterparam fdrv = $&fd
+  reset
+  tran $&tstep 6m uic
+  meas tran vdet AVG v(15) from=5m to=6m
+  meas tran vtank MAX v(12) from=5m to=6m
+  echo "TDPOINT $fdv $&vdet $&vtank"
+end
+quit
+.endc
+
+.end

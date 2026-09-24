@@ -24,6 +24,7 @@ graph TD
         HALLAMP["Hall Effect Sensor Amplifier"]
         EPFIELD["Electric Field Probe Conditioner"]
         LVDTAMP["LVDT Transducer Amplifier"]
+        %% status: designed/simulated 2026-09-23 (signal_conditioning/accelerometer_interface/), not built
         ACCELIF["Accelerometer/Gravitation Sensor Interface"]
         CHGAMP["Charge Amplifier"]
         %% added 2026-09-18 — resolves the force/displacement-balance gap

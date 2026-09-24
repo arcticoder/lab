@@ -280,9 +280,12 @@ resistors.
 **Don't rank `ACTIVELIM` as "ready to build now" again until a PD
 trigger board and a suitable power resistor are actually received** —
 see `docs/TODO-arcticoder.md`'s "Next order"/"Blocked" sections for the
-two candidate parts identified for this. The LM358 comparator stage and
-the wiring in `breadboard.md` don't change once those arrive — only the
-load-path source does.
+two candidate parts identified for this. *Updated 2026-09-23:* the check
+was re-planned around what those parts can actually do (5V tap, ~0.8A
+scaled trip, 5Ω/8Ω loads) and the comparator stage itself changed (LM358
+on 5V, TL431A pull-up 1kΩ) — see
+`kb/inductance_accelerometer_actlim_design_notes.md`. The wiring in
+`breadboard.md` is no longer unchanged from the first design.
 
 ## Resistance jig: a drifting several-hundred-kΩ reading is an open input, and it can't be told apart from a real ~800kΩ path (2026-09-23)
 
@@ -331,5 +334,8 @@ on it.
 `parts_reference.md`'s USB-C breakout entry carries the related
 inference that the two SMD parts marked `512` and `215` are both 5.1kΩ
 (`215` is `512` upside-down; a real 2.1MΩ isn't a plausible CC
-termination). Unmeasured as of this entry — if a later session has CC
-readings, replace the inference with them.
+termination). Unmeasured as of this entry. **Superseded 2026-09-23:**
+the USB-C path was shelved (the SparkFun kit is the `psu_medlow`
+implementation), so the CC readings are no longer planned; the jig and
+the open-input findings above still stand for any future use of
+`resistance_measurement`.

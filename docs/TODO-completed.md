@@ -20,6 +20,36 @@ matching, so don't assume one file makes the other redundant.
 
 ## 2026-09-23
 
+- **`psu_medlow_usbc` shelved; its CC-pin check removed from "Ready to
+  build now".** The USB-C path isn't being used — the SparkFun kit is the
+  `psu_medlow` implementation. The circuit folder stays as a record; its
+  smoke test reports the unresolved CC check as SKIP. The USB-C breakout
+  board stays in inventory unused.
+- **SparkFun kit's input source changed from "PD trigger board tap" to a
+  spare DC wall adapter.** Its label decides; criteria are in
+  `orders.md`, and `TODO-arcticoder.md`'s AliExpress bullet reads the
+  label before checkout so a failed check doesn't cost a second shipment.
+  The Lenovo PD adapter and the spare DC adapter are now `inventory.md`
+  rows.
+- **`measurement_tools/inductance_bridge` (`INDBRIDGE`) and
+  `signal_conditioning/accelerometer_interface` (`ACCELIF`) designed,
+  simulated, smoke-tested (green) and documented.** Neither is assembled;
+  `main.py` was run against host mocks only. `ACCELIF` went to "Ready to
+  build now" (it's `VIBISO`'s measurement side); `INDBRIDGE` went to
+  "Deferred" (nothing uses an inductor yet). See
+  `kb/inductance_accelerometer_actlim_design_notes.md`.
+- **`protection/active_current_limiter` corrected in three places** and
+  given a validation plan that fits the parts being ordered: LM358 on 5V
+  (not 3.3V — it can't pull its output to the rail), TL431A pull-up
+  1kΩ (not 10kΩ — it needs ~1mA), and a ~0.8A scaled-trip bench check at
+  the Lenovo adapter's 5V tap (its 5V profile is rated 2A, the same as
+  the trip point). The power-resistor bullet now names values (5Ω, 8Ω,
+  10W).
+- **`RIPPLETANK` driver design item re-scoped after an inventory check:**
+  no motor, vibration motor or speaker is on hand, so the driver stage
+  has no load to design against. The 9G servo is the no-purchase option;
+  the choice is the user's.
+
 - **SparkFun Breadboard Power Supply Kit (`psu_medlow_lm317`) moved from
   "Deferred" to "Next order" (RobotShop).** The purchase is decided and
   no longer waits on the `psu_medlow_usbc` CC-pin check; the kit is the

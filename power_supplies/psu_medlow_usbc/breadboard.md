@@ -1,5 +1,8 @@
 # Breadboard Wiring — psu_medlow_usbc
 
+**Shelved 2026-09-23 — not being built; see `README.md` Status.** Kept
+as a record of the passive-breakout approach.
+
 **Before wiring: this build is unverified.** The USB-C breakout board below
 is passive (traces only, no PD controller IC) — a USB-C source only drives
 VBUS once it sees CC1/CC2 sink termination, which this specific board may
@@ -40,7 +43,8 @@ fuse+bypass stage — does not model CC/PD negotiation)
 ### 1. Seat the USB-C breakout
 
 Plug the breakout board into the breadboard so VBUS and GND land on
-separate rows. Plug in the wall adapter and check VBUS with a meter before
+separate rows. Plug in the wall adapter and check VBUS with `raw_voltage_probe` (through
+a divider — VBUS is 5V, above the Pico's 3.3V pin limit) before
 continuing — if it reads ~0V, the source is withholding power pending sink
 termination it isn't seeing (see warning above).
 

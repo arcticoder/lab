@@ -75,6 +75,13 @@ for tier2 voltmeter/ammeter frontends and tier4 differential amp — though
 precision op-amps (OPA2277, TL072) are the preferred choice where
 noise/offset actually matters; LM358 is the budget/bring-up substitute.
 
+**Not rail-to-rail on the high side:** the output pulls up to only about
+Vcc − 1.5V (it sinks to within tens of mV of ground). Powered from 3.3V
+it tops out near 1.8V. This matters when the output has to turn
+something on — a MOSFET gate, a transistor — rather than just feed an
+ADC that ignores anything past its own range: `active_current_limiter`
+runs its LM358 from 5V for this reason (gate reaches ~3.5V).
+
 ---
 
 ## USB-C 16-pin test breakout board
@@ -98,14 +105,20 @@ to a USB-C source — verify values with a Pico-based reading (e.g.
 `kb/circuit_lifecycle_and_repo_scope.md`) before assuming a specific
 standard resistance.
 
+**Shelved 2026-09-23:** this board is not being used — `psu_medlow_lm317`
+replaces the USB-C path — and the CC readings below were never taken.
+The board stays in inventory. The rest of this entry is what was
+inferred before that decision.
+
 **Inference, not yet measured (2026-09-23):** the `215` marking is very
 likely the same `512` part read upside-down (the board is
 double-sided/flippable, so the two parts sit in opposite orientations).
 Read as an EIA 3-digit code, `215` would be 2.1MΩ, which is not a
 plausible CC termination; `512` is 5.1kΩ, the standard Rd. Expect
-`CC1`→`GND` and `CC2`→`GND` to each read ~5.1kΩ. The check itself is
-"Ready to build now" item 1 in `TODO-arcticoder.md`; update this entry
-with the real readings once taken.
+`CC1`→`GND` and `CC2`→`GND` to each read ~5.1kΩ. If a later session
+does take the reading (`measurement_tools/resistance_measurement/`, lead
+A on the pad, lead B on `GND`, with a positive control first), replace
+this inference with it.
 
 ---
 
@@ -311,8 +324,12 @@ against an LCR-adjacent bridge circuit once
 than trusting the band colors alone, since misprinted/faded bands on
 cheap bulk assortments are a known failure mode for color-coded passives.
 First candidate use: tier3 `INDBRIDGE` (inductance bridge) directly, or
-any future RF/filter/oscillator tank-circuit design. Design/simulate task
-now open in [TODO-agent.md](TODO-agent.md).
+any future RF/filter/oscillator tank-circuit design. `INDBRIDGE` was
+designed/simulated 2026-09-23 as
+[measurement_tools/inductance_bridge](../measurement_tools/inductance_bridge/)
+(not yet built); it reads L from a resonance sweep against a known 10nF
+capacitor, and is good to about the tolerance of that capacitor (see its
+README § Accuracy).
 
 ---
 
@@ -616,8 +633,10 @@ order" section.
 
 ## GY-521 (MPU6050) 3-axis gyro/accelerometer module
 
-1 received 2026-09-20 (ordered 2026-09-10), untested. Design/simulate
-task open in [TODO-agent.md](TODO-agent.md). See
+1 received 2026-09-20 (ordered 2026-09-10), untested. Designed/simulated
+2026-09-23 as
+[signal_conditioning/accelerometer_interface](../signal_conditioning/accelerometer_interface/)
+(not yet built). See
 [orders.md](orders.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module).
 MPU-6050 chip: 3.3–5V supply (onboard low-dropout regulator), standard
 I2C (SDA/SCL), built-in 16-bit ADC per axis. Gyro range

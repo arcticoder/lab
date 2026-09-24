@@ -25,7 +25,10 @@ RS = 0.1  # ohms
 RS_RATED_W = 0.25  # SunFounder Thales kit 1/4W resistors — Rs is a metal-film
 # 1W part on hand (docs/parts_reference.md#metal-film-resistor-kit-1w-1), so this
 # is a conservative bound, not the part's actual rating
-VCC_LOGIC = 3.3
+VCC_LOGIC = 3.5  # LM358 on a 5V supply swings to ~Vcc-1.5V — see the netlist header
+V_TEST = 5.0  # V, the PD trigger board's 5V tap
+LOAD_RATED_W = 10.0  # W, the 10W variant of the wirewound assortment
+V_REF_BENCH = 0.08  # V, bench-validation trip reference (~0.8A through Rs)
 
 failures = []
 
@@ -78,6 +81,27 @@ check(
     "functional — fault-level sense test correctly triggers a trip decision (gate LOW)",
     v_gate_fault < 0.1,
     f"v(6)={v_gate_fault:.3f}V (expected ~0V)",
+)
+
+v_sense_ok, v_gate_ok = values["v(7)"], values["v(8)"]
+v_sense_trip, v_gate_trip = values["v(9)"], values["v(10)"]
+
+check(
+    "functional — bench-validation reference: 0.625A (5V into 8ohm) stays under the trip point, gate HIGH",
+    v_sense_ok < V_REF_BENCH and abs(v_gate_ok - VCC_LOGIC) < 0.01,
+    f"v(7)={v_sense_ok:.4f}V < {V_REF_BENCH}V, gate v(8)={v_gate_ok:.3f}V",
+)
+
+check(
+    "functional — bench-validation reference: 1.0A (5V into 5ohm) trips, gate LOW",
+    v_sense_trip > V_REF_BENCH and v_gate_trip < 0.1,
+    f"v(9)={v_sense_trip:.4f}V > {V_REF_BENCH}V, gate v(10)={v_gate_trip:.3f}V",
+)
+
+check(
+    "smoke — bench-validation loads stay inside a 5W/10W wirewound resistor's rating",
+    V_TEST**2 / 5.0 <= LOAD_RATED_W * 0.5 and V_TEST**2 / 8.0 <= LOAD_RATED_W * 0.5,
+    f"{V_TEST}V into 5ohm = {V_TEST**2/5.0:.1f}W, into 8ohm = {V_TEST**2/8.0:.1f}W vs a {LOAD_RATED_W:.0f}W part at 50% margin (the listing's 5W-rated parts would sit exactly at their rating — pick the 10W ones)",
 )
 
 if failures:

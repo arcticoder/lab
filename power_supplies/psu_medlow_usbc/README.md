@@ -5,7 +5,19 @@ adapter ripple. No local regulation — the wall adapter already regulates to
 5V, so this is fuse + bypass only *if VBUS actually comes up* — see Status
 below.
 
-**Status: incomplete / unverified — do not assume this powers on as
+**Status: shelved 2026-09-23 — not being built.** The 5V/3.3V rail comes
+from [psu_medlow_lm317](../psu_medlow_lm317/) instead. The CC1/CC2
+pull-down check below was never run, so this circuit stays in its
+"unverified" state; the files are kept as the record of the
+passive-breakout approach, and `smoke_test.py` reports its design check
+as SKIP (set `SHELVED = False` there to make it fail again).
+
+The earlier suggestion in this repo's design log that any USB-C breakout
+"just passes 5V" was incomplete: a passive breakout only gets VBUS if it
+carries the CC pull-downs, and whether this one does was never measured.
+That is a property of the approach, not a fault found in the board.
+
+**Unverified — do not assume this powers on as
 drawn.** The USB-C breakout in the parts list (`TYPE-C Female Test Board`,
 see [docs/inventory.md](../../docs/inventory.md)) is a
 **passive** breakout — it only routes the receptacle's pins (`CC2, D+, D-,
@@ -20,7 +32,7 @@ TPS65987D) plus a downstream buck converter if the target rail differs
 from what gets negotiated. Whether this specific breakout board has CC
 pull-down resistors already wired is **unconfirmed** (two SMD parts
 marked `512`/`215` are probably both 5.1kΩ — the `215` read upside-down;
-not yet measured, see `TODO-arcticoder.md`'s "Ready to build now") — see
+never measured — the check was dropped when this circuit was shelved) — see
 `docs/parts_reference.md` § USB-C 16-pin test breakout board ("verify
 values with a meter before assuming a specific standard resistance"). The
 `.spice` netlist and `smoke_test.py` below model only the downstream

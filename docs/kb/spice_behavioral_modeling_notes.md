@@ -132,3 +132,41 @@ vector from its threshold: `TRIG v(out) VAL=2.5 RISE=3 TARG v(out)
 VAL=2.5 FALL=3`. The simpler single-threshold form (`meas tran t1 WHEN
 v(out)=2.5 RISE=3`) does accept the inline `=val` shorthand — the
 `VAL=` requirement is specific to the two-sided `TRIG`/`TARG` form.
+
+## ngspice `.control` scripting: what works and what doesn't in ngspice-42 (2026-09-23, `inductance_bridge`, `accelerometer_interface`)
+
+Both new netlists sweep parameters inside the `.control` block and print
+tagged lines for `smoke_test.py` to parse. Findings, all confirmed by
+running ngspice-42 here:
+
+- **Loops:** `foreach v a b c ... end` works, including nested loops.
+  Inside, `alter <element> = $v` changes a component value (`alter l1 =
+  $lv`, `alter rpu = $rp`). For a computed value use a `let` vector and
+  `alter rdcr = $&dcr`.
+- **Vector literals like `let x = [ 1 2 3 ]` fail** with a syntax error
+  (`PPerror`), with or without unit suffixes. Use `foreach` over the
+  values, and derive companion values with a formula (e.g. winding
+  resistance from inductance) instead of a parallel list.
+- **`maxpos()` doesn't exist.** To find a sweep's peak: `meas ac fpk
+  MAX_AT vm(2)` gives the frequency at the maximum, `meas ac vpk MAX
+  vm(2)` the value. `MAX_AT` is grid-limited, so use a fine `.ac lin`
+  grid (8000 points over 20kHz–4MHz gives ~500Hz resolution; 3000 points
+  showed a spurious 1.3kHz quantization error).
+- **`reset` wipes `let` vectors.** Anything computed before an
+  `alterparam ... reset tran` and printed after it comes out as `no such
+  variable`. Compute first, then `set name = $&vec` (shell-style
+  variables survive `reset`) and print with `$name`, not `$&name`.
+- **Sweeping a transient source's frequency:** declare `.param fdrv=...`,
+  drive a B-source `V = 3.3*(sin(2*pi*fdrv*time) > 0 ? 1 : 0)`, then
+  `alterparam fdrv = $&f` + `reset` per point, with `tran <period/40>
+  <stop> uic`. Fast enough: nine 6ms transients at ~160kHz take ~1.5s.
+- **Tagged output:** `echo "TAG $&a $&b"` prints one line per iteration;
+  `tools/ngspice_runner.py`'s `parse_op_values` only understands `name =
+  value` lines, so a smoke test that sweeps calls `run_ngspice` and parses
+  its own tags (see `measurement_tools/inductance_bridge/smoke_test.py`).
+  A smoke test can also rewrite a netlist constant into a temp file to
+  re-run a tolerance variant (3x/5x winding resistance there).
+- **AC vs transient split:** `.ac` gives the exact fundamental response
+  in milliseconds; use it for wide sweeps (all 12 inductors) and reserve
+  a transient for the one point that needs the nonlinear part (diode
+  detector, square-wave harmonics).

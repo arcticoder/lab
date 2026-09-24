@@ -757,3 +757,79 @@ list (the PD trigger board and power-resistor assortment for
 the AliExpress threshold doesn't apply to them; keep them as their own
 bullet. Prices aren't visible from the session, so the TODO says "check
 price/stock" instead of claiming the threshold will be crossed.
+
+## A path the user has dropped is dropped — remove the item and its exclusive follow-ups, don't keep a "verification" stub (2026-09-23)
+
+The `psu_medlow_usbc` CC-pin check had survived in "Ready to build now"
+after the SparkFun-kit decision on the strength of two arguments (it
+closes the repo's one red `smoke_test.py`; it might give a free 5V
+path). The user's response was that the USB-C path isn't being used at
+all, the kit is. Neither argument outweighs that: a check whose only
+purpose is to rescue an approach the user has already dismissed is
+busywork by the criterion-5 rule, regardless of how cheap it is.
+**Rule:** when the user states which implementation they're using,
+shelve the other one — keep its folder as the record, mark its README
+"Status: shelved <date>", stop listing its outstanding checks, and make
+its `smoke_test.py` report its unresolvable design check as `[SKIP]`
+(not `[FAIL]`) so `run_all_smoke_tests.py` stays a useful signal. Don't
+re-argue the abandoned path afterwards.
+
+Also from the same exchange, for how bench steps get written:
+
+- **Don't write steps that presuppose bench state you haven't seen.** The
+  shelved item's step 1 said to unplug a USB-C cable from the breakout;
+  the photo showed the Pico's Micro-USB as the only cable connected, and
+  the user confirmed it. A photo tells you what's on the board, not what
+  else might be plugged in somewhere; if a step is only needed under a
+  condition you can't see, phrase it as "if X is connected, ..." or leave
+  it out. Likewise a step that repeats what the photo already shows
+  done (the probe leads were already in the divider row) is noise.
+- **A block of sub-steps sitting under another bullet reads as a
+  continuation of that bullet.** The CC-pin item's steps 4–5 read as a
+  response to the whole "read both CC pins" heading, with a further
+  branch ("plug the adapter in") that the user took to mean plugging a
+  USB-C adapter into the breakout and the Pico. A branch that changes
+  what is powered needs to say exactly what gets connected to what, or
+  it shouldn't be there.
+- **Justifications must survive a "what's this for?" read.** The 10W
+  power-resistor bullet was read as belonging to the USB-C supply because
+  the nearby text talked about USB-C adapters. Each purchase bullet names
+  the circuit it serves (`ACTIVELIM`'s bench check) in its own line.
+
+## Read a spare on-hand part's label *before* the order it gates goes out (2026-09-23)
+
+The SparkFun kit needs a 9–12V DC barrel-jack input. The user reported an
+unidentified wall adapter (on a drive enclosure). Nothing on the bench
+lists it, and adapters from drive enclosures are often a different
+connector (4-pin Molex/mini-DIN for 5V+12V dual outputs) or AC. Since an
+AliExpress shipment takes weeks, the TODO makes the label read a step
+*before* checking out the AliExpress cart, with a fallback line ("if it
+fails any criterion, add a 12V, ≥1A, 5.5×2.1mm, centre-positive adapter
+to this same cart") so a failed check doesn't cost a second shipment. The
+pass/fail criteria live in `orders.md` (DC, 9–12V, 5.5×2.1mm barrel,
+centre-positive, ≥0.5A; reverse polarity fails safe through the kit's
+1N4004). Don't assume "any wall adapter" works and don't assume it
+doesn't — list the criteria and let the label decide. The adapter and
+the Lenovo 65W PD adapter are now rows in `inventory.md`.
+
+## Ranking applied to the 2026-09-23 designs: `ACCELIF` is Ready, `INDBRIDGE` is Deferred (2026-09-23)
+
+`TODO-agent.md`'s workflow says a finished design gets a "physically
+assemble" bullet stating its real dependency. Applying the ranking rules:
+
+- `ACCELIF` (`accelerometer_interface`): criterion 1 with a destination
+  that itself has value — it's the measurement side of `VIBISO`, a
+  mechanical build the user asked for, and `VIBISO` was explicitly held
+  until this exists. Parts on hand, four jumpers, so it's the one item in
+  "Ready to build now".
+- `INDBRIDGE` (`inductance_bridge`): criterion 5. Nothing on this bench
+  uses an inductor, and `parts_reference.md` only says to cross-check the
+  color bands "once INDBRIDGE exists". Per the 2026-09-22 rule that isn't
+  enough to hold a Ready slot, so it sits in "Deferred" with a one-line
+  reason. The design work still counted as done in `TODO-agent.md`.
+
+Consequence to expect: after `ACCELIF`, "Ready to build now" has
+nothing left, and "Next order" plus the two orders it names are the
+user's real critical path. That is correct, not a gap to fill with
+busywork — see the "Free-shipping thresholds" and "criterion-5" entries
+above.
