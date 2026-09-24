@@ -11,14 +11,13 @@ the concise version in each circuit's own README.
 `TODO-arcticoder.md`'s "Ready to build now" section had settled into a
 framing (established in `todo_list_conventions.md`'s own dated entry) of
 "nothing here blocks anything else, since tier4+ is itself undesigned" —
-accurate as of 2026-09-13 morning, but the user pushed back explicitly:
+accurate as of 2026-09-13 morning, but the user objected:
 if items in that section aren't contributing to the repo's actual stated
 goal (`README.md`'s spacetime-research framing), they shouldn't be
 presented as neutral "pick whenever" busywork — the fix isn't better
 wording, it's actually designing the downstream tiers so the question
-has a real answer. The user's framing: treat Claude as having "robot
-arms" and just do the FTL-research design work directly, with the human
-as the physical executor. This is a stronger mandate than
+has a real answer. The user's direction: Claude does the FTL-research design work
+directly, with the human as the physical executor. This is a stronger mandate than
 `TODO-agent.md`'s normal "pick an item, no urgency" workflow — it's a
 one-time push to close out everything already flagged as ready-to-design
 in that file, specifically because doing so would clarify (not just

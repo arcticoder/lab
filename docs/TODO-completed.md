@@ -18,6 +18,27 @@ matching, so don't assume one file makes the other redundant.
 
 ---
 
+## 2026-09-23
+
+- **SparkFun Breadboard Power Supply Kit (`psu_medlow_lm317`) moved from
+  "Deferred" to "Next order" (RobotShop).** The purchase is decided and
+  no longer waits on the `psu_medlow_usbc` CC-pin check; the kit is the
+  adjustable-rail PSU that follows `psu_4xaa`. Its 9–12V DC input has no
+  source on the bench yet — the PD trigger board's 9V/12V tap off the
+  Lenovo adapter is the candidate, pending a look at the adapter's label.
+- **Mini-USB cable added to the AliExpress cart** (for `SCOPELA`). The
+  cart is still under the $10 free-shipping threshold; `TODO-arcticoder.md`
+  now leads with adding the PD trigger board and power-resistor
+  assortment (both real `ACTIVELIM` needs) and checking out.
+- **`measurement_tools/resistance_measurement` set up for the USB-C
+  breakout CC-pin check (`breadboard3.jpg`); first pass read open,
+  which was not yet a CC measurement.** The drifting 700kΩ–850kΩ
+  prints were the open-input signature of this jig (ADC top-of-range
+  noise, ~3.26V), not a resistance. `main.py` now reports "Circuit Open"
+  above 97% of `V_IN`; its README documents the range limits and a
+  probe-tip positive control. The CC-pin check stays in "Ready to build
+  now" with concrete steps.
+
 ## 2026-09-22
 
 - **`measurement_tools/capacitance_bridge` (`CAPBRIDGE`) — physically

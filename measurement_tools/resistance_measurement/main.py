@@ -18,6 +18,12 @@ R_REF = 10000.0
 # Supply voltage on 3V3 pin (typically ~3.3V, measure with ADC if necessary)
 V_IN = 3.3
 
+# An open R_x doesn't read a clean V_IN: the ADC's top end is noisy and sits a
+# little under V_IN (open reads ~3.25-3.26V, which prints as a bogus
+# 700k-850k "resistance"). Anything above this fraction of V_IN is treated as
+# open, i.e. R_x above roughly 30x R_REF (~320k at R_REF = 10k).
+OPEN_FRACTION = 0.97
+
 def read_voltage(samples=50):
     # Averaging cuts down ADC noise before it gets divided into R_x below
     total_raw = 0
@@ -31,8 +37,8 @@ while True:
     v_out = read_voltage()
     
     # Avoid division by zero if disconnected or reading near 3.3V
-    if v_out >= (V_IN - 0.01):
-        print("Circuit Open: Connect R_x to GND")
+    if v_out >= (V_IN * OPEN_FRACTION):
+        print(f"Circuit Open: R_x not connected to GND (or above ~{R_REF * OPEN_FRACTION / (1 - OPEN_FRACTION):.0f} Ohms)")
     elif v_out <= 0.001:
         print("Short to GND or 0 Ohms")
     else:

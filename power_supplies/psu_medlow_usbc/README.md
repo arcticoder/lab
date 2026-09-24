@@ -18,7 +18,9 @@ all without that termination, and any voltage above the negotiated default
 negotiation from a PD sink controller IC (e.g. STUSB4500, CH224,
 TPS65987D) plus a downstream buck converter if the target rail differs
 from what gets negotiated. Whether this specific breakout board has CC
-pull-down resistors already wired is **unconfirmed** — see
+pull-down resistors already wired is **unconfirmed** (two SMD parts
+marked `512`/`215` are probably both 5.1kΩ — the `215` read upside-down;
+not yet measured, see `TODO-arcticoder.md`'s "Ready to build now") — see
 `docs/parts_reference.md` § USB-C 16-pin test breakout board ("verify
 values with a meter before assuming a specific standard resistance"). The
 `.spice` netlist and `smoke_test.py` below model only the downstream

@@ -395,3 +395,15 @@ heading is worth doing — this file has no automated consistency check,
 and the failure mode (real solder-handling advice attached to the wrong
 part) could mislead a bench session if never caught.
 
+## A cart-stage report can add an item without a listing link, and can name a shipping-threshold shortfall (2026-09-23)
+
+The Mini-USB cable was reported as added to the AliExpress cart with no
+listing URL and no price; `orders.md` records it under "In cart" as "no
+specific listing recorded" rather than inventing one, dated the day it was
+reported. The same report said the cart is still under the $10
+free-shipping threshold with no subtotal given. Record the shortfall as
+stated (as a note above the "In cart" entries) and don't estimate the
+subtotal; the next cart-stage report will say when it's cleared. Items
+bought from a non-AliExpress retailer (the RobotShop SparkFun kit) go in
+`orders.md`'s "Decided, not yet ordered" section, not "In cart," until
+the user says they've ordered it.

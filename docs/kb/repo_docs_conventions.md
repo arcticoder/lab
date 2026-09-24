@@ -27,7 +27,7 @@ support.
 **Lifted 2026-09-21.** The user explicitly reversed this: naming a
 specific theory, program, or institute in current-state docs (README,
 dependency graphs, kb prose) is fine now — the restriction above was, in
-their words, "just a holdover from some of the electrogravitics stuff."
+their explanation, a holdover from earlier work in that area.
 Nothing needs retroactively renaming; existing generic phrasing
 ("spacetime research," functional node labels) is still accurate and
 doesn't need to change just because naming is now permitted. This entry
@@ -851,7 +851,7 @@ similar "deliberately short two nodes by hand" step, prefer the
 same jumper-in-breadboard-rows approach over hand contact from the start
 rather than waiting for a reliability complaint.
 
-## Don't offer "get a multimeter" as an alternative to restoring the sense resistor — it's a false dichotomy that made the user (rightly) furious (2026-08-28)
+## Don't offer "get a multimeter" as an alternative to restoring the sense resistor — it's a false dichotomy (2026-08-28)
 
 `history.md:3498` and `:3508` phrased the fix as an either/or: "the resistor
 goes back into the loop... or you check the fuse a different way
@@ -1102,8 +1102,7 @@ tiers M0-M5" alongside the existing PSU/protection/tier callouts, since
 addition introduced.
 
 Also deleted `docs/spacetime_lab_budget.md` in the same session (explicit
-user instruction — "no point in keeping that updated, I was just curious
-at one point"). It had three live referrers beyond `history.md` (which
+user instruction — it was a one-off curiosity, not worth maintaining). It had three live referrers beyond `history.md` (which
 was left alone, append-only-log treatment as usual): `lab/README.md`
 (repo-structure tree + one prose mention), `docs/orders.md` (one
 citation on the 3296 trimpot entry), `docs/parts_reference.md` (one
@@ -1183,8 +1182,8 @@ as `psu_ultralow_v1`'s already is.
 ## `psu_4xaa` gained an optional power switch, wired directly in the battery return leg — a genuine power-path break, unlike `fuse_test_voltmeter`'s signal-only arm switch (2026-09-06)
 
 The user added a slide switch to their physical `psu_4xaa` build (visible
-in `breadboard.jpg`) that wasn't in the original `breadboard.md` — "I like
-having a power switch for my PSUs." Documented as an optional § 5 in
+in `breadboard.jpg`) that wasn't in the original `breadboard.md`; they like having a power switch
+on their PSUs. Documented as an optional § 5 in
 `power_supplies/psu_4xaa/breadboard.md`: switch common (pin 2) in series
 between holder 4 (−) and the ground rail, pin 1 to the ground rail, pin 3
 left unconnected. Unlike the `fuse_test_voltmeter` arm switch (GP15,

@@ -43,9 +43,8 @@ action items" (ordering-related) positioned near the bottom of the file
 (after "Blocked" and ahead of only "Backlog"). Because the file is worked
 strictly top-to-bottom and there's almost always an unchecked item in an
 earlier section, these two sections never actually got reached in
-practice — the user flagged this explicitly (paraphrased: "lines
-170–255 will never get actioned as long as it's further down the file, I
-work the tasks starting from the top").
+practice — the user works the file from the top, so anything placed
+that far down would never get actioned.
 
 Fixed by merging both sections into one new top section, "Next
 AliExpress order — action needed," placed immediately after the intro
@@ -112,7 +111,7 @@ bullet said "nothing else is blocking this" while the 1N5817 Schottky
 diode forward-drop check — which its own wiring needs — sat in the
 *other* section, un-cross-referenced), and the file is worked strictly
 top-to-bottom, so a reader doing the "Ready to build" bullet first could
-build on an unvalidated part without realizing it. The user's framing:
+build on an unvalidated part without realizing it. The user's point:
 this is *not* the same situation as "Next AliExpress order" sitting apart
 from bench-work sections (see the entry above this one) — ordering has
 its own external clock (shipping transit) that justifies a separate
@@ -159,9 +158,9 @@ bullets so it reads that way) into this file, check it against
 and against the target circuit's own `README.md`/`breadboard.md` if one
 exists — don't infer a dependency from "these two things seem similar" or
 from where a new bullet happens to land in the list.** The user caught
-this by literally asking "checking what this is needed for" at each step
-and finding no source backing the implied chain — that check should
-happen before the bullet is written, not after.
+this by asking what each step was needed for and finding no source
+backing the implied chain — that check should happen before the bullet is
+written, not after.
 
 ## `TODO-agent.md` split from `TODO-arcticoder.md`: file-creation work vs. bench/ordering work (established 2026-09-13)
 
@@ -171,11 +170,9 @@ do by hand (assemble a PSU, validate a diode batch), and file-creation
 work that's entirely Claude's job (write a `.spice` netlist,
 `breadboard.md`, `smoke_test.py`, `README.md` for a circuit that has
 parts on hand but "no folder exists yet"). The user flagged this
-explicitly and with some heat: creating those files is not something they
-should ever be asked to do — "we live in a post-AI world now... systemize
-a way to ensure the dependent tasks that can be completed by you are
-performed before I attempt to complete the bench steps myself." They
-pointed at `aqei-bridge/docs/TODO.md` (a sibling repo's pure agent-task
+explicitly: creating those files is not something they should ever be
+asked to do, and dependent tasks Claude can complete should be done
+before the user attempts the bench steps. They pointed at `aqei-bridge/docs/TODO.md` (a sibling repo's pure agent-task
 list) as the pattern to follow.
 
 Fixed by creating [TODO-agent.md](../TODO-agent.md): every "no folder
@@ -203,8 +200,8 @@ files back it.
 
 ## "Ready to build now" is a no-urgency menu, not a mandatory queue, when nothing downstream needs its contents yet (established 2026-09-13, **superseded 2026-09-17 — see the entry near the end of this file**)
 
-Separately from the file-creation split above, the user also pushed back
-on `TODO-arcticoder.md` reading like "a laundry list" even after the
+Separately from the file-creation split above, the user also objected
+to `TODO-arcticoder.md` reading like a laundry list even after the
 file-creation items were accounted for — the remaining bench-work bullets
 (validate a diode batch, assemble a PSU, etc.) were still presented with
 the same top-to-bottom "do this next" framing as the ordering section,
@@ -243,8 +240,8 @@ entries). It's a 2-wire divider, not a literal 4-wire Kelvin bridge, so it
 doesn't perfectly match the dependency graph's `OHMMETER` node label — but
 per the same substitution logic as `PASSVM` (see
 `repo_docs_conventions.md`), that's close enough to satisfy the node's
-*present* need. The user's own words: "I've already built an ohmmeter. If
-more are needed I'll build them when they're required."
+*present* need. The user's position: an ohmmeter is already built, and any
+additional ones get built when they're actually required.
 
 Fixed by removing the bullet entirely (not just editing it) and replacing
 it with a short prose note explaining why no `OHMMETER` bullet exists —
@@ -265,14 +262,14 @@ provide.
 
 The entry above ("'Ready to build now' is a no-urgency menu... when
 nothing downstream needs its contents yet") was correct as of that
-morning, but the user pushed back the same day: presenting items as
+morning, but the user objected the same day: presenting items as
 "no cost to skip" reads as settled when it was really just "true given
 today's undesigned state of tier4+" — and if some of those items
 *aren't* actually contributing to the repo's stated goal
 (`README.md`'s spacetime-research framing), the fix isn't wording, it's
 designing the downstream tiers so the question has a real answer instead
-of an assumed one. The user's framing: treat Claude as having "robot
-arms" and directly do the FTL-research design work already queued in
+of an assumed one. The user's direction: Claude does the design work directly, with the
+human as the physical executor, working through the FTL-research design work already queued in
 `TODO-agent.md`, rather than waiting for it to be picked up at whatever
 pace felt natural.
 
@@ -373,13 +370,10 @@ The two "no-urgency menu" entries above (2026-09-13) and the "don't frame
 by closeness to the research objective" entry (2026-09-14) together
 produced a section whose own intro told the reader to "pick whatever you
 feel like... with no scheduling cost to skipping this entire section
-indefinitely." The user pushed back hard and explicitly, for the second
-time, on this exact framing (first flagged, evidently, before this file's
-history captured it — they referenced having asked before): presenting
-bench work as an unranked menu means it doesn't get built. Their own
-words: "If you just give me a 'menu of what you *could* spend bench time
-on, not a backlog you're behind on' then I won't build the circuits...
-This is why the dependency graphs exist." The instruction was concrete:
+indefinitely." The user objected to this exact framing for the second time
+(first raised before this file's history captured it): presenting bench
+work as an unranked menu means it doesn't get built, and the dependency
+graphs exist to supply the ranking. The instruction was concrete:
 prioritize, put the most important item at the top, and if a genuine tie
 can't be broken, say so explicitly and make resolving *that* the top
 task — not fall back to "no priority" as a default.
@@ -452,8 +446,8 @@ you feel like."
 Two "Next AliExpress order" bullets (soldering flux; torsion fiber +
 mirror) had been written with a "cheap/small enough that a local
 hardware or craft store may beat AliExpress transit time; use judgment"
-qualifier. The user's own feedback, given directly: "No hardware store
-talk. I don't mind waiting for aliexpress." **Rule for future
+qualifier. The user's feedback: no hardware-store suggestions, and the wait for
+AliExpress shipping is acceptable. **Rule for future
 sessions: never propose or hedge toward a local-store purchase in this
 file, regardless of item cost or how much transit time it would save.**
 The user has an explicit preference for consolidating everything into
@@ -475,8 +469,8 @@ Two separate but related corrections, both from the same session.
 **stopped working on it and returned every part to inventory** — not
 "paused mid-fix, will finish once flux arrives" the way the file's own
 "Ranked #1... already mid-attempt with a known, cheap fix" language
-implied. The user caught this by asking directly: "How is
-`signal_conditioning/charge_amplifier` 'in progress'?" **Lesson: a
+implied. The user caught this by asking how `signal_conditioning/charge_amplifier`
+could be "in progress" at all. **Lesson: a
 "sunk-cost, mid-attempt" framing (criterion 3 in the ranking rule below)
 is only accurate while the human is actually still attempting the build.
 Once they've explicitly stopped and put parts back, the bullet moves to
@@ -491,12 +485,10 @@ as returned rather than "for the retry" mid-build.
 **2. The file itself had accumulated multi-paragraph ranking-rationale,
 arrival-date narrative, and session-history asides that duplicate this
 kb file, `spacetime_circuits_dependency.md`'s "Why these tiers" sections,
-and `TODO-completed.md`.** The user's own words: "I appreciate the
-exhaustive backstory but this is really what your knowledgebase is for.
-I just need you to tell me what to do, and provide justification.
-Justification doesn't mean 'we had a conversation on september 18',
-justification means 'this will allow you to do X type of research
-alongside Y circuit'." Separately: deferred/no-urgency shopping-list
+and `TODO-completed.md`.** The user's preference: the backstory belongs in the knowledge base; the
+checklist should say what to do and give a justification, and a
+justification means what the item unlocks (which research it enables
+alongside which circuit), not which session decided it. Separately: deferred/no-urgency shopping-list
 items (SiPM+scintillator, the laser-diode-adjacent LED note, the torsion
 fiber+mirror) had been interleaved into "Next AliExpress order" ahead of
 genuinely actionable items — the user reads top-to-bottom and objected to
@@ -545,8 +537,8 @@ rather than folded into either existing order channel.
 
 ## Laser-diode/eye-safety questions get an honest capability-gap answer, not a reassurance (2026-09-19)
 
-The user asked, about a laser-diode option for `LASERDRV`: "I value my
-vision. Unless you can assure me this can be done safely?" **Rule for
+The user asked whether a laser-diode option for `LASERDRV` could be done
+safely, given they value their eyesight. **Rule for
 future sessions on this bench: don't answer a direct safety question
 about a real hazard (laser eye exposure, high voltage, etc.) with a
 blanket reassurance just because the underlying circuit is
@@ -575,7 +567,7 @@ smoothed over.
 The five-criteria ranking (above) correctly flagged "1N5817 diode check
 → `psu_3xaa`" as a real, stated dependency pair (criterion 1) and
 ranked the pair ahead of `THERM`/`ACTIVELIM` (criterion 4). That was a
-mistake the user caught directly: `psu_3xaa` has **no real downstream
+mistake the user caught: `psu_3xaa` has **no real downstream
 consumer** — nothing on this bench needs a 4.5V rail specifically
 (`ne555_astable`'s own README already ruled `psu_3xaa` out for the one
 thing it was tried against: it sags to ~4.02V under load, below the
@@ -652,9 +644,8 @@ needs a second/third/fourth switch yet), and a glass-tube-fuse test jig
 (no circuit needs one built). None of these were *wrong* to rank last —
 criterion 5 correctly said "no real edge" — but keeping them as
 standing checklist bullets read as manufactured busywork, and the user
-said so directly and repeatedly across several of them in one pass
-("if it's not needed then why is it listed here," "if it's not needed
-until then, I'll build it when it's needed").
+said so for several of them in one pass: if nothing needs an item yet, it
+shouldn't be listed, and it gets built when it's needed.
 
 **Rule going forward: criterion 5 is not itself sufficient to keep a
 bullet in "Ready to build now."** A criterion-5 item stays in that
@@ -684,8 +675,8 @@ question about the USB-C breakout board's exact pad layout — but
 the full pad list (`CC2, D+, D-, SBU1, SBU2, CC1, VBUS, GND`) and had
 already flagged the one real ambiguity (a transcribed `U+` that's almost
 certainly `D+`) back on 2026-08-24. Re-asking the user for the board's
-specs instead of reading that entry first got, understandably, a
-pointed response. **Rule for future sessions: before asking the user to
+specs instead of reading that entry first was an avoidable
+question. **Rule for future sessions: before asking the user to
 supply or re-confirm a physical part's spec/pinout, grep
 `parts_reference.md` and `inventory.md` for that part first** — if an
 entry already exists, use it (and resolve any flagged ambiguity from
@@ -727,3 +718,42 @@ for X** — cheaper in both money and this bench's own multi-week
 transit-time cost than solving the original sourcing problem. The 19
 bare discs already on hand aren't wasted; they stay as reserve stock for
 any future use that doesn't need pre-attached leads.
+
+## A purchase the user has decided is not gated by a free alternative's pending check, and the pending check gets re-justified on its own (2026-09-23)
+
+The 2026-09-19 rule ("before adding a paid alternative to cart, check
+whether its free twin already works") put the SparkFun kit in "Deferred"
+behind the `psu_medlow_usbc` CC-pin check. The user decided the kit is
+being bought regardless — it's the adjustable-rail PSU that follows
+`psu_4xaa` — so that gate is gone. The kit moved to "Next order"
+(RobotShop, a separate channel from the AliExpress cart) and the decision
+stays made; don't reintroduce a "check the free twin first" hold on it.
+
+Consequences worked through in the file:
+
+- The CC-pin check no longer gates any purchase, so it had to justify
+  itself under the "Ready to build now" rule for criterion-5 items. It
+  stays because it closes the repo's one deliberately-red
+  `smoke_test.py` and could give a second free 5V path, and because the
+  rig for it was already set up on the bench. It got literal steps (with
+  a probe-tip positive control) rather than a description, per the
+  concrete-troubleshooting preference.
+- A new item can have a hidden input requirement: the kit takes 9–12V DC
+  and nothing on the bench makes it. The candidate source (the PD trigger
+  board's 9V/12V tap off the Lenovo adapter) is already on the AliExpress
+  list for `ACTIVELIM`, so the TODO ties the two together with a
+  one-line check of the adapter's label rather than adding a purchase
+  nobody has vetted.
+
+## Free-shipping thresholds decide what leads "Next order" (2026-09-23)
+
+The AliExpress cart (piezo discs, 49E Hall sensors, Mini-USB cable) sat
+under the $10 free-shipping threshold. The top "Next order" bullet is now
+"add these real needs and check out," not three separate "check out"
+bullets — a cart that can't be checked out yet needs one action at the
+top, and the items that close the gap should be needs already on the
+list (the PD trigger board and power-resistor assortment for
+`ACTIVELIM`), not padding. RobotShop orders are a separate retailer, so
+the AliExpress threshold doesn't apply to them; keep them as their own
+bullet. Prices aren't visible from the session, so the TODO says "check
+price/stock" instead of claiming the threshold will be crossed.

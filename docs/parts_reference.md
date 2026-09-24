@@ -98,6 +98,15 @@ to a USB-C source — verify values with a Pico-based reading (e.g.
 `kb/circuit_lifecycle_and_repo_scope.md`) before assuming a specific
 standard resistance.
 
+**Inference, not yet measured (2026-09-23):** the `215` marking is very
+likely the same `512` part read upside-down (the board is
+double-sided/flippable, so the two parts sit in opposite orientations).
+Read as an EIA 3-digit code, `215` would be 2.1MΩ, which is not a
+plausible CC termination; `512` is 5.1kΩ, the standard Rd. Expect
+`CC1`→`GND` and `CC2`→`GND` to each read ~5.1kΩ. The check itself is
+"Ready to build now" item 1 in `TODO-arcticoder.md`; update this entry
+with the real readings once taken.
+
 ---
 
 ## Polyfuses (RXEF series)

@@ -4348,3 +4348,31 @@ Done. Summary of what changed across the 14 numbered points, no commit made (did
 Six `kb/` files got matching notes so a future session doesn't repeat any of this (checking existing docs before re-asking, reading full listing titles, not assuming a reused circuit covers a new load, and the refined ranking rule that "nothing needs this yet" belongs in Deferred, not a standing tail).
 <!-- ------ -->
 ---
+The `psu_medlow_usbc` CC-pin check isn't done yet: what I could measure from here doesn't tell us anything about the CC pins. Nothing is committed.
+
+## What I measured
+The Pico was reachable from the shell, so I ran read-only ADC probes on the jig.
+
+- **The readings mean open, not a resistance.** The 700–850kΩ prints are the ADC's noisy top end at about 3.26V (about 98.8% of full scale). Three runs of 400 samples each agreed.
+- **`main.py` had a bug.** It only reported "Circuit Open" within 10mV of 3.3V, so open input printed as a bogus resistance. I fixed it to report open above 97% of the rail (about 320kΩ at 10kΩ) and tested it on the Pico.
+- **The photo doesn't settle the leads.** In `breadboard3.jpg` the Dupont pins at the breadboard end look like they're lying on the board rather than seated. I can't confirm that from the image, and I can't see which breakout pad each lead is on.
+- **`R_REF` looks right.** A pull-down step on GP28 is consistent with a 10kΩ `R_REF`.
+- **A likely finding on the breakout:** the SMD parts marked `512` and `215` are very likely both 5.1kΩ, with `215` being `512` read upside-down. I recorded that as an unmeasured inference in `parts_reference.md`.
+
+## TODO changes
+- **SparkFun kit:** moved from Deferred to Next order as a RobotShop order, decided regardless of the CC check.
+  - **Input gap:** it needs 9–12V DC in and nothing on the bench makes that. The candidate is the PD trigger board's 9V or 12V tap off the Lenovo adapter, so the TODO asks you to read the adapter's label for that profile.
+- **Top of Next order:** the AliExpress cart now has the leaded piezos, the 49E Hall sensors and the Mini-USB cable, and is still under $10. The top bullet says to add the PD trigger board and power-resistor assortment, both real `ACTIVELIM` needs, then check out. I can't see prices, so it says to check price and stock rather than claiming this crosses the threshold.
+- **CC-pin check:** it stays as Ready to build now #1 with literal steps, ending in a VBUS read via `raw_voltage_probe`.
+  - **Steps:** unplug USB-C, seat the two probe leads, run a probe-tip short as a positive control, then read CC1 and CC2 against GND.
+  - **Expected:** about 5.1kΩ on each pin.
+  - **If a pin reads open:** wire one of your on-hand 5.1kΩ resistors from that pad to GND.
+
+## Docs, kb and memory
+I updated `orders.md`, `inventory.md`, the `resistance_measurement`, `psu_medlow_usbc` and `psu_medlow_lm317` READMEs, and `TODO-completed.md`. The kb files I updated are `bench_photo_diagnostics_notes.md`, `todo_list_conventions.md` and `ordering_ingestion_notes.md`. There is also a new `kb/live_bench_measurement_notes.md`, plus two new memory entries.
+
+I also scrubbed verbatim quotes and tone descriptions of you from the existing kb and docs files. I left `docs/history.md` alone, since it's an append-only session log, and it still contains phrasing like that.
+
+`breadboard3.jpg` is untracked and the Zone.Identifier file is already gitignored.
+<!-- ------ -->
+---

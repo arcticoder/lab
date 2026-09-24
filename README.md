@@ -174,10 +174,10 @@ sequence this drives.
 |--------|---------|------|
 | `power_supplies/psu_3xaa/` | 3×AA + Schottky + 500 mA polyfuse | `psu_system` (between `psu_low` and `psu_4xaa`) |
 | `power_supplies/psu_medlow_usbc/` | 5V USB-C + 500 mA polyfuse + bypass cap | `psu_medlow` |
-| `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit **not yet ordered**, not yet built — see `docs/TODO-arcticoder.md`) |
+| `power_supplies/psu_medlow_lm317/` | SFE Breadboard Power Supply Kit — LM317 adjustable, 3.3V/5V-selectable | `psu_medlow` (alternative to `psu_medlow_usbc`; kit decided 2026-09-23, ordering from RobotShop; not yet built — see `docs/TODO-arcticoder.md`) |
 | `signal_conditioning/charge_amplifier/` | 12mm piezo disc + TL082 inverting charge amp (`Cf`/`Rf_bias` feedback), VCC/2-biased for bipolar swing | tier5 `CHGAMP` — a direct spacetime-research sensor node |
 | `protection/active_current_limiter/` | IRLZ44N + 0.1Ω sense resistor + LM358 comparator, hard-trip at 2A | general-purpose `ACTIVELIM`, protects `psu_medhigh`/`psu_high` (both backlog) |
-Each of these (except `psu_medlow_lm317`, an on-order kit with no netlist
+Each of these (except `psu_medlow_lm317`, a kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
 schematic, a breadboard wiring guide, and a `smoke_test.py` (all but
 `active_current_limiter` also have a `main.py`, same reasoning as the
@@ -327,7 +327,7 @@ power_supplies/
         smoke_test.py
         README.md
 
-    psu_medlow_lm317/         SFE breadboard PSU kit, LM317 3.3V/5V-selectable (not yet ordered, not built)
+    psu_medlow_lm317/         SFE breadboard PSU kit, LM317 3.3V/5V-selectable (to be ordered from RobotShop, not built)
         breadboard.md
         README.md
 

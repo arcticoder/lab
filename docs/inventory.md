@@ -99,7 +99,7 @@ new build, rather than by eye alone.
 | Breadboard (full)      | 1        | 830-point                                                 |
 | Breadboard (mini SYB-170) | 1     | 170-point, black; from a 6-in-1 color pack (AliExpress). See `lab/docs/orders.md` / `lab/docs/parts_reference.md` for full specs |
 | Micro USB Cable        | 1        | For Pico power + data                                     |
-| Mini-USB Cable         | 0        | Not on hand — needed for `SCOPELA`'s CY7C68013A board, see `lab/docs/TODO-arcticoder.md`'s "Next order" |
+| Mini-USB Cable         | 0        | Not on hand (in the AliExpress cart, 2026-09-23) — needed for `SCOPELA`'s CY7C68013A board, see `lab/docs/TODO-arcticoder.md`'s "Next order" |
 
 ---
 
