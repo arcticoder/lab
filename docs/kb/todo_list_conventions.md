@@ -833,3 +833,54 @@ nothing left, and "Next order" plus the two orders it names are the
 user's real critical path. That is correct, not a gap to fill with
 busywork — see the "Free-shipping thresholds" and "criterion-5" entries
 above.
+
+## `ACTIVELIM` moves from "Blocked" to "Deferred" — a criterion-4 edge to an undesigned destination isn't enough on its own (2026-09-24)
+
+The 2026-09-22 entry above ("Criterion 4's 'real graph edge' check needs
+a 'does the destination's own hardware actually exist to test against'
+sub-check") already found `ACTIVELIM`'s own validation step needs a
+≥2A source this bench doesn't have, and moved it to "Blocked" pending
+the PD trigger board + power resistors. The user pushed further
+2026-09-24: even granting those parts arrive, *why* validate a
+protection circuit at all when `psu_medhigh`/`psu_high` — the only thing
+`ACTIVELIM` protects — is still Backlog with no folder, not even
+started? "Blocked — waiting on a shipment" implies the build is wanted
+now and only parts are missing; that's not this situation. Nothing on
+this bench currently needs current-limiting protection, because nothing
+on this bench currently sources the current that would need limiting.
+
+This is the same failure shape as the 2026-09-19 `psu_3xaa`/`THERM`
+correction ("a real criterion-1 pair doesn't earn priority if the
+downstream end has no real value") but on criterion 4 instead of
+criterion 1: a real graph edge (`ACTIVELIM -.required.-> psu_medhigh`)
+to a destination that isn't just undesigned but has **zero current
+activity or near-term plan** doesn't justify spending an order slot on
+the edge's source node either. **Rule going forward: before ranking or
+carting parts for a criterion-4 edge to an undesigned destination, check
+whether that destination has *any* concrete next step already in motion
+(a part sourced, a folder started) — if it's pure Backlog with nothing
+moving, the edge is real but not yet load-bearing, and the dependent
+item belongs in "Deferred" with a one-line "revisit once X becomes a
+real build target," not "Blocked."**
+
+Moved: `ACTIVELIM` out of "Blocked" into "Deferred"; the PD trigger
+board and power-resistor assortment stay in `orders.md`'s "Candidates
+found" (not carted) with a matching parked note, rather than being
+proposed again as the fix for the AliExpress cart's free-shipping gap —
+solder wick (a genuine, unrelated need — see
+`ordering_ingestion_notes.md`) filled that gap instead.
+
+## A tag missing from its own TODO bullet breaks grep for anyone chasing a cross-reference (2026-09-24)
+
+`VIBISO`'s bullet referenced "`ACCELIF` (item 1 above)" but item 1 itself
+(the `accelerometer_interface` bullet) never carried the `ACCELIF` tag —
+every other tag in the file (`ACTIVELIM`, `CHGAMP`, `HALLAMP`, `SCOPELA`,
+`VIBISO`, `RIPPLETANK`, …) appears on its own bullet, so `ACCELIF` was
+the one exception, and the user caught it by noticing that a search for
+the tag turned up only the one forward-reference, not the item it
+pointed at. **Rule: whenever a circuit gets a dependency-graph tag
+(`spacetime_circuits_dependency.md`/`general_purpose_circuit_dependency.md`),
+make sure the tag itself appears on that circuit's own `TODO-arcticoder.md`
+bullet, not just in prose referring to it — a future grep for the tag
+should always resolve back to the item, not just its cross-references.**
+Fixed by adding `(`ACCELIF`)` to item 1's own bullet.
