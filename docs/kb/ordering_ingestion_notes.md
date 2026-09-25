@@ -407,3 +407,23 @@ subtotal; the next cart-stage report will say when it's cleared. Items
 bought from a non-AliExpress retailer (the RobotShop SparkFun kit) go in
 `orders.md`'s "Decided, not yet ordered" section, not "In cart," until
 the user says they've ordered it.
+
+## A cart item can be acquired outside AliExpress entirely, removing the need to buy it there (2026-09-24)
+
+The Mini-USB cable (added to cart 2026-09-23, see the entry above) was
+acquired directly — not through AliExpress, no listing/price ever
+involved — and removed from the cart the same day it was reported. This
+is a distinct case from the "non-AliExpress retailer" pattern in the
+entry above (RobotShop): there the item is still being tracked through
+an order channel, just a different one; here there's no order channel at
+all, it's simply "already have it." Handled by deleting the `orders.md`
+"In cart" entry outright (with a one-line pointer to `inventory.md`,
+which is where the physical unit now lives) rather than moving it to a
+"received" state in this AliExpress-specific log — `orders.md` only logs
+AliExpress transactions, and this was never one. A new cart item (solder
+wick, for an unrelated bridged-pin soldering issue surfaced the same
+session) took its place toward the free-shipping threshold. **Rule: when
+an item sitting in "In cart" turns out to have been acquired some other
+way, remove it from `orders.md` entirely (don't invent a "received"
+entry for a purchase that didn't happen through this channel) and log
+the acquisition in `inventory.md` instead.**

@@ -46,6 +46,14 @@ the converted `.md` files are tracked).
 
 ## Candidates found, not yet in any cart
 
+**Both entries below are parked as of 2026-09-24** — they support
+`ACTIVELIM`'s bench check, which moved to `TODO-arcticoder.md`'s
+"Deferred" section that day: nothing on this bench needs that circuit's
+protection yet (it guards `psu_medhigh`/`psu_high`, still Backlog with no
+folder), so adding these to cart isn't a real need right now. Revisit
+once `psu_medhigh`/`psu_high` is an actual build target — the listings
+themselves are still fine candidates then.
+
 ### USB-C PD trigger board (fixed/selectable, 5V/9V/12V/15V/20V)
 
 - Listing: "USB Type-c Pd Decoy Trigger Board 100w 5a 5v 9v 12v 15v 20v
@@ -86,10 +94,19 @@ the converted `.md` files are tracked).
 
 ## In cart (not yet checked out)
 
-Cart is under AliExpress's $10 free-shipping threshold as of 2026-09-23;
-the PD trigger board and power-resistor assortment above are the real
-needs expected to close the gap. Everything in the cart plus whatever is
-added checks out as one batch.
+Cart was under AliExpress's $10 free-shipping threshold as of 2026-09-23.
+The PD trigger board and power-resistor assortment above are **no longer
+planned to close that gap** — both supported `ACTIVELIM`'s bench check,
+which moved to `TODO-arcticoder.md`'s "Deferred" section 2026-09-24 (see
+[kb/todo_list_conventions.md](kb/todo_list_conventions.md)): nothing on
+this bench needs that circuit's protection yet, so buying parts to
+validate it isn't a real need right now. Solder wick was added instead,
+for an unrelated real need (see below). Everything in the cart plus
+whatever is added checks out as one batch.
+
+The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
+— acquired directly (non-AliExpress), so it's tracked in
+[inventory.md](inventory.md) instead, not this file.
 
 ### Piezo element, 12mm disc, leaded (pre-attached wires)
 
@@ -116,15 +133,15 @@ added checks out as one batch.
   bundle with the piezo disc above, not a build-priority purchase.
 - Added to cart: 2026-09-21.
 
-### Mini-USB cable
+### Solder wick (desoldering braid)
 
-- No specific listing recorded — any basic Mini-USB (5-pin) cable.
-- `SCOPELA`'s CY7C68013A board (received 2026-09-20) uses a Mini-USB
-  port — its own listing title said so ("...Module Mini USB"), missed on
-  first read; confirmed 2026-09-22 when the board couldn't be plugged in
-  with the Micro-USB/USB-C cables on hand. See
-  [parts_reference.md](parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
-- Added to cart: 2026-09-23.
+- No specific listing recorded — any basic roll.
+- A few header pins on the GY-521 module bridged while soldering it for
+  `signal_conditioning/accelerometer_interface` (2026-09-24); an
+  iron-only removal attempt just spread the solder rather than clearing
+  it. See that circuit's `breadboard.md` for the drag-soldering technique
+  to try first — this is the fallback if that doesn't fully clear it.
+- Added to cart: 2026-09-24.
 
 ---
 

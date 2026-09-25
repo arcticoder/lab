@@ -27,6 +27,31 @@ If the 8-pin header came loose in the bag rather than soldered on, solder
 it to the module first (short side of the pins through the board, long
 side up).
 
+### If pins bridge during header soldering
+
+Too much solder between adjacent pins doesn't clear by touching the iron
+to the blob alone — that just spreads it further. Use the drag-soldering
+technique instead, with the WorkPro 30W iron and rosin-core solder tube
+already on hand:
+
+1. Tin the iron tip with a fresh small bead of solder — the flux in the
+   rosin core is what makes this work; a dry, oxidized tip drags nothing.
+2. Rest the flat side of the tip against the bridged pins, angled
+   30–45° away from the header.
+3. In one continuous motion, drag the tip along the row and off the end
+   of the header, onto a scrap surface or the tip cleaner — the molten
+   solder follows the flux and rides off onto the tip instead of staying
+   bridged.
+4. Wipe the tip clean (damp sponge or brass wool) and re-tin it before
+   each new pass; a dirty tip won't wick anything.
+5. Recheck the row for bridging by eye (a bright light/magnifier helps)
+   before wiring to the Pico.
+
+If a bridge doesn't fully clear this way, solder wick is the fallback
+(in the AliExpress cart as of 2026-09-24, not yet received): lay a length
+over the bridge, press the iron on top, and it draws the solder up by
+capillary action instead of dragging it off.
+
 ---
 
 ## Wiring steps

@@ -30,21 +30,22 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ## Next order — action needed
 
-- [ ] **AliExpress: add the PD trigger board and the power-resistor
-      assortment to the cart, then check out the whole cart.** The cart
-      is still under the $10 free-shipping threshold; both are real
-      needs (`ACTIVELIM`'s bench check, below), so they close the gap
-      without padding. Already in the cart:
+- [ ] **AliExpress: check the cart subtotal and check out once it clears
+      $10.** Mini-USB cable acquired directly 2026-09-24 — no longer in
+      the cart. Currently in the cart:
       [12× leaded 12mm piezo discs](https://www.aliexpress.com/item/1005003133740770.html)
       (`CHGAMP` retry),
       [10× 49E linear Hall sensors](https://www.aliexpress.com/item/32912682330.html)
-      (`HALLAMP`), and a Mini-USB cable (`SCOPELA`). To add:
-      [USB-C PD/QC decoy trigger board, 100W/5A, 5V/9V/12V/15V/20V selectable](https://www.aliexpress.com/item/1005002483864283.html)
-      (makes the Lenovo adapter output its 5V tap) and
-      [5W/10W ceramic wirewound resistor assortment, 0.1Ω–1kΩ](https://www.aliexpress.com/i/2251832677195042.html)
-      (pick the **10W** variant, values **5Ω and 8Ω**). Both were found
-      by search, not vetted beyond the listing text — check price/stock
-      first. **Before checking out, read the label on the adapter plugged
+      (`HALLAMP`), and a roll of solder wick — added 2026-09-24 for the
+      bridged header pins on the GY-521 module (see item 1 below).
+      **Don't add the
+      USB-C PD trigger board or the 5W/10W power-resistor assortment to
+      close the gap** — those were for `ACTIVELIM`'s bench check, which
+      is now in "Deferred" below: nothing on this bench needs that
+      circuit's protection yet, so buying parts to validate it isn't a
+      real need right now. If the cart is still under $10 with just the
+      three items above, wait for a genuine need rather than padding it.
+      **Before checking out, read the label on the adapter plugged
       into your drive enclosure** (see the RobotShop bullet): if it fails
       any of that bullet's criteria, also add a 12V, ≥1A, 5.5×2.1mm,
       centre-positive DC adapter to this same cart so it ships in the
@@ -59,29 +60,46 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ## Ready to build now — parts on hand
 
-1. [ ] **`signal_conditioning/accelerometer_interface` — wire the GY-521
-       to the Pico and run `main.py`.** It's the measurement side of
-       `VIBISO` (see "Blocked") and the first power-up of the untested
-       GY-521. Four jumpers, no soldering unless the module's header pins
-       came loose in the bag: `VCC`→3V3(OUT) (pin 36), `GND`→pin 38,
-       `SDA`→GP4 (pin 6), `SCL`→GP5 (pin 7); module lying still on the
-       bench; `mpremote run main.py`. All lines `[PASS]` is done; a
-       `WHO_AM_I` of `0x70`–`0x72` is a clone that still passes. Wiring
-       table and failure meanings:
-       [breadboard.md](../signal_conditioning/accelerometer_interface/breadboard.md).
+1. [ ] **`signal_conditioning/accelerometer_interface` (`ACCELIF`) —
+       finish soldering the header, then wire the GY-521 to the Pico and
+       run `main.py`.** It's the measurement side of `VIBISO` (see
+       "Blocked") and the first power-up of the untested GY-521. A few
+       header pins bridged during soldering (2026-09-24) — see
+       [breadboard.md](../signal_conditioning/accelerometer_interface/breadboard.md)'s
+       new "If pins bridge during header soldering" section for the
+       drag-soldering fix (works with the iron/rosin solder already on
+       hand; the solder wick in the AliExpress cart is the fallback if
+       that doesn't fully clear it). Once the header's clean: four
+       jumpers, `VCC`→3V3(OUT) (pin 36), `GND`→pin 38, `SDA`→GP4 (pin 6),
+       `SCL`→GP5 (pin 7); module lying still on the bench;
+       `mpremote run main.py`. All lines `[PASS]` is done; a `WHO_AM_I` of
+       `0x70`–`0x72` is a clone that still passes. Full wiring table and
+       failure meanings in `breadboard.md` above.
+2. [ ] **`SCOPELA` — confirm `sigrok`/PulseView detects the CY7C68013A
+       board via `fx2lafw`.** Mini-USB cable acquired 2026-09-24 (no
+       longer in the AliExpress cart). `lsusb` already shows the board
+       enumerating at Cypress's factory-default `04b4:8613` ID with
+       jumper J4 removed — with J4 in (as it shipped), the board didn't
+       enumerate at all. Best guess: J4 gates the onboard 24LC128
+       EEPROM's boot-load attempt, and a blank/unprogrammed EEPROM was
+       hanging that read; not independently confirmed, but leave J4 out
+       either way — it isn't needed for `sigrok` to load firmware over
+       USB. The `lsusb` line above isn't the actual pass condition yet:
+       install `sigrok-cli`/`pulseview` +
+       `sigrok-firmware-fx2lafw` if not already present
+       (`sudo apt install sigrok-cli pulseview sigrok-firmware-fx2lafw`),
+       then run `sigrok-cli --driver fx2lafw --scan` (or open PulseView
+       and pick the `fx2lafw` driver) — a device detected there is the
+       real check. No circuit design needed either way; see
+       `parts_reference.md`'s entry for the board's specs.
 
-Nothing else queued behind this one right now — see
-[kb/todo_list_conventions.md](kb/todo_list_conventions.md) for the
-ranking method this section uses whenever it has more than one item.
+Ranked by the five-criteria method in
+[kb/todo_list_conventions.md](kb/todo_list_conventions.md): item 1
+unblocks `VIBISO`, a real downstream consumer; item 2 has no downstream
+edge on this bench, just an already-purchased instrument to bring up.
 
 ## Blocked — waiting on a shipment or a sourcing decision
 
-- [ ] **`ACTIVELIM`** (`protection/active_current_limiter`) — needs the PD
-      trigger board (5V tap off the Lenovo adapter) and the 5Ω/8Ω power
-      resistors from "Next order" above. The check scales the trip to
-      ~0.8A because the adapter's 5V profile is rated 2A; the reference
-      divider values and the two-load procedure are in that circuit's
-      README § Validation.
 - [ ] **`CHGAMP`** (tier5, charge amplifier) — blocked on the leaded
       piezo disc in the AliExpress cart (see "Next order" above).
       A 2026-09-16 attempt with the bare-disc batch destroyed one unit
@@ -91,11 +109,6 @@ ranking method this section uses whenever it has more than one item.
       switch-output only; needs the linear/analog Hall sensor in the
       AliExpress cart ("Next order" above) to build the op-amp
       amplifier circuit as scoped.
-- [ ] **`SCOPELA` — needs a Mini-USB cable, in the AliExpress cart
-      (see "Next order" above).** The board itself (received
-      2026-09-20) needs no circuit design — plugging it in and
-      confirming `sigrok`/PulseView detects it via `fx2lafw` is the
-      whole check, once the cable is in hand.
 - [ ] **`VIBISO`** (vibration isolation platform) — hold off on the
       mechanical build itself until `ACCELIF` (item 1 above) is
       assembled and passing, so there is something to measure isolation
@@ -113,6 +126,19 @@ ranking method this section uses whenever it has more than one item.
 
 ## Deferred — considered and declined, no action needed
 
+- `protection/active_current_limiter` (`ACTIVELIM`) — designed and
+  simulated, one IRLZ44N on hand, but nothing on this bench needs its
+  protection yet: it exists to guard `psu_medhigh`/`psu_high`, and that
+  PSU tier is still Backlog with no folder (see below) — no PSU circuit
+  it would protect is even being built right now. Its own bench check
+  also needs a ≥2A source this bench doesn't have (the PD trigger board's
+  5V tap + 5Ω/8Ω power resistors, still just candidates in `orders.md`,
+  not carted); buying those now would be validating a protection circuit
+  for a supply that doesn't exist, not a real need. An extra AA battery
+  holder doesn't change this — the gap is current capacity and PD
+  negotiation, not cell count; AA cells can't safely source the current
+  this check needs regardless of how many are wired in series. Revisit
+  once `psu_medhigh`/`psu_high` becomes an actual build target.
 - `measurement_tools/inductance_bridge` (`INDBRIDGE`) — designed and
   simulated, parts on hand, but nothing on this bench uses an inductor
   yet. Build it when a design needs a verified inductance, or when you
@@ -172,9 +198,9 @@ how each node connects before starting one.
       bench-tested" table.)
 - [ ] **PSU system**: `psu_medhigh`/`psu_high` — no PSU tier built around
       the Lenovo 65W adapter (on hand) or any industrial supply.
-      `ACTIVELIM` (their protection stage) is designed/simulated and
-      waiting on a current-capable test source — see "Blocked" above —
-      but that's not the PSU tier itself.
+      `ACTIVELIM` (their protection stage) is designed/simulated but has
+      nothing to protect yet and isn't a real need until this tier starts
+      — see "Deferred" above — and that's not the PSU tier itself anyway.
 - [ ] **Bootstrap tier**: `LEDIND`, `SIMPLECNT`, `TUNINGFK`, `AUDIOSC`,
       `CRTSC`. (`PASSVM` is already done via `fuse_test_voltmeter`.)
 - [ ] **Tier 2**: `VM`, `AM`, `FREQC` — undesigned as dedicated circuits

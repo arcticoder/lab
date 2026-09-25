@@ -99,7 +99,7 @@ new build, rather than by eye alone.
 | Breadboard (full)      | 1        | 830-point                                                 |
 | Breadboard (mini SYB-170) | 1     | 170-point, black; from a 6-in-1 color pack (AliExpress). See `lab/docs/orders.md` / `lab/docs/parts_reference.md` for full specs |
 | Micro USB Cable        | 1        | For Pico power + data                                     |
-| Mini-USB Cable         | 0        | Not on hand (in the AliExpress cart, 2026-09-23) — needed for `SCOPELA`'s CY7C68013A board, see `lab/docs/TODO-arcticoder.md`'s "Next order" |
+| Mini-USB Cable         | 1        | Acquired directly (non-AliExpress) 2026-09-24; removed from the AliExpress cart. Used to bring up `SCOPELA`'s CY7C68013A board — see `lab/docs/TODO-arcticoder.md`'s "Ready to build now" |
 
 ---
 
@@ -207,7 +207,7 @@ For the `lab/` repo's spacetime research PSU tiers (`psu_ultralow`,
 | 1N5817 Schottky diode (1A 20V, DO-41)   | 20       | Received 2026-08-21; 2 of 20 confirmed-good via GP26 divider check (`psu_4xaa`'s unit — curled legs/no tape; `psu_low_v2`'s unit — no legible cathode band, was installed backward at first, then corrected). Remaining 18 straight-legged/taped, untested — verify forward drop/orientation per unit before use in `psu_3xaa` or elsewhere; see `parts_reference.md#1n5817-schottky-diode` |
 | Lenovo 65W USB-C PD wall adapter        | 1        | On the bench; profiles per `lab/docs/general_purpose_circuit_dependency.md`'s `PSUMEDHIGH` node (20V/3.25A, 15V/3A, 9V/2A, 5V/2A). Outputs nothing above USB default without a PD sink board negotiating it — see the PD trigger board in `lab/docs/orders.md` |
 | DC barrel wall adapter(s), spare       | ≥1       | At least one is plugged into a drive enclosure on the bench; label (voltage, current, plug size, polarity) not yet read. Intended input for `psu_medlow_lm317`'s SparkFun kit if it meets the checklist in `lab/docs/orders.md` |
-| AA battery holder (1×AA, single-cell)  | 5        | Received 2026-08-21; ready for direct use in `psu_ultralow_v1`/`psu_low_v2`. Confirmed-working temporary lead termination (2026-08-28, ahead of the wire stripper order arriving): twist a non-covered 0.25cm jump wire around each bare holder lead and wrap in electrical tape — no soldering/crimping needed. Treat as a stand-in until leads are stripped/soldered to Dupont connectors, not a wiring defect if seen on a breadboard. |
+| AA battery holder (1×AA, single-cell)  | 6        | 5 received 2026-08-21; 1 more confirmed on hand 2026-09-24 (not from an AliExpress order — origin not tracked). Ready for direct use in `psu_ultralow_v1`/`psu_low_v2`. Confirmed-working temporary lead termination (2026-08-28, ahead of the wire stripper order arriving): twist a non-covered 0.25cm jump wire around each bare holder lead and wrap in electrical tape — no soldering/crimping needed. Treat as a stand-in until leads are stripped/soldered to Dupont connectors, not a wiring defect if seen on a breadboard. No current build needs a 6th holder — nothing on this bench runs two AA-cell supplies simultaneously (each build is disassembled after its own bench check, see `lab/docs/kb/circuit_lifecycle_and_repo_scope.md`) — it's just spare stock. |
 
 ---
 
@@ -277,3 +277,4 @@ sourcing in [TODO-arcticoder.md](TODO-arcticoder.md)).
 | Soldering iron stand          | 1        | Included with iron                                          |
 | Soldering tip, 5/32 in.       | 2        | Included with iron                                          |
 | 18-in-1 wire stripper/crimper pliers | 1 | Received 2026-09-03; high-carbon steel + PVC handle. Resolves the wire-stripper dependency that was blocking `psu_ultralow_v1`/`psu_low_v2` AA-holder lead termination in `lab/`. |
+| Solder wick (desoldering braid) | 0 | Added to AliExpress cart 2026-09-24 — a few header pins bridged while soldering the GY-521 module for `signal_conditioning/accelerometer_interface`; see that circuit's `breadboard.md` for the drag-soldering technique to try first. Not yet received. |

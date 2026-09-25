@@ -4411,3 +4411,16 @@ I've shelved the USB-C supply, designed both circuits, and rewritten `TODO-arcti
 I also fixed the inventory, the orders and parts docs, and the dependency graphs, and added KB notes in `lab/docs/kb/`. The `RIPPLETANK` driver item is re-scoped: there's no motor or speaker on hand, only the 9G servo, so the actuator choice is yours.
 <!-- ------ -->
 ---
+All the docs are updated and consistent. Here's a summary of what changed, addressing each point in order:
+
+**1. Mini-USB cable acquired** — removed from the AliExpress cart in `orders.md`/`TODO-arcticoder.md`, marked received in `inventory.md` (non-AliExpress acquisition, noted as such since `orders.md` is an AliExpress-only log).
+
+**2. lsusb / J4 finding** — `SCOPELA` moved from "Blocked" to "Ready to build now" #2 with the concrete next step (`sigrok-cli --driver fx2lafw --scan`). On the J4 question: your read is plausible but I can't confirm it — I wrote up the likely mechanism (J4 probably gates the onboard EEPROM boot-load attempt, and a blank EEPROM may have hung the read rather than falling back cleanly) as a flagged hypothesis in `kb/bench_photo_diagnostics_notes.md`, not fact. Either way it doesn't matter going forward: `sigrok` loads `fx2lafw` over USB regardless of the EEPROM, so leaving J4 out is fine.
+
+**3. Solder bridge** — added a concrete drag-soldering technique to `breadboard.md` (using the iron/rosin solder already on hand) as the first thing to try, with the wick as fallback once it arrives. Added wick to the cart in place of the mini-USB cable.
+
+**4. `ACCELIF` tag** — was missing from its own TODO bullet, which is why grep only found the one forward-reference. Added.
+
+**5. Power/`ACTIVELIM`** — agreed with your pushback: moved `ACTIVELIM` from "Blocked" to "Deferred." It protects `psu_medhigh`/`psu_high`, which is pure Backlog with no folder and nothing moving — there's nothing for it to protect yet, so ordering the PD board/resistors was padding presented as need. Pulled that framing out of "Next order" too. On the extra AA holder: it doesn't help here or anywhere else right now — no circuit on this bench is blocked on holder count, and `ACTIVELIM`'s gap was always current capacity, not cell count. Documented both corrections in `kb/todo_list_conventions.md` so this reasoning doesn't get re-argued later.
+<!-- ------ -->
+---
