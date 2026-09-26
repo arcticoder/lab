@@ -87,9 +87,14 @@ current-limiting resistor, unrelated to the feedback network — see
 - Input needs enough headroom above the selected output for the LM317's
   ~2–3V dropout — a 9V or 12V wall adapter works for either setting; a 5V
   adapter would not leave enough headroom for the 5V output setting.
-  Input source: any spare DC wall adapter that meets the checklist in
-  `docs/orders.md` (DC output of 9–12V, 2.1mm barrel, centre-positive) —
-  one is on the bench powering a drive enclosure, and its label decides
-  whether it qualifies. The LM317 dissipates (V_in − V_out) × I as heat, so a 9V input into the 5V
-  setting at 300mA is ~1.2W in a TO-220 with no heatsink — it will run
-  hot to the touch.
+  Input source: one of the two 12V drive-enclosure wall adapters on the
+  bench (12V/1A or 12V/1.2A, DC, centre-positive — labels read 2026-09-25,
+  see `docs/inventory.md`); both meet the checklist in `docs/orders.md`.
+  The plug size isn't on either label, so it's confirmed by a fit test at
+  the kit's jack once assembled. The LM317 dissipates (V_in − V_out) × I as
+  heat: at 12V in, the 5V setting at 300mA is 2.1W and the 3.3V setting at
+  300mA is 2.6W in a TO-220 with no heatsink — enough to run very hot
+  (the LM317's thermal shutdown is the backstop, not a design margin).
+  Keep bench loads to roughly 100mA (~0.7–0.9W) with the 12V adapters, or
+  add a heatsink for more. (A 9V input would cut the dissipation at
+  the 5V setting to ~1.2W at 300mA but there is no 9V adapter on hand.)

@@ -45,18 +45,16 @@ status lives in `README.md`'s "built & bench-tested" table.
       circuit's protection yet, so buying parts to validate it isn't a
       real need right now. If the cart is still under $10 with just the
       three items above, wait for a genuine need rather than padding it.
-      **Before checking out, read the label on the adapter plugged
-      into your drive enclosure** (see the RobotShop bullet): if it fails
-      any of that bullet's criteria, also add a 12V, ≥1A, 5.5×2.1mm,
-      centre-positive DC adapter to this same cart so it ships in the
-      same batch.
 - [ ] **RobotShop: order the
       [SparkFun Breadboard Power Supply Kit](https://ca.robotshop.com/products/sfe-breadboard-power-supply-kit)
-      (5V/3.3V, LM317).** It's the adjustable-rail PSU that follows
-      `psu_4xaa`'s fixed 6V (`power_supplies/psu_medlow_lm317`). Its
-      input is a DC barrel jack; the drive-enclosure adapter works if its
-      label shows DC output, 9–12V, a single 5.5×2.1mm round plug, centre-positive
-      (`⊖–●–⊕`), and at least 0.5A — details in `orders.md`.
+      (5V/3.3V, LM317).** Separate seller and cart from AliExpress, so
+      place it independently of the item above. It's the adjustable-rail
+      PSU that follows `psu_4xaa`'s fixed 6V
+      (`power_supplies/psu_medlow_lm317`). Its input is a DC barrel jack;
+      either drive-enclosure adapter (both 12V, DC, centre-positive, ≥1A —
+      labels read 2026-09-25) covers it, so no adapter is being bought.
+      The plug size isn't printed on the labels; when the kit arrives,
+      the adapter's plug seating snugly in the jack is the check.
 
 ## Ready to build now — parts on hand
 
@@ -80,12 +78,12 @@ status lives in `README.md`'s "built & bench-tested" table.
        longer in the AliExpress cart). `lsusb` already shows the board
        enumerating at Cypress's factory-default `04b4:8613` ID with
        jumper J4 removed — with J4 in (as it shipped), the board didn't
-       enumerate at all. Best guess: J4 gates the onboard 24LC128
-       EEPROM's boot-load attempt, and a blank/unprogrammed EEPROM was
-       hanging that read; not independently confirmed, but leave J4 out
-       either way — it isn't needed for `sigrok` to load firmware over
-       USB. The `lsusb` line above isn't the actual pass condition yet:
-       install `sigrok-cli`/`pulseview` +
+       enumerate at all. Best explanation (datasheet-backed, not
+       confirmed on this board): J4 connects the onboard 24LC128 EEPROM,
+       and with it in the chip boots whatever the EEPROM holds instead of
+       its default USB identity. Leave J4 out — that's the state `sigrok`
+       needs to load firmware over USB. The `lsusb` line above isn't
+       the actual pass condition yet: install `sigrok-cli`/`pulseview` +
        `sigrok-firmware-fx2lafw` if not already present
        (`sudo apt install sigrok-cli pulseview sigrok-firmware-fx2lafw`),
        then run `sigrok-cli --driver fx2lafw --scan` (or open PulseView

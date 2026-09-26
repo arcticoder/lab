@@ -798,6 +798,8 @@ Also from the same exchange, for how bench steps get written:
 
 ## Read a spare on-hand part's label *before* the order it gates goes out (2026-09-23)
 
+*(The fallback purchase described here was removed 2026-09-25 — see the "Mains-connected parts never go on the AliExpress cart" entry at the end of this file.)*
+
 The SparkFun kit needs a 9–12V DC barrel-jack input. The user reported an
 unidentified wall adapter (on a drive enclosure). Nothing on the bench
 lists it, and adapters from drive enclosures are often a different
@@ -884,3 +886,46 @@ make sure the tag itself appears on that circuit's own `TODO-arcticoder.md`
 bullet, not just in prose referring to it — a future grep for the tag
 should always resolve back to the item, not just its cross-references.**
 Fixed by adding `(`ACCELIF`)` to item 1's own bullet.
+
+## Mains-connected parts never go on the AliExpress cart, and a fallback purchase can't be bundled across retailers (2026-09-25)
+
+The 2026-09-23 entry above ("Read a spare on-hand part's label before the
+order it gates goes out") had the AliExpress bullet carry a fallback: if
+the drive-enclosure adapter's label failed the SparkFun-kit criteria, add
+a 12V DC adapter "to this same cart." Two things were wrong with it.
+First, the user doesn't buy mains-connected supplies from AliExpress at
+all (trust in the part's mains isolation/safety, same class of concern as
+the flux exclusion) — so an adapter fallback there was never an option.
+Second, the adapter's consumer is the RobotShop kit, a different seller
+and cart from AliExpress; a fallback that lives in the other retailer's
+bullet doesn't tie to anything that order does. **Rules: (1) any
+mains-connected part (wall adapters, mains PSUs) is never proposed for
+the AliExpress cart, including as a conditional; (2) a contingency
+purchase belongs in the bullet for the retailer it would actually ship
+from, and a checkout step in one retailer's bullet shouldn't be gated on
+an unrelated retailer's part.**
+
+Resolution: the user read both drive-enclosure adapter labels (12V/1A and
+12V/1.2A, DC, centre-positive, universal 100–240V input). Both pass the
+`orders.md` checklist on voltage, polarity and current, so no adapter is
+bought and the fallback line was deleted. Plug size isn't printed on
+either label, so that one criterion moved to a fit test at the kit's jack
+on arrival (the kit's jack is 2.1mm; a snug seat passes). Both adapters
+are universal-input switch-mode units, so their output shouldn't float
+far above 12V at light load; at 12V into the LM317 kit, dissipation is
+the real constraint (2.1W at 5V/300mA) — noted in
+`psu_medlow_lm317/README.md`. RobotShop and AliExpress bullets stay
+separate in "Next order"; AliExpress leads because it is the channel with
+open blocked circuits behind it (`CHGAMP`, `HALLAMP`), the RobotShop item
+is unconditional and independent.
+
+## Inventory counts come from what was received, not from a later "confirmed on hand" (2026-09-25)
+
+`inventory.md` had the 1×AA battery holder at 6 (5 received + "1 more
+confirmed on hand, origin not tracked"). The user corrected it: there
+were only ever 5 — four are in `psu_4xaa` and one is unused, which was
+misread as an extra unit. **When a count can't be traced to an order line
+and the user's statement was about a build's contents ("there's one left
+over"), record the arithmetic (total = in-use + spare) instead of adding a
+line to the received total.** Ask or state the reconciliation rather than
+inventing an unrecorded second source.

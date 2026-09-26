@@ -4424,3 +4424,30 @@ All the docs are updated and consistent. Here's a summary of what changed, addre
 **5. Power/`ACTIVELIM`** — agreed with your pushback: moved `ACTIVELIM` from "Blocked" to "Deferred." It protects `psu_medhigh`/`psu_high`, which is pure Backlog with no folder and nothing moving — there's nothing for it to protect yet, so ordering the PD board/resistors was padding presented as need. Pulled that framing out of "Next order" too. On the extra AA holder: it doesn't help here or anywhere else right now — no circuit on this bench is blocked on holder count, and `ACTIVELIM`'s gap was always current capacity, not cell count. Documented both corrections in `kb/todo_list_conventions.md` so this reasoning doesn't get re-argued later.
 <!-- ------ -->
 ---
+All four items are fixed in the docs, and nothing is committed.
+
+**1. Adapters and the cart**
+- I removed the "add an adapter to the AliExpress cart" fallback from `TODO-arcticoder.md`. It never made sense: the kit is a RobotShop order, and mains-connected parts don't go on the AliExpress cart at all.
+- Both labels pass the kit's checklist on the label data: DC, 12V, centre-positive, and at least 1A. Both are universal-input 100–240V units, so the output should stay close to 12V.
+- Neither label prints the plug size. That check moves to a fit test at the kit's jack when it arrives, and no adapter gets bought.
+- Both adapters are now rows in `inventory.md`, and `orders.md` and the `psu_medlow_lm317` README use them as the input source.
+- In "Next order", AliExpress stays first because the blocked `CHGAMP` and `HALLAMP` circuits depend on that cart. The RobotShop kit is now a standalone, unconditional item.
+- **Heat:** 12V into the LM317 is a real heat load. The 5V setting at 300mA dissipates 2.1W, and the 3.3V setting dissipates 2.6W, in a TO-220 with no heatsink. I added a note to the README to keep loads around 100mA or add a heatsink.
+
+**2. AA holders**
+- The count is 5: four are in `psu_4xaa` and one is spare. I fixed `inventory.md` and `orders.md`, and added a kb rule to record that arithmetic rather than adding an unverified extra unit.
+
+**3. CY7C68013A board and jumper J4**
+- I read the datasheet and the Geeetech wiki. My earlier "blank EEPROM hangs the boot" guess was wrong. The datasheet says that with no EEPROM detected the chip just enumerates as `04B4:8613`.
+- The revised explanation is that J4 connects the onboard 24LC128 EEPROM, and with it in the chip boots whatever the EEPROM holds. That is consistent with what you saw, but I haven't confirmed it on your board. The cheap check is `dmesg -w` while plugging in with J4 in.
+- J4 now has to stay out for `sigrok`, not just "may" stay out. The "D1 D2 power switch" jumper only connects the power-LED anodes.
+- The wiki's wording for J4's positions is ambiguous and reads backwards, so I recorded the datasheet behaviour rather than its labels.
+- I linked the datasheet and wiki from `parts_reference.md`, and updated the stale "blocked on cable" wording in `parts_reference.md`, `orders.md` and `inventory.md`.
+
+**Where the notes went**
+- The J4 analysis is in `kb/bench_photo_diagnostics_notes.md`.
+- The cart-separation rule and the holder-count rule are in `kb/todo_list_conventions.md`.
+- `TODO-completed.md` has a dated entry.
+- I saved your no-mains-parts-from-AliExpress rule to my memory.
+<!-- ------ -->
+---
