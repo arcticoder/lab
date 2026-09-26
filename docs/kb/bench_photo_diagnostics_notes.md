@@ -350,29 +350,46 @@ chip family (see the existing "CY7C68013A board" entry in
 `ordering_ingestion_notes.md` for why this ID is the expected pre-`fx2lafw`
 state, not a fault).
 
-**Working hypothesis, not independently confirmed:** the board's onboard
-24LC128 EEPROM (see `parts_reference.md`'s entry) is what J4 gates — the
-FX2's boot ROM samples an I2C pin at power-up to decide whether to
-attempt loading firmware from an external EEPROM before falling back to
-its internal ROM (which is what exposes `04b4:8613` for USB-hosted
-firmware upload). If J4 ties into that boot-detect pin and the onboard
-EEPROM is blank/unprogrammed, an I2C read that never gets a valid
-ACK/config byte could hang the boot sequence indefinitely rather than
-timing out and falling back — which would explain "doesn't enumerate at
-all with J4 in, enumerates immediately with J4 out" better than a simple
-"jumper selects EEPROM present/absent" reading would (that alone
-shouldn't prevent the internal-ROM fallback). Plausible alternative:
-J4 is unrelated to EEPROM boot-load and is a straightforward
-power/reset-sequencing jumper that just doesn't matter for this bench's
-use case. Neither has been checked against the CY7C68013A datasheet or
-this specific clone board's schematic (none on hand) — treat as the
-current best explanation, not fact, if it comes up again.
+**Revised 2026-09-25 against the datasheet and the seller wiki — the
+earlier "unprogrammed EEPROM hangs the boot" hypothesis is superseded.**
+Sources: the Infineon/Cypress CY7C68013A/14A/15A/16A EZ-USB FX2LP
+datasheet (doc 38-08032, "USB Boot Methods", p.6, and "I2C Interface Boot
+Load Access", p.16) and the board seller's wiki page
+(`wiki.geeetech.com/index.php/CY7C68013`), whose board is identical to
+this one except that the wiki doesn't label the jumper "J4".
 
-**Doesn't block the actual check either way**: `sigrok`'s `fx2lafw`
-firmware loads over USB directly into RAM each time the board is
-plugged in — it doesn't read from or depend on the onboard EEPROM at
-all on these clone boards (see the "CY7C68013A board" kb entry) — so
-leaving J4 out should have no effect on whether `sigrok-cli`/PulseView
-can detect and use the board. Leave J4 removed rather than re-testing
-with it back in; `TODO-arcticoder.md`'s `SCOPELA` item has the next
-concrete step (`sigrok-cli --driver fx2lafw --scan`).
+- Datasheet: at power-up the FX2LP checks its I2C port for an EEPROM
+  whose first byte is `0xC0` (use the EEPROM's VID/PID/DID) or `0xC2`
+  (boot-load the EEPROM contents into RAM and run them). **If no EEPROM
+  is detected, it enumerates with its internal defaults — VID/PID
+  `04B4:8613`.** There is no hang-on-missing-EEPROM behavior described;
+  SCL/SDA must have external pull-ups (2.2kΩ) whether or not an EEPROM
+  is present, otherwise detection misbehaves.
+- Wiki: names J4 the "24c128 jumper cap" (the AT24C128 EEPROM) and the
+  right-hand jumper "D1 D2 Power switch" (it just connects/opens the
+  power-LED anodes — irrelevant here). Its wording for J4 is
+  ambiguous/backwards ("plugged in: closed, disables read/write;
+  removed: started, enables read/write"), and it describes EEPROM
+  programming via the Cypress Windows tools (pins shorted before
+  power-up), with no mention of sigrok.
+- Best reading: J4 puts the EEPROM on the I2C bus. Jumper out → no
+  EEPROM detected → default `04B4:8613` (observed). Jumper in → the chip
+  reads the EEPROM, and the EEPROM as shipped presumably holds a
+  `0xC0`/`0xC2` image (a vendor demo firmware/descriptor) so the board
+  came up as something other than the default ID or ran firmware that
+  doesn't enumerate cleanly, matching "nothing in `lsusb`". Still
+  unconfirmed on this physical board: no `dmesg` capture was taken with
+  J4 in, and the jumper's exact netlist isn't known. If it ever matters,
+  the cheap discriminator is `dmesg -w` while plugging in with J4 in
+  (a "device descriptor read/64, error" line means firmware/descriptors
+  ran but failed; total silence means the chip never presented to the
+  bus).
+
+**Consequence for `sigrok`: J4 must stay out, not just "may".** `fx2lafw`
+is uploaded over USB into RAM starting from the default `04B4:8613`
+identity; with J4 in and a `0xC2` image in the EEPROM the board would run
+that image instead and `sigrok-cli --driver fx2lafw --scan` wouldn't see
+a default-ID FX2. So leave J4 removed. (The earlier note's other claim
+stands: `fx2lafw` doesn't read the EEPROM.) `TODO-arcticoder.md`'s
+`SCOPELA` item has the next concrete step
+(`sigrok-cli --driver fx2lafw --scan`).

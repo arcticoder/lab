@@ -28,19 +28,26 @@ the converted `.md` files are tracked).
   the AliExpress cart, so the AliExpress $10 free-shipping threshold
   doesn't apply to it.
 - Input is an unregulated 9–12V DC barrel jack (2.1mm, center-positive).
-  Source: a spare DC wall adapter from the bench (one is plugged into a
-  drive enclosure; its label has not been read yet). It qualifies if the
-  label shows **all** of: (1) DC output (`⎓` or "DC", not "AC"), (2)
-  9–12V, (3) a single round barrel plug (not a 4-pin/Molex-style
-  connector), 5.5mm outer (the standard size for a 2.1mm jack) × 2.1mm inner (a 2.5mm inner-diameter plug is
-  loose in a 2.1mm jack; a 2.1mm plug won't seat on a 2.5mm one), (4)
-  centre-positive (`⊖–●–⊕` symbol, plug centre = +) and (5) at least
-  ~0.5A. A 12V adapter works; 9V runs the LM317 cooler (it dissipates
-  (Vin − Vout) × I). The kit's input diode blocks reverse polarity, so a
-  centre-negative adapter fails safe (no power) rather than damaging
-  anything. The PD trigger board below is no longer part of this path.
-  The barrel-jack size is the kit listing's spec as recorded here, not
-  measured.
+  Source: one of the two 12V drive-enclosure wall adapters on the bench
+  (labels read 2026-09-25, see `inventory.md`): a 12V/1A unit and a
+  12V/1.2A unit, both DC, both centre-positive, both universal-input
+  100–240V. Both meet the checklist on voltage, polarity and current, so
+  **no adapter purchase is needed** — and none goes on the AliExpress
+  cart in any case: mains-connected supplies are not bought from
+  AliExpress. The checklist, for reference: (1) DC output (`⎓` or "DC",
+  not "AC"), (2) 9–12V, (3) a single round barrel plug (not a
+  4-pin/Molex-style connector), 5.5mm outer (the standard size for a 2.1mm
+  jack) × 2.1mm inner (a 2.5mm inner-diameter plug is loose in a 2.1mm
+  jack; a 2.1mm plug won't seat on a 2.5mm one), (4) centre-positive
+  (`⊖–●–⊕` symbol, plug centre = +) and (5) at least ~0.5A. The one
+  criterion neither label settles is the plug size (labels give voltage,
+  current and polarity only); it is confirmed by a fit test at the kit's
+  jack once the kit arrives — a snug seat passes. A 12V adapter works; 9V
+  runs the LM317 cooler (it dissipates (Vin − Vout) × I). The kit's input
+  diode blocks reverse polarity, so a centre-negative adapter fails safe
+  (no power) rather than damaging anything. The PD trigger board below is
+  no longer part of this path. The barrel-jack size is the kit listing's
+  spec as recorded here, not measured.
 
 ---
 
@@ -189,7 +196,7 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
 
 ### AA battery holder (1×AA, single-cell)
 
-- 5 received, for `psu_ultralow`/`psu_low` tiers.
+- 5 received, for `psu_ultralow`/`psu_low` tiers (the only batch; 4 are used by `psu_4xaa`, 1 spare).
 - No validation step needed — ready for direct use in
   [psu_ultralow_v1](../power_supplies/psu_ultralow_v1/) and
   [psu_low_v2](../power_supplies/psu_low_v2/) builds.
@@ -533,6 +540,8 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
   "CY7C68013A board" entry. `sigrok`'s `fx2lafw` firmware supports it out
   of the box — no circuit design needed, just a plug-in verification, now
   in [TODO-arcticoder.md](TODO-arcticoder.md)'s "Ready to build now".
+  Jumper J4 (the onboard EEPROM) must be out; chip/board documentation
+  is linked in [parts_reference.md](parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
 - Ordered: 2026-09-10. Logged received: 2026-09-20.
 
 ### Color-ring inductor assortment (0307, 1/4W) reorder

@@ -604,10 +604,10 @@ otherwise; see the caveat in
 
 ## EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
 
-1 received 2026-09-20 (ordered 2026-09-10), untested — plug-in
-verification (does `sigrok`/PulseView detect it via `fx2lafw`) is in
-[TODO-arcticoder.md](TODO-arcticoder.md)'s "Blocked" section, pending a
-Mini-USB cable. See
+1 received 2026-09-20 (ordered 2026-09-10). Enumerates as `04b4:8613`
+with jumper J4 removed (2026-09-24); the `sigrok`/PulseView `fx2lafw`
+detection check is in [TODO-arcticoder.md](TODO-arcticoder.md)'s "Ready
+to build now". See
 [orders.md](orders.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
 Built around a CY7C68013A-56PVXC: low-power enhanced-8051 core, 16KB
 program RAM, 48MHz main clock, USB2.0 480Mbps (backward-compatible
@@ -616,6 +616,20 @@ in-system USB reprogramming — no external programmer needed. All GPIOs
 broken out on 2.54mm headers. Board 55.24×41.68mm overall
 (46.73×34.62mm hole-to-hole), positioning hole Ø3.15mm, ~13.11g.
 Operating temperature −40 to +85°C.
+
+Chip documentation: the CY7C68013A is the EZ-USB FX2LP USB 2.0
+peripheral controller, designed by Cypress Semiconductor and now made by
+Infineon Technologies —
+[datasheet (Infineon)](https://www.infineon.com/assets/row/public/documents/24/49/infineon-cy7c68013a-cy7c68014a-cy7c68015a-cy7c68016a-ez-usb-fx2lp-usb-microcontroller-high-speed-usb-peripheral-controller-datasheet-en.pdf?fileId=8ac78c8c7d0d8da4017d0ec9f7974252).
+The seller's wiki page for this board design is
+[wiki.geeetech.com/index.php/CY7C68013](https://wiki.geeetech.com/index.php/CY7C68013);
+its board is identical to this one except that it doesn't label the
+jumper "J4". Jumpers: **J4** (wiki: "24c128 jumper cap") connects the
+onboard 24LC128 EEPROM to the chip — **keep it removed** for `sigrok`,
+so the chip comes up at its default `04B4:8613` identity instead of
+booting whatever the EEPROM holds; the jumper on the right ("D1 D2
+power switch") only connects/opens the power-LED anodes. Details in
+[kb/bench_photo_diagnostics_notes.md](kb/bench_photo_diagnostics_notes.md).
 
 This board *is* the `SCOPELA` tier purchase, not a component feeding into
 one — see

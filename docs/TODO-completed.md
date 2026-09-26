@@ -18,6 +18,20 @@ matching, so don't assume one file makes the other redundant.
 
 ---
 
+## 2026-09-25
+
+- **Drive-enclosure adapter labels read; SparkFun kit input source
+  settled.** Two adapters (12V/1A and 12V/1.2A, DC, centre-positive) —
+  both pass the `orders.md` checklist on label data, so the "add an
+  adapter to the AliExpress cart" fallback is removed and no adapter is
+  purchased. Plug size (not on the labels) is checked by fit when the kit
+  arrives.
+- **AA battery holder count corrected to 5** (4 in `psu_4xaa`, 1 spare) in
+  `inventory.md` and `orders.md`.
+- **`SCOPELA` J4 explanation revised** from the FX2LP datasheet and the
+  seller's wiki page; J4 stays removed. Chip/board documentation is now
+  linked from `parts_reference.md`.
+
 ## 2026-09-23
 
 - **`psu_medlow_usbc` shelved; its CC-pin check removed from "Ready to
