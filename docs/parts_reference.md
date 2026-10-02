@@ -605,9 +605,8 @@ otherwise; see the caveat in
 ## EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer)
 
 1 received 2026-09-20 (ordered 2026-09-10). Enumerates as `04b4:8613`
-with jumper J4 removed (2026-09-24); the `sigrok`/PulseView `fx2lafw`
-detection check is in [TODO-arcticoder.md](TODO-arcticoder.md)'s "Ready
-to build now". See
+with jumper J4 removed (2026-09-24), and `sigrok-cli --driver fx2lafw
+--scan` detects it as a 16-channel device (D0–D15; 2026-10-01). See
 [orders.md](orders.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
 Built around a CY7C68013A-56PVXC: low-power enhanced-8051 core, 16KB
 program RAM, 48MHz main clock, USB2.0 480Mbps (backward-compatible
@@ -640,8 +639,7 @@ PulseView, no vendor software. **Uses a Mini-USB port, not Micro-USB** —
 the listing's own title said so ("...Module Mini USB"), missed on first
 read; confirmed 2026-09-22 attempting to plug it in and finding only
 Micro-USB and USB-C cables on hand, neither of which fits. A Mini-USB
-cable is now tracked in [TODO-arcticoder.md](TODO-arcticoder.md)'s "Next
-order" section.
+cable was acquired directly 2026-09-24.
 
 ---
 

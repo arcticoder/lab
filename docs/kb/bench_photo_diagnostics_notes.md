@@ -393,3 +393,18 @@ a default-ID FX2. So leave J4 removed. (The earlier note's other claim
 stands: `fx2lafw` doesn't read the EEPROM.) `TODO-arcticoder.md`'s
 `SCOPELA` item has the next concrete step
 (`sigrok-cli --driver fx2lafw --scan`).
+
+**Result 2026-10-01: J4 out works for `sigrok`.** The user ran
+`sigrok-cli --driver fx2lafw --scan` and got `fx2lafw - Cypress FX2 with
+16 channels: D0 … D15`. That's `fx2lafw`'s generic profile for a
+default-ID FX2 (it reports 16 channels because the bare chip exposes
+that many data lines, not because the board is a 16-channel product —
+the listing sells it as an 8-channel analyzer), so don't read the
+channel count as board-specific information. It confirms the firmware
+upload over USB from the `04b4:8613` state; the J4/EEPROM mechanism above
+is still unconfirmed and no longer matters for the workflow. What a scan
+can't show — and what `measurement_tools/logic_analyzer_check/` is for —
+is whether a signal on a pad lands in a capture on the right channel at
+the right rate. The board's header map (which pad is D0, which is GND)
+is not recorded anywhere in the repo as of this date; when the user
+reports it, put it in `parts_reference.md`.

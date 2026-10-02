@@ -4451,3 +4451,17 @@ All four items are fixed in the docs, and nothing is committed.
 - I saved your no-mains-parts-from-AliExpress rule to my memory.
 <!-- ------ -->
 ---
+The sigrok scan passes, so I've closed out the `SCOPELA` detection item. Your top task now is checking out the AliExpress cart. I haven't committed anything, and I couldn't run the new capture check on real hardware. `lsusb` in my shell shows no USB devices, so its live-capture step reports SKIP here. All 20 smoke tests pass.
+
+**What to work on, in the order it's now in [TODO-arcticoder.md](docs/TODO-arcticoder.md):**
+1. **Check out the AliExpress cart.** Nothing is in transit, and the solder wick is now what unblocks `ACCELIF`, so I dropped the old "wait until it clears $10" wording. If a small shipping fee shows at checkout, it's the cost of unblocking that build. I made that call without knowing the cart total, so say if you'd rather hold the order.
+2. **Order the SparkFun kit from RobotShop.** This is unchanged.
+3. **Run the first logic-analyzer capture.** The scan only proves the firmware loads, not that a capture is correct. Wire Pico `GP15` (pin 20) to `D0` and Pico GND (pin 18) to the analyzer's GND pad. Then run `mpremote run main.py` in one terminal and `python3 check_capture.py` in another, both from [measurement_tools/logic_analyzer_check/](measurement_tools/logic_analyzer_check/). Three `[PASS]` lines means it's done. I don't have this board's header map, so check which pads are `D0` and GND against the silkscreen and tell me if they differ.
+
+**Changes from your two answers:**
+- **`ACCELIF` is blocked on the wick.** It moved to "Blocked", and I removed the drag-soldering procedure from its `breadboard.md` in favour of the wick steps.
+- **`SCOPELA` detection is closed.** It's logged in `TODO-completed.md`, and the inventory, parts reference and orders entries now record the 16-channel scan result.
+
+I also added the new tool to the lab `README.md` and put notes for future sessions in `lab/docs/kb/`. They cover the J4 result, the empty-`lsusb` caveat and the dropped-fallback rule.
+<!-- ------ -->
+---

@@ -29,3 +29,19 @@ anything to the board's flash. First used 2026-09-23 on the
 - `machine.ADC(n)` puts the pin in analog mode, so a GPIO can't be driven
   and ADC-read on the same pin. See `bench_photo_diagnostics_notes.md`
   (resistance-jig entry) for the open-input ADC signature.
+
+## USB devices attach to WSL per device (2026-10-01)
+
+On 2026-10-01 `lsusb` in the session shell listed only root hubs — no
+Pico, no CY7C68013A board — while the user's own terminal had just run
+`sigrok-cli --driver fx2lafw --scan` and found the board. Devices reach
+WSL through usbipd attachment, and the session shell is not guaranteed to
+see what the user's shell sees. Don't treat an empty `lsusb` as "the
+board isn't working"; the user's pasted output is the evidence, and a
+live probe from the session needs the user to say the rig is attached
+(see the Pico note at the top of this file).
+
+`sigrok-cli --driver demo` needs no hardware and works from the session
+shell: use it to check output formats (its csv is `;` comment lines, a
+header row, then one value per sample per line) when writing parsers
+that will later read real captures.
