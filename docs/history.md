@@ -4465,3 +4465,34 @@ The sigrok scan passes, so I've closed out the `SCOPELA` detection item. Your to
 I also added the new tool to the lab `README.md` and put notes for future sessions in `lab/docs/kb/`. They cover the J4 result, the empty-`lsusb` caveat and the dropped-fallback rule.
 <!-- ------ -->
 ---
+I checked each of Grok's claims against the files. Part of it was accurate, part was wrong, and the main problem it missed was one I found while following up. Nothing is committed (`lab/` has 12 changed or new files, and `pico/` has one).
+
+## Where I agree, fixed
+
+- **Status drift:** Real, and bigger than Grok said. About 20 lines in `parts_reference.md`, `inventory.md` and `orders.md` still said "untested" or "not yet built" for polyfuses, NE555, CD4066, the photodiode, thermistor, TL082 and XOR gate. All were already bench-tested per `README.md`. I updated them with per-unit counts, such as "1 of 10 exercised".
+- **`SCOPELA` node:** The comment still said plug-in verification was pending, and the label said 8 channels while the scan reports 16. Both are fixed, and the max sample rate is marked unmeasured.
+- **No resolution budget:** Added a "Bench-scale resolution budget" section to `spacetime_circuits_dependency.md`, backed by `tools/resolution_budget.py`. The script runs and passes its two checks.
+- **No scope disclaimer:** Added a paragraph to the spacetime doc saying this graph is bench instrumentation and doesn't reach the FTL doc's regimes. I also added one line explaining that the tier numbers interleave across the two graphs.
+- **Citation hygiene:** Removed the `utm_source=chatgpt.com` tracking strings from the FTL doc's links.
+
+## Where I disagree, for the mediator
+
+- **FTL equation "stray `#` markers":** Not in the file. The equations are valid LaTeX.
+- **Diodes imply readiness:** `inventory.md` already says 18 of 20 are untested.
+- **Carted items missing from inventory:** The convention keeps carted items in `orders.md`, and the wick is at quantity 0 on purpose.
+- **LM358 headroom not budgeted:** Every LM358 netlist and README carries the Vcc−1.5V caveat.
+- **`ACTIVELIM` has a dangling requirement:** A graph can point at nodes that aren't built yet. The deferral and its revisit trigger are written down.
+- **`ACCELIF` should depend on `SCOPELA`:** `ACCELIF`'s own check runs from the Pico, so analyzer decode is optional.
+- **"Ready to build" still lists `ACCELIF`:** It's under Blocked, not Ready.
+- **Cycle counts, kit-wide resistor re-measure, a machine-readable status table:** Cost outweighs value, or already covered by the README table.
+- **Tier gap, CD4066 switches 2–4, 3296, USB-C Rd, VIBISO/RIPPLETANK BOM:** Deliberately deferred or shelved, and written down. The full table with reasons is in `kb/cross_model_review_notes.md`.
+
+## Found while checking, not in Grok's critique
+
+1. **`CAPBRIDGE` can't serve as the `FORCEBAL` readout.** The TODO files called a foil-plate capacitive readout via `CAPBRIDGE` the no-purchase route. A plate pair is 3–90 pF, and `CAPBRIDGE`'s own README rates 10 pF "No". I corrected `TODO-arcticoder.md`, `TODO-agent.md` and `TODO-completed.md`, and left `history.md` alone as your chat log. The purchase-free replacement is an optical shadow readout using the on-hand LED, PT334-6C photodiode and the bench-tested `TIA`. It's recorded as a startable design item in `TODO-agent.md`, and I haven't started it.
+2. **The Pico noise figure is a unit mix.** `read_u16()` counts are the 12-bit result ×16, so "<5 counts / <0.25 mV" equals the ideal quantization noise (4.6 counts) rather than a measured resolution. One real ADC step is 0.81 mV. I corrected the `SCOPEPICO` label and `pico/measurement_tools/gpio_analog_sensing/docs/noise_measurement.md`.
+3. **The Eulerian energy-density formula in the FTL doc is written with G but no c.** In SI units that makes it a mass density, and the doc calls it "schematic". I left your physics unedited, so say if you want it changed.
+
+Your AliExpress checkout is still first in `TODO-arcticoder.md`, and nothing in this review changes the cart. The MPU-6050 noise figure (about 400 µg/√Hz) in the new budget is from memory, since there's no datasheet in the repo.
+<!-- ------ -->
+---

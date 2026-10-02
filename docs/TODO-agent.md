@@ -89,7 +89,7 @@ Don't design either until the actuator is chosen. This is the user's
 call (a purchase or a mechanical-approach choice), not a file-creation
 task, so it stays here until they pick one.
 
-### `FORCEBAL` / `SIPMFE` / `LASERDRV` — new tier5/7 nodes (2026-09-18), blocked on part sourcing, not file-creation work
+### `FORCEBAL` / `SIPMFE` / `LASERDRV` — new tier5/7 nodes (2026-09-18); `SIPMFE`/`LASERDRV` blocked on part sourcing, `FORCEBAL`'s optical readout startable (see the 2026-10-01 correction below)
 
 Added to `spacetime_circuits_dependency.md` 2026-09-18 (see that file's
 "Why these new tiers" section) at the user's explicit direction, alongside
@@ -101,15 +101,30 @@ the three have a specific part sourced yet**, and this file's own workflow
 (design/simulate against a real component's real values, the same way
 every completed entry below was built) needs one to mean anything —
 `FORCEBAL`'s design depends on which displacement-sensing approach gets
-picked (an ordered LVDT, or a capacitive plate read by `CAPBRIDGE` —
-designed/simulated, not yet physically assembled — see
-`TODO-arcticoder.md`'s "Next order" section),
-and `SIPMFE`/`LASERDRV` both need an actual SiPM/laser-diode part number
-before bias/drive values can be simulated. **Don't start a netlist for any
-of the three from the tier-graph label alone** — check
+picked, and `SIPMFE`/`LASERDRV` both need an actual SiPM/laser-diode part
+number before bias/drive values can be simulated. **Don't start a netlist
+for any of the three from the tier-graph label alone** — check
 `TODO-arcticoder.md`'s "Next order" and "Blocked" sections
 first; move this entry to a real open item once a part from any of them
 is confirmed received.
+
+**Corrected 2026-10-01: `CAPBRIDGE` is not a displacement readout route.**
+An earlier pass listed "a capacitive plate read by `CAPBRIDGE`" as the
+no-purchase way to instrument `FORCEBAL`. `CAPBRIDGE` times an RC charge
+through 100kΩ with ~1ms ADC polling and its README rates anything near
+10pF "No"; a foil plate pair is 3–90pF (see `spacetime_circuits_dependency.md`'s
+"Bench-scale resolution budget", reproduced by `tools/resolution_budget.py`),
+a charge time of microseconds. So the no-purchase capacitive route needs a
+different transduction (a 555 astable with the plate as timing capacitance,
+frequency read in hardware), which is a new circuit, not a reuse. The
+purchase-free route that *does* reuse built circuits is an optical
+readout: on-hand LED + a flag/shadow on the balance beam + on-hand PT334-6C
+photodiode into the bench-tested `TIA`. That is a startable design item
+(netlist, `breadboard.md`, `smoke_test.py`) independent of the mechanical
+balance, and its output range maps directly onto the budget's `R` and `k`
+table. Recommendation when it's picked up: the optical shadow readout
+first, since every part is on hand and `TIA` is already validated; the 555
+C-to-f route second, and only if the optical one proves insufficient.
 
 ### `HVPULSE` — tier7/8 high-voltage pulse generator
 

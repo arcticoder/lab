@@ -152,10 +152,11 @@ list is Blocked, Deferred or undesigned.
 - LVDT transducer — the only tier5 node with zero hardware, instruments
   `FORCEBAL`'s displacement readout (see
   `spacetime_circuits_dependency.md`). Lowest-priority sensor on this
-  bench: unlike the Hall sensor above, `CAPBRIDGE` (already built &
-  bench-tested) is a no-purchase alternative way to instrument
+  bench: an optical shadow readout (on-hand LED + PT334-6C photodiode into
+  the bench-tested `TIA`) is a no-purchase alternative way to instrument
   `FORCEBAL`, so this only becomes relevant if that route proves
-  insufficient.
+  insufficient. (`CAPBRIDGE` can't do it: a plate pair is pF-range, far
+  below its µF-range design.)
 - GΩ-range resistor — only becomes relevant if `CHGAMP` (once built)
   and a direct-touch retest of `EPFIELD` both come up empty; not on hand
   or on order.
@@ -167,8 +168,9 @@ list is Blocked, Deferred or undesigned.
   a free first test. The laser-diode option is off the table over a real
   eye-safety gap (no enclosure/beam-dump/goggles on this bench) — see
   [kb/todo_list_conventions.md](kb/todo_list_conventions.md).
-- Torsion fiber + mirror (`FORCEBAL`) — not needed. A beam-balance +
-  `CAPBRIDGE` route (see "Blocked" above) needs no purchase.
+- Torsion fiber + mirror (`FORCEBAL`) — not needed. A beam balance with an
+  optical shadow readout (LED + photodiode + `TIA`, all on hand) needs no
+  purchase; its design is an open item in `TODO-agent.md`.
 
 ## Backlog — undesigned, long-tail
 

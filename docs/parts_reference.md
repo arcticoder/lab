@@ -26,10 +26,12 @@ manual; wire gauge 21–26 AWG recommended for the spring clips.
 
 ## CD4066B (quad bilateral switch)
 
-10 received 2026-08-24, DIP-14 package. Not yet validated per-unit — see
+10 received 2026-08-24, DIP-14 package. Switch 1 of all 10 chips PASS
+2026-08-28; switches 2–4 per chip are untested (deliberately — validate
+whichever one a build pulls). See
 [measurement_tools/cd4066_switch_tester/](../measurement_tools/cd4066_switch_tester/)
-for the bring-up jig that checks each of the 4 switches per chip before
-trusting one downstream. Four independent analog switches, each gated by
+for the bring-up jig that checks a switch before trusting it
+downstream. Four independent analog switches, each gated by
 its own digital control pin (logic high = closed/conducting). Useful for:
 analog multiplexer (tier9 `MUX`), sample-and-hold gating (tier9 `SAMHOLD`),
 synchronous demodulator switching (tier4 `DEMOD`).
@@ -138,9 +140,11 @@ Both values received 2026-08-21 (20 each):
 - RXEF005 (0.05A / 50mA) — `psu_ultralow` tier
 - RXEF050 (0.5A / 500mA) — `psu_low` tier
 
-Not yet validated per-unit — see [orders.md](orders.md#polyfuses-rxef005-and-rxef050)
-and [fuse_test_voltmeter](../measurement_tools/fuse_test_voltmeter/) for the per-fuse
-trip/reset check before trusting one near an LED.
+Validated per-unit 2026-08-30: all 20 RXEF005 PASS via
+[ammeter_10ohm](../measurement_tools/ammeter_10ohm/) and all 20 RXEF050
+PASS via [ammeter_1ohm](../measurement_tools/ammeter_1ohm/) (trip and
+reset confirmed per unit) — see
+[orders.md](orders.md#polyfuses-rxef005-and-rxef050).
 
 ---
 
@@ -212,8 +216,8 @@ sized for 6×30mm). Pairs with the 2A glass tube fuse below for the
 
 ## NE555 timer
 
-10 received 2026-09-01, DIP-8 package; untested/not yet validated per-unit
-(bulk IC batch, no per-unit test jig built yet). See
+10 received 2026-09-01, DIP-8 package; all 10 bench-tested PASS
+2026-09-13 in `oscillators/ne555_astable/`. See
 [orders.md](orders.md#ne555-timer-ic-dip-8). Standard NE555 pinout:
 
 | Pin | Function | Pin | Function |
@@ -226,7 +230,7 @@ sized for 6×30mm). Pairs with the 2A glass tube fuse below for the
 Supply 4.5–16V typical. Astable configuration designed & simulated
 2026-09-01 in `oscillators/ne555_astable/` (tier1 `OSC`, 5V rail, 1kΩ Ra +
 3296 10kΩ trimpot as Rb + 100nF timing cap — ~686Hz–2.9kHz recommended
-trim range), not yet bench-built/validated on real hardware. Also a
+trim range); bench-tested 2026-09-13 (~1.5kHz, inside that range). Also a
 candidate for tier2 `FREQC` (as a gate-time generator for a frequency
 counter).
 
@@ -287,11 +291,13 @@ resistor for a tier3 `OHMMETER` (4-wire Kelvin) build.
 
 ## PT334-6C photodiode
 
-10 received 2026-09-03 (ordered 2026-08-30), 5mm package, untested. See
+10 received 2026-09-03 (ordered 2026-08-30), 5mm package; 1 of 10
+exercised (light-dependent output confirmed 2026-09-17), the other 9
+untested. See
 [orders.md](orders.md#pt334-6c-photodiode-5mm). Silicon PIN photodiode,
 used in zero-bias (photovoltaic) mode in
 [signal_conditioning/transimpedance_amplifier/](../signal_conditioning/transimpedance_amplifier/)
-(tier2 `TIA`, designed/simulated 2026-09-13): anode to GND, cathode
+(tier2 `TIA`, bench-tested 2026-09-17): anode to GND, cathode
 through a feedback resistor to the LM358's virtual-ground inverting
 input. Pin identification: the longer lead is the anode, matching standard
 photodiode/LED lead convention — confirm against the physical part
@@ -424,7 +430,8 @@ mount vertically with pin spacing matched to the pad spacing. Used
 
 ## TL082 JFET-input dual op-amp
 
-10 received 2026-09-12 (ordered 2026-09-03), DIP-8; untested. See
+10 received 2026-09-12 (ordered 2026-09-03), DIP-8; 1 of 10 exercised
+(`EPFIELD`, 2026-09-15), the other 9 untested. See
 [orders.md](orders.md#tl082-jfet-input-dual-op-amp-dip-8). Same physical
 pinout convention as the on-hand LM358:
 
@@ -451,18 +458,22 @@ wiring a single-supply front end. Used (1 of 10 each) in
 [signal_conditioning/electric_field_probe](../signal_conditioning/electric_field_probe/)
 and
 [signal_conditioning/charge_amplifier](../signal_conditioning/charge_amplifier/)
-(designed/simulated 2026-09-13, not yet physically assembled) — both use
+(`EPFIELD` bench-tested 2026-09-15 and confirmed working on 3.3V; `CHGAMP`
+designed/simulated 2026-09-13, build paused 2026-09-16, waiting on the
+leaded piezo) — both use
 the 1MΩ/1MΩ VCC/2 bias-divider pattern and run off `psu_pico_rail` rather
 than a battery PSU tier specifically so their output can't exceed the
 Pico ADC's 0-3.3V range; see either circuit's own README for the
-real-hardware caveat that 3.3V single-supply is below TL082's typical
-recommended minimum, not yet confirmed against the physical parts.
+caveat that 3.3V single-supply is below TL082's typical recommended
+minimum (it worked in the `EPFIELD` build, so that figure isn't a hard
+floor for that unit).
 
 ---
 
 ## MF52AT NTC thermistor (10kΩ)
 
-10 received 2026-09-12 (ordered 2026-09-03); untested. See
+10 received 2026-09-12 (ordered 2026-09-03); 1 of 10 exercised
+(`THERM`, 2026-09-21), the other 9 untested. See
 [orders.md](orders.md#mf52at-ntc-thermistor-10k). 2-lead bead
 thermistor, no polarity. R25 = 10kΩ ±1%, B(25/50) = 3950K ±1%, operating
 range −55–125°C, black modified-phenolic body, nickel-tin-plated leads.
@@ -471,8 +482,9 @@ different part (`104` EIA code = 100kΩ) than the 10kΩ (`103` code)
 variant actually ordered — treat only the tolerance/B-value/temperature-
 range figures as trustworthy for this specific part, not the R25 value
 in the sheet's example. Used (1 of 10) in
-[safety/thermal_monitor](../safety/thermal_monitor/) (designed/simulated
-2026-09-13, not yet physically assembled) — fills the safety `THERM`
+[safety/thermal_monitor](../safety/thermal_monitor/) (bench-tested
+2026-09-21: 23.3–23.5°C ambient baseline, finger-pinch rise; the alarm
+trip itself not yet exercised) — fills the safety `THERM`
 gap; the existing thermistor in `inventory.md` is flagged "suspect
 faulty."
 
@@ -570,7 +582,8 @@ leads).
 
 ## SN74HC86N quad 2-input XOR gate
 
-1 received 2026-09-12 (ordered 2026-09-03), DIP-14; untested. See
+1 received 2026-09-12 (ordered 2026-09-03), DIP-14; gate 1 of 4
+bench-tested PASS 2026-09-19, gates 2–4 untested. See
 [orders.md](orders.md#sn74hc86n-quad-2-input-xor-gate). Standard 74HC86
 pinout (verify against the specific manufacturer's datasheet before
 building, same caveat as the CD4066B entry above):
@@ -588,8 +601,7 @@ building, same caveat as the CD4066B entry above):
 Four independent 2-input XOR gates. The only unit on hand is used
 (gate 1 only) in
 [signal_conditioning/phase_detector](../signal_conditioning/phase_detector/)
-(tier4 `PHASED`, designed/simulated 2026-09-13, not yet physically
-assembled): XOR is the standard phase-detector primitive (output duty
+(tier4 `PHASED`, bench-tested 2026-09-19): XOR is the standard phase-detector primitive (output duty
 cycle proportional to phase difference between two square waves), which
 feeds tier6 `LOCKIN`. That circuit compares `ne555_astable`'s output tap
 against an independently-generated Pico PWM reference — the two aren't
