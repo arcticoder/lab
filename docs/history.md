@@ -4496,3 +4496,46 @@ I checked each of Grok's claims against the files. Part of it was accurate, part
 Your AliExpress checkout is still first in `TODO-arcticoder.md`, and nothing in this review changes the cart. The MPU-6050 noise figure (about 400 µg/√Hz) in the new budget is from memory, since there's no datasheet in the repo.
 <!-- ------ -->
 ---
+I diagnosed the logic-analyzer failure, designed two circuits, and reworked the carts. Nothing is committed. All 22 smoke tests pass; the live capture still hasn't run because the board isn't attached to WSL.
+
+## Logic analyzer
+
+- The first capture failed before it reached the signal. `sigrok-cli` uploads its firmware, the board re-enumerates, and `usbipd` drops the reconnected device (`Device failed to renumerate`). The scan "finds" the board either way, which is why it looked fine. `check_capture.py` was hiding sigrok's error behind a traceback; it now prints it with the likely cause.
+- The fix is on the Windows side: `usbipd bind --busid 3-3`, then `usbipd attach --wsl --busid 3-3 --auto-attach`, in an administrator shell. I can't run `bind`.
+- The board's silkscreen has no `D0`. The pads are `PB0`–`PB7` and `PD0`–`PD7`, so the guide now says `PB0`, and `check_capture.py --find-channel` confirms which channel it lands on.
+
+## Orders and power
+
+- **AliExpress:** the cart is held until it clears the free-shipping line. The two new circuits add an ADS1115 module (2) and coin vibration motors to it. Prices weren't verifiable from here.
+- **RobotShop:** no order. The SparkFun kit is shelved: no designed circuit needs a regulated rail above what the AA stack or the Pico's 3V3 pin gives. The tally is in `kb/power_rail_budget_notes.md`, and the earlier "can't run on AA cells" claim was true only of `ACTIVELIM`'s 2A check.
+
+## New designs (simulated, smoke-tested, not built)
+
+- `oscillators/vibration_driver`: S8050 switch and 1N5817 flyback for a 3V motor, 96mA worst case. It is the dipper driver `RIPPLETANK` was missing.
+- `signal_conditioning/adc_ads1115`: 16-bit ADC with a clamped input, 125µV per step against the Pico ADC's 0.8mV.
+
+The first logic-analyzer capture still hasn't run, because the board isn't attached to WSL. Everything else is done and nothing is committed; all 22 smoke tests pass.
+
+## Logic analyzer
+
+I got a real error out of `sigrok-cli`, and it was never the cable. sigrok uploads its firmware, the board disconnects and reconnects to run it, and usbipd doesn't re-attach it, so the log ends with `Device failed to renumerate`. The scan lists the board either way, which is why it looked fine, and the script's traceback hid the real error.
+
+- **You need to run (administrator PowerShell):** `usbipd bind --busid 3-3`, then `usbipd attach --wsl --busid 3-3 --auto-attach`, and leave the second window open. I can't run `bind` from my side. Windows currently shows the board as `fx2lafw … Not shared`. The firmware is already loaded, so it should work without another reconnect.
+- **Wiring correction:** the board has no `D0` pad; its pads are labeled `PB0`–`PB7` and `PD0`–`PD7`. Wire Pico `GP15` to `PB0` and Pico GND to the `GND` pad in J2's bottom row. The `PBn` to `Dn` mapping is the expected one from sigrok's docs and isn't confirmed on your board. `python3 check_capture.py --find-channel` confirms it, and I recorded the full header map from your photo in [parts_reference.md](docs/parts_reference.md).
+- **Script changes:** [check_capture.py](measurement_tools/logic_analyzer_check/check_capture.py) now prints sigrok's own error and the likely cause, and has the new `--find-channel` option. I couldn't identify the pads from `breadboard.jpg`; it was too blurry.
+
+## Orders
+
+- **AliExpress:** the cart is held, not checked out. The two new designs add two parts to it: 2× ADS1115 module and a lot of 3V coin vibration motors. Check the total before paying. If a shipping fee still shows, the next design pass adds a top-up. I couldn't verify prices; they were about $1.65 per ADS1115 and under $1 per motor when listed.
+- **RobotShop:** I'm not ordering from it. I shelved the SparkFun kit; you can veto that. A tally of every circuit designed so far (in [kb/power_rail_budget_notes.md](docs/kb/power_rail_budget_notes.md)) shows none needs it. My earlier "AA cells can't do it" claim was true only for `ACTIVELIM`'s 2A check. I recorded a trigger for reviving the kit.
+
+## New designs
+
+Both are simulated and smoke-tested but not built, since the parts aren't on hand. `main.py` for each was only run against host mocks.
+
+- [vibration_driver](oscillators/vibration_driver/): an S8050 switch with a 1N5817 flyback diode driving the coin motor from `GP16`. It draws 96 mA worst case, which is at the Pico rail's conservative 100 mA budget. This is the dipper driver `RIPPLETANK` was missing.
+- [adc_ads1115](signal_conditioning/adc_ads1115/): a 16-bit ADC with a clamped input, stepping 125 µV against the Pico ADC's 0.8 mV. The ADS1115's register map and input limits are recalled from memory, not rechecked against the datasheet.
+
+[TODO-arcticoder.md](docs/TODO-arcticoder.md) now has the cart additions, the capture steps, and both new circuits under "Blocked". The kb notes and `history.md` are updated too.
+<!-- ------ -->
+---

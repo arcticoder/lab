@@ -15,45 +15,48 @@ the converted `.md` files are tracked).
 
 ---
 
-## Decided, not yet ordered
+## Candidates found, not yet in any cart
 
-### SparkFun (SFE) Breadboard Power Supply Kit — RobotShop, not AliExpress
+### ADS1115 16-bit ADC module (2 pcs) — for `signal_conditioning/adc_ads1115`
 
-- [ca.robotshop.com/products/sfe-breadboard-power-supply-kit](https://ca.robotshop.com/products/sfe-breadboard-power-supply-kit)
-  — LM317, 3.3V/5V switch-selectable, through-hole kit (soldering
-  required). Backs `power_supplies/psu_medlow_lm317`.
-- Decided 2026-09-23: it is the adjustable-rail PSU that follows
-  `psu_4xaa` and the only `psu_medlow` implementation being built —
-  `psu_medlow_usbc` was shelved the same day. Separate order channel from
-  the AliExpress cart, so the AliExpress $10 free-shipping threshold
-  doesn't apply to it.
-- Input is an unregulated 9–12V DC barrel jack (2.1mm, center-positive).
-  Source: one of the two 12V drive-enclosure wall adapters on the bench
-  (labels read 2026-09-25, see `inventory.md`): a 12V/1A unit and a
-  12V/1.2A unit, both DC, both centre-positive, both universal-input
-  100–240V. Both meet the checklist on voltage, polarity and current, so
-  **no adapter purchase is needed** — and none goes on the AliExpress
-  cart in any case: mains-connected supplies are not bought from
-  AliExpress. The checklist, for reference: (1) DC output (`⎓` or "DC",
-  not "AC"), (2) 9–12V, (3) a single round barrel plug (not a
-  4-pin/Molex-style connector), 5.5mm outer (the standard size for a 2.1mm
-  jack) × 2.1mm inner (a 2.5mm inner-diameter plug is loose in a 2.1mm
-  jack; a 2.1mm plug won't seat on a 2.5mm one), (4) centre-positive
-  (`⊖–●–⊕` symbol, plug centre = +) and (5) at least ~0.5A. The one
-  criterion neither label settles is the plug size (labels give voltage,
-  current and polarity only); it is confirmed by a fit test at the kit's
-  jack once the kit arrives — a snug seat passes. A 12V adapter works; 9V
-  runs the LM317 cooler (it dissipates (Vin − Vout) × I). The kit's input
-  diode blocks reverse polarity, so a centre-negative adapter fails safe
-  (no power) rather than damaging anything. The PD trigger board below is
-  no longer part of this path. The barrel-jack size is the kit listing's
-  spec as recorded here, not measured.
+- Listing: "I2C ADS1115 16 Bit ADC 4 channel Module with Programmable Gain
+  Amplifier" — [item 32648046830](https://www.aliexpress.com/item/1pcs-16-Bit-I2C-ADS1115-Module-ADC-4-channel-with-Pro-Gain-Amplifier-for-Arduino-RPi/32648046830.html)
+  (US $1.65 each when found by search 2026-10-01; price, stock and seller
+  not checked beyond the listing).
+- 2 wanted: one for the build, one spare against a dead-on-arrival or
+  mislabeled unit (cheap ADC modules are a known clone risk, so the first
+  bench run is also the genuineness check).
+- Why: the Pico's ADC steps 0.8mV; this one steps 125µV at ±4.096V. Design
+  and numbers in `signal_conditioning/adc_ads1115/README.md`. Tier9
+  `ADCDRV` in `general_purpose_circuit_dependency.md`.
+- Pick a variant whose photos show the pin headers already soldered, so no
+  soldering is needed before the first run.
+- Faster, pricier source if the weeks matter: RobotShop stocks a
+  [Whadda 4-channel ADS1115 module](https://jp.robotshop.com/en/products/whadda-4-channel-ads1115-16-bit-adc-i2c-module)
+  (price not checked: RobotShop pages blocked automated fetches 2026-10-01).
+
+### Coin vibration motor, 3V, 10mm (1027-type) — for `oscillators/vibration_driver`
+
+- Listing: "1/10PCS 10mmx3mm Mini Vibration Motor DC1.5-3.7V 10000rpm Flat Coin
+  Button-Type" — [item 1005007703166995](https://www.aliexpress.com/item/1005007703166995.html)
+  (found by search 2026-10-01, sub-dollar per motor; not vetted beyond the
+  listing text). Take the multi-piece variant: they are consumables, and a
+  few spares cost cents.
+- Why: nothing on hand is a motor or speaker, which is what kept
+  `RIPPLETANK`'s dipper driver undesigned (`TODO-agent.md`, resolved
+  2026-10-01). The driver is designed for up to 90mA at 3.3V; these coin
+  motors are usually rated well under that, which leaves margin. The
+  listing's rated current is not recorded here: read it from the listing and
+  stay at or under 90mA.
+- RobotShop alternatives if wanted sooner: the
+  [Seeed Mini Vibrating Motor](https://www.robotshop.com/ca/en/seeedstudio-mini-vibrating-motor.html)
+  (3V, 90mA max) and the
+  [Solarbotics VPM2](https://www.robotshop.com/products/solarbotics-vpm2-vibrating-motor)
+  (3V, under 80mA).
 
 ---
 
-## Candidates found, not yet in any cart
-
-**Both entries below are parked as of 2026-09-24** — they support
+**Both entries below ("USB-C PD trigger board" and "Power resistor assortment") are parked as of 2026-09-24** — they support
 `ACTIVELIM`'s bench check, which moved to `TODO-arcticoder.md`'s
 "Deferred" section that day: nothing on this bench needs that circuit's
 protection yet (it guards `psu_medhigh`/`psu_high`, still Backlog with no
@@ -99,15 +102,65 @@ themselves are still fine candidates then.
 
 ---
 
+## Shelved
+
+### SparkFun (SFE) Breadboard Power Supply Kit — RobotShop, not AliExpress
+
+**Shelved 2026-10-01; not being ordered.** A tally of every circuit designed
+so far shows none needs it: the highest-demand circuit that runs from a
+battery rail fits `psu_4xaa` (6.0V, under 300mA), and the newest designs
+(`oscillators/vibration_driver` at 96mA worst case, `signal_conditioning/adc_ads1115`
+at about 1mA) run from the Pico's own 3V3 pin. The one load beyond AA cells is
+`ACTIVELIM`'s 2A bench check, which is itself Deferred. A single-item
+RobotShop order would also pay shipping for it alone. Revive it when a
+design needs a regulated 3.3V/5V rail above roughly 300mA from wall power; the
+notes below stay for that day.
+
+- [ca.robotshop.com/products/sfe-breadboard-power-supply-kit](https://ca.robotshop.com/products/sfe-breadboard-power-supply-kit)
+  — LM317, 3.3V/5V switch-selectable, through-hole kit (soldering
+  required). Backs `power_supplies/psu_medlow_lm317`.
+- Decided 2026-09-23 (since shelved, see above): it was the adjustable-rail PSU that follows
+  `psu_4xaa` and the only `psu_medlow` implementation being built —
+  `psu_medlow_usbc` was shelved the same day. Separate order channel from
+  the AliExpress cart, so the AliExpress $10 free-shipping threshold
+  doesn't apply to it.
+- Input is an unregulated 9–12V DC barrel jack (2.1mm, center-positive).
+  Source: one of the two 12V drive-enclosure wall adapters on the bench
+  (labels read 2026-09-25, see `inventory.md`): a 12V/1A unit and a
+  12V/1.2A unit, both DC, both centre-positive, both universal-input
+  100–240V. Both meet the checklist on voltage, polarity and current, so
+  **no adapter purchase is needed** — and none goes on the AliExpress
+  cart in any case: mains-connected supplies are not bought from
+  AliExpress. The checklist, for reference: (1) DC output (`⎓` or "DC",
+  not "AC"), (2) 9–12V, (3) a single round barrel plug (not a
+  4-pin/Molex-style connector), 5.5mm outer (the standard size for a 2.1mm
+  jack) × 2.1mm inner (a 2.5mm inner-diameter plug is loose in a 2.1mm
+  jack; a 2.1mm plug won't seat on a 2.5mm one), (4) centre-positive
+  (`⊖–●–⊕` symbol, plug centre = +) and (5) at least ~0.5A. The one
+  criterion neither label settles is the plug size (labels give voltage,
+  current and polarity only); it is confirmed by a fit test at the kit's
+  jack once the kit arrives — a snug seat passes. A 12V adapter works; 9V
+  runs the LM317 cooler (it dissipates (Vin − Vout) × I). The kit's input
+  diode blocks reverse polarity, so a centre-negative adapter fails safe
+  (no power) rather than damaging anything. The PD trigger board below is
+  no longer part of this path. The barrel-jack size is the kit listing's
+  spec as recorded here, not measured.
+
+---
+
+---
+
 ## In cart (not yet checked out)
 
-As of 2026-10-01 nothing is in transit, and the solder wick below now
-blocks `ACCELIF`'s first power-up, so the cart no longer waits on the
-$10 free-shipping threshold: it checks out as one batch. The PD trigger
-board and power-resistor assortment above are still not part of it — both
-supported `ACTIVELIM`'s bench check, which moved to `TODO-arcticoder.md`'s
-"Deferred" section 2026-09-24 (see
-[kb/todo_list_conventions.md](kb/todo_list_conventions.md)).
+As of 2026-10-01 nothing is in transit. The solder wick below blocks
+`ACCELIF`'s first power-up, but the cart is **held, not checked out**,
+until it clears the $10 free-shipping line: a shipping fee on a cart this
+small isn't worth paying, and the two new parts under "Candidates" above
+(ADS1115 modules, vibration motors) come from this pass's circuit designs
+and go on the same cart. The PD trigger board and power-resistor
+assortment above are still not part of it — both supported `ACTIVELIM`'s
+bench check, which moved to `TODO-arcticoder.md`'s "Deferred" section
+2026-09-24 (see [kb/todo_list_conventions.md](kb/todo_list_conventions.md)).
 
 The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
 — acquired directly (non-AliExpress), so it's tracked in

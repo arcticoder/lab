@@ -100,7 +100,7 @@ graph TD
         %% status: built & bench-tested 2026-08-27
         REF["Precision Reference Voltage Generator (3.3V or 5V input) — see signal_conditioning/voltage_reference_lm358/"]
         OSC["Precision Timing Oscillator (1.5–5V) — see oscillators/ne555_astable/"]
-        SIMPGEN["Simple Function Generator (5–12V input)"]
+        SIMPGEN["Simple Function Generator (5–12V input) — actuator stage designed 2026-10-01: see oscillators/vibration_driver/"]
     end
 
     subgraph tier2 ["Tier 2: Essential Validation & Measurement"]
@@ -135,7 +135,7 @@ graph TD
     subgraph tier9 ["Tier 9: Data Acquisition & Integration"]
         SAMHOLD["Sample-and-Hold Circuit"]
         MUX["Analog Multiplexer with Buffer — see measurement_tools/cd4066_switch_tester/ for CD4066B bring-up"]
-        ADCDRV["ADC Driver Circuit"]
+        ADCDRV["ADC Driver Circuit — see signal_conditioning/adc_ads1115/ (designed 2026-10-01, ADS1115 module not on hand)"]
         REFGEN2["Reference Distribution Circuit"]
     end
 

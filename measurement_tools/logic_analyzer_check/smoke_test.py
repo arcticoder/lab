@@ -118,6 +118,37 @@ if shutil.which("sigrok-cli"):
 else:
     print("[SKIP] csv parser against real sigrok-cli output: sigrok-cli not installed")
 
+# Failure classification: the usbipd renumeration failure seen 2026-10-01.
+check(
+    "functional — renumeration failure is explained as a usbipd problem",
+    "usbipd" in cc.explain_failure("fx2lafw: Device failed to renumerate.\nFailed to open device."),
+    "mentions usbipd",
+)
+check(
+    "functional — unknown failure still gets a message",
+    "unrecognised" in cc.explain_failure("something else"),
+    "fallback text",
+)
+
+# Multi-channel csv (--find-channel) against real sigrok-cli output.
+if shutil.which("sigrok-cli"):
+    out = subprocess.run(
+        ["sigrok-cli", "--driver", "demo", "--config", "samplerate=1m", "--channels", "D0,D1,D2",
+         "--samples", "200", "-O", "csv"],
+        capture_output=True, text=True,
+    ).stdout
+    cols = cc.parse_csv_columns(out)
+    check(
+        "functional — multi-channel csv parser reads real sigrok-cli output",
+        list(cols) == ["D0", "D1", "D2"] and len({len(v) for v in cols.values()}) == 1 and len(cols["D0"]) > 0,
+        f"{list(cols)}, {len(cols['D0'])} samples each",
+    )
+check(
+    "functional — toggling_channels picks only the channel with edges",
+    cc.toggling_channels({"D0": [0] * 40, "D1": square(1000, 0.25, RATE, 5000), "D2": [1] * 40}) == ["D1"],
+    "D1 only",
+)
+
 # Live capture, only if the board is plugged in.
 if shutil.which("sigrok-cli") and cc.board_present():
     print("[INFO] fx2lafw board found; live capture needs the Pico running main.py wired to D0")

@@ -6,7 +6,13 @@ it against the square wave main.py drives on the Pico (1kHz, 25% duty).
 
     python3 check_capture.py [--channel D0] [--samplerate 1000000]
 
-Exit code 0 on PASS, 1 on FAIL, 2 if the board isn't found.
+Exit code 0 on PASS, 1 on FAIL, 2 if the board isn't found or sigrok-cli
+can't open/capture from it (the reason is printed).
+
+    python3 check_capture.py --find-channel
+
+captures all 16 channels and reports which ones toggle: run it with the
+signal wire on a header pad to learn which `Dn` that pad is.
 """
 
 import argparse
@@ -74,28 +80,99 @@ def board_present():
     return "fx2lafw" in out
 
 
+class CaptureError(Exception):
+    pass
+
+
+def explain_failure(stderr):
+    """Plain-language cause for a failed sigrok-cli run, from its stderr."""
+    err = stderr.lower()
+    if "failed to renumerate" in err or "failed to open device" in err or "no devices found" in err:
+        return (
+            "the board didn't come back after sigrok loaded its firmware. Under WSL this is "
+            "usbipd: the reconnected board is a new, unshared device. In an administrator "
+            "PowerShell: `usbipd bind --busid <id>` (id from `usbipd list`; the board shows as "
+            "'fx2lafw' once the firmware is loaded), then "
+            "`usbipd attach --wsl --busid <id> --auto-attach`. See breadboard.md."
+        )
+    if "access" in err or "permission" in err:
+        return "USB permission denied: check the sigrok udev rules and that your user is in plugdev"
+    return "unrecognised sigrok-cli failure; its stderr is above"
+
+
+def run_sigrok(args):
+    r = subprocess.run(["sigrok-cli", "--driver", "fx2lafw", *args], capture_output=True, text=True)
+    if r.returncode != 0:
+        msg = r.stderr.strip() or "(no stderr)"
+        raise CaptureError(f"sigrok-cli exit {r.returncode}: {msg}\n  -> {explain_failure(r.stderr)}")
+    return r.stdout
+
+
 def capture(channel, samplerate):
     n = int(samplerate / EXPECTED_FREQ_HZ * CAPTURE_PERIODS)
-    cmd = [
-        "sigrok-cli", "--driver", "fx2lafw",
+    out = run_sigrok([
         "--config", f"samplerate={samplerate}",
         "--channels", channel,
         "--samples", str(n),
         "-O", "csv",
-    ]
-    return parse_csv(subprocess.run(cmd, capture_output=True, text=True, check=True).stdout)
+    ])
+    return parse_csv(out)
+
+
+def parse_csv_columns(text):
+    """Multi-channel sigrok csv -> {channel_name: [0/1, ...]}. sigrok writes
+    'logic' for every header cell; the real names are in the
+    '; Channels (n/m): D0, D1, ...' comment line, in column order."""
+    names = None
+    rows = []
+    for ln in text.splitlines():
+        ln = ln.strip()
+        if ln.startswith("; Channels"):
+            names = [n.strip() for n in ln.split(":", 1)[1].split(",")]
+        elif ln and not ln.startswith(";"):
+            rows.append(ln)
+    rows = rows[1:]  # the 'logic,logic,...' header
+    names = names or [f"D{i}" for i in range(len(rows[0].split(",")))]
+    cols = {n: [] for n in names}
+    for row in rows:
+        for n, v in zip(names, row.split(",")):
+            cols[n].append(int(v))
+    return cols
+
+
+def toggling_channels(cols):
+    """Channels with at least two rising edges."""
+    return [n for n, s in cols.items() if sum(1 for i in range(1, len(s)) if s[i - 1] == 0 and s[i] == 1) >= 2]
+
+
+def find_channel(samplerate):
+    n = int(samplerate / EXPECTED_FREQ_HZ * CAPTURE_PERIODS)
+    out = run_sigrok(["--config", f"samplerate={samplerate}", "--samples", str(n), "-O", "csv"])
+    hits = toggling_channels(parse_csv_columns(out))
+    if hits:
+        print(f"toggling: {', '.join(hits)}")
+        return 0
+    print("[FAIL] no channel toggled: signal wire not on a data pad, or GND not shared")
+    return 1
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--channel", default="D0")
     ap.add_argument("--samplerate", type=int, default=1_000_000)
+    ap.add_argument("--find-channel", action="store_true", help="report which of the 16 channels toggles")
     args = ap.parse_args()
 
     if not board_present():
-        print("[FAIL] no fx2lafw device found (board plugged in? J4 removed?)")
+        print("[FAIL] no fx2lafw device found (board plugged in? J4 removed? attached to WSL via usbipd?)")
         return 2
-    samples = capture(args.channel, args.samplerate)
+    try:
+        if args.find_channel:
+            return find_channel(args.samplerate)
+        samples = capture(args.channel, args.samplerate)
+    except CaptureError as e:
+        print(f"[FAIL] {e}")
+        return 2
     print(f"captured {len(samples)} samples of {args.channel} at {args.samplerate}Hz")
     ok = True
     for label, passed, detail in verdict(analyze(samples, args.samplerate)):
