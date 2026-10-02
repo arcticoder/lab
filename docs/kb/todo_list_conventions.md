@@ -929,3 +929,25 @@ and the user's statement was about a build's contents ("there's one left
 over"), record the arithmetic (total = in-use + spare) instead of adding a
 line to the received total.** Ask or state the reconciliation rather than
 inventing an unrecorded second source.
+
+## A user-chosen fallback removes the alternative and can empty "Ready to build now" (2026-10-01)
+
+`ACCELIF`'s bullet offered drag-soldering with the iron on hand, with wick
+in the cart as the fallback. The user chose wick. Consequences applied
+(same rule as the shelved `psu_medlow_usbc`): the drag-soldering procedure
+was deleted from `breadboard.md` rather than kept as an option; `ACCELIF`
+moved to "Blocked" on the wick shipment; and the AliExpress checkout
+bullet lost its "wait for a genuine need rather than padding" wording,
+because a build now depends on the cart. The $10 free-shipping line is a
+cost-saving target, not a reason to hold an order that blocks a build or
+leaves nothing in transit; the bullet says a shipping fee is the price of
+the unblock. This sits with the earlier rule that a cart is only padded
+for real needs: a real need exists now, so the cart ships as is.
+
+Doing that left "Ready to build now" empty, since the other ready item
+(`SCOPELA` detection) had just passed. Before leaving a section empty,
+look for zero-cost instrument checks that the finished one doesn't cover.
+A detection scan proves the firmware loads, not that a capture is right,
+so `measurement_tools/logic_analyzer_check/` was written (agent work, no
+purchase) and made item 1. `INDBRIDGE`/`ACTIVELIM` stay in "Deferred":
+having parts on hand isn't what ranks them, a downstream consumer is.

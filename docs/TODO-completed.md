@@ -18,6 +18,21 @@ matching, so don't assume one file makes the other redundant.
 
 ---
 
+## 2026-10-01
+
+- **`SCOPELA` detection check passed.** `sigrok-cli --driver fx2lafw
+  --scan` finds the CY7C68013A board as a 16-channel device (D0–D15) with
+  J4 removed, so the firmware upload over USB works. Removed from "Ready
+  to build now"; a first-capture check against a known Pico signal
+  replaced it (`measurement_tools/logic_analyzer_check/`), since a scan
+  doesn't show that a signal reaches a capture correctly.
+- **`ACCELIF` moved from "Ready to build now" to "Blocked".** The
+  bridged GY-521 header pins get cleared with desoldering wick once the
+  AliExpress order arrives; the iron-only drag-soldering procedure was
+  dropped from `breadboard.md`. The AliExpress checkout moved to the top
+  of the list as a result — nothing was in transit and the wick is a
+  build dependency now, so the $10 free-shipping line no longer gates it.
+
 ## 2026-09-25
 
 - **Drive-enclosure adapter labels read; SparkFun kit input source

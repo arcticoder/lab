@@ -115,6 +115,7 @@ python signal_conditioning/phase_detector/smoke_test.py
 python protection/active_current_limiter/smoke_test.py
 python measurement_tools/inductance_bridge/smoke_test.py
 python signal_conditioning/accelerometer_interface/smoke_test.py
+python measurement_tools/logic_analyzer_check/smoke_test.py
 ```
 
 Or run all of them at once with `tools/run_all_smoke_tests.py`, which
@@ -183,13 +184,14 @@ sequence this drives.
 | `protection/active_current_limiter/` | IRLZ44N + 0.1Ω sense resistor + LM358 comparator, hard-trip at 2A | general-purpose `ACTIVELIM`, protects `psu_medhigh`/`psu_high` (both backlog) |
 | `signal_conditioning/accelerometer_interface/` | GY-521 (MPU-6050) on I2C0 — bus-timing/supply simulation plus a bring-up script (ID, gravity, noise, vibration RMS) | tier5 `ACCELIF` (designed 2026-09-23); the measurement side of `VIBISO` |
 | `measurement_tools/inductance_bridge/` | PWM-driven parallel LC resonance sweep: unknown inductor vs. a known 10nF, Schottky peak detector, Pico ADC | tier3 `INDBRIDGE` (designed 2026-09-23); targets the 1µH–1mH color-ring assortment |
+| `measurement_tools/logic_analyzer_check/` | Pico drives a 1kHz/25% square wave on GP15; `sigrok-cli` captures it on the CY7C68013A board and a host script checks frequency and duty | `SCOPELA` first-capture check (designed 2026-10-01); no analog circuit, so no netlist |
 Each of these (except `psu_medlow_lm317`, a kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
 schematic, a breadboard wiring guide, and a `smoke_test.py` (all but
 `active_current_limiter` also have a `main.py`, same reasoning as the
 PSU rows above having none). `inductance_bridge`'s and
 `accelerometer_interface`'s `main.py` files were exercised against
-host-side mocks only, not the Pico. None of these have been physically
+host-side mocks only, not the Pico; `logic_analyzer_check` has no netlist or schematic (nothing analog to simulate) and a `main.py` plus a host-side `check_capture.py`. None of these have been physically
 assembled with real components yet (`psu_low_v2`,
 `transimpedance_amplifier`, and `phase_detector` were exceptions as of
 2026-09-16/2026-09-19, and all three moved to the bench-tested table
@@ -289,6 +291,13 @@ measurement_tools/
         breadboard.md
         breadboard.jpg
         main.py
+        smoke_test.py
+        README.md
+
+    logic_analyzer_check/    Pico 1kHz/25% PWM on GP15 captured by the CY7C68013A board via sigrok-cli, host script checks frequency/duty (SCOPELA first capture, designed 2026-10-01, not yet run on the bench)
+        breadboard.md
+        main.py
+        check_capture.py
         smoke_test.py
         README.md
 

@@ -101,15 +101,13 @@ themselves are still fine candidates then.
 
 ## In cart (not yet checked out)
 
-Cart was under AliExpress's $10 free-shipping threshold as of 2026-09-23.
-The PD trigger board and power-resistor assortment above are **no longer
-planned to close that gap** — both supported `ACTIVELIM`'s bench check,
-which moved to `TODO-arcticoder.md`'s "Deferred" section 2026-09-24 (see
-[kb/todo_list_conventions.md](kb/todo_list_conventions.md)): nothing on
-this bench needs that circuit's protection yet, so buying parts to
-validate it isn't a real need right now. Solder wick was added instead,
-for an unrelated real need (see below). Everything in the cart plus
-whatever is added checks out as one batch.
+As of 2026-10-01 nothing is in transit, and the solder wick below now
+blocks `ACCELIF`'s first power-up, so the cart no longer waits on the
+$10 free-shipping threshold: it checks out as one batch. The PD trigger
+board and power-resistor assortment above are still not part of it — both
+supported `ACTIVELIM`'s bench check, which moved to `TODO-arcticoder.md`'s
+"Deferred" section 2026-09-24 (see
+[kb/todo_list_conventions.md](kb/todo_list_conventions.md)).
 
 The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
 — acquired directly (non-AliExpress), so it's tracked in
@@ -144,10 +142,9 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
 
 - No specific listing recorded — any basic roll.
 - A few header pins on the GY-521 module bridged while soldering it for
-  `signal_conditioning/accelerometer_interface` (2026-09-24); an
-  iron-only removal attempt just spread the solder rather than clearing
-  it. See that circuit's `breadboard.md` for the drag-soldering technique
-  to try first — this is the fallback if that doesn't fully clear it.
+  `signal_conditioning/accelerometer_interface` (2026-09-24). Wick is how
+  the bridge gets cleared (procedure in that circuit's `breadboard.md`),
+  so `ACCELIF`'s first power-up waits on this item arriving.
 - Added to cart: 2026-09-24.
 
 ---
@@ -538,8 +535,8 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
   it — see
   [kb/ordering_ingestion_notes.md](kb/ordering_ingestion_notes.md)'s
   "CY7C68013A board" entry. `sigrok`'s `fx2lafw` firmware supports it out
-  of the box — no circuit design needed, just a plug-in verification, now
-  in [TODO-arcticoder.md](TODO-arcticoder.md)'s "Ready to build now".
+  of the box — no circuit design needed. Detected by `sigrok-cli --driver
+  fx2lafw --scan` 2026-10-01 (16 channels, D0–D15).
   Jumper J4 (the onboard EEPROM) must be out; chip/board documentation
   is linked in [parts_reference.md](parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
 - Ordered: 2026-09-10. Logged received: 2026-09-20.
@@ -600,7 +597,7 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
 
 ## On order (placed, not yet received)
 
-Nothing currently in this stage as of 2026-09-21 — the 2026-09-10 batch
+Nothing currently in this stage as of 2026-10-01 — the 2026-09-10 batch
 (GY-521, CY7C68013A, inductor reorder) all arrived 2026-09-20; see
-"Received" above. The piezo disc, 49E Hall sensor and Mini-USB cable are
-one stage earlier, still "In cart" above pending checkout.
+"Received" above. The piezo disc, 49E Hall sensor and solder wick are one
+stage earlier, still "In cart" above pending checkout.

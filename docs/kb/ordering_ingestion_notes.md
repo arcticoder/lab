@@ -427,3 +427,14 @@ an item sitting in "In cart" turns out to have been acquired some other
 way, remove it from `orders.md` entirely (don't invent a "received"
 entry for a purchase that didn't happen through this channel) and log
 the acquisition in `inventory.md` instead.**
+
+## Solder wick became a build dependency, not padding (2026-10-01)
+
+Wick entered the cart 2026-09-24 as the answer to a bridged-header problem
+and as the free-shipping top-up. The user decided wick is how the bridge
+gets cleared, so `orders.md`'s wick entry now states that `ACCELIF`'s first
+power-up waits on it, the cart's "wait for $10" intro is gone, and
+`orders.md`'s "On order" section stays empty until checkout (it was
+already empty: nothing in transit as of this date, which is why the
+checkout leads `TODO-arcticoder.md`). Wick still has no recorded listing
+URL; the user picks any basic roll.

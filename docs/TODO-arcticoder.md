@@ -30,21 +30,18 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ## Next order — action needed
 
-- [ ] **AliExpress: check the cart subtotal and check out once it clears
-      $10.** Mini-USB cable acquired directly 2026-09-24 — no longer in
-      the cart. Currently in the cart:
+- [ ] **AliExpress: check out the cart now.** Nothing is in transit, and
+      the solder wick in it is what unblocks `ACCELIF` (see "Blocked"
+      below), so the $10 free-shipping line no longer decides when to
+      order; a small shipping fee, if one shows at checkout, is the cost
+      of the unblock. In the cart:
       [12× leaded 12mm piezo discs](https://www.aliexpress.com/item/1005003133740770.html)
       (`CHGAMP` retry),
       [10× 49E linear Hall sensors](https://www.aliexpress.com/item/32912682330.html)
-      (`HALLAMP`), and a roll of solder wick — added 2026-09-24 for the
-      bridged header pins on the GY-521 module (see item 1 below).
-      **Don't add the
-      USB-C PD trigger board or the 5W/10W power-resistor assortment to
-      close the gap** — those were for `ACTIVELIM`'s bench check, which
-      is now in "Deferred" below: nothing on this bench needs that
-      circuit's protection yet, so buying parts to validate it isn't a
-      real need right now. If the cart is still under $10 with just the
-      three items above, wait for a genuine need rather than padding it.
+      (`HALLAMP`), and a roll of solder wick (for the bridged GY-521
+      header pins). Don't add the USB-C PD trigger board or the 5W/10W
+      power-resistor assortment — those were for `ACTIVELIM`'s bench
+      check, which is in "Deferred".
 - [ ] **RobotShop: order the
       [SparkFun Breadboard Power Supply Kit](https://ca.robotshop.com/products/sfe-breadboard-power-supply-kit)
       (5V/3.3V, LM317).** Separate seller and cart from AliExpress, so
@@ -58,46 +55,37 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ## Ready to build now — parts on hand
 
-1. [ ] **`signal_conditioning/accelerometer_interface` (`ACCELIF`) —
-       finish soldering the header, then wire the GY-521 to the Pico and
-       run `main.py`.** It's the measurement side of `VIBISO` (see
-       "Blocked") and the first power-up of the untested GY-521. A few
-       header pins bridged during soldering (2026-09-24) — see
-       [breadboard.md](../signal_conditioning/accelerometer_interface/breadboard.md)'s
-       new "If pins bridge during header soldering" section for the
-       drag-soldering fix (works with the iron/rosin solder already on
-       hand; the solder wick in the AliExpress cart is the fallback if
-       that doesn't fully clear it). Once the header's clean: four
-       jumpers, `VCC`→3V3(OUT) (pin 36), `GND`→pin 38, `SDA`→GP4 (pin 6),
-       `SCL`→GP5 (pin 7); module lying still on the bench;
-       `mpremote run main.py`. All lines `[PASS]` is done; a `WHO_AM_I` of
-       `0x70`–`0x72` is a clone that still passes. Full wiring table and
-       failure meanings in `breadboard.md` above.
-2. [ ] **`SCOPELA` — confirm `sigrok`/PulseView detects the CY7C68013A
-       board via `fx2lafw`.** Mini-USB cable acquired 2026-09-24 (no
-       longer in the AliExpress cart). `lsusb` already shows the board
-       enumerating at Cypress's factory-default `04b4:8613` ID with
-       jumper J4 removed — with J4 in (as it shipped), the board didn't
-       enumerate at all. Best explanation (datasheet-backed, not
-       confirmed on this board): J4 connects the onboard 24LC128 EEPROM,
-       and with it in the chip boots whatever the EEPROM holds instead of
-       its default USB identity. Leave J4 out — that's the state `sigrok`
-       needs to load firmware over USB. The `lsusb` line above isn't
-       the actual pass condition yet: install `sigrok-cli`/`pulseview` +
-       `sigrok-firmware-fx2lafw` if not already present
-       (`sudo apt install sigrok-cli pulseview sigrok-firmware-fx2lafw`),
-       then run `sigrok-cli --driver fx2lafw --scan` (or open PulseView
-       and pick the `fx2lafw` driver) — a device detected there is the
-       real check. No circuit design needed either way; see
-       `parts_reference.md`'s entry for the board's specs.
+1. [ ] **`measurement_tools/logic_analyzer_check` (`SCOPELA`'s first
+       capture) — wire two jumpers and run one script.** `sigrok-cli`
+       already finds the board (2026-10-01); this confirms it captures a
+       real signal correctly. Pico `GP15` (pin 20) → analyzer `D0`, Pico
+       GND (pin 18) → the analyzer's GND pad; Pico plugged into USB with
+       the board's J4 still out. Terminal 1: `mpremote run main.py` in
+       [measurement_tools/logic_analyzer_check/](../measurement_tools/logic_analyzer_check/);
+       terminal 2: `python3 check_capture.py`. Three `[PASS]` lines
+       (periods, 1000Hz ±1%, 25% duty) is done. Full wiring/failure
+       table in its `breadboard.md`. It also tells the repo which header
+       pad is `D0` and which is GND on this board — worth a note back if
+       the silkscreen differs from what the guide assumes.
 
-Ranked by the five-criteria method in
-[kb/todo_list_conventions.md](kb/todo_list_conventions.md): item 1
-unblocks `VIBISO`, a real downstream consumer; item 2 has no downstream
-edge on this bench, just an already-purchased instrument to bring up.
+Nothing else is startable right now: `ACCELIF`'s soldering fix waits on
+the wick shipment (see "Next order" and "Blocked"), and the rest of the
+list is Blocked, Deferred or undesigned.
 
 ## Blocked — waiting on a shipment or a sourcing decision
 
+- [ ] **`ACCELIF`** (`signal_conditioning/accelerometer_interface`) —
+      blocked on the solder wick in the AliExpress cart (see "Next order"
+      above). A few GY-521 header pins bridged during soldering
+      (2026-09-24); wick clears them. When it arrives: lay the braid over
+      the bridge, press the iron on the braid for 2–3 seconds, lift both
+      together, and check the row by eye (steps in that circuit's
+      [breadboard.md](../signal_conditioning/accelerometer_interface/breadboard.md)).
+      Then four jumpers: `VCC`→3V3(OUT) (pin 36), `GND`→pin 38,
+      `SDA`→GP4 (pin 6), `SCL`→GP5 (pin 7); module lying still;
+      `mpremote run main.py`. All lines `[PASS]` is done; a `WHO_AM_I` of
+      `0x70`–`0x72` is a clone that still passes. It's the measurement
+      side of `VIBISO` and the first power-up of the untested GY-521.
 - [ ] **`CHGAMP`** (tier5, charge amplifier) — blocked on the leaded
       piezo disc in the AliExpress cart (see "Next order" above).
       A 2026-09-16 attempt with the bare-disc batch destroyed one unit
@@ -108,7 +96,7 @@ edge on this bench, just an already-purchased instrument to bring up.
       AliExpress cart ("Next order" above) to build the op-amp
       amplifier circuit as scoped.
 - [ ] **`VIBISO`** (vibration isolation platform) — hold off on the
-      mechanical build itself until `ACCELIF` (item 1 above) is
+      mechanical build itself until `ACCELIF` (first bullet above) is
       assembled and passing, so there is something to measure isolation
       quality with. For later: the on-hand Creality K1 (with PLA
       filament stock) can print feet/platform parts once this is
@@ -224,7 +212,7 @@ how each node connects before starting one.
       but the actual multiplexer circuit isn't built.
 - [ ] **Concurrent measurement tools**: `SCOPEUSBSER`, `SCOPEDSO`,
       `SCOPEBENCH`, `PRECBOX`, `LOADBANK`, `NOISEGEN`, `TESTSIG`,
-      `THERMOAMP` — undesigned/unsourced. (`SCOPELA`'s board is received
-      — see "Blocked" above for its own remaining gap — but it's a
-      plug-in tool, not a circuit; none of these dedicated designs exist
-      yet.)
+      `THERMOAMP` — undesigned/unsourced. (`SCOPELA`'s board is received and
+      detected by `sigrok`, with its first capture in "Ready to build
+      now" — but it's a plug-in tool, not a circuit; none of these
+      dedicated designs exist yet.)

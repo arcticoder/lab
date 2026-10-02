@@ -161,6 +161,13 @@ strength of a netlist alone.
 
 ## Completed (moved out)
 
+- **2026-10-01**: `measurement_tools/logic_analyzer_check/` (`SCOPELA`'s
+  first capture) — not a circuit, so no netlist: a Pico 1kHz/25% PWM
+  script, a host-side `sigrok-cli` capture/analysis script, and a
+  smoke test (analysis checks, mocked-`machine` check of `main.py`, csv
+  parser against real `sigrok-cli` demo output; the live-capture check
+  SKIPs without the board). Added to `TODO-arcticoder.md`'s "Ready to
+  build now"; nothing downstream needs it — it's an instrument bring-up.
 - **2026-09-23**: `measurement_tools/inductance_bridge/` (`INDBRIDGE`)
   and `signal_conditioning/accelerometer_interface/` (`ACCELIF`) —
   designed, simulated, smoke-tested (green) and documented. Both
