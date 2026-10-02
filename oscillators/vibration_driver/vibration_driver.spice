@@ -1,0 +1,56 @@
+* vibration_driver — S8050 low-side switch + 1N5817 flyback for a 3V coin/capsule
+* vibration motor, driven by one Pico PWM pin (tier1 SIMPGEN's actuator stage)
+*
+* Topology:
+*   VCC (Pico 3V3(OUT), pin 36) -> motor (+) ; motor (-) -> S8050 collector
+*   S8050 emitter -> GND ; base <- 1k from the GPIO, 10k base pull-down
+*   1N5817 across the motor: anode on the collector, cathode on VCC
+*
+* Motor modeled as its stalled winding: R=33 ohm (3V / 90mA, the Seeed mini
+* vibrating motor's rated maximum) in series with L=1mH. Back-EMF is not
+* modeled: a spinning motor draws LESS than this, so the current and
+* dissipation here are the conservative case. Inductance is an assumed
+* value for a small coreless motor, not a datasheet figure.
+*
+* S8050 modeled with a generic NPN (BF=200 typical; the smoke test also
+* checks the circuit saturates at a pessimistic gain of 50). 1N5817 is
+* a Schottky fitted to Vf ~0.45V at 1A (datasheet-typical), no reverse
+* breakdown modeled.
+*
+* Vg is a plain DC source for the .op runs (GPIO high, then GPIO low) and is
+* switched to a 1kHz 50% pulse for the .tran run.
+
+Vcc   vcc 0 DC 3.3
+Vg    g   0 DC 3.3
+Rb    g   b  1k
+Rpd   b   0  10k
+Q1    c   b  0 S8050
+Rm    vcc m  33
+Lm    m   c  1m
+Dfly  c   vcc D1N5817
+
+.model S8050 NPN(IS=2e-14 BF=200 VAF=100 RB=10 RC=0.3 CJC=10p CJE=20p TF=0.5n)
+.model D1N5817 D(IS=2.7e-8 N=1 RS=0.1 CJO=100p)
+
+.control
+op
+echo --- GPIO high: collector, base current, supply current ---
+let ic_on = -i(vcc)
+let ib_on = -i(vg)
+let vce_on = v(c)
+print vce_on ic_on ib_on
+alter vg = 0
+op
+echo --- GPIO low: supply current (should be ~0) ---
+let ic_off = -i(vcc)
+print ic_off
+alter vg pulse = [ 0 3.3 0 10n 10n 0.5m 1m ]
+tran 1u 5m
+let vpk = vecmax(v(c))
+let isup_pk = vecmax(-i(vcc))
+echo --- 1kHz 50 percent PWM: collector peak, supply current peak ---
+print vpk isup_pk
+quit
+.endc
+
+.end

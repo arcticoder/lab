@@ -951,3 +951,32 @@ A detection scan proves the firmware loads, not that a capture is right,
 so `measurement_tools/logic_analyzer_check/` was written (agent work, no
 purchase) and made item 1. `INDBRIDGE`/`ACTIVELIM` stay in "Deferred":
 having parts on hand isn't what ranks them, a downstream consumer is.
+
+## Carts fill from designs; one-item shipping fees are refused (2026-10-01)
+
+The user won't pay shipping on a single-item order or on an AliExpress cart
+under the $10 free-shipping line, and wants "Next order" to be a list of
+parts to add to a cart, not a "check out now" instruction that accepts a
+fee. Consequences:
+
+- **"Next order" bullets say what to add and where**, then "check the total
+  before paying"; if a fee still shows, the user holds the cart and the
+  agent's next design pass produces the top-up part (`TODO-agent.md`, "Next
+  design pass"). Don't tell the user to accept a fee, and don't claim a
+  threshold will be crossed without a price: if prices can't be verified (the
+  RobotShop site returned HTTP 403 to automated fetches 2026-10-01; AliExpress
+  searches give only listing prices), say they are unverified.
+- **Designs are how carts fill.** A circuit that needs a part not on hand
+  puts that part on the cart list in the same pass; the part, its link
+  and the design go in `orders.md`, `inventory.md` (quantity 0) and the
+  TODO together. Pick designs for the research chain's value; the cart is a
+  side effect, not the reason to invent a circuit.
+- **Prefer the single channel that clears the threshold** over splitting a
+  purchase across channels that each pay shipping. The 2026-10-01 pass
+  put the new ADS1115 modules and coin motors on the AliExpress cart (cheap, same
+  channel as the cart's existing items) and shelved the one-item RobotShop
+  kit order instead of padding it with RobotShop-priced items.
+- **A prior decision to buy something can be reversed by evidence** (the
+  kit: no designed circuit needed it; see `power_rail_budget_notes.md`).
+  Say so in the chat summary so the user can veto; record the revive
+  trigger in the Deferred entry.

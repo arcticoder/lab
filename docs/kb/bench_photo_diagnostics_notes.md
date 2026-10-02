@@ -408,3 +408,18 @@ is whether a signal on a pad lands in a capture on the right channel at
 the right rate. The board's header map (which pad is D0, which is GND)
 is not recorded anywhere in the repo as of this date; when the user
 reports it, put it in `parts_reference.md`.
+
+## SCOPELA header silkscreen is `PB`/`PD`, not `D0`–`D15` (2026-10-01)
+
+The `CY7C68013A.jpg` photo shows J2 and J1 with pads labeled `PB0`–`PB7`,
+`PD0`–`PD7`, `PA0`–`PA7`, `CTL0`–`CTL2`, `RDY0/1`, `CLK`, `IFCLK`, `SCL`,
+`SDA`, plus several `GND` and `VCC` pads (full map in `parts_reference.md`).
+`sigrok`'s `D0`–`D15` aren't printed anywhere. The wiring guide had told
+the user to wire to a pad "marked D0", which doesn't exist; that, with the
+usbipd failure in `live_bench_measurement_notes.md`, is why the first run
+couldn't pass. The mapping `PBn` → `Dn`, `PDn` → `D(8+n)` is the sigrok
+project's description of the FX2 family, **not yet confirmed on this
+board**; the unconfirmed state is why `check_capture.py --find-channel`
+exists. Update `parts_reference.md` from its result. General rule: when a
+guide names a pad, check the name against the board's photo before
+shipping the guide.

@@ -20,6 +20,26 @@ matching, so don't assume one file makes the other redundant.
 
 ## 2026-10-01
 
+- **Carts and power-supply decisions revised.** The checkout-now bullet and
+  the single-item RobotShop kit order came off "Next order": a cart under
+  the free-shipping line isn't paid, and the kit isn't needed by any
+  circuit designed so far (tally in
+  [kb/power_rail_budget_notes.md](kb/power_rail_budget_notes.md)). "Next
+  order" now lists two parts to add to the AliExpress cart, both from
+  new designs; the kit moved to "Deferred" with a revive trigger.
+- **Two circuits designed, simulated and smoke-tested (not built):**
+  `oscillators/vibration_driver` (the actuator stage `RIPPLETANK` and
+  `SIMPGEN` were missing; coin motor chosen) and
+  `signal_conditioning/adc_ads1115` (16-bit external ADC, tier9
+  `ADCDRV`). Both are in "Blocked" on their parts. See
+  `TODO-agent.md` for the design record.
+- **`SCOPELA` first capture diagnosed.** The traceback hid sigrok's real
+  error: the board's firmware load re-enumerates it and usbipd drops it
+  (`Device failed to renumerate`). The bullet now carries the Windows-side
+  `bind`/`attach --auto-attach` steps and the corrected wiring (the board's
+  pads are `PB0`…, there is no `D0`); `check_capture.py` prints the cause
+  and gained `--find-channel`. Still open in "Ready to build now".
+
 - **Cross-model documentation review processed.** A second model's critique
   of the docs was checked item by item against the files. Fixed: stale
   "untested/not yet built" status lines in `parts_reference.md`,

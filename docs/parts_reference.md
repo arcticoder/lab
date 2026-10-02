@@ -618,7 +618,7 @@ otherwise; see the caveat in
 
 1 received 2026-09-20 (ordered 2026-09-10). Enumerates as `04b4:8613`
 with jumper J4 removed (2026-09-24), and `sigrok-cli --driver fx2lafw
---scan` detects it as a 16-channel device (D0–D15; 2026-10-01). See
+--scan` lists it as a 16-channel device (D0–D15; 2026-10-01). See
 [orders.md](orders.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer).
 Built around a CY7C68013A-56PVXC: low-power enhanced-8051 core, 16KB
 program RAM, 48MHz main clock, USB2.0 480Mbps (backward-compatible
@@ -652,6 +652,25 @@ the listing's own title said so ("...Module Mini USB"), missed on first
 read; confirmed 2026-09-22 attempting to plug it in and finding only
 Micro-USB and USB-C cables on hand, neither of which fits. A Mini-USB
 cable was acquired directly 2026-09-24.
+
+
+**Header map (read off a photo of the board, 2026-10-01).** The silkscreen
+has no `D0`–`D15`. J2 (left, 10 rows × 2) is labeled, top to bottom, left pad
+then right pad: `PD5 PD6`, `PD7 GND`, `CLK GND`, `RDY1 RDY0`, `GND VCC`,
+`GND IFCLK`, `SCL SDA`, `PB0 PB1`, `PB2 PB3`, `GND VCC`. J1 (right, 10 rows × 2):
+`PD4 PD3`, `PD2 PD1`, `PD0 PA7`, `PA6 PA5`, `PA4 PA3`, `PA2 PA1`, `PA0 CTL2`,
+`CTL1 CTL0`, `PB7 PB6`, `PB5 PB4`.
+`sigrok`'s generic profile for this chip names 16 channels `D0`–`D15`; the
+expected mapping is `PB0`–`PB7` → `D0`–`D7` and `PD0`–`PD7` → `D8`–`D15`
+(from the sigrok project's description of the FX2 family, **not yet confirmed
+on this board** — `check_capture.py --find-channel` confirms it). Several pads
+are `VCC`; keep signal wires off them. J4 (bottom left, 2 pads) is the EEPROM
+jumper, kept out; the jumper on the right is the LED power switch.
+
+**WSL attachment (2026-10-01).** `sigrok-cli` uploads `fx2lafw` to RAM on first
+use and the board re-enumerates; `usbipd` drops the reconnected device
+(`Device failed to renumerate`), and its bind does not survive the
+re-enumeration. See `measurement_tools/logic_analyzer_check/breadboard.md`.
 
 ---
 

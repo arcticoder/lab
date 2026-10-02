@@ -27,13 +27,55 @@ Both USB devices need to be attached to WSL for the host script and
 
 | From | To |
 |------|----|
-| Pico GP15 (physical pin 20) | analyzer header pad `D0` |
-| Pico GND (physical pin 18) | analyzer header pad marked GND |
+| Pico GP15 (physical pin 20) | analyzer header pad `PB0` (J2, row "PB0 / PB1", the outer-left pin) |
+| Pico GND (physical pin 18) | analyzer GND pad — J2's left-column `GND` in the bottom row, below `PB2` |
 
-Pad names are read off the board's silkscreen; the board's header map
-isn't recorded in this repo yet. If you confirm which pad is `D0` and
-which is GND, `docs/kb/` and `parts_reference.md` can carry it for the
-next session.
+The board's silkscreen has no pad named `D0`. Its data pads are `PB0`–`PB7`
+and `PD0`–`PD7`; `sigrok`'s generic profile for this chip calls them
+`D0`–`D15`, and the expected mapping is `PB0`–`PB7` → `D0`–`D7`,
+`PD0`–`PD7` → `D8`–`D15`. That mapping comes from the sigrok project's
+description of this chip family, not from this board, so confirm it on the
+first run (next section). Several pads are `VCC`: keep the Pico's wires off
+them.
+
+---
+
+## Before the first capture (WSL only): usbipd
+
+On first use, `sigrok-cli` uploads its firmware to the FX2, and the board
+disconnects and reconnects to run it. `usbipd` treats the reconnected
+board as a new, unshared device and drops it from WSL, so the capture
+fails with `Device failed to renumerate` (seen 2026-10-01). A
+loose-looking "detach" is this, not the cable.
+
+In an **administrator** PowerShell on Windows:
+
+```powershell
+usbipd list                                  # note the BUSID of the 'fx2lafw' / 04b4:8613 board
+usbipd bind --busid <BUSID>                  # once the firmware is loaded, the board is listed as "fx2lafw"
+usbipd attach --wsl --busid <BUSID> --auto-attach
+```
+
+Leave the `--auto-attach` window open; it re-attaches the board whenever it
+drops. The firmware stays loaded until the board is unplugged. After an
+unplug/replug the first `sigrok-cli` run reloads it and the board drops once
+more; if `usbipd list` then shows it as "fx2lafw — Not shared", run the
+`bind` line again.
+
+---
+
+## Find which pad is which channel (first run only)
+
+With the Pico running `main.py` and wired to `PB0`:
+
+```bash
+python3 check_capture.py --find-channel
+```
+
+It prints the channels that toggle. `toggling: D0` confirms the mapping
+above. A different channel means the mapping differs on this board;
+`check_capture.py --channel <that one>` then works for the rest of the run,
+and `docs/parts_reference.md` should get the correction.
 
 ---
 
@@ -62,7 +104,8 @@ captured 25000 samples of D0 at 1000000Hz
 
 | Result | Meaning |
 |--------|---------|
-| `no fx2lafw device found` | Board not attached to WSL, or J4 is in |
-| `fewer than two rising edges` | Signal wire not on `D0`, ground not shared, or the Pico script isn't running |
+| `no fx2lafw device found` | Board not attached to WSL (see usbipd above), or J4 is in |
+| `Device failed to renumerate` / `No devices found` after the board was found | usbipd dropped the board after the firmware load; see usbipd above |
+| `fewer than two rising edges` | Signal wire not on `PB0`, ground not shared, or the Pico script isn't running |
 | duty ≈ 75% | Channel reads inverted — unexpected for this board; note which pad it is |
 | frequency off by more than 1% | The analyzer's samplerate isn't what `sigrok-cli` was asked for, or the Pico script was changed |

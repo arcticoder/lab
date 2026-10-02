@@ -45,3 +45,45 @@ live probe from the session needs the user to say the rig is attached
 shell: use it to check output formats (its csv is `;` comment lines, a
 header row, then one value per sample per line) when writing parsers
 that will later read real captures.
+
+## USB devices and usbipd: what a session can and can't do (2026-10-01 update)
+
+Read-only probes of the Windows side work from the WSL session: `usbipd.exe
+list` prints every USB device, its BUSID and whether it is `Attached`,
+`Shared` or `Not shared`, plus a "Persisted" list of stale binds. The
+session can't change that state: `usbipd bind` needs an administrator
+shell, and `usbipd attach` of a device that isn't bound fails ("Device is not
+shared"). Don't try to elevate from the session; hand the user the two
+commands. The session can see a device only while it's `Attached`, and
+`lsusb` there is the live truth for what the session shell sees, whatever
+the user's own terminal showed a minute earlier.
+
+**CY7C68013A with `sigrok` under WSL.** `sigrok-cli --driver fx2lafw --scan`
+succeeds even when it can't use the board: the scan uploads the firmware
+and lists the device either way. The capture that follows fails with
+`fx2lafw: Device failed to renumerate` / `Failed to open device`, because
+the board disconnects to re-enumerate with the firmware and `usbipd` doesn't
+re-attach the new device (Windows then lists it as `fx2lafw ... Not shared`,
+with a fresh device number on each attempt). A bind made before the firmware
+loads doesn't survive it. The fix is on the Windows side: bind the board in
+its firmware-loaded state, then `usbipd attach --wsl --busid <id>
+--auto-attach`. Diagnose with `sigrok-cli ... -l 5`, which prints the upload
+and the 3-second wait; `check_capture.py` now prints that stderr itself, so
+a traceback that hides it is the failure of the tool, not of the board.
+A "loose cable" explanation fits the symptom (a device that keeps
+detaching) and is wrong here; read the sigrok log before suspecting hardware.
+
+`sigrok-cli`'s csv output with several channels has `logic,logic,...` as its
+header row, with the real names in the `; Channels (n/m): D0, D1, ...`
+comment. The demo driver also returns about half of a requested 25 000
+samples at 1MHz (12 713 lines seen), so don't use it to check sample
+counts.
+
+## Photos of wiring: what the 2026-10-01 bench photo could and couldn't show
+
+The `logic_analyzer_check/breadboard.jpg` photo showed the Pico end of two
+jumpers on the breadboard rows beside Pico pins 20 and 18 (consistent with
+the guide) and, on the analyzer end, one wire seated on a header and one
+jumper end hanging free near the board corner. At 2× crop the header was
+too blurry to say which pad the seated wire was on. State that limit
+instead of reading a pad off it; the user later reseated a loose lead.

@@ -30,43 +30,33 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ## Next order — action needed
 
-- [ ] **AliExpress: check out the cart now.** Nothing is in transit, and
-      the solder wick in it is what unblocks `ACCELIF` (see "Blocked"
-      below), so the $10 free-shipping line no longer decides when to
-      order; a small shipping fee, if one shows at checkout, is the cost
-      of the unblock. In the cart:
-      [12× leaded 12mm piezo discs](https://www.aliexpress.com/item/1005003133740770.html)
-      (`CHGAMP` retry),
-      [10× 49E linear Hall sensors](https://www.aliexpress.com/item/32912682330.html)
-      (`HALLAMP`), and a roll of solder wick (for the bridged GY-521
-      header pins). Don't add the USB-C PD trigger board or the 5W/10W
-      power-resistor assortment — those were for `ACTIVELIM`'s bench
-      check, which is in "Deferred".
-- [ ] **RobotShop: order the
-      [SparkFun Breadboard Power Supply Kit](https://ca.robotshop.com/products/sfe-breadboard-power-supply-kit)
-      (5V/3.3V, LM317).** Separate seller and cart from AliExpress, so
-      place it independently of the item above. It's the adjustable-rail
-      PSU that follows `psu_4xaa`'s fixed 6V
-      (`power_supplies/psu_medlow_lm317`). Its input is a DC barrel jack;
-      either drive-enclosure adapter (both 12V, DC, centre-positive, ≥1A —
-      labels read 2026-09-25) covers it, so no adapter is being bought.
-      The plug size isn't printed on the labels; when the kit arrives,
-      the adapter's plug seating snugly in the jack is the check.
+- [ ] **AliExpress: add two items to the cart, then check the total
+      before paying.** Cart now: 12× leaded piezo discs (`CHGAMP`), 10×
+      49E Hall sensors (`HALLAMP`), solder wick (`ACCELIF`). Add:
+      [2× ADS1115 16-bit ADC module](https://www.aliexpress.com/item/1pcs-16-Bit-I2C-ADS1115-Module-ADC-4-channel-with-Pro-Gain-Amplifier-for-Arduino-RPi/32648046830.html)
+      (`adc_ads1115`; one spare in case of a dud) and a multi-piece lot of
+      [3V coin vibration motors](https://www.aliexpress.com/item/1005007703166995.html)
+      (`vibration_driver`; stay at or under 90mA rated current). Prices
+      weren't verifiable from here (about $1.65 per ADS1115, under $1 per
+      motor when listed). If checkout shows no shipping fee, pay. If it still
+      shows one, don't — the next design pass adds the top-up.
 
 ## Ready to build now — parts on hand
 
 1. [ ] **`measurement_tools/logic_analyzer_check` (`SCOPELA`'s first
-       capture) — wire two jumpers and run one script.** `sigrok-cli`
-       already finds the board (2026-10-01); this confirms it captures a
-       real signal correctly. Pico `GP15` (pin 20) → analyzer `D0`, Pico
-       GND (pin 18) → the analyzer's GND pad; Pico plugged into USB with
-       the board's J4 still out. Terminal 1: `mpremote run main.py` in
-       [measurement_tools/logic_analyzer_check/](../measurement_tools/logic_analyzer_check/);
-       terminal 2: `python3 check_capture.py`. Three `[PASS]` lines
-       (periods, 1000Hz ±1%, 25% duty) is done. Full wiring/failure
-       table in its `breadboard.md`. It also tells the repo which header
-       pad is `D0` and which is GND on this board — worth a note back if
-       the silkscreen differs from what the guide assumes.
+       capture) — attach the board, move one wire, run two commands.** The
+       first attempt failed before it reached the signal: sigrok loads its
+       firmware, the board re-enumerates, and usbipd drops it. In an
+       administrator PowerShell: `usbipd bind --busid 3-3`, then
+       `usbipd attach --wsl --busid 3-3 --auto-attach` (leave it open; use
+       the busid `usbipd list` shows for "fx2lafw"). Wiring: Pico `GP15`
+       (pin 20) → the board's **`PB0`** pad (J2, row "PB0 PB1"; the board has
+       no pad called `D0`), Pico GND (pin 18) → J2's `GND` in its bottom row.
+       Then, with `mpremote run main.py` running in terminal 1:
+       `python3 check_capture.py --find-channel` (expect `toggling: D0`),
+       then `python3 check_capture.py` — three `[PASS]` lines is done. Full
+       steps and failure table in its
+       [breadboard.md](../measurement_tools/logic_analyzer_check/breadboard.md).
 
 Nothing else is startable right now: `ACCELIF`'s soldering fix waits on
 the wick shipment (see "Next order" and "Blocked"), and the rest of the
@@ -95,20 +85,29 @@ list is Blocked, Deferred or undesigned.
       switch-output only; needs the linear/analog Hall sensor in the
       AliExpress cart ("Next order" above) to build the op-amp
       amplifier circuit as scoped.
+- [ ] **`adc_ads1115`** (`signal_conditioning/adc_ads1115`, tier9
+      `ADCDRV`) — designed and simulated; blocked on the ADS1115 modules in
+      the AliExpress list (see "Next order"). Parts otherwise on hand
+      (10kΩ ×3, 100nF, 1N5817 ×2). Wire it per its
+      [breadboard.md](../signal_conditioning/adc_ads1115/breadboard.md) and
+      `mpremote run main.py`; four `[PASS]` lines is done, and it doubles as
+      the genuineness check on the module.
+- [ ] **`vibration_driver`** (`oscillators/vibration_driver`, `SIMPGEN`'s
+      actuator stage) — designed and simulated; blocked on the coin motor
+      in the AliExpress list (see "Next order"). Parts otherwise on hand
+      (S8050, 1N5817, 1kΩ, 10kΩ). It is the driver `RIPPLETANK` needs.
 - [ ] **`VIBISO`** (vibration isolation platform) — hold off on the
       mechanical build itself until `ACCELIF` (first bullet above) is
       assembled and passing, so there is something to measure isolation
       quality with. For later: the on-hand Creality K1 (with PLA
       filament stock) can print feet/platform parts once this is
       actionable.
-- [ ] **`RIPPLETANK`** (2D ripple tank) — needs a wave-dipper actuator
-      and its driver stage, and neither exists yet: no motor or speaker
-      is on hand (the only actuator is the 9G servo), and
-      `pico/leds/gpio_pwm_led/` only generates a GPIO-level PWM signal,
-      which can't drive a motor's current directly. What to build the
-      driver around is open in `TODO-agent.md`. For later: the on-hand
-      Creality K1 (PLA on hand) could print a precise stepped/sloped
-      depth insert once this is actionable.
+- [ ] **`RIPPLETANK`** (2D ripple tank) — blocked on the coin motor (see
+      `vibration_driver` above): it becomes the wave dipper, driven by that
+      circuit. Whether a ~150Hz coin motor makes useful ripples is
+      untested; the mechanical side (a dipper arm and tank) is still to be
+      worked out. For later: the on-hand Creality K1 (PLA on hand) could
+      print a precise stepped/sloped depth insert once this is actionable.
 
 ## Deferred — considered and declined, no action needed
 
@@ -130,9 +129,13 @@ list is Blocked, Deferred or undesigned.
   yet. Build it when a design needs a verified inductance, or when you
   want the assortment's color bands cross-checked (good to about the
   10nF reference capacitor's tolerance, ±10% or so).
-- `power_supplies/psu_medlow_usbc` and the USB-C breakout's CC-pin check
-  — shelved; the SparkFun kit is the `psu_medlow` implementation being
-  built, and the breakout board stays in inventory unused.
+- `power_supplies/psu_medlow_lm317` (SparkFun/RobotShop kit) and
+  `psu_medlow_usbc` with the USB-C breakout's CC-pin check — shelved
+  2026-10-01 / 2026-09-23. No designed circuit needs a regulated rail above
+  what `psu_4xaa` (6V, <300mA) or the Pico's 3V3 pin gives; every circuit
+  designed so far fits one of them. A single-item RobotShop order would
+  also pay shipping alone. Revisit when a design needs 3.3V/5V above about
+  300mA from wall power; the adapter notes are kept in `orders.md`.
 - `power_supplies/psu_3xaa` + the remaining 1N5817 diode-drop checks —
   no current rail need (nothing on this bench needs 4.5V specifically;
   `psu_4xaa` at 6.0V already covers what this tier would). A diode gets

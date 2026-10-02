@@ -6,8 +6,11 @@ through `sigrok-cli` (`fx2lafw` driver), and a host script checks the
 measured frequency and duty cycle against what the Pico was told to
 output.
 
-`sigrok-cli --driver fx2lafw --scan` already finds the board (2026-10-01),
-which proves the firmware upload over USB works. It doesn't prove that a
+`sigrok-cli --driver fx2lafw --scan` already finds the board (2026-10-01).
+That is weaker than it sounds: the scan lists the board even when the
+firmware upload is followed by a failed re-attach under WSL, which is what
+stopped the first capture attempt (see [breadboard.md](breadboard.md),
+"Before the first capture"). A scan hit doesn't prove that a
 signal on a header pin ends up in a capture, that the channel numbering
 matches the silkscreen, or that the sample clock is right. This does, with
 no circuit to build and no parts beyond what is on hand.
@@ -23,7 +26,7 @@ failure mode produces a different message.
 | File | Purpose |
 |------|---------|
 | `main.py` | MicroPython — 1kHz / 25% PWM on GP15 |
-| `check_capture.py` | Host side — runs `sigrok-cli`, measures frequency/duty from full periods, prints PASS/FAIL |
+| `check_capture.py` | Host side — runs `sigrok-cli`, measures frequency/duty from full periods, prints PASS/FAIL, prints sigrok's own error and its likely cause on failure; `--find-channel` reports which of the 16 channels toggles |
 | `smoke_test.py` | Host side — analysis unit checks (ideal wave, wrong frequency, inverted, stuck, too short), the Pico script against a mocked `machine`, the csv parser against real `sigrok-cli` demo output, and a live capture when the board is plugged in (SKIP otherwise) |
 | `breadboard.md` | The two wires and the run steps |
 
@@ -31,7 +34,7 @@ failure mode produces a different message.
 
 ## Run
 
-See [breadboard.md](breadboard.md). In short: GP15 → `D0`, a Pico GND →
+See [breadboard.md](breadboard.md). In short: GP15 → the `PB0` pad (sigrok's `D0`), a Pico GND →
 the analyzer's GND, `mpremote run main.py` in one terminal,
 `python3 check_capture.py` in another.
 

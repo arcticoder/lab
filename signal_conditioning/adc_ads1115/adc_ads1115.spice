@@ -1,0 +1,62 @@
+* adc_ads1115 — input network for an ADS1115 module's AIN0 (tier9 ADCDRV)
+*
+* Topology (per channel):
+*   source -> Rin (10k) -> AIN0 node -> 100nF to GND
+*   AIN0 node -> 1N5817 to VDD (anode on AIN0) and 1N5817 to GND (cathode on AIN0)
+*   AIN0 -> the ADS1115's own input, modeled as 6Meg to GND
+*
+* Rin does three jobs: limits clamp-diode current, forms a ~160Hz low-pass
+* with the 100nF (the sensors in this chain are slow), and keeps the source
+* from loading the RC. The ADS1115 absolute maximum on an analog input is
+* GND-0.3V to VDD+0.3V (recalled from the datasheet, not re-checked against
+* the PDF here), so with VDD=3.3V the node must stay between -0.3 and 3.6V
+* even when a sensor on psu_4xaa's 6.0-6.4V rail drives it.
+*
+* The 6Meg single-ended input resistance is a pessimistic round number for
+* the +/-4.096V range (recalled, not re-checked); it sets the DC gain error
+* of Rin: (Rsrc + Rin) / 6Meg.
+*
+* 1N5817 Schottky fitted to Vf ~0.45V at 1A (datasheet-typical); the clamp
+* only ever sees hundreds of microamps, where it drops ~0.2-0.25V.
+
+Vdd   vdd 0 DC 3.3
+Vin   src 0 DC 1.65 AC 1
+Rsrc  src in  5k
+Rin   in  adc 10k
+Cin   adc 0   100n
+Dhi   adc vdd D1N5817
+Dlo   0   adc D1N5817
+Radc  adc 0   6Meg
+
+.model D1N5817 D(IS=2.7e-8 N=1 RS=0.1 CJO=100p)
+
+.control
+op
+echo --- nominal: 1.65V source (divider midpoint), 5k source impedance ---
+let v_nom = v(adc)
+print v_nom
+alter vin = 6.4
+op
+echo --- fault: sensor output at 6.4V (fresh psu_4xaa rail) ---
+let v_fault_hi = v(adc)
+let i_fault_hi = -i(vdd)
+print v_fault_hi i_fault_hi
+alter vin = -1
+op
+echo --- fault: sensor output at -1V ---
+let v_fault_lo = v(adc)
+print v_fault_lo
+alter rsrc = 1
+alter vin = 6.4
+op
+echo --- fault again with a low-impedance source (TIA/op-amp output) ---
+let v_fault_hi_lowz = v(adc)
+print v_fault_hi_lowz
+alter vin = 1.65
+ac dec 40 1 10k
+meas ac fc_hz when vdb(adc)=-3.0103
+echo --- low-pass corner with a low-impedance source ---
+quit
+.endc
+
+.end

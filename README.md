@@ -116,6 +116,8 @@ python protection/active_current_limiter/smoke_test.py
 python measurement_tools/inductance_bridge/smoke_test.py
 python signal_conditioning/accelerometer_interface/smoke_test.py
 python measurement_tools/logic_analyzer_check/smoke_test.py
+python oscillators/vibration_driver/smoke_test.py
+python signal_conditioning/adc_ads1115/smoke_test.py
 ```
 
 Or run all of them at once with `tools/run_all_smoke_tests.py`, which
@@ -189,14 +191,16 @@ sequence this drives.
 | `protection/active_current_limiter/` | IRLZ44N + 0.1Ω sense resistor + LM358 comparator, hard-trip at 2A | general-purpose `ACTIVELIM`, protects `psu_medhigh`/`psu_high` (both backlog) |
 | `signal_conditioning/accelerometer_interface/` | GY-521 (MPU-6050) on I2C0 — bus-timing/supply simulation plus a bring-up script (ID, gravity, noise, vibration RMS) | tier5 `ACCELIF` (designed 2026-09-23); the measurement side of `VIBISO` |
 | `measurement_tools/inductance_bridge/` | PWM-driven parallel LC resonance sweep: unknown inductor vs. a known 10nF, Schottky peak detector, Pico ADC | tier3 `INDBRIDGE` (designed 2026-09-23); targets the 1µH–1mH color-ring assortment |
-| `measurement_tools/logic_analyzer_check/` | Pico drives a 1kHz/25% square wave on GP15; `sigrok-cli` captures it on the CY7C68013A board and a host script checks frequency and duty | `SCOPELA` first-capture check (designed 2026-10-01); no analog circuit, so no netlist |
+| `measurement_tools/logic_analyzer_check/` | Pico drives a 1kHz/25% square wave on GP15; `sigrok-cli` captures it on the CY7C68013A board and a host script checks frequency and duty | `SCOPELA` first-capture check (designed 2026-10-01); no analog circuit, so no netlist. First attempt 2026-10-01 stopped at a WSL/usbipd re-attach failure after sigrok's firmware load, not at the signal; fix steps are in its `breadboard.md` |
+| `oscillators/vibration_driver/` | S8050 low-side switch + 1N5817 flyback driving a 3V coin vibration motor from one Pico PWM pin (GP16) | tier1 `SIMPGEN` actuator stage and `RIPPLETANK`'s dipper driver (designed 2026-10-01; motor not on hand) |
+| `signal_conditioning/adc_ads1115/` | ADS1115 16-bit ADC on I2C0, with a 10kΩ/100nF/clamp-diode input network, checked against the Pico's own ADC on a shared divider | tier9 `ADCDRV` (designed 2026-10-01; module not on hand) |
 Each of these (except `psu_medlow_lm317`, a kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
 schematic, a breadboard wiring guide, and a `smoke_test.py` (all but
 `active_current_limiter` also have a `main.py`, same reasoning as the
 PSU rows above having none). `inductance_bridge`'s and
 `accelerometer_interface`'s `main.py` files were exercised against
-host-side mocks only, not the Pico; `logic_analyzer_check` has no netlist or schematic (nothing analog to simulate) and a `main.py` plus a host-side `check_capture.py`. None of these have been physically
+host-side mocks only, not the Pico; `logic_analyzer_check` has no netlist or schematic (nothing analog to simulate) and a `main.py` plus a host-side `check_capture.py`; `vibration_driver` and `adc_ads1115` have netlists and `main.py` files exercised against host mocks only. None of these have been physically
 assembled with real components yet (`psu_low_v2`,
 `transimpedance_amplifier`, and `phase_detector` were exceptions as of
 2026-09-16/2026-09-19, and all three moved to the bench-tested table
@@ -299,7 +303,7 @@ measurement_tools/
         smoke_test.py
         README.md
 
-    logic_analyzer_check/    Pico 1kHz/25% PWM on GP15 captured by the CY7C68013A board via sigrok-cli, host script checks frequency/duty (SCOPELA first capture, designed 2026-10-01, not yet run on the bench)
+    logic_analyzer_check/    Pico 1kHz/25% PWM on GP15 captured by the CY7C68013A board via sigrok-cli, host script checks frequency/duty (SCOPELA first capture, designed 2026-10-01; the first attempt hit a WSL usbipd re-attach failure, not yet captured)
         breadboard.md
         main.py
         check_capture.py
@@ -364,6 +368,13 @@ power_supplies/
         README.md
 
 signal_conditioning/
+    adc_ads1115/              ADS1115 16-bit ADC on I2C0 with a protected 10k/100nF input, checked against the Pico ADC (tier9 ADCDRV, designed 2026-10-01, module not on hand)
+        adc_ads1115.spice
+        breadboard.md
+        main.py
+        smoke_test.py
+        README.md
+
     voltage_reference_lm358/  LM358 buffered voltage reference (built & bench-tested)
         voltage_reference_lm358.spice
         schematic.png         (generated, gitignored)
@@ -440,6 +451,13 @@ oscillators/
         breadboard.md
         breadboard.jpg
         breadboard2.jpg
+        smoke_test.py
+        README.md
+
+    vibration_driver/         S8050 switch + 1N5817 flyback for a 3V coin vibration motor on GP16 (tier1 SIMPGEN actuator stage, designed 2026-10-01, motor not on hand)
+        vibration_driver.spice
+        breadboard.md
+        main.py
         smoke_test.py
         README.md
 

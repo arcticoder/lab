@@ -55,39 +55,41 @@ circuit is ever trusted as an unattended monitor; pick N against how
 often this kind of breadboard contact glitch actually recurs rather than
 guessing a number now.
 
-### `SIMPGEN` stand-in motor/speaker driver — needed before `RIPPLETANK` is buildable
+### Next design pass — what to pick and why (2026-10-01)
 
-Flagged 2026-09-22: `TODO-arcticoder.md`'s `RIPPLETANK` entry had
-overclaimed that `pico/leds/gpio_pwm_led/` "drives a small motor/speaker
-dipper directly" — it doesn't. That circuit only generates a GPIO-level
-PWM square wave (tier1 `SIMPGEN`'s documented stand-in, and `SIMPGEN`
-itself is still backlog/undesigned per
-`general_purpose_circuit_dependency.md`) — a Pico GPIO pin can't source a
-motor's actual drive current directly.
+The user won't pay shipping on a cart under the AliExpress $10 line and
+won't place a one-item RobotShop order, so new circuit designs are also how
+the carts fill: a design that needs a part not on hand puts that part on
+`TODO-arcticoder.md`'s "Next order" (see `kb/todo_list_conventions.md`,
+"Carts fill from designs"). The 2026-10-01 pass added `adc_ads1115` and
+`vibration_driver` (below). If the user reports that the AliExpress cart
+still shows a shipping fee, pick the next design below that needs a
+cheap AliExpress part and add that part to "Next order"; otherwise pick for
+the research chain's value, not for the cart.
 
-**Inventory checked 2026-09-23: no part on hand fits.** There is no DC
-motor, vibration motor, or speaker. What is on hand: a 9G servo, a
-passive and an active buzzer (2–5kHz resonant transducers, far above
-ripple-tank dipper frequencies), two S8050 NPN and two S8550 PNP
-transistors. So a transistor-switch + flyback-diode stage has nothing to
-drive yet, and designing bias/current values against no load would be
-designing against nothing. The two real routes:
+Candidates, none blocked on a decision:
 
-- **9G servo as the dipper (no purchase).** The Pico's 50Hz PWM drives
-  it directly; it sweeps a dipper a few times a second, which is the
-  right order for ripple-tank waves. The open question is its 5V supply:
-  a hobby servo pulls 100–250mA moving and 650mA+ stalled, above
-  `psu_pico_rail`'s ~100mA and `psu_4xaa`'s <300mA budgets, so it would
-  run from the Pico's VBUS pin (USB 5V, ~500mA shared with the Pico).
-  Not startable as a design until the user decides the servo is acceptable
-  as the dipper, since that changes the tank's wave character (angular
-  sweep, not a plunging dipper).
-- **A vibration motor or small speaker (purchase).** Then the transistor
-  switch + flyback design applies; it needs the part number first.
+- **`FORCEBAL` optical shadow readout** (LED + flag on the beam +
+  PT334-6C into `TIA`; see the 2026-10-01 correction in the
+  `FORCEBAL` entry below) — all parts on hand, no purchase.
+- **`LOCKIN`** — the best-justified tier6 target per
+  `spacetime_circuits_dependency.md`; a CD4066 synchronous demodulator
+  and a TL082 low-pass are on hand. Needs the `PHASED` square wave as its
+  reference. May show a purchase (a matched-resistor or precision-rectifier
+  part) only once designed.
+- **`AAF`** — an active anti-alias filter in front of `adc_ads1115`
+  (TL082 Sallen-Key, corner chosen against the ADS1115's data rate); on-hand
+  parts, and it follows directly from the 2026-10-01 design.
+- **`IA`** (tier4 instrumentation amplifier) — for bridge and Hall signals;
+  a dedicated IA chip is the likely cheap AliExpress purchase.
 
-Don't design either until the actuator is chosen. This is the user's
-call (a purchase or a mechanical-approach choice), not a file-creation
-task, so it stays here until they pick one.
+### AA-battery power budget
+
+Tally recorded 2026-10-01 in `kb/power_rail_budget_notes.md`. The earlier
+claim that this bench can't run off AA cells was over-broad: it was true
+only of `ACTIVELIM`'s 2A check. Keep that file current as designs are added;
+the SparkFun kit (shelved 2026-10-01) is revived by a design that breaks the
+budget, not by the tier label `psu_medlow`.
 
 ### `FORCEBAL` / `SIPMFE` / `LASERDRV` — new tier5/7 nodes (2026-09-18); `SIPMFE`/`LASERDRV` blocked on part sourcing, `FORCEBAL`'s optical readout startable (see the 2026-10-01 correction below)
 
@@ -175,6 +177,19 @@ strength of a netlist alone.
 ---
 
 ## Completed (moved out)
+
+- **2026-10-01** (second pass): `oscillators/vibration_driver/`
+  (`SIMPGEN`'s actuator stage, the `RIPPLETANK` dipper driver) and
+  `signal_conditioning/adc_ads1115/` (`ADCDRV`, a 16-bit external ADC with a
+  protected input) — both designed, simulated (`ngspice -b`, numbers
+  confirmed against hand calculation), smoke-tested (green) and documented;
+  `main.py` files exercised against host mocks only. The motor was chosen
+  (a 3V coin vibration motor, the open question in the former `SIMPGEN`
+  entry): the servo option was dropped because it needs a supply this bench
+  doesn't have, and the motor needs only the 3V3 pin. Their parts are added
+  to `TODO-arcticoder.md`'s "Next order". Also fixed the `logic_analyzer_check`
+  host script so it prints sigrok's own error (the first run's traceback
+  hid a usbipd re-enumeration failure) and added `--find-channel`.
 
 - **2026-10-01**: `measurement_tools/logic_analyzer_check/` (`SCOPELA`'s
   first capture) — not a circuit, so no netlist: a Pico 1kHz/25% PWM
