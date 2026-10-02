@@ -129,6 +129,11 @@ python tools/run_all_smoke_tests.py
 
 Exits non-zero on any failed check.
 
+`tools/resolution_budget.py` is a separate arithmetic check (no hardware or
+ngspice): it reproduces the Pico-ADC / force-readout / plate-capacitance
+numbers behind the "Bench-scale resolution budget" section of
+[docs/spacetime_circuits_dependency.md](docs/spacetime_circuits_dependency.md).
+
 ---
 
 ## Circuits — built & bench-tested

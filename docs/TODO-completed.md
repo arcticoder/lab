@@ -20,6 +20,23 @@ matching, so don't assume one file makes the other redundant.
 
 ## 2026-10-01
 
+- **Cross-model documentation review processed.** A second model's critique
+  of the docs was checked item by item against the files. Fixed: stale
+  "untested/not yet built" status lines in `parts_reference.md`,
+  `inventory.md` and `orders.md` (polyfuses, NE555, CD4066, photodiode,
+  thermistor, TL082, XOR gate — all contradicted the README's bench-tested
+  table); the `SCOPELA` node's stale "plug-in verification pending" comment
+  and "8ch" label; the Pico ADC noise-floor wording (see below). Added a
+  scope statement and a quantified resolution budget to
+  `spacetime_circuits_dependency.md` (`tools/resolution_budget.py`). Items
+  that checked out as non-issues are listed in
+  [kb/cross_model_review_notes.md](kb/cross_model_review_notes.md).
+- **Correction: `CAPBRIDGE` is not a `FORCEBAL` readout route.** Two
+  2026-09-19 entries below say a foil-plate capacitive readout via
+  `CAPBRIDGE` needs no purchase. It doesn't work: a plate pair
+  is 3–90pF and `CAPBRIDGE` is built for 1µF–470µF (its own README rates
+  10pF "No"). The no-purchase route is an optical shadow readout instead;
+  design item opened in `TODO-agent.md`.
 - **`SCOPELA` detection check passed.** `sigrok-cli --driver fx2lafw
   --scan` finds the CY7C68013A board as a 16-channel device (D0–D15) with
   J4 removed, so the firmware upload over USB works. Removed from "Ready

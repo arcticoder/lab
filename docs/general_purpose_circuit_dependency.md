@@ -141,11 +141,11 @@ graph TD
 
     subgraph concurrent_meas_tools ["Validation & Test Tools (Use Alongside Build)"]
         subgraph scope_tiers ["Scope/Logic-Analyzer Tiers, by Fidelity & Cost (don't buy the next tier until it actually blocks a circuit)"]
-            SCOPEPICO["M0: Pico MicroPython — RP2040 12-bit ADC (0-3.3V only, software-timed via machine.ADC; measured noise floor &lt;5 counts/&lt;0.25mV with 100nF filter, see measurement_tools/gpio_analog_sensing/) + GPIO edge timing via ticks_us() in an ISR (sub-kHz to low-kHz reliable; PIO could go faster but nothing here programs it) — $0, on hand"]
+            SCOPEPICO["M0: Pico MicroPython — RP2040 12-bit ADC (0-3.3V only, software-timed via machine.ADC; 1 LSB = 0.81mV; the &lt;5 u16-counts/&lt;0.25mV std-dev figure in measurement_tools/gpio_analog_sensing/ is the ideal 12-bit quantization-noise level, not a resolution — see the Bench-scale resolution budget section of spacetime_circuits_dependency.md) + GPIO edge timing via ticks_us() in an ISR (sub-kHz to low-kHz reliable; PIO could go faster but nothing here programs it) — $0, on hand"]
             SCOPEPC["M1: Desktop PC (ROG Strix) onboard sound card as 2-ch AC-coupled scope+function-gen (Audacity/PulseView soundcard driver), 20Hz-20kHz, 16/24-bit — $0, on hand; needs a DC-blocking/attenuator buffer in front of line-in (AC-coupled, can't read DC); supersedes AUDIOSC in-band only"]
             SCOPEUSBSER["M2: Desktop PC + USB-serial adapter (CH340/FTDI), pyserial-bit-banged RTS/DTR — second PC-hosted digital channel independent of the Pico, cross-check only (still software-timed, ~100Hz-1kHz), not a capture instrument — ~$1-2, not yet purchased"]
-            %% status: board received 2026-09-20, plug-in verification pending — see TODO-arcticoder.md
-            SCOPELA["M3: 8ch 24MHz USB Logic Analyzer + sigrok/PulseView — first tier with real hardware-timed sampling + triggering + I2C/SPI/UART decode — ~$5-8"]
+            %% status: board received 2026-09-20; sigrok-cli --driver fx2lafw --scan detects it (2026-10-01); first real capture (measurement_tools/logic_analyzer_check/) designed, not yet run — see TODO-arcticoder.md
+            SCOPELA["M3: USB Logic Analyzer (CY7C68013A/fx2lafw; listed as 8ch 24MHz, the on-hand board scans as 16ch D0-D15 and its max rate is unmeasured) + sigrok/PulseView — first tier with real hardware-timed sampling + triggering + I2C/SPI/UART decode — ~$5-8"]
             SCOPEDSO["M4: DSO138 DIY analog scope kit, 200kHz/1MSa/s single-channel — first tier that captures actual analog waveform shape, not just edges; solder-it-yourself — ~$15-25, not yet purchased"]
             SCOPEBENCH["M5: Bench-grade mixed-signal scope/instrument — cost TBD, price only once tier7/8 RF/HV-pulse/lock-in work needs bandwidth or simultaneous analog+digital capture beyond M3/M4"]
         end

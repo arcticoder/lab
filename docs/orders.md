@@ -172,17 +172,21 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
   and `psu_low` protection tiers. See
   [parts_reference.md](parts_reference.md#polyfuses-rxef-series) for the
   RXEF naming convention and trip-curve caveat.
-- Not yet validated per-unit — before trusting any individual fuse in
-  front of an LED, run it through
-  [fuse_test_voltmeter](../measurement_tools/fuse_test_voltmeter/) to confirm cold-state
-  resistance and correct trip/reset behavior. Bulk AliExpress buys have a
-  nonzero DOA rate, so "received" here does not yet mean "known good."
+- Validated per-unit 2026-08-30: all 20 RXEF005 PASS via
+  [ammeter_10ohm](../measurement_tools/ammeter_10ohm/) and all 20 RXEF050
+  PASS via [ammeter_1ohm](../measurement_tools/ammeter_1ohm/) (trip and
+  reset both confirmed per unit). Those two jigs replaced the original
+  [fuse_test_voltmeter](../measurement_tools/fuse_test_voltmeter/)
+  voltage-probe plan, whose bench wiring has since diverged. Bulk
+  AliExpress buys carry a nonzero DOA rate, which is why the per-unit
+  pass mattered; this batch came through clean.
 - Logged received: 2026-08-21.
 
 ### 1N5817 Schottky diode (1A 20V, DO-41)
 
 - 20 received, for `psu_low` reverse-polarity protection.
-- Not yet validated per-unit — check forward drop (~0.35–0.45V) on each
+- 2 of 20 validated (`psu_4xaa`'s and `psu_low_v2`'s units); the other 18
+  are untested — check forward drop (~0.35–0.45V) on each
   before wiring into `psu_low_v2`; see
   [psu_low_v2/README.md](../power_supplies/psu_low_v2/README.md#validation)
   for the Pico-ADC probe procedure used to check it.
@@ -222,9 +226,10 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
   [parts_reference.md](parts_reference.md#cd4066b-quad-bilateral-switch)
   for pinout. Bring-up/validation jig:
   [measurement_tools/cd4066_switch_tester/](../measurement_tools/cd4066_switch_tester/) —
-  not yet validated per-unit (40 individual switches across 10 chips);
-  run each switch through the tester before trusting it in a downstream
-  design (tier9 `MUX`, tier4 `DEMOD`).
+  switch 1 of all 10 chips PASS 2026-08-28; switches 2–4 (30 of the 40
+  individual switches) are untested. Run whichever switch a downstream
+  design (tier9 `MUX`, tier4 `DEMOD`) actually pulls through the tester
+  first.
 - Logged received: 2026-08-24.
 
 ### LM358P (dual op-amp, DIP-8)
@@ -255,10 +260,10 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
 ### NE555 timer IC (DIP-8)
 
 - 10 received, DIP-8 package. See
-  [parts_reference.md](parts_reference.md#ne555-timer) for pinout. Not yet
-  validated per-unit (bulk IC batch, no test jig built yet) — run each
-  through a bring-up check before trusting it in tier1 `OSC` or tier2
-  `FREQC`.
+  [parts_reference.md](parts_reference.md#ne555-timer) for pinout. All 10
+  bench-tested PASS 2026-09-13 through
+  [oscillators/ne555_astable](../oscillators/ne555_astable/) (swapped
+  through one socket, none pinned or stuck).
 - Logged received: 2026-09-01.
 
 ### Glass tube fuses, 6×30mm 250V
@@ -280,7 +285,7 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
   the physical part confirms actual wiper behavior. See
   [parts_reference.md](parts_reference.md#3296-trimming-potentiometer).
 - Used as Rb in [oscillators/ne555_astable](../oscillators/ne555_astable/)
-  (tier1 `OSC`, designed & simulated, not yet bench-built).
+  (tier1 `OSC`, bench-tested 2026-09-13).
 - Logged received: 2026-09-01.
 
 ### TL431A precision shunt reference (TO-92)

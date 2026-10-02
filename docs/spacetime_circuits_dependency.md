@@ -18,6 +18,24 @@ in their own right (vibration isolation, an analog-gravity ripple tank)
 but that the electronic tiers below directly serve or depend on are also
 included — see the `mech` subgraph.
 
+**Scope of what this graph can reach.** It is a bench-instrumentation
+graph: millivolt/milliamp analog signal chains, a 12-bit 3.3V ADC,
+sub-kHz-to-kHz software timing, and (at best, see "Bench-scale resolution
+budget" at the bottom) force readouts in the tens-of-nanonewton-to-
+micronewton range. That is the scale of the published small-force
+apparatus these tiers are drawn from. It does **not** reach the
+energy-density, curvature, or quantum-inequality regimes that
+[FTL-research-state-sept-2026.md](FTL-research-state-sept-2026.md)
+discusses — no node here tests a warp geometry or its source, and none is
+justified by one. What the nodes do justify is building and validating
+general measurement skill and equipment ahead of whatever experiment
+later needs it; the numbers in the budget section are the honest ceiling
+on what any single chain here can resolve.
+
+Tier numbering interleaves across the two graphs on purpose: tiers 1–4, 6
+and 9 live in the general-purpose graph, tiers 5, 7 and 8 live here, so
+neither file shows a contiguous 1–9.
+
 ```mermaid
 graph TD
     subgraph tier5 ["Tier 5: Specialized Sensor Interfaces"]
@@ -146,10 +164,12 @@ tested phenomenon turns out to be real:
   available justification for tier5 `LVDTAMP` — currently the only tier5 node
   with zero hardware sourced — as a hobbyist-scale stand-in for the
   capacitive/inductive displacement sensors these published force balances
-  actually use, at many orders of magnitude coarser resolution (this bench's
-  Pico-ADC ceiling is nowhere near nN; that gap is expected, since
-  equipment-building, not publishable measurement, is this repo's own scope
-  — see `kb/circuit_lifecycle_and_repo_scope.md`).
+  actually use, at coarser resolution (how much coarser depends on the
+  balance's stiffness and the sensor's range — the ADC step alone can map
+  to tens of nN for a soft balance, but vibration and thermal drift set the
+  real floor; see "Bench-scale resolution budget" below). Equipment-building,
+  not publishable measurement, is this repo's own scope — see
+  `kb/circuit_lifecycle_and_repo_scope.md`.
 - **Thermal-drift and calorimetric artifact rejection is the single most
   repeated methodology note across all three families.** Published designs
   include mechanical arrangements specifically built to cancel thermal drift,
@@ -317,3 +337,69 @@ order" section for the resulting shopping list, and
 `docs/kb/spacetime_sensor_chain_notes.md` for this pass's fuller session
 notes, including the full list of source-document validation paths
 deliberately excluded as software-only/out-of-scope.
+
+---
+
+## Bench-scale resolution budget (2026-10-01)
+
+What the on-hand instruments can and can't resolve, so the sensor nodes
+above aren't read as more capable than they are. Every number below
+reproduces from [tools/resolution_budget.py](../tools/resolution_budget.py)
+(`python tools/resolution_budget.py`; it also checks the two conclusions
+marked ✔). Assumptions are stated, not measured on this bench.
+
+**Pico ADC.** The RP2040 ADC is 12-bit over 0–3.3V: 1 LSB = 3.3/4096 =
+**0.806 mV**. MicroPython's `read_u16()` left-shifts that to 16 bits, so
+one "count" in `gpio_analog_sensing`'s output is 50.4µV and one LSB is 16
+counts. The `<5 counts / <0.25mV` std-dev quoted for that circuit is
+**4.6 counts / 0.233mV — exactly the quantization noise of an ideal
+12-bit converter (LSB/√12)**. ✔ That is a floor on how steady a reading
+can look, not a resolution: a steady input sits on one code and reads
+sub-LSB std-dev regardless of what the analog signal is doing. Treat
+0.8mV as the step the ADC can distinguish, before the converter's own
+non-idealities (its datasheet effective resolution is lower than 12 bits;
+not checked in this session — hence the 9-bit column below as a pessimistic case).
+The pico repo's figure is stated there as an expectation / sample output;
+no recorded bench run of it turned up in either repo's docs.
+
+**Force readout (`FORCEBAL`).** For a displacement sensor whose full range
+`R` spans the ADC's 0–3.3V and a balance of stiffness `k`, one ADC step is
+`F = k·R / 2^bits`:
+
+| range `R` | k = 0.1 N/m | k = 1 N/m | k = 10 N/m |
+|-----------|-------------|-----------|------------|
+| 1 mm (12-bit)  | 24 nN   | 244 nN  | 2.4 µN |
+| 1 mm (9-bit)   | 195 nN  | 1.95 µN | 19.5 µN |
+| 10 mm (12-bit) | 244 nN  | 2.4 µN  | 24 µN |
+
+So the ADC step alone doesn't rule out the tens-of-nN to µN range the
+published balances report — a soft, short-range balance gets close on
+paper. What does rule it out is everything the ADC doesn't see: floor
+vibration, thermal drift of the plate gap/fiber, supply and reference
+drift, 1/f noise in the sensor front end. None of those is quantified
+here; `ACCELIF` + `VIBISO` are how the first one gets measured.
+
+**Capacitive-plate displacement sensing.** A parallel-plate pair has
+`C = ε₀A/d`: 3.5pF for 4cm² at 1mm, **22pF for 25cm² at 1mm**, 89pF for
+100cm² at 1mm; sensitivity `dC/dd` = C/d, about 22fF per µm at 25cm²/1mm.
+Breadboard and lead stray capacitance is several pF, a large fraction of
+that. **`CAPBRIDGE` can't read this range**: its RC charge time at its
+100kΩ `Rref` is 2µs for the 25cm² pair against a ~1ms polling interval, and
+its own README lists a 10pF part as "No". ✔ A plate readout needs a
+different transduction (for example a 555 astable with the plate as timing
+capacitance, whose frequency is read by hardware timing — the Pico's PIO
+or the `SCOPELA` board — since software edge counting is reliable only up
+to low kHz here), or the on-hand LED + PT334-6C photodiode + `TIA` as an
+optical lever, which needs no new transduction at all. This corrects the
+earlier "no-purchase" framing for the `CAPBRIDGE` route in
+`TODO-arcticoder.md`/`TODO-completed.md`.
+
+**Accelerometer (`ACCELIF`).** MPU-6050 at ±2g: 16384 LSB/g, so 1 LSB =
+61µg (0.6mm/s²). The repo's own datasheet-derived noise figure is ~7mg RMS
+at the default bandwidth (about 400µg/√Hz, as recalled from the datasheet
+— not re-checked here), which narrows to roughly 1.3mg RMS if the on-chip
+low-pass is set to 10Hz. Quiet-floor building vibration is typically
+below a milli-g, so this module can show gross isolation (a tap or step
+response on the platform with and without `VIBISO`) but probably can't
+quantify the residual vibration of an already-quiet table. That limits
+what `VIBISO` can be graded against; it doesn't block the build.

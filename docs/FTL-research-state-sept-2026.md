@@ -913,19 +913,19 @@ $$
 
 And, somewhat unusually for this subject, several of those questions are now amenable to the sort of automated symbolic/numerical/verification pipeline you've been building rather than requiring a new theory of everything before useful progress can be made. The one thing the existing computational machinery still cannot manufacture is a physically realizable source that nature has not yet shown us.
 
-[1]: https://zenodo.org/records/20776189?utm_source=chatgpt.com "WarpAX: Observer-robust energy condition verification for warp drive spacetimes | Zenodo"
-[2]: https://arxiv.org/abs/2105.03079?utm_source=chatgpt.com "Generic warp drives violate the null energy condition"
-[3]: https://arxiv.org/abs/2512.18008?utm_source=chatgpt.com "A warp drive with predominantly positive invariant energy density and global Hawking-Ellis Type I"
-[4]: https://www.alphaxiv.org/abs/2602.18023v4?utm_source=chatgpt.com "Observer-robust energy condition verification for warp drive spacetimes | alphaXiv"
-[5]: https://arxiv.org/abs/2405.02709?utm_source=chatgpt.com "Constant Velocity Physical Warp Drive Solution"
-[6]: https://arxiv.org/abs/2606.22531?utm_source=chatgpt.com "Steering a warp drive without exotic matter"
-[7]: https://astro.theoj.org/article/121868-what-no-one-has-seen-before-gravitational-waveforms-from-warp-drive-collapse?utm_source=chatgpt.com "What no one has seen before: gravitational waveforms from warp drive collapse | Published in The Open Journal of Astrophysics"
-[8]: https://www.sciencestack.ai/paper/gr-qc/9702026?utm_source=chatgpt.com "The unphysical nature of \"Warp Drive\" (arXiv:gr-qc/9702026v3) - ScienceStack"
-[9]: https://doi.org/10.1016/j.nuclphysb.2026.117555?utm_source=chatgpt.com "Casimir traversable wormholes in Gauss-Bonnet gravity - ScienceDirect"
-[10]: https://www.scienceopen.com/hosted-document?doi=10.14293%2FPR2199.003732.v2&utm_source=chatgpt.com "Spin–Torsion Compensation in Alcubierre Warp-Drive Spacetimes within Einstein–Cartan Gravity: Exact Eulerian Energy-Condition Thresholds, Quasi-Local Energetics, Causal Structure, and Observational Constraints – ScienceOpen"
-[11]: https://arxiv.org/abs/2609.05554?utm_source=chatgpt.com "Quantum-gravity-inspired Alcubierre warp-drive geometries"
-[12]: https://journals.aps.org/prd/abstract/10.1103/87dc-qt73?utm_source=chatgpt.com "Existing experiments suffice to indirectly verify the quantum essence of gravity | Phys. Rev. D"
-[13]: https://journals.aps.org/pra/abstract/10.1103/l62d-gz5c?utm_source=chatgpt.com "Gravitationally induced entanglement in atom interferometry | Phys. Rev. A"
+[1]: https://zenodo.org/records/20776189 "WarpAX: Observer-robust energy condition verification for warp drive spacetimes | Zenodo"
+[2]: https://arxiv.org/abs/2105.03079 "Generic warp drives violate the null energy condition"
+[3]: https://arxiv.org/abs/2512.18008 "A warp drive with predominantly positive invariant energy density and global Hawking-Ellis Type I"
+[4]: https://www.alphaxiv.org/abs/2602.18023v4 "Observer-robust energy condition verification for warp drive spacetimes | alphaXiv"
+[5]: https://arxiv.org/abs/2405.02709 "Constant Velocity Physical Warp Drive Solution"
+[6]: https://arxiv.org/abs/2606.22531 "Steering a warp drive without exotic matter"
+[7]: https://astro.theoj.org/article/121868-what-no-one-has-seen-before-gravitational-waveforms-from-warp-drive-collapse "What no one has seen before: gravitational waveforms from warp drive collapse | Published in The Open Journal of Astrophysics"
+[8]: https://www.sciencestack.ai/paper/gr-qc/9702026 "The unphysical nature of \"Warp Drive\" (arXiv:gr-qc/9702026v3) - ScienceStack"
+[9]: https://doi.org/10.1016/j.nuclphysb.2026.117555 "Casimir traversable wormholes in Gauss-Bonnet gravity - ScienceDirect"
+[10]: https://www.scienceopen.com/hosted-document?doi=10.14293%2FPR2199.003732.v2 "Spin–Torsion Compensation in Alcubierre Warp-Drive Spacetimes within Einstein–Cartan Gravity: Exact Eulerian Energy-Condition Thresholds, Quasi-Local Energetics, Causal Structure, and Observational Constraints – ScienceOpen"
+[11]: https://arxiv.org/abs/2609.05554 "Quantum-gravity-inspired Alcubierre warp-drive geometries"
+[12]: https://journals.aps.org/prd/abstract/10.1103/87dc-qt73 "Existing experiments suffice to indirectly verify the quantum essence of gravity | Phys. Rev. D"
+[13]: https://journals.aps.org/pra/abstract/10.1103/l62d-gz5c "Gravitationally induced entanglement in atom interferometry | Phys. Rev. A"
 ```
 
 # Experimental Validation
