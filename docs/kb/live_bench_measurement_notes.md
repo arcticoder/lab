@@ -87,3 +87,14 @@ the guide) and, on the analyzer end, one wire seated on a header and one
 jumper end hanging free near the board corner. At 2× crop the header was
 too blurry to say which pad the seated wire was on. State that limit
 instead of reading a pad off it; the user later reseated a loose lead.
+
+## 2026-10-02: the same rig, attached and working
+
+On 2026-10-02 the user left the Pico and the analyzer plugged in and attached,
+and both showed up in the session shell (`lsusb`, `mpremote devs`, `sigrok-cli
+--scan`). The first capture passed from the session; see
+`datasheet_and_live_probe_notes.md` for what else was verified live, which
+pin is the only one known to be wired (GP15), and how to run the capture with
+the Pico script in the background. The earlier rule still holds: the session
+can't elevate `usbipd`, and the user's pasted output is evidence of what the
+Windows side looked like at that time, not a promise about now.

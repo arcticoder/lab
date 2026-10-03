@@ -39,6 +39,7 @@ neither file shows a contiguous 1–9.
 ```mermaid
 graph TD
     subgraph tier5 ["Tier 5: Specialized Sensor Interfaces"]
+        %% status: designed/simulated 2026-10-02 (signal_conditioning/hall_amplifier/); SS49E/49E sensors on order, not built
         HALLAMP["Hall Effect Sensor Amplifier"]
         EPFIELD["Electric Field Probe Conditioner"]
         LVDTAMP["LVDT Transducer Amplifier"]
@@ -47,6 +48,7 @@ graph TD
         CHGAMP["Charge Amplifier"]
         %% added 2026-09-18 — resolves the force/displacement-balance gap
         %% flagged 2026-09-15; see "Why these new tiers" below
+        %% status: the optical readout (LED + photodiode + TIA + lock-in) is designed/simulated 2026-10-02 as signal_conditioning/optical_shadow_readout/, not built; the balance's mechanics are not designed
         FORCEBAL["Torsion/Beam-Balance Displacement Readout (capacitive- or LVDT-sensed)"]
         %% added 2026-09-18 — new sensing modality, not covered by any
         %% existing tier5 node (photon/particle-counting, not analog)

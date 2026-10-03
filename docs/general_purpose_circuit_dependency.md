@@ -16,6 +16,7 @@ graph TD
         INSMON["Insulation Resistance Monitor"]
         ARCDECT["Arc Detection Circuit (high-voltage)"]
         OVERCUR["Overcurrent Sensor & Alert"]
+        %% status: designed/simulated 2026-10-02 (safety/overvoltage_monitor/; a hardware trip and a TRIP line, no shutdown stage), not built
         OVERVOLT["Overvoltage Monitor & Shutdown Signal"]
         TEMPCOIL["Component-Level Thermal Overload Sensor"]
         EMSTOP["Emergency Stop Circuit Status"]
@@ -90,6 +91,7 @@ graph TD
     subgraph bootstrap ["Bootstrap: Minimal-Cost Validation (Build First, No Off-Shelf Gear)"]
         PASSVM["Bootstrap DC Voltmeter — Pico ADC probe (measurement_tools/fuse_test_voltmeter/), no galvanometer build needed"]
         LEDIND["LED/Relay Presence Indicator"]
+        %% status: designed/simulated 2026-10-02 as measurement_tools/frequency_counter/ (Pico PWM-slice hardware counter), not built
         SIMPLECNT["Basic Frequency Counter (555-gated or manual)"]
         TUNINGFK["Calibrated Tuning Fork Frequency Reference"]
         AUDIOSC["Audio-Input Oscilloscope (smartphone)"]
@@ -106,6 +108,7 @@ graph TD
     subgraph tier2 ["Tier 2: Essential Validation & Measurement"]
         VM["Precision DC Voltmeter"]
         AM["Precision Current Shunt Ammeter"]
+        %% status: designed/simulated 2026-10-02 (measurement_tools/frequency_counter/), not built
         FREQC["Basic Frequency Counter"]
         TIA["Transimpedance Amplifier"]
     end
@@ -122,10 +125,12 @@ graph TD
         IA["Instrumentation Amplifier"]
         DA["Differential Amplifier"]
         PHASED["Phase Detector"]
+        %% status: designed/simulated 2026-10-02 as signal_conditioning/lockin_amplifier/ (shared with LOCKIN), not built
         DEMOD["Synchronous Demodulator"]
     end
 
     subgraph tier6 ["Tier 6: Advanced Detection & Analysis"]
+        %% status: designed/simulated 2026-10-02 (signal_conditioning/lockin_amplifier/), not built
         LOCKIN["Lock-In Amplifier"]
         AAF["Anti-Aliasing Filter"]
         TIMEINT["Time Interval Measurement Circuit"]
@@ -144,8 +149,8 @@ graph TD
             SCOPEPICO["M0: Pico MicroPython — RP2040 12-bit ADC (0-3.3V only, software-timed via machine.ADC; 1 LSB = 0.81mV; the &lt;5 u16-counts/&lt;0.25mV std-dev figure in measurement_tools/gpio_analog_sensing/ is the ideal 12-bit quantization-noise level, not a resolution — see the Bench-scale resolution budget section of spacetime_circuits_dependency.md) + GPIO edge timing via ticks_us() in an ISR (sub-kHz to low-kHz reliable; PIO could go faster but nothing here programs it) — $0, on hand"]
             SCOPEPC["M1: Desktop PC (ROG Strix) onboard sound card as 2-ch AC-coupled scope+function-gen (Audacity/PulseView soundcard driver), 20Hz-20kHz, 16/24-bit — $0, on hand; needs a DC-blocking/attenuator buffer in front of line-in (AC-coupled, can't read DC); supersedes AUDIOSC in-band only"]
             SCOPEUSBSER["M2: Desktop PC + USB-serial adapter (CH340/FTDI), pyserial-bit-banged RTS/DTR — second PC-hosted digital channel independent of the Pico, cross-check only (still software-timed, ~100Hz-1kHz), not a capture instrument — ~$1-2, not yet purchased"]
-            %% status: board received 2026-09-20; sigrok-cli --driver fx2lafw --scan detects it (2026-10-01); first real capture (measurement_tools/logic_analyzer_check/) designed, not yet run — see TODO-arcticoder.md
-            SCOPELA["M3: USB Logic Analyzer (CY7C68013A/fx2lafw; listed as 8ch 24MHz, the on-hand board scans as 16ch D0-D15 and its max rate is unmeasured) + sigrok/PulseView — first tier with real hardware-timed sampling + triggering + I2C/SPI/UART decode — ~$5-8"]
+            %% status: board received 2026-09-20; first real capture (measurement_tools/logic_analyzer_check/) PASSED 2026-10-02: 1kHz/25% wave read back at 1MHz and 4MHz on D0 (pad PB0)
+            SCOPELA["M3: USB Logic Analyzer (CY7C68013A/fx2lafw; listed as 8ch 24MHz, the on-hand board scans as 16ch D0-D15, 4MHz sampling confirmed 2026-10-02, its max rate is unmeasured) + sigrok/PulseView — first tier with real hardware-timed sampling + triggering + I2C/SPI/UART decode — ~$5-8"]
             SCOPEDSO["M4: DSO138 DIY analog scope kit, 200kHz/1MSa/s single-channel — first tier that captures actual analog waveform shape, not just edges; solder-it-yourself — ~$15-25, not yet purchased"]
             SCOPEBENCH["M5: Bench-grade mixed-signal scope/instrument — cost TBD, price only once tier7/8 RF/HV-pulse/lock-in work needs bandwidth or simultaneous analog+digital capture beyond M3/M4"]
         end

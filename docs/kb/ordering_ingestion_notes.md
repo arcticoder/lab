@@ -438,3 +438,42 @@ power-up waits on it, the cart's "wait for $10" intro is gone, and
 already empty: nothing in transit as of this date, which is why the
 checkout leads `TODO-arcticoder.md`). Wick still has no recorded listing
 URL; the user picks any basic roll.
+
+## 2026-10-02 order: replacement and original both went through, a title changed, quantities moved
+
+The report listed a replacement Hall-sensor listing (SS49E, 5 pcs) and then
+the original it replaced (49E, 10 pcs) as separate bought items; the user
+noted both ordered. Log what was bought, not what was planned: 15 sensors,
+two line items, and say in `orders.md` that the second was intended as a
+replacement. Same order: the ADS1115 was one unit (planned two, deliberately),
+the piezos 10 (planned 12), and the ADS1115 and coin-motor listings were
+different items from the 2026-10-01 candidates (new item numbers, pin
+labels and motor currents). Update `inventory.md`'s On Order table, drop the
+"not yet ordered" rows, and re-check every circuit that sized a part from the
+old candidate's numbers (the motor's 120mA stall current broke
+`vibration_driver`'s 100mA budget).
+
+Smaller traps from the same ingestion:
+
+- The piezo listing's item number matched the cart entry but its title was
+  different ("12mm 12x8x0.55mm ... with Wire Leads" before, "5/10PCS ...
+  Diameter 12MM 15MM ..." in the order). Record the *selected variant string*
+  ("Wire-12mm-10PCS") and note the title change; the item number alone doesn't
+  prove the same product.
+- A multi-size listing's first parameter table belonged to the 27mm size
+  (4.1kHz, 28000pF), not the 12mm that was ordered (per-size table: 16.5kHz,
+  5000pF). When a spec table looks off for the ordered size, look for the
+  per-size tables further down before recording numbers.
+- A listing's headline and its table can disagree (coin motor: "3–5V" in the
+  title, 2.7–3.3V in the performance table). Trust the table, say so, and
+  take the stall current from it.
+- Photo-transcribed ASCII art in the pasted ADS1115 description gave two board
+  sizes that disagree (28×17mm vs 38×18×3mm in the text). Keep the pin labels
+  (they agree across the transcription) and flag the size as unresolved; it
+  doesn't affect the design.
+- The solder wick had been dropped from the cart before checkout and never put
+  back. When an order report arrives, check each *blocked* bullet's part
+  against the order lines, not just the new items: ACCELIF stayed blocked.
+- The user's spec blocks use `[cite: ...]` markers from another tool; strip
+  them when copying numbers.
+

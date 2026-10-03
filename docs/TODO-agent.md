@@ -55,33 +55,53 @@ circuit is ever trusted as an unattended monitor; pick N against how
 often this kind of breadboard contact glitch actually recurs rather than
 guessing a number now.
 
-### Next design pass — what to pick and why (2026-10-01)
+### Next design pass — what to pick and why (2026-10-02)
 
-The user won't pay shipping on a cart under the AliExpress $10 line and
-won't place a one-item RobotShop order, so new circuit designs are also how
-the carts fill: a design that needs a part not on hand puts that part on
-`TODO-arcticoder.md`'s "Next order" (see `kb/todo_list_conventions.md`,
-"Carts fill from designs"). The 2026-10-01 pass added `adc_ads1115` and
-`vibration_driver` (below). If the user reports that the AliExpress cart
-still shows a shipping fee, pick the next design below that needs a
-cheap AliExpress part and add that part to "Next order"; otherwise pick for
-the research chain's value, not for the cart.
+The 2026-10-02 pass designed `lockin_amplifier`, `optical_shadow_readout`,
+`hall_amplifier`, `frequency_counter` and `overvoltage_monitor` (see the
+Completed entry below), so "Ready to build now" has four on-hand builds
+again. Carts fill from designs (`kb/todo_list_conventions.md`, "Carts fill
+from designs"): the AliExpress cart currently holds the wick and magnets
+only, so a design that needs a cheap AliExpress part is also a top-up. None of
+the candidates below needs one yet. If the user reports a shipping fee on that
+cart, pick the first candidate that does and add its part to "Next order";
+otherwise pick for dependency value.
 
 Candidates, none blocked on a decision:
 
-- **`FORCEBAL` optical shadow readout** (LED + flag on the beam +
-  PT334-6C into `TIA`; see the 2026-10-01 correction in the
-  `FORCEBAL` entry below) — all parts on hand, no purchase.
-- **`LOCKIN`** — the best-justified tier6 target per
-  `spacetime_circuits_dependency.md`; a CD4066 synchronous demodulator
-  and a TL082 low-pass are on hand. Needs the `PHASED` square wave as its
-  reference. May show a purchase (a matched-resistor or precision-rectifier
-  part) only once designed.
-- **`AAF`** — an active anti-alias filter in front of `adc_ads1115`
-  (TL082 Sallen-Key, corner chosen against the ADS1115's data rate); on-hand
-  parts, and it follows directly from the 2026-10-01 design.
-- **`IA`** (tier4 instrumentation amplifier) — for bridge and Hall signals;
-  a dedicated IA chip is the likely cheap AliExpress purchase.
+- **`AAF`** (tier6 anti-alias filter) — an LM358 Sallen-Key low-pass
+  ahead of `adc_ads1115`, corner chosen against the ADS1115's data rate
+  (128 SPS → Nyquist 64Hz, so a corner near 25Hz). Design and simulation can
+  start now; its bench check waits on the module. On-hand parts (100kΩ, ceramic
+  capacitors up to 100nF; check the corner is reachable with them).
+- **`OVERCUR` / `AM`** (current monitor) — a 0.1Ω low-side shunt (1W, on hand)
+  into the difference-stage topology of `hall_amplifier`, referenced at 0.93V.
+  Reason for that topology: a plain non-inverting amplifier on a few millivolts
+  loses its low end to the LM358's input offset and its 0.02V output floor
+  (an offset of −2mV at gain 50 pins the output at the floor for the first
+  20mA); a referenced difference stage doesn't. Calibrate against a known
+  load (100Ω resistors in parallel from the 3V3 pin: 33mA, 66mA, 132mA).
+- **`TIMEINT` / `JITTER`** — pulse width and edge-to-edge time from the same
+  PWM-slice machinery as `frequency_counter` (level-gated mode counts system
+  clocks while the pin is high: 8ns resolution, 0.5ms span at no divider);
+  Pico-only, so no purchase; verify with the logic analyzer.
+- **`REFGEN2` / `VM`** — TL431A on the Pico's `ADC_VREF` pin (Pico datasheet
+  §4.3: the board feeds `ADC_VREF` from 3V3 through 201Ω with a 2.2µF
+  capacitor and a 1Ω series resistor, and says an external shunt reference
+  may be connected there; with 2.495V the ADC range becomes 0–2.495V). Open
+  risk: a TL431 can oscillate with a few µF on its cathode, and that
+  capacitor is on the board; the design must include a stability check (ADC
+  noise with and without it) and name the fallback (an LM4040-3.0, which the
+  Pico datasheet recommends). Wait for `overvoltage_monitor`'s first run: it
+  is the first use of the TL431A batch.
+- **`SAMHOLD`** — CD4066B switch, hold capacitor, LM358 follower, Pico-timed;
+  droop measured by the ADC.
+- **`IA`** — **not with an INA126.** Checked 2026-10-02 against TI's datasheet:
+  its input common-mode range stays about 1.5V inside each supply rail
+  (Figure 5-7), which leaves a 0.3V window on 3.3V. At 3.3V the difference
+  stage in `hall_amplifier` is the usable instrumentation-amplifier building
+  block; a real IA needs a 5V supply (the Pico's VBUS pin) and an output
+  divider for the ADC. Don't put an INA126 on the AliExpress list for 3.3V use.
 
 ### AA-battery power budget
 
@@ -91,7 +111,7 @@ only of `ACTIVELIM`'s 2A check. Keep that file current as designs are added;
 the SparkFun kit (shelved 2026-10-01) is revived by a design that breaks the
 budget, not by the tier label `psu_medlow`.
 
-### `FORCEBAL` / `SIPMFE` / `LASERDRV` — new tier5/7 nodes (2026-09-18); `SIPMFE`/`LASERDRV` blocked on part sourcing, `FORCEBAL`'s optical readout startable (see the 2026-10-01 correction below)
+### `FORCEBAL` / `SIPMFE` / `LASERDRV` — new tier5/7 nodes (2026-09-18); `SIPMFE`/`LASERDRV` blocked on part sourcing; `FORCEBAL`'s optical readout designed 2026-10-02 as `optical_shadow_readout` (the balance's mechanics are still open)
 
 Added to `spacetime_circuits_dependency.md` 2026-09-18 (see that file's
 "Why these new tiers" section) at the user's explicit direction, alongside
@@ -177,6 +197,36 @@ strength of a netlist alone.
 ---
 
 ## Completed (moved out)
+
+- **2026-10-02**: five circuits designed, simulated, smoke-tested and
+  documented, all `main.py` files compiled under MicroPython on the Pico and
+  exercised against mocks (not run against the circuits):
+  `signal_conditioning/lockin_amplifier/` (`LOCKIN`/`DEMOD`),
+  `signal_conditioning/optical_shadow_readout/` (`FORCEBAL`'s optical
+  readout, resolving the open item from 2026-10-01),
+  `signal_conditioning/hall_amplifier/` (`HALLAMP`, for the SS49E now on
+  order), `measurement_tools/frequency_counter/` (`FREQC`/`SIMPLECNT`) and
+  `safety/overvoltage_monitor/` (`OVERVOLT`). Also revised
+  `oscillators/vibration_driver/` for the ordered motor's 120mA stall current.
+  The checks caught faults that would otherwise have reached the bench:
+  `lockin_amplifier`'s averagers settle with a 0.21s time constant (not the
+  0.1s of RC), so readings need 1.6s; `frequency_counter`'s first auto-range
+  wrapped its 16-bit counter on any input above 3MHz, and an AC-coupled
+  Schmitt trigger chattered on 8mV of noise or latched high, so the analog
+  path is DC-coupled with a trimpot level; `hall_amplifier`'s first
+  null scheme couldn't null a sensor at the datasheet's +0.25V extreme (the
+  LM358 can't output 1.8V+), a second one unbalanced the amplifier's legs
+  (+10% gain, a common-mode gain of 1), so the first came back with its limit
+  documented; `optical_shadow_readout`'s TIA lost 20% of the signal in a dark
+  room until its reference moved off ground (0.1V reverse bias), and a polarized
+  coupling capacitor would have been reverse-biased (two electrolytics
+  anti-series); `overvoltage_monitor`'s 1kΩ LED base resistor held its TRIP
+  line at 0.92V, below a logic high (100kΩ fixes it). Datasheet checks (TI,
+  Honeywell, Raspberry Pi) replaced recalled pinouts: the CD4066B `VSS` is
+  pin 7 (the repo had pin 6), the TL431A's TO-92 pinout was added, the
+  SS49E's null/sensitivity/span at 3.3V were taken from its datasheet.
+  See `kb/lm358_single_supply_design_notes.md` and
+  `kb/datasheet_and_live_probe_notes.md` for the method and findings.
 
 - **2026-10-01** (second pass): `oscillators/vibration_driver/`
   (`SIMPGEN`'s actuator stage, the `RIPPLETANK` dipper driver) and

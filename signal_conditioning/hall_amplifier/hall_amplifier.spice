@@ -1,0 +1,97 @@
+* hall_amplifier — SS49E/49E linear Hall sensor + LM358 difference amplifier
+* with a trimpot null, tier5 HALLAMP.
+*
+* Topology (see README.md):
+*   Hall sensor on 3V3: OUT = VCC/2 + null error + sensitivity * B
+*   Vn  = 3V3 * (30k + pos*10k)/70k  (3 x 10k, 10k trimpot, 3 x 10k), buffered
+*         by U1B: the adjustable "null" the amplifier subtracts
+*   Vr  = 3V3 * 2k/(5.1k+2k) = 0.93V: where the output sits at zero field
+*   U1A difference amplifier, gain Rf/Rin = 100k/10k = 10:
+*         Vout = Vr + 10 * (Vhall - Vn)          (resistors matched)
+*   A difference stage rather than a non-inverting one because the 10k/100k
+*   divider at the inputs keeps both input nodes at about 1.58V at zero field,
+*   inside the LM358's input range (about 1.8V on 3.3V), and because matched
+*   legs cancel supply movement: the sensor's null and Vn both scale with 3V3.
+*
+* Known limit, found by this netlist's smoke test: the LM358 can't output more
+* than ~1.8V, so U1B can't produce a Vn above that, so a sensor whose
+* zero-field output is above 1.8V (the datasheet allows up to 1.815V at 3.3V,
+* +0.25V on a 5V basis) can't be nulled. Two other schemes were tried and
+* dropped: injecting the trim current into the inverting node (it unbalances
+* the legs: gain +10% and a common-mode gain of 1, so a 10mV supply ripple
+* shows up as ~5mV at the output) and the same with a different range.
+* With 15 sensors on order, the answer for the rare out-of-range unit is
+* another unit; main.py says so.
+*
+* Sensor model, from the Honeywell SS39ET/SS49E/SS59ET datasheet (read
+* 2026-10-02): at Vs = 5V, sensitivity 1.0/1.4/1.75 mV/gauss (min/typ/max),
+* null 2.25/2.5/2.75V, output span 1.05 to Vs-1.05 (min), 0.95 to Vs-0.95
+* (typ). Output is ratiometric, so at 3.3V sensitivity scales by 3.3/5 and the
+* null error by the same ratio. Case parameters (smoke_test.py rewrites):
+*   bgauss  field at the sensor (gauss)      sens   sensitivity at 5V (mV/G)
+*   nullerr null error at 5V (V)             pos    trimpot wiper position 0..1
+*   span    output half-span at 5V (V; datasheet typ 2.5 - 0.95 = 1.55)
+*   dRf, dRr  fractional error on the two Rf legs (resistor tolerance)
+*
+* LM358 model: open-loop gain 1e5, output clamped to 0.02V..1.8V (VCC-1.5V).
+* No pole: this netlist is static.
+
+.param vs=3.3
+.param bgauss=0
+.param sens=1.4
+.param nullerr=0
+.param pos=0.5
+.param span=1.55
+.param dRf=0
+.param dRr=0
+
+.subckt lm358 inp inn out
+Eg  x 0 inp inn 1e5
+Bo  out 0 V = min(max(V(x), 0.02), 1.8)
+.ends
+
+Vcc    vcc 0 DC {vs}
+
+* Hall sensor (ratiometric)
+.param ratio={vs/5}
+Bh     hall 0 V = {vs/2} + {nullerr*ratio} + max(min({sens*ratio/1000}*{bgauss}, {span*ratio}), -{span*ratio})
+
+* null reference and buffer
+Rn1    vcc n1 10k
+Rn2    n1 n2 10k
+Rn3    n2 n3 10k
+Rpa    n3 wip {10k*(1-pos)+1}
+Rpb    wip n4 {10k*pos+1}
+Rn4    n4 n5 10k
+Rn5    n5 n6 10k
+Rn6    n6 0 10k
+Xu1b   wip vn vn lm358
+
+* output reference
+Rr1    vcc vr 5.1k
+Rr2    vr 0 2k
+
+* difference amplifier
+Rinp   hall vp 10k
+Rfp    vp vr {100k*(1+dRr)}
+Rinn   vn vm 10k
+Rfn    vm out {100k*(1+dRf)}
+Xu1a   vp vm out lm358
+
+.nodeset v(out)=0.93 v(vn)=1.65 v(vp)=1.58 v(vm)=1.58
+
+.control
+op
+echo --- results ---
+let vhall = v(hall)
+let vnull = v(vn)
+let vref = v(vr)
+let vout = v(out)
+let vplus = v(vp)
+let vminus = v(vm)
+let isup = -i(vcc)
+print vhall vnull vref vout vplus vminus isup
+quit
+.endc
+
+.end

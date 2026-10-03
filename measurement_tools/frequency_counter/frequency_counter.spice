@@ -1,0 +1,87 @@
+* frequency_counter — input conditioning for the Pico's hardware edge counter,
+* tier2 FREQC / bootstrap SIMPLECNT. Two input paths into GP3 (PWM slice 1,
+* channel B, counting rising edges):
+*   digital path: IN_D --10k--> GP3, with 1N5817 clamps to 3V3 and to GND, for
+*                 logic-level signals up to a few volts above the rails (an
+*                 NE555 on psu_4xaa swings 0..~5V)
+*   analog path:  IN_A --Rin 10k--> P, an LM358 Schmitt trigger (positive
+*                 feedback Rf = 1Meg, output pulled to 3V3 by 10k), then through
+*                 the digital path. DC-coupled, with the switching level set by
+*                 a 3296 trimpot: 3V3 - 10k - [10k pot] - 5.1k - GND, so the
+*                 wiper reaches 0.67V to 1.98V (the LM358's input range tops out
+*                 near 1.8V on 3.3V; keep the wiper below that). For sensor
+*                 outputs already sitting at a DC level: TIA, CHGAMP and
+*                 EPFIELD (VCC/2 = 1.65V), HALLAMP, a gain stage's output.
+* Hysteresis from the resistors: the output toggles when the input crosses
+*   rising:  Vref - (Vlow  - Vref) * Rin/Rf  = Vref + about 11mV
+*   falling: Vref - (Vhigh - Vref) * Rin/Rf  = Vref - about 22mV
+* so the input has to swing at least 33mV peak-to-peak across that window, and
+* noise under 33mV peak-to-peak cannot chatter it. A source impedance Rs adds
+* to Rin (the window grows by Rs/Rin).
+*
+* A DC-coupled design is deliberate. A first version with a capacitor in front
+* was simulated and rejected: with the source behind the capacitor the
+* positive feedback has no impedance to push against at 1kHz (it chattered on
+* 8mV of noise), and when it was fixed with a series resistor the stage could
+* latch with its output stuck high for any input under ~45mV.
+*
+* The LM358 as a comparator is modeled as a pure open-collector sink: the real
+* output stage can only source to about VCC - 1.5V, and the external pull-up is
+* what makes the high level a true logic high. 1N5817: Schottky fitted to Vf
+* ~0.45V at 1A (datasheet-typical), no reverse breakdown modeled.
+*
+* Case parameters (rewritten by smoke_test.py):
+*   amp     peak of the 1kHz test sine at IN_A (V)
+*   noise   peak of a 100kHz interferer added at IN_A (V)
+*   pos     trimpot wiper position, 0 (ground end) to 1
+*   vdig    high level of a 1kHz square at IN_D (V); vlow its low level (V)
+* The sine is centred on Vref - 5.5mV, the middle of the hysteresis window.
+
+.param amp=0.05
+.param noise=0.008
+.param pos=0.5
+.param vdig=6
+.param vlow=-1
+.param vref={3.3*(5.1k+pos*10k)/25.1k}
+
+Vcc    vcc 0 DC 3.3
+Rt     vcc vt 10k
+Rpa    vt vref {10k*(1-pos)+1}
+Rpb    vref vb {10k*pos+1}
+Rbot   vb 0 5.1k
+
+* analog path
+Vin    ina 0 SIN({vref-0.0055} {amp} 1000)
+Vnz    inb ina SIN(0 {noise} 100k)
+Rin    inb p 10k
+Rf     out p 1meg
+Ecmp   c 0 vref p 1
+Sdrv   out 0 c 0 swlow
+Rpu    vcc out 10k
+.model swlow SW(Vt=0 Vh=0.0005 Ron=50 Roff=1e12)
+Rs_a   out gp3a 10k
+Da1    gp3a vcc D1N5817
+Da2    0 gp3a D1N5817
+
+* digital path, driven separately by a square wave
+Vsq    ind 0 PULSE({vlow} {vdig} 0 100n 100n 0.5m 1m)
+Rs_d   ind gp3d 10k
+Dd1    gp3d vcc D1N5817
+Dd2    0 gp3d D1N5817
+.model D1N5817 D(IS=2.7e-8 N=1 RS=0.1 CJO=100p)
+
+.control
+tran 1u 20m
+meas tran dmax MAX v(gp3d) from=2m to=20m
+meas tran dmin MIN v(gp3d) from=2m to=20m
+meas tran omax MAX v(out) from=2m to=20m
+meas tran omin MIN v(out) from=2m to=20m
+meas tran gmax MAX v(gp3a) from=2m to=20m
+meas tran vr AVG v(vref) from=2m to=20m
+echo --- results ---
+print dmax dmin omax omin gmax vr
+print time v(out) > frequency_counter_out.txt
+quit
+.endc
+
+.end

@@ -30,7 +30,8 @@ same pattern on their own I/O A / I/O B / control pins.
 |-----|----------|-----|----------|
 | 1 | Switch 1 I/O A | 14 | VDD |
 | 2 | Switch 1 I/O B | 13 | Control 1 |
-| 6 | VSS (GND) | — | — |
+| 7 | VSS (GND) | — | — |
+| 5, 6, 12 | Controls of the unused switches 2, 3, 4 | — | tie each to GND |
 
 ---
 
@@ -41,7 +42,8 @@ same pattern on their own I/O A / I/O B / control pins.
 | From | To | Wire |
 |------|----|------|
 | [psu_pico_rail](../../power_supplies/psu_pico_rail/) 3V3 | CD4066B pin 14 (VDD) | Red Dupont jumper |
-| psu_pico_rail GND | CD4066B pin 6 (VSS) | Black Dupont jumper |
+| psu_pico_rail GND | CD4066B pin 7 (VSS) | Black Dupont jumper |
+| psu_pico_rail GND | CD4066B pins 5, 6 and 12 (unused controls; a floating CMOS input can sit anywhere and draw current) | three short jumpers |
 
 ### 2. Wire I/O A and I/O B
 
@@ -69,5 +71,11 @@ the pass/fail criteria.
 
 Move the wiring from step 2/3 to the next switch's pins (switch 2: I/O A
 pin 4, I/O B pin 3, control pin 5; switch 3: I/O A pin 8, I/O B pin 9,
-control pin 7; switch 4: I/O A pin 11, I/O B pin 10, control pin 12), and
-re-run. VDD/VSS wiring from step 1 stays the same for all four.
+control pin 6; switch 4: I/O A pin 11, I/O B pin 10, control pin 12), and
+re-run, moving the grounded-control jumper to the control pin you just
+freed (the tested switch's control is driven by the Pico, so it must not
+also be grounded). VDD/VSS wiring from step 1 stays the same for all four.
+
+**Corrected 2026-10-02:** earlier versions of this file put VSS on pin 6 and
+switch 3's control on pin 7; the CD4066B datasheet has VSS on pin 7 and
+switch 3's control on pin 6.

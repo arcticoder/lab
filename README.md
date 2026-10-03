@@ -66,6 +66,13 @@ ngspice -b signal_conditioning/phase_detector/phase_detector.spice
 ngspice -b protection/active_current_limiter/active_current_limiter.spice
 ngspice -b measurement_tools/inductance_bridge/inductance_bridge.spice
 ngspice -b signal_conditioning/accelerometer_interface/accelerometer_interface.spice
+ngspice -b oscillators/vibration_driver/vibration_driver.spice
+ngspice -b signal_conditioning/adc_ads1115/adc_ads1115.spice
+ngspice -b signal_conditioning/lockin_amplifier/lockin_amplifier.spice
+ngspice -b signal_conditioning/optical_shadow_readout/optical_shadow_readout.spice
+ngspice -b signal_conditioning/hall_amplifier/hall_amplifier.spice
+ngspice -b measurement_tools/frequency_counter/frequency_counter.spice
+ngspice -b safety/overvoltage_monitor/overvoltage_monitor.spice
 ```
 
 Run from the repo root. Each netlist prints an operating point at its
@@ -118,6 +125,11 @@ python signal_conditioning/accelerometer_interface/smoke_test.py
 python measurement_tools/logic_analyzer_check/smoke_test.py
 python oscillators/vibration_driver/smoke_test.py
 python signal_conditioning/adc_ads1115/smoke_test.py
+python signal_conditioning/lockin_amplifier/smoke_test.py
+python signal_conditioning/optical_shadow_readout/smoke_test.py
+python signal_conditioning/hall_amplifier/smoke_test.py
+python measurement_tools/frequency_counter/smoke_test.py
+python safety/overvoltage_monitor/smoke_test.py
 ```
 
 Or run all of them at once with `tools/run_all_smoke_tests.py`, which
@@ -169,6 +181,7 @@ photo of the as-built jig where one was taken (see each circuit's own
 | `signal_conditioning/phase_detector/` | SN74HC86N XOR gate compares `ne555_astable`'s output tap against an independent Pico PWM reference, RC-lowpassed | tier4 `PHASED`, feeds tier6 `LOCKIN` (undesigned) | 2026-09-19 — filtered output confirmed moving (0.871–1.546V over a ~3.5s window, not pinned at one extreme) as the two non-phase-locked oscillators drift, the real pass criterion per this circuit's own README § Validation. Required re-assembling `ne555_astable` first (broken back down to inventory since its own 2026-09-13 validation) |
 | `safety/thermal_monitor/` | MF52AT NTC divider (centers at VCC/2 at 25°C) + GPIO-driven alarm LED | safety `THERM` ("Thermal Monitoring with Alarm Threshold") | 2026-09-21 — ambient baseline stable at 1.708–1.713V / 10723–10790Ω / 23.3–23.5°C (close to the simulated VCC/2 midpoint, matching room temp being a couple degrees under the MF52AT's 25°C reference point); a sustained finger pinch drove a monotonic, physically-consistent response — resistance fell 10362Ω→8106Ω and reported temperature rose 24.2°C→29.8°C. Alarm LED correctly stayed off throughout (`ALARM_THRESHOLD_C=40.0`, never reached) — a true alarm trip hasn't been bench-tested yet. One transient outlier mid-run (3.253V/698639Ω/−47.4°C, one sample, self-corrected next reading) attributed to a momentary contact disturbance from handling the thermistor rather than a wiring fault — see `kb/bench_photo_diagnostics_notes.md`'s matching 2026-09-21 entry |
 | `measurement_tools/capacitance_bridge/` | RC charge-time capacitance meter (known `Rref`=100kΩ vs. unknown `Cx`, timed against a 63.2%-of-Vin threshold) | tier3 `CAPBRIDGE` | 2026-09-22 — a 47µF (25V) `Cx` from the electrolytic kit read 48.87µF/47.75µF/47.64µF across three consecutive runs, all within the kit's own ±20% tolerance of the 47µF nominal. A first attempt the same day (33µF `Cx`) read ~0.00–0.01µF on every run — traced to `Rref`'s far lead resting on the breadboard's center divider ridge rather than seated in the junction hole, leaving the ADC node floating; reseating the lead fixed it. See `kb/bench_photo_diagnostics_notes.md`'s matching entry |
+| `measurement_tools/logic_analyzer_check/` | Pico PWM square wave (GP15, 1kHz/25%) captured by the CY7C68013A board through `sigrok-cli`, frequency and duty checked on the host | `SCOPELA` first capture (not a circuit; no netlist) | 2026-10-02 — 999.9Hz / 25.0% over 24 periods at 1MHz and at 4MHz; `--find-channel` reported `D0` alone, so pad `PB0` → `D0`. Under WSL it needs usbipd `bind` + `attach --auto-attach` on the firmware-loaded device (see its `breadboard.md`) |
 
 ---
 
@@ -191,17 +204,26 @@ sequence this drives.
 | `protection/active_current_limiter/` | IRLZ44N + 0.1Ω sense resistor + LM358 comparator, hard-trip at 2A | general-purpose `ACTIVELIM`, protects `psu_medhigh`/`psu_high` (both backlog) |
 | `signal_conditioning/accelerometer_interface/` | GY-521 (MPU-6050) on I2C0 — bus-timing/supply simulation plus a bring-up script (ID, gravity, noise, vibration RMS) | tier5 `ACCELIF` (designed 2026-09-23); the measurement side of `VIBISO` |
 | `measurement_tools/inductance_bridge/` | PWM-driven parallel LC resonance sweep: unknown inductor vs. a known 10nF, Schottky peak detector, Pico ADC | tier3 `INDBRIDGE` (designed 2026-09-23); targets the 1µH–1mH color-ring assortment |
-| `measurement_tools/logic_analyzer_check/` | Pico drives a 1kHz/25% square wave on GP15; `sigrok-cli` captures it on the CY7C68013A board and a host script checks frequency and duty | `SCOPELA` first-capture check (designed 2026-10-01); no analog circuit, so no netlist. First attempt 2026-10-01 stopped at a WSL/usbipd re-attach failure after sigrok's firmware load, not at the signal; fix steps are in its `breadboard.md` |
-| `oscillators/vibration_driver/` | S8050 low-side switch + 1N5817 flyback driving a 3V coin vibration motor from one Pico PWM pin (GP16) | tier1 `SIMPGEN` actuator stage and `RIPPLETANK`'s dipper driver (designed 2026-10-01; motor not on hand) |
-| `signal_conditioning/adc_ads1115/` | ADS1115 16-bit ADC on I2C0, with a 10kΩ/100nF/clamp-diode input network, checked against the Pico's own ADC on a shared divider | tier9 `ADCDRV` (designed 2026-10-01; module not on hand) |
+| `oscillators/vibration_driver/` | S8050 low-side switch + 1N5817 flyback driving a 3V coin vibration motor from one Pico PWM pin (GP16) | tier1 `SIMPGEN` actuator stage and `RIPPLETANK`'s dipper driver (designed 2026-10-01, revised 2026-10-02 for the ordered motor's 120mA stall current; motors on order) |
+| `signal_conditioning/adc_ads1115/` | ADS1115 16-bit ADC on I2C0, with a 10kΩ/100nF/clamp-diode input network, checked against the Pico's own ADC on a shared divider | tier9 `ADCDRV` (designed 2026-10-01; one module on order) |
+| `signal_conditioning/lockin_amplifier/` | Single-phase lock-in: AC-coupled LM358 gain stage, two CD4066B switches gated by complementary Pico-generated clocks, two RC averagers; test signal, anti-phase, 45°/90° and an asynchronous interferer all generated by the Pico | tier6 `LOCKIN` and tier4 `DEMOD` (designed 2026-10-02; every part on hand) |
+| `signal_conditioning/optical_shadow_readout/` | Modulated LED + PT334-6C + TIA read through the lock-in's demodulator: how much light gets past a flag, with ambient light and lamp flicker rejected | tier5 `FORCEBAL`'s optical readout (designed 2026-10-02; every part on hand; builds on `lockin_amplifier`) |
+| `signal_conditioning/hall_amplifier/` | SS49E/49E linear Hall sensor + LM358 difference amplifier with a trimpot null, 9.2mV per gauss about 0.94V | tier5 `HALLAMP` (designed 2026-10-02; sensors on order) |
+| `measurement_tools/frequency_counter/` | Pico PWM-slice hardware edge counter, auto-ranged by a software gate; digital path (10kΩ + 1N5817 clamps) and an LM358 Schmitt path for sensor outputs | tier2 `FREQC` and bootstrap `SIMPLECNT` (designed 2026-10-02; every part on hand) |
+| `safety/overvoltage_monitor/` | TL431A reference + LM358 comparator with hysteresis, trimpot trip point 1.5–8.8V, LED and a `TRIP` line for the Pico | safety `OVERVOLT` (designed 2026-10-02; every part on hand; first use of the TL431A batch) |
 Each of these (except `psu_medlow_lm317`, a kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
 schematic, a breadboard wiring guide, and a `smoke_test.py` (all but
 `active_current_limiter` also have a `main.py`, same reasoning as the
 PSU rows above having none). `inductance_bridge`'s and
 `accelerometer_interface`'s `main.py` files were exercised against
-host-side mocks only, not the Pico; `logic_analyzer_check` has no netlist or schematic (nothing analog to simulate) and a `main.py` plus a host-side `check_capture.py`; `vibration_driver` and `adc_ads1115` have netlists and `main.py` files exercised against host mocks only. None of these have been physically
-assembled with real components yet (`psu_low_v2`,
+host-side mocks only, not the Pico, as are the `main.py` files of the
+2026-10-01/02 designs (`vibration_driver`, `adc_ads1115`, `lockin_amplifier`,
+`optical_shadow_readout`, `hall_amplifier`, `frequency_counter`,
+`overvoltage_monitor`); the 2026-10-02 ones were also compiled under
+MicroPython on the Pico, and the PWM register programming the lock-in family
+uses was checked on the Pico against the logic analyzer. None of these have
+been physically assembled with real components yet (`psu_low_v2`,
 `transimpedance_amplifier`, and `phase_detector` were exceptions as of
 2026-09-16/2026-09-19, and all three moved to the bench-tested table
 above once their validation checks passed — see their rows there and

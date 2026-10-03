@@ -1,0 +1,110 @@
+* optical_shadow_readout — modulated LED + PT334-6C photodiode + TIA, read by
+* the lock-in's demodulator: tier5 FORCEBAL's optical displacement readout (an
+* object, the "flag", partly blocks the light between LED and photodiode;
+* the output measures how much gets through) with ambient-light rejection.
+*
+* Chain: Pico GP8 square wave (1kHz, in phase with REF) -> 1k -> red LED ->
+* (flag) -> PT334-6C (0.1V reverse bias) -> LM358 TIA (Rf = 100k, Cf = 100pF)
+* -> 0.5uF -> 10k -> lock-in gain stage (LM358, Rf = 10k: gain -0.9) -> two
+* CD4066B switches gated by REF / REFB -> two 100k/1uF averagers -> followers
+* -> X = VB - VA. Everything after the TIA is the lock-in_amplifier circuit
+* with one resistor changed (Rf 1Meg -> 10k) and the test sources removed.
+* Gain options by swapping Rf (and Rin): 10k/10k = 0.9, 10k/2k = 4.5, 100k/10k = 9,
+* 100k/2k = 45, 1Meg/10k = 91. Pick the largest that keeps the gain stage's
+* output under about 0.8V peak-to-peak (the LM358 can't swing further on 3.3V).
+*
+* The LED and photodiode are one current source here: photocurrent =
+* ambient + modulation * (LED on). That is the model's weakest link: the
+* modulation amplitude (imod, uA peak-to-peak at the photodiode) depends on
+* the LED, the distance, the flag and the optics, and nothing on this bench
+* has measured it. 2uA is a plausible value for a red 5mm LED at 1.3mA, 15mm
+* from the photodiode, and the smoke test shows how the output scales from
+* 0.5uA to 2uA, so the real value only sets which gain resistor to use.
+*
+* Case parameters (smoke_test.py rewrites them):
+*   iamb   DC ambient photocurrent (A)      imod   LED-driven photocurrent, peak-to-peak (A)
+*   iflick 100Hz ambient flicker, peak (A)  (mains lighting)
+*   rfs    the gain stage's feedback resistor (ohm)
+* LM358 and CD4066B models as in lockin_amplifier.spice. Photodiode junction
+* capacitance Cd = 50pF is assumed (not measured).
+
+.param vcc=3.3
+.param iamb=5u
+.param imod=2u
+.param iflick=0
+.param rfs=10k
+
+.subckt lm358 inp inn out
+Eg  x 0 inp inn 1e5
+Rp  x y 1k
+Cp  y 0 15.9u
+Bo  o 0 V = min(max(V(y), 0.02), 1.8)
+Ro  o out 50
+.ends
+
+Vcc    vcc 0 DC {vcc}
+
+* Vmid and its buffer
+Rm1    vcc vmr 10k
+Rm2    vmr 0 5.1k
+Xu1b   vmr vmo vmo lm358
+
+* clocks: REF/REFB on slice 5, LED drive in phase with REF
+Vref   ref  0 PULSE(0 3.3 0 10n 10n 0.48m 1m)
+Vrefb  refb 0 PULSE(0 3.3 0.52m 10n 10n 0.48m 1m)
+Vled   ledp 0 PULSE(0 3.3 0 10n 10n 0.5m 1m)
+
+* photodiode as a current source into the TIA's inverting node
+Bph    tin 0 I = {iamb} + {imod}*V(ledp)/3.3 + {iflick}*sin(2*3.14159265*100*time)
+Cd     tin 0 50p
+Rft    tin tout 100k
+Cft    tin tout 100p
+* TIA reference 0.105V (10k/330 divider, 100nF): the photodiode sits 0.1V
+* reverse-biased and the output idles at 0.1V + Iph*Rf instead of on the LM358's
+* 20mV floor, so it never rails in the dark. The first simulation, with the
+* reference at ground, lost 20% of the signal in a dark room for that reason.
+Rtb1   vcc vtb 10k
+Rtb2   vtb 0 330
+Ctb    vtb 0 100n
+Xtia   vtb tin tout lm358
+
+* gain stage
+* two 1uF electrolytics in anti-series (a non-polar 0.5uF): tout's DC level is
+* below the 1.1V on the far side, so a single polarized part would be reverse-biased
+Cin    tout inn0 0.5u
+Rin    inn0 inn 10k
+Rf     inn out1 {rfs}
+Xu1a   vmo inn out1 lm358
+Rl1    out1 0 10k
+
+* demodulator
+S1     out1 xa ref 0 sw4066
+S2     out1 xb refb 0 sw4066
+Ra     xa A 100k
+Rb     xb B 100k
+Ca     A 0 1u
+Cb     B 0 1u
+Xu2a   A  oa oa lm358
+Xu2b   B  ob ob lm358
+.model sw4066 SW(Vt=1.65 Vh=0.2 Ron=1k Roff=1e10)
+
+.ic v(A)=1.114 v(B)=1.114 v(out1)=1.114 v(vmo)=1.114 v(oa)=1.114 v(ob)=1.114 v(inn)=1.114 v(inn0)=1.114 v(xa)=1.114 v(xb)=1.114 v(xu1a.y)=1.114 v(xu1b.y)=1.114 v(xu2a.y)=1.114 v(xu2b.y)=1.114 v(xtia.y)=0.6 v(tout)=0.6 v(tin)=0.105 v(vtb)=0.105
+
+.control
+tran 10u 2.0 uic
+let xd = v(ob) - v(oa)
+meas tran xavg AVG xd from=1.6 to=2.0
+meas tran toutavg AVG v(tout) from=1.6 to=2.0
+meas tran toutmax MAX v(tout) from=1.6 to=2.0
+meas tran toutpp PP v(tout) from=1.6 to=2.0
+meas tran o1max MAX v(out1) from=1.6 to=2.0
+meas tran o1pp PP v(out1) from=1.6 to=2.0
+meas tran amax MAX v(oa) from=1.6 to=2.0
+meas tran bmax MAX v(ob) from=1.6 to=2.0
+meas tran aavg AVG v(oa) from=1.6 to=2.0
+echo --- results ---
+print xavg toutavg toutmax toutpp o1max o1pp amax bmax aavg
+quit
+.endc
+
+.end
