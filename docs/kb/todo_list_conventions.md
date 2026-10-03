@@ -980,3 +980,38 @@ fee. Consequences:
   kit: no designed circuit needed it; see `power_rail_budget_notes.md`).
   Say so in the chat summary so the user can veto; record the revive
   trigger in the Deferred entry.
+
+## Running out of designs is the failure to avoid; apply the ranking to what the pass produced (2026-10-02)
+
+The user's complaint on 2026-10-02 was that every build is blocked because
+the designs ran out (the only startable item was a logic-analyzer check that
+the session could then complete itself). A pass that leaves "Ready to build
+now" with fewer than three on-hand builds, or nothing pending a shipment, is
+the thing to fix first: design ahead, from `TODO-agent.md`'s candidates, until
+there are at least three. Rules this pass followed:
+
+- **A check the session can run live is closed by the session.** With the rig
+  left plugged in and attached, the `SCOPELA` first capture was run from the
+  session shell and moved to `TODO-completed.md`; it did not stay as a
+  bullet for the user.
+- **Ranking, applied to the four new on-hand builds**: `lockin_amplifier`
+  first (criterion 1: `optical_shadow_readout` is built on its assembled
+  wiring; criterion 2: `LOCKIN` is the repo's named strongest next target),
+  then `optical_shadow_readout` directly after it (criterion 1's spirit: the
+  ephemeral-circuit rule says to tear a circuit down unless the next build
+  reuses its wiring, so a build that reuses it must follow it, not be ranked
+  by tier), then `overvoltage_monitor` (criterion 4, `safety` subgraph is declared
+  first in `general_purpose_circuit_dependency.md`), then `frequency_counter`
+  (criterion 4, tier2).
+- **"Next order" stays first (it has the only real clock) but says whether
+  anything waits on it.** On 2026-10-02 nothing in "Ready to build now" did, so
+  the bullet says so; the user's own rule is that an order goes first when it
+  blocks everything else, and a sentence prevents it reading that way.
+- **A part nobody can use isn't a purchase.** The INA126 looked like the cheap
+  AliExpress part to fill the cart; TI's common-mode-range figure shows a 0.3V
+  window on 3.3V. Check the datasheet at the supply the bench has before
+  listing a part (see `datasheet_and_live_probe_notes.md`).
+- The next cart's contents (solder wick, disc magnets) are still under the
+  free-shipping line; the cart stays "add, check the total, don't pay a fee",
+  and the next design pass supplies the top-up.
+

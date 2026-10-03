@@ -17,42 +17,10 @@ the converted `.md` files are tracked).
 
 ## Candidates found, not yet in any cart
 
-### ADS1115 16-bit ADC module (2 pcs) — for `signal_conditioning/adc_ads1115`
-
-- Listing: "I2C ADS1115 16 Bit ADC 4 channel Module with Programmable Gain
-  Amplifier" — [item 32648046830](https://www.aliexpress.com/item/1pcs-16-Bit-I2C-ADS1115-Module-ADC-4-channel-with-Pro-Gain-Amplifier-for-Arduino-RPi/32648046830.html)
-  (US $1.65 each when found by search 2026-10-01; price, stock and seller
-  not checked beyond the listing).
-- 2 wanted: one for the build, one spare against a dead-on-arrival or
-  mislabeled unit (cheap ADC modules are a known clone risk, so the first
-  bench run is also the genuineness check).
-- Why: the Pico's ADC steps 0.8mV; this one steps 125µV at ±4.096V. Design
-  and numbers in `signal_conditioning/adc_ads1115/README.md`. Tier9
-  `ADCDRV` in `general_purpose_circuit_dependency.md`.
-- Pick a variant whose photos show the pin headers already soldered, so no
-  soldering is needed before the first run.
-- Faster, pricier source if the weeks matter: RobotShop stocks a
-  [Whadda 4-channel ADS1115 module](https://jp.robotshop.com/en/products/whadda-4-channel-ads1115-16-bit-adc-i2c-module)
-  (price not checked: RobotShop pages blocked automated fetches 2026-10-01).
-
-### Coin vibration motor, 3V, 10mm (1027-type) — for `oscillators/vibration_driver`
-
-- Listing: "1/10PCS 10mmx3mm Mini Vibration Motor DC1.5-3.7V 10000rpm Flat Coin
-  Button-Type" — [item 1005007703166995](https://www.aliexpress.com/item/1005007703166995.html)
-  (found by search 2026-10-01, sub-dollar per motor; not vetted beyond the
-  listing text). Take the multi-piece variant: they are consumables, and a
-  few spares cost cents.
-- Why: nothing on hand is a motor or speaker, which is what kept
-  `RIPPLETANK`'s dipper driver undesigned (`TODO-agent.md`, resolved
-  2026-10-01). The driver is designed for up to 90mA at 3.3V; these coin
-  motors are usually rated well under that, which leaves margin. The
-  listing's rated current is not recorded here: read it from the listing and
-  stay at or under 90mA.
-- RobotShop alternatives if wanted sooner: the
-  [Seeed Mini Vibrating Motor](https://www.robotshop.com/ca/en/seeedstudio-mini-vibrating-motor.html)
-  (3V, 90mA max) and the
-  [Solarbotics VPM2](https://www.robotshop.com/products/solarbotics-vpm2-vibrating-motor)
-  (3V, under 80mA).
+No candidates are pending as of 2026-10-02: the ADS1115, coin motor, piezo
+and Hall-sensor candidates were ordered together (see "On order" at the
+bottom). The solder wick was not in that order and still needs a cart; see
+`TODO-arcticoder.md`'s "Next order".
 
 ---
 
@@ -152,44 +120,9 @@ notes below stay for that day.
 
 ## In cart (not yet checked out)
 
-As of 2026-10-01 nothing is in transit. The solder wick below blocks
-`ACCELIF`'s first power-up, but the cart is **held, not checked out**,
-until it clears the $10 free-shipping line: a shipping fee on a cart this
-small isn't worth paying, and the two new parts under "Candidates" above
-(ADS1115 modules, vibration motors) come from this pass's circuit designs
-and go on the same cart. The PD trigger board and power-resistor
-assortment above are still not part of it — both supported `ACTIVELIM`'s
-bench check, which moved to `TODO-arcticoder.md`'s "Deferred" section
-2026-09-24 (see [kb/todo_list_conventions.md](kb/todo_list_conventions.md)).
-
-The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
-— acquired directly (non-AliExpress), so it's tracked in
-[inventory.md](inventory.md) instead, not this file.
-
-### Piezo element, 12mm disc, leaded (pre-attached wires)
-
-- Listing: "12mm 12x8x0.55mm Piezoelectric Diaphragm Piezo Disc with Wire
-  Leads" — [item 1005003133740770](https://www.aliexpress.com/item/1005003133740770.html).
-- 12 selected. Replaces the flux-sourcing plan for the bare 12mm discs
-  received 2026-09-12 (see that entry below) — a fluxless solder attempt
-  on the bare batch destroyed one unit 2026-09-16, and buying leaded
-  stock sidesteps the problem entirely instead of sourcing flux. Fills
-  the tier5 `CHGAMP` blocker in
-  [TODO-arcticoder.md](TODO-arcticoder.md)'s "Next order" section.
-- Added to cart: 2026-09-21.
-
-### Linear/analog Hall-effect sensor (49E, TO-92)
-
-- Listing: "49E TO-92 AH49E OH49E SS49E S49E Linear Hall-Effect IC" —
-  [item 32912682330](https://www.aliexpress.com/item/32912682330.html).
-- 10 selected. Fills the tier5 `HALLAMP` gap the on-hand KY-003/A3144
-  module only partially covers (that module is digital switch-output
-  only; `HALLAMP`'s op-amp amplifier design needs a genuinely
-  linear/analog Hall element). See
-  [TODO-arcticoder.md](TODO-arcticoder.md)'s "Next order" section — no
-  bench build is currently blocked on this, it's a shipping-pipeline
-  bundle with the piezo disc above, not a build-priority purchase.
-- Added to cart: 2026-09-21.
+Empty as of 2026-10-02: the 2026-10-02 order (see "On order") took everything
+that was in the cart except the solder wick, which was removed from the cart
+before checkout and has not been re-added.
 
 ### Solder wick (desoldering braid)
 
@@ -198,7 +131,7 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
   `signal_conditioning/accelerometer_interface` (2026-09-24). Wick is how
   the bridge gets cleared (procedure in that circuit's `breadboard.md`),
   so `ACCELIF`'s first power-up waits on this item arriving.
-- Added to cart: 2026-09-24.
+- Not part of the 2026-10-02 order. Needs to go into the next one.
 
 ---
 
@@ -655,7 +588,76 @@ The Mini-USB cable that sat here since 2026-09-23 was removed 2026-09-24
 
 ## On order (placed, not yet received)
 
-Nothing currently in this stage as of 2026-10-01 — the 2026-09-10 batch
-(GY-521, CY7C68013A, inductor reorder) all arrived 2026-09-20; see
-"Received" above. The piezo disc, 49E Hall sensor and solder wick are one
-stage earlier, still "In cart" above pending checkout.
+### 2026-10-02 order (5 line items)
+
+Placed 2026-10-02, AliExpress, transit a few weeks. The ADS1115 and coin
+motor are different listings from the candidates recorded 2026-10-01, and
+only one ADS1115 was ordered (not two). Read each listing's own variant
+string: the titles bundle many part numbers.
+
+#### Piezo element, 12mm disc, leaded — variant "Wire-12mm-10PCS"
+
+- Listing: "5/10PCS Piezoelectric Piezo Ceramic Wafer Plate piezo element
+  Diameter 12MM 15MM 18MM 20MM 27MM 35MM 50MM For Buzzer Loudspeaker" (brand
+  Eiechip) — [item 1005003133740770](https://www.aliexpress.com/item/1005003133740770.html).
+  The same item number that was recorded in the cart as "12mm 12x8x0.55mm
+  Piezoelectric Diaphragm Piezo Disc with Wire Leads"; the listing title has
+  since changed. 10 ordered, not the 12 first planned.
+- Fills the `CHGAMP` blocker (leaded discs, no fluxless soldering).
+- Spec for the 12mm size (table "FT-12T-16A1"): resonance 16.5±0.7kHz,
+  static capacitance 5000pF ±30%, brass plate 12mm, ceramic 10mm, 0.13mm
+  plate, 0.33mm total, allowable input 1.5–30Vp-p, operating −20 to +70°C.
+  **The first parameter table on the listing page (4.1kHz, 28000pF) is the
+  27mm disc's, not this one's** — the page mixes sizes. Use the per-size
+  table. Static capacitance is what `CHGAMP`'s `Cf` choice cares about.
+- Not yet received.
+
+#### Linear Hall-effect sensor, 49E — variant "10pcs/lot 49E"
+
+- Listing: "49E TO-92 AH49E OH49E SS49E S49E Linear Hall-Effect IC" (brand
+  CazenOveyi) — [item 32912682330](https://www.aliexpress.com/item/32912682330.html).
+  10 ordered. Fills `HALLAMP`'s linear-sensor gap.
+- Not yet received.
+
+#### Linear Hall-effect sensor, SS49E — variant "SS49E", 5pcs
+
+- Listing: "5pcs/lot SS40AF SS41F SS495A SS49E S49E 40AF 41F 495A 49E high
+  sensitivity Hall sensor" (brand CazenOveyi) —
+  [item 1005007499191934](https://www.aliexpress.com/item/1005007499191934.html).
+  Intended as a replacement for the line above; both ended up in the order,
+  so 15 49E-family sensors are coming. The title bundles latching/switch
+  parts (40AF, 41F) next to the linear ones, so the selected variant string
+  "SS49E" is what matters. Check the top mark of each unit on arrival.
+- Not yet received.
+
+#### ADS1115 16-bit ADC module — 1 pc
+
+- Listing: "1 - 10PCS ADS1115 ADC Analog to Digital Converter Module with
+  Programmable Gain Amplifier 16 Bit I2C 2.0V To 5.5V for Arduino RPi" —
+  [item 1005009879589790](https://www.aliexpress.com/item/1005009879589790.html)
+  (not the 2026-10-01 candidate, item 32648046830). One ordered, deliberately:
+  if it is a dud the plan is a refund, then decide.
+- Pins per the listing's photo, front side, top to bottom: `VDD, GND, SCL,
+  SDA, ADDR, ALRT, A0, A1, A2, A3`; back side prints "Max AIN: VDD, VDD:
+  2.0–5.5V". Board 17 × 28mm in the photo notes, but the text says
+  38 × 18 × 3mm: the two disagree. The listing does not say whether the pin
+  headers are soldered; assume they may not be, and that a strip of headers
+  and the iron may be needed (the solder wick matters for that too).
+- Listing specs: 16-bit, I2C address 0x48–0x4B by `ADDR`, 4 single-ended or
+  2 differential channels, programmable full-scale ±0.256V to ±6.144V,
+  8–860 SPS, VDD 2.0–5.5V, 150µA in continuous mode. `adc_ads1115`'s design
+  already assumes all of that, so no redesign is needed.
+- Not yet received.
+
+#### Coin vibration motor — variant "10Pcs 1027"
+
+- Listing: "10Pcs DC 3V 3-5V Micro Vibration Motor 0820 0827 0830 0834
+  10000-12000rpm Coin Button Motor Wire Connection 1027 1030 1034 1234" —
+  [item 1005012621890312](https://www.aliexpress.com/item/1005012621890312.html).
+  Not the 2026-10-01 candidate listing (item 1005007703166995).
+- 10mm diameter × 2.7mm, leaded (red +, blue or black −). Rated 3V (working
+  range 2.7–3.3V in the performance table; "3–5V" in the headline), starting
+  voltage 2.3V, rated current 80–90mA, **stall current 120mA max**, 10000–
+  12000rpm. This is above the 90mA that `vibration_driver` was sized for;
+  the design was revised 2026-10-02 (see its README).
+- Not yet received.

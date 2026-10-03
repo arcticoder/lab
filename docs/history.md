@@ -4539,3 +4539,27 @@ Both are simulated and smoke-tested but not built, since the parts aren't on han
 [TODO-arcticoder.md](docs/TODO-arcticoder.md) now has the cart additions, the capture steps, and both new circuits under "Blocked". The kb notes and `history.md` are updated too.
 <!-- ------ -->
 ---
+The logic analyzer check passes, so I ran it from the session rather than leaving it for you. With GP15 on `PB0` it read 999.9 Hz at 25.0% duty at both 1 MHz and 4 MHz. `--find-channel` reported `D0` only. The earlier "no channel toggled" result happened before the wires were reseated, and I couldn't isolate its cause. Nothing is committed.
+
+**Order.** I logged all five line items in [orders.md](docs/orders.md), [inventory.md](docs/inventory.md) and [parts_reference.md](docs/parts_reference.md). 15 Hall sensors are coming, since both listings went through. Only one ADS1115 is on order. The solder wick was not in the order, so `ACCELIF` is still blocked and the wick is first on the next cart, along with disc magnets for the Hall test. Nothing in the ready list waits on that cart.
+
+**Corrections I found along the way:**
+- **CD4066 pinout:** the repo had `VSS` on pin 6, but the TI datasheet puts it on pin 7. I fixed the tester docs and `parts_reference.md`. The 2026-08-28 bench pass was recorded against the wrong table, so don't treat it as proof the wiring was right.
+- **Coin motor:** it stalls at 120 mA, not the 90 mA `vibration_driver` was sized for. I revised the design and smoke test, and the README now says a stalled motor draws 126 mA, over the Pico rail's 100 mA budget.
+- **Parts I rejected:** an INA126 can't work on 3.3 V (its input range is only about 0.3 V wide there), so it is not on the order list. A 0.5 µF coupling capacitor and a 100 kΩ LED base resistor replace choices the simulations showed would fail.
+
+**New designs** (all smoke tests green; the whole suite is 27/27; none has been built):
+1. **`lockin_amplifier`** — parts on hand.
+2. **`optical_shadow_readout`** — `FORCEBAL`'s optical readout; leave the lock-in assembled and build it right after.
+3. **`overvoltage_monitor`** — first use of the TL431A batch.
+4. **`frequency_counter`** — parts on hand.
+5. **`hall_amplifier`** — blocked on the SS49E shipment.
+
+[docs/TODO-arcticoder.md](docs/TODO-arcticoder.md) now lists 1–4 in that order as ready. [docs/TODO-agent.md](docs/TODO-agent.md) holds the next design candidates. The KB has the datasheet method, the LM358-at-3.3 V rules, and the live-probe notes.
+
+**What's still unverified:**
+- Real edge counting by `frequency_counter` hasn't been tried. Its input pin isn't wired.
+- Each new script has only been compiled on the Pico, with checks against mocks. The one exception is the lock-in's clock code, which I ran on GP15: 1000 Hz at 48.0% duty, as designed.
+- The LED-to-photodiode light level in `optical_shadow_readout` is an estimate. Its first run will measure it.
+<!-- ------ -->
+---

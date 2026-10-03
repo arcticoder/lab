@@ -18,6 +18,38 @@ matching, so don't assume one file makes the other redundant.
 
 ---
 
+## 2026-10-02
+
+- **`SCOPELA`'s first capture passed (bench check, run from the session shell
+  with the rig left plugged in).** Pico GP15 → `PB0`, grounds shared:
+  `check_capture.py` read the 1kHz/25% wave as 999.9Hz / 25.0% over 24 full
+  periods at 1MHz and again at 4MHz; `--find-channel` reported `D0` alone, so
+  the `PB0`→`D0` mapping holds. The earlier `--find-channel` failure
+  (no channel toggled) was before the wires were reseated; its cause was not
+  pinned down. Moved from "Ready to build now".
+- **2026-10-02 AliExpress order logged** (piezo ×10 leaded, 49E ×10, SS49E ×5,
+  ADS1115 ×1, coin motors ×10). The Hall sensors ordered twice (both the
+  original and the replacement listing went through: 15 in total). The solder
+  wick was not in the order; it is the first item of the next one.
+- **Five circuits designed, simulated and smoke-tested (not built):**
+  `signal_conditioning/lockin_amplifier` (`LOCKIN`/`DEMOD`),
+  `signal_conditioning/optical_shadow_readout` (`FORCEBAL`'s optical readout),
+  `signal_conditioning/hall_amplifier` (`HALLAMP`),
+  `measurement_tools/frequency_counter` (`FREQC`/`SIMPLECNT`),
+  `safety/overvoltage_monitor` (`OVERVOLT`). Four go to "Ready to build now"
+  (parts on hand); `hall_amplifier` goes to "Blocked" on the 2026-10-01
+  sensors. Smoke tests found and fixed real design faults before they reached
+  the bench; they are listed in `TODO-agent.md`'s 2026-10-02 entry.
+- **`vibration_driver` revised for the motor that was ordered** (stall current
+  120mA, not the 90mA it was sized for): the netlist and smoke test now cover a
+  running and a stalled motor; the stalled draw (126mA) exceeds `psu_pico_rail`'s
+  conservative 100mA budget and the README says so.
+- **Pinout corrections from datasheets.** The CD4066B pinout in
+  `parts_reference.md` and the `cd4066_switch_tester` docs had `VSS` on pin 6;
+  TI's datasheet has it on pin 7. Fixed, with a note that the 2026-08-28 bench
+  pass was recorded against the wrong table. The TL431A's TO-92 pinout, missing
+  from the repo, was added from TI's datasheet.
+
 ## 2026-10-01
 
 - **Carts and power-supply decisions revised.** The checkout-now bullet and

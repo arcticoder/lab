@@ -19,6 +19,13 @@ The 25% duty is chosen on purpose: an inverted channel reads 75%, and a
 line stuck at a mid level or floating shows no edges at all, so each
 failure mode produces a different message.
 
+**Status: bench-validated 2026-10-02.** With GP15 on the `PB0` pad and the
+grounds shared, `check_capture.py` printed three `[PASS]` lines (999.9Hz,
+25.0%, 24 full periods) at 1MHz and again at 4MHz, and `--find-channel`
+reported `D0` alone, so the pad-to-channel mapping holds and no other channel
+picked up the signal. The fix for the first attempt's usbipd problem is in
+`breadboard.md` and worked as written.
+
 ---
 
 ## Files
@@ -51,7 +58,7 @@ partial periods at the ends of the capture don't bias them.
 
 ## What a pass does and doesn't show
 
-A pass shows that `D0` samples correctly at 1MHz and that a 3.3V logic
+A pass shows that `D0` samples correctly at 1MHz (and 4MHz, tried once) and that a 3.3V logic
 signal from the Pico reads as clean 0/1. It says nothing about `D1`–`D15`
 (rerun with `--channel D1` after moving the wire to check another), the
 analyzer's higher sample rates, or its behavior with faster signals.

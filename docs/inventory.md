@@ -241,10 +241,8 @@ in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 | SN74HC86N quad 2-input XOR gate, DIP-14 | 1 | Received 2026-09-12 (ordered 2026-09-03). The only unit on hand is bench-tested PASS 2026-09-19 in `lab/signal_conditioning/phase_detector/` (tier4 `PHASED`, feeds tier6 `LOCKIN`) — only gate 1 of 4 on the chip was wired. Disassembled 2026-09-21 per this repo's ephemeral-circuit convention — back in inventory. See `lab/docs/parts_reference.md#sn74hc86n-quad-2-input-xor-gate`. |
 | KY-003 A3144 Hall sensor breakout module | 1 | Received 2026-09-12 (ordered 2026-09-03); untested. Fills the tier5 `HALLAMP` gap only partially — this is a digital switch-output Hall IC, not the linear analog sensor the gap called for. See `lab/docs/parts_reference.md#ky-003-a3144-hall-sensor-breakout-module`. |
 | GY-521 (MPU6050) 3-axis gyro/accelerometer module | 1 | Received 2026-09-20 (ordered 2026-09-10); untested. Substitutes for the originally-scoped ADXL335 to fill the tier5 `ACCELIF` gap. Designed/simulated 2026-09-23 as `lab/signal_conditioning/accelerometer_interface/`, not yet built. See `lab/docs/parts_reference.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module`. |
-| EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer) | 1 | Received 2026-09-20 (ordered 2026-09-10); enumerates as `04b4:8613` with jumper J4 removed (2026-09-24; keep J4 out). *Is* the `SCOPELA` tier purchase itself, not a component — no circuit design needed. `sigrok-cli --driver fx2lafw --scan` lists it (2026-10-01, 16 channels D0–D15), but under WSL the capture that follows fails: sigrok loads its firmware, the board re-enumerates, and usbipd drops it (`Device failed to renumerate`); the fix is on the Windows side (`usbipd bind` + `attach --auto-attach`, see `lab/measurement_tools/logic_analyzer_check/breadboard.md`). Header pads are `PB0`–`PB7`/`PD0`–`PD7`, not `D0`–`D15` (see `parts_reference.md`). No signal has been captured with it yet. Mini-USB port, cable acquired 2026-09-24. See `lab/docs/parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer`. |
+| EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer) | 1 | Received 2026-09-20 (ordered 2026-09-10); enumerates as `04b4:8613` with jumper J4 removed (keep J4 out). *Is* the `SCOPELA` tier purchase itself, not a component — no circuit design needed. **Bench-validated 2026-10-02**: with the Pico's GP15 on pad `PB0` and grounds shared, `sigrok-cli` captures `D0` (so `PB0`→`D0` holds) at 1MHz and 4MHz; 1kHz/25% wave read back as 999.9Hz / 25.0%; no other channel toggled. Under WSL it needs usbipd `bind` + `attach --auto-attach` on the firmware-loaded device (`lab/measurement_tools/logic_analyzer_check/breadboard.md`). Header pads are `PB0`–`PB7`/`PD0`–`PD7`, not `D0`–`D15` (see `parts_reference.md`). Mini-USB port, cable acquired 2026-09-24. See `lab/docs/parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer`. |
 | Color-ring inductor assortment, 0307 1/4W (12 values, 1µH-1mH) — reorder | 120 | Received 2026-09-20 (ordered 2026-09-10); untested — color-band values not yet cross-checked against a known reading. Fills the tier3 `INDBRIDGE` gap; designed/simulated 2026-09-23 as `lab/measurement_tools/inductance_bridge/`, not yet built. See `lab/docs/parts_reference.md#color-ring-inductor-assortment-0307-14w`. |
-| ADS1115 16-bit ADC module (I2C) | 0 | Not yet ordered — on the AliExpress cart list 2026-10-01 (2 wanted). For `lab/signal_conditioning/adc_ads1115/` (tier9 `ADCDRV`); see `lab/docs/orders.md`. |
-| Coin vibration motor, 3V, 10mm (1027-type) | 0 | Not yet ordered — on the AliExpress cart list 2026-10-01 (multi-piece lot). For `lab/oscillators/vibration_driver/`; the first motor on the bench, so `RIPPLETANK`'s actuator question has an answer. See `lab/docs/orders.md`. |
 
 ---
 
@@ -253,9 +251,16 @@ in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 Placed for the `lab/` repo's spacetime research build; new rows go here
 first, with full specs/links/datasheets in `lab/docs/orders.md` and
 `lab/docs/parts_reference.md`. Move each row up into its proper table
-above once physically received. Nothing currently in this stage as of
-2026-09-21 — see `lab/docs/orders.md` § "On order" and § "In cart" for
-what's ahead of it in the pipeline.
+above once physically received. All five rows below are one order placed
+2026-10-02 (transit a few weeks).
+
+| Component | Quantity | Notes |
+|-----------|----------|-------|
+| Piezo element, 12mm disc, with wire leads (variant "Wire-12mm-10PCS") | 10 | Ordered 2026-10-02. Leaded, so `CHGAMP` needs no soldering to the disc. 5000pF ±30%, resonance 16.5kHz per the listing's 12mm table. For `lab/signal_conditioning/charge_amplifier/`. See `lab/docs/orders.md`. |
+| Linear Hall sensor 49E, TO-92 (variant "10pcs/lot 49E") | 10 | Ordered 2026-10-02. For `HALLAMP` (`lab/signal_conditioning/hall_amplifier/`). Top mark not yet checked. |
+| Linear Hall sensor SS49E, TO-92 (variant "SS49E", 5pcs) | 5 | Ordered 2026-10-02 as a replacement for the line above; both orders went through, so 15 in total. Listing bundles latching/switch part numbers: check each top mark on arrival. |
+| ADS1115 16-bit ADC module (I2C) | 1 | Ordered 2026-10-02, different listing from the 2026-10-01 candidate. One unit only; a refund is the plan if it is a dud. For `lab/signal_conditioning/adc_ads1115/`. Whether its headers are soldered is not stated. |
+| Coin vibration motor, 3V, 10×2.7mm (variant "10Pcs 1027") | 10 | Ordered 2026-10-02. Rated 3V, 80–90mA, stall 120mA max, starts at 2.3V. For `lab/oscillators/vibration_driver/`. |
 
 ---
 
@@ -280,4 +285,4 @@ sourcing in [TODO-arcticoder.md](TODO-arcticoder.md)).
 | Soldering iron stand          | 1        | Included with iron                                          |
 | Soldering tip, 5/32 in.       | 2        | Included with iron                                          |
 | 18-in-1 wire stripper/crimper pliers | 1 | Received 2026-09-03; high-carbon steel + PVC handle. Resolves the wire-stripper dependency that was blocking `psu_ultralow_v1`/`psu_low_v2` AA-holder lead termination in `lab/`. |
-| Solder wick (desoldering braid) | 0 | Added to AliExpress cart 2026-09-24 — a few header pins bridged while soldering the GY-521 module for `signal_conditioning/accelerometer_interface`; wick is the clearing method (procedure in that circuit's `breadboard.md`), so that circuit's first power-up waits on it. Not yet received. |
+| Solder wick (desoldering braid) | 0 | Needed since 2026-09-24 — a few header pins bridged while soldering the GY-521 module for `signal_conditioning/accelerometer_interface`; wick is the clearing method (procedure in that circuit's `breadboard.md`), so that circuit's first power-up waits on it. **Not part of the 2026-10-02 order** (it was taken out of the cart earlier and never put back); goes on the next order. Not yet ordered. |

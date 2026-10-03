@@ -24,7 +24,7 @@ Powered from [psu_pico_rail](../../power_supplies/psu_pico_rail/) — see
 | Component | Value | Quantity |
 |-----------|-------|----------|
 | TL082 | JFET-input dual op-amp, DIP-8 | 1 |
-| Piezo element | 12mm disc | 1 |
+| Piezo element | 12mm disc, **leaded** (2026-10-02 order, on order) | 1 |
 | Resistor | 1 MΩ (bias divider, `R1`/`R2`) | 2 |
 | Resistor | 1 MΩ (feedback, `Rf_bias`) | 1 |
 | Ceramic capacitor | 10 nF (feedback, `Cf`; EIA code `103`) | 1 |
@@ -54,15 +54,15 @@ unconnected. V− (pin 4) goes to GND — single-supply build.
 Two terminals, no fixed polarity convention (unlike a diode) — either
 lead can go to either node.
 
-**The bare disc has no pre-attached leads.** Before it can plug into
-the breadboard, solder a short lead onto each of its two contacts (the
-center ceramic face and the metal backing plate). **Use rosin flux
-(paste or pen) and a quick, low-heat touch** — a 2026-09-16 attempt
-without flux destroyed a unit: the ceramic disc conducts heat poorly,
-so without flux to help the joint wet quickly, the extra dwell time
-needed cracks the ceramic or depoles the piezo effect before the solder
-takes. See
+**Use a leaded disc** (the 2026-10-02 order: 12mm, wires already
+attached, 5nF ±30% per its listing). The two leads plug into the
+breadboard directly, nothing to solder. The bare discs in inventory
+(19 usable) have no leads and a fluxless attempt on 2026-09-16 destroyed
+one — the ceramic conducts heat poorly, so the extra dwell time cracks it
+or depoles it. Leave the bare discs alone for this build. See
 [parts_reference.md#piezo-element-12mm-disc](../../docs/parts_reference.md#piezo-element-12mm-disc).
+Twist-pair or strip the lead ends so they seat firmly in the breadboard:
+a loose lead on a 1MΩ node reads as noise or a flat line.
 
 ---
 

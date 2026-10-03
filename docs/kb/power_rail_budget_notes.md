@@ -21,8 +21,13 @@ actually has:
 | `ne555_astable` | `psu_4xaa` (needs ≥4.5V) | milliamps | yes |
 | `accelerometer_interface` | Pico 3V3 | under 5mA (GY-521, datasheet-recalled) | yes |
 | `adc_ads1115` | Pico 3V3 | about 1mA incl. divider and pull-ups | yes |
-| `vibration_driver` | Pico 3V3, or `psu_low_v2` | 96mA worst case (stalled-winding model) | at `psu_pico_rail`'s conservative ~100mA budget (the regulator is documented ~300mA shared, unmeasured here), so nothing else should draw from that pin; `psu_low_v2` is the roomier option |
+| `vibration_driver` | Pico 3V3, or `psu_low_v2` | 96mA running (33Ω, listing's 90mA rated maximum), **126mA stalled** (25Ω, listing's 120mA stall maximum; revised 2026-10-02 when the ordered motor's listing gave the stall figure) | running: at `psu_pico_rail`'s conservative ~100mA budget, so nothing else should draw from that pin. Stalled: over that budget, under half the regulator's documented ~300mA shared (unmeasured here). `psu_low_v2` is the roomier option and the right one for a dipper that can jam |
 | `inductance_bridge`, `capacitance_bridge`, `thermal_monitor` | Pico 3V3 / GPIO | milliamps | yes |
+| `lockin_amplifier` | Pico 3V3 | about 2mA (two LM358, two CD4066B, divider, 10k load) | yes |
+| `optical_shadow_readout` | Pico 3V3 | about 5mA (three LM358, LED 1.3mA, TIA reference) | yes |
+| `hall_amplifier` | Pico 3V3 | 0.5mA for the amplifier + up to 10mA for one SS49E (datasheet, at 5V; less at 3.3V) | yes |
+| `frequency_counter` | Pico 3V3 | under 2mA (analog path: LM358 and divider) | yes |
+| `overvoltage_monitor` | Pico 3V3 | about 3mA (TL431 2.4mA + LM358) + 4mA when the LED is lit | yes |
 | `active_current_limiter` bench check | needs 2A | 5V into 5Ω is 1A+, the design point is a 2A trip | **no — Deferred**; no AA stack sources this |
 
 Nothing on the list needs a regulated 3.3V/5V rail above about 300mA from

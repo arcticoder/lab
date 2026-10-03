@@ -57,7 +57,11 @@ usbipd attach --wsl --busid <BUSID> --auto-attach
 ```
 
 Leave the `--auto-attach` window open; it re-attaches the board whenever it
-drops. The firmware stays loaded until the board is unplugged. After an
+drops. What worked on 2026-10-02: the first `bind`/`attach` (board listed as
+an unnamed device) attached, then dropped the moment sigrok loaded its
+firmware; in a second administrator window `usbipd list` showed the same bus id
+as `fx2lafw ... Not shared`, and a fresh `bind` + `attach --auto-attach` on it
+held for the rest of the session. The firmware stays loaded until the board is unplugged. After an
 unplug/replug the first `sigrok-cli` run reloads it and the board drops once
 more; if `usbipd list` then shows it as "fx2lafw — Not shared", run the
 `bind` line again.
@@ -98,9 +102,12 @@ python3 check_capture.py
 ```
 captured 25000 samples of D0 at 1000000Hz
 [PASS] enough periods captured: 24 full periods
-[PASS] frequency: 1000.0Hz vs 1000Hz ±1%
+[PASS] frequency: 999.9Hz vs 1000Hz ±1%
 [PASS] duty cycle (also catches an inverted channel: 75%): 25.0% vs 25% ±1
 ```
+
+(That is the output seen on 2026-10-02. `--find-channel` printed `toggling: D0`.
+The check also passes at `--samplerate 4000000`, with 100 000 samples.)
 
 | Result | Meaning |
 |--------|---------|

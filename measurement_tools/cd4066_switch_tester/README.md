@@ -34,7 +34,7 @@ within its ~100mA budget.
 
 Follow **[breadboard.md](breadboard.md)**. Short version:
 
-1. Power the CD4066B (VDD pin 14, VSS pin 6) from
+1. Power the CD4066B (VDD pin 14, VSS pin 7; tie the unused controls, pins 5, 6 and 12, to GND) from
    [psu_pico_rail](../../power_supplies/psu_pico_rail/).
 2. Wire one switch's I/O A (pin 1) through a 10kΩ resistor to VDD, and its
    I/O B (pin 2) through a 10kΩ resistor to GND.
@@ -106,15 +106,15 @@ rails, check these in order — swapping the control wire, the VDD wire, or
 the chip itself does **not** rule out any of the items below, since none
 of those swaps touch them:
 
-1. **VSS (pin 6) → GND continuity.** Check with
+1. **VSS (pin 7) → GND continuity.** Check with
    [resistance_measurement](../resistance_measurement/), clipped
    onto the same two points a continuity check would touch:
-   its `R_x` leg (the `R_ref`/ADC0 divider midpoint) onto pin 6, and its
+   its `R_x` leg (the `R_ref`/ADC0 divider midpoint) onto pin 7, and its
    GND return onto the Pico's own GND pin, without disturbing the existing
-   pin-6-to-GND wire. Then run that jig's `main.py`. A near-0Ω reading
-   confirms pin 6 is genuinely joined to GND; "Circuit Open" (or a
+   pin-7-to-GND wire. Then run that jig's `main.py`. A near-0Ω reading
+   confirms pin 7 is genuinely joined to GND; "Circuit Open" (or a
    kΩ-range reading) means it isn't, wire present or not — on this jig,
-   nothing else ties pin 6 to GND, so there's no other path to
+   nothing else ties pin 7 to GND, so there's no other path to
    mask a broken one.
 2. **The two 10kΩ bias resistors and their breadboard rows.** Confirm
    each resistor leg is in the row `breadboard.md` says it should be, not
@@ -133,3 +133,14 @@ of those swaps touch them:
    rail segment, the one `psu_pico_rail`'s GND jumper actually lands on.
    Near-0Ω means the two segments are electrically joined; "Circuit Open"
    confirms they aren't, even if a wire visually appears to bridge them.
+
+---
+
+## Pinout correction (2026-10-02)
+
+This README, `breadboard.md` and `parts_reference.md` all said VSS is pin 6.
+TI's CD4066B datasheet has VSS on pin 7 (pin 6 is switch 3's control). All
+three were corrected. The 2026-08-28 bench pass was run against the old
+instructions, so which pin carried ground is unknown, and a chip with VSS
+floating can still switch through its protection diodes. If this jig is
+assembled again, wire ground to pin 7 and re-read the result.

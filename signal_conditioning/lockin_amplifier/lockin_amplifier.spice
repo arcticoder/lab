@@ -1,0 +1,113 @@
+* lockin_amplifier — single-phase lock-in (phase-sensitive detector), tier6
+* LOCKIN and tier4 DEMOD: AC-coupled LM358 gain stage, two CD4066B switches
+* gated by complementary reference clocks, two RC averagers, read as VB - VA.
+*
+* Topology (see README.md for the picture):
+*   test signal (Pico PWM, 1kHz) --1Meg--+
+*   interferer (Pico PWM, 1.37kHz) -500k-+--> sig node --1k--> Vmid
+*   sig --1uF--> --10k--> inn  (U1A, LM358 inverting, Rf = 1Meg, non-inverting
+*   input at Vmid) -> out1, loaded by 10k to GND (keeps the LM358's output stage
+*   out of its crossover region)
+*   out1 --S1 (REF)--100k--> A, 1uF to GND, LM358 follower -> oa  (to Pico ADC)
+*   out1 --S2 (REFB)-100k--> B, 1uF to GND, LM358 follower -> ob  (to Pico ADC)
+*   Vmid = 3.3V * 5.1k/(10k+5.1k) = 1.114V, buffered by U1B.
+* REF is high for the first 48% of each 1ms period and REFB for the last 48%:
+* 4% dead time on one side, so the two switches are never closed together.
+* The result is X = V(ob) - V(oa): positive for a signal in phase with REF
+* (the stage inverts, so the signal is low while REF is high).
+*
+* LM358 behavioral model (this repo's ideal-plus-documented-caveats style, plus
+* the two real limits that matter here): open-loop gain 1e5 with a single pole
+* at 10Hz (GBW 1MHz) and an output that cannot go above VCC - 1.5V = 1.8V or
+* below 0.02V. Input offset and bias current are not modeled.
+* CD4066B: a voltage-controlled switch, Ron = 1k at VDD = 3.3V. The datasheet's
+* table starts at 5V, so 1k is a conservative extrapolation; 100k in series
+* with each switch makes the result insensitive to it.
+*
+* Case parameters, rewritten by smoke_test.py for each run:
+*   sigon  1 = test signal on          sigdir  1 = in phase, -1 = inverted
+*   sigphase  delay of the signal (s)  inton   1 = interferer on
+*   offv   DC offset injected at the sig node through 10k (blocked by Cin)
+* Defaults below are the in-phase case. The averagers' effective time constant
+* is R*C / 0.48 = 0.21s (a switch is closed 48% of the time), so the
+* transient runs 2s and reads the last 0.4s.
+
+.param vcc=3.3
+.param sigon=1
+.param sigdir=1
+.param sigphase=0
+.param inton=0
+.param offv=0
+
+.subckt lm358 inp inn out
+Eg  x 0 inp inn 1e5
+Rp  x y 1k
+Cp  y 0 15.9u
+Bo  o 0 V = min(max(V(y), 0.02), 1.8)
+Ro  o out 50
+.ends
+
+Vcc    vcc 0 DC {vcc}
+
+* Vmid and its buffer
+Rm1    vcc vmr 10k
+Rm2    vmr 0 5.1k
+Xu1b   vmr vmo vmo lm358
+
+* reference clocks (Pico slice 5: A = REF, B inverted = REFB)
+Vref   ref  0 PULSE(0 3.3 0 10n 10n 0.48m 1m)
+Vrefb  refb 0 PULSE(0 3.3 0.52m 10n 10n 0.48m 1m)
+
+* test signal: 50% square, 0..3.3V. sigdir=1: same phase as REF; sigdir=-1:
+* inverted (180 degrees); sigphase delays it.
+Vsrc   srcp 0 PULSE({sigdir>0 ? 0 : 3.3} {sigdir>0 ? 3.3 : 0} {sigphase} 10n 10n 0.5m 1m)
+Bsig   srcs 0 V = V(srcp)*{sigon}
+Rsig   srcs sig 1meg
+* interferer: 1.37kHz, 50% duty, through two 1Meg in parallel (500k)
+Vint   srci 0 PULSE(0 3.3 0 10n 10n 0.365m 0.7299m)
+Bint   srcj 0 V = V(srci)*{inton}
+Rint   srcj sig 500k
+Rbias  sig vmo 1k
+Voff   offn 0 DC {offv}
+Roff   offn sig 10k
+
+* gain stage
+Cin    sig inn0 1u
+Rin    inn0 inn 10k
+Rf     inn out1 1meg
+Xu1a   vmo inn out1 lm358
+Rl1    out1 0 10k
+
+* demodulator
+S1     out1 xa ref 0 sw4066
+S2     out1 xb refb 0 sw4066
+Ra     xa A 100k
+Rb     xb B 100k
+Ca     A 0 1u
+Cb     B 0 1u
+Xu2a   A  oa oa lm358
+Xu2b   B  ob ob lm358
+.model sw4066 SW(Vt=1.65 Vh=0.2 Ron=1k Roff=1e10)
+
+.ic v(A)=1.114 v(B)=1.114 v(sig)=1.114 v(out1)=1.114 v(vmo)=1.114 v(oa)=1.114 v(ob)=1.114 v(inn)=1.114 v(inn0)=1.114 v(xa)=1.114 v(xb)=1.114 v(xu1a.y)=1.114 v(xu1b.y)=1.114 v(xu2a.y)=1.114 v(xu2b.y)=1.114
+
+.control
+tran 10u 2.0 uic
+let xd = v(ob) - v(oa)
+meas tran xavg AVG xd from=1.6 to=2.0
+meas tran o1pp PP v(out1) from=1.6 to=2.0
+meas tran o1max MAX v(out1) from=1.6 to=2.0
+meas tran o1min MIN v(out1) from=1.6 to=2.0
+meas tran amax MAX v(oa) from=1.6 to=2.0
+meas tran amin MIN v(oa) from=1.6 to=2.0
+meas tran bmax MAX v(ob) from=1.6 to=2.0
+meas tran bmin MIN v(ob) from=1.6 to=2.0
+meas tran aavg AVG v(oa) from=1.6 to=2.0
+meas tran bavg AVG v(ob) from=1.6 to=2.0
+meas tran xamax MAX v(xa) from=1.6 to=2.0
+echo --- results ---
+print xavg o1pp o1max o1min amax amin bmax bmin aavg bavg xamax
+quit
+.endc
+
+.end

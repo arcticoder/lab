@@ -1,0 +1,90 @@
+* overvoltage_monitor — TL431 reference + LM358 comparator with hysteresis,
+* safety OVERVOLT ("Overvoltage Monitor & Shutdown Signal"): a hardware trip
+* that works without the Pico's software, with an LED and a TRIP line the Pico
+* (or a later shutdown stage) can read.
+*
+* Topology (see README.md):
+*   TL431A, REF tied to cathode, 330 ohm from 3V3 -> 2.495V (2.4mA, above its
+*   1mA minimum).
+*   Trip reference Vt = 2.495V through 5.1k - 10k trimpot - 2k to GND:
+*   0.29V to 1.75V over the trimpot's travel (the LM358's input range tops out
+*   near 1.8V on 3.3V).
+*   Monitored input Vin -> 40k (4 x 10k) / 10k divider (ratio 0.2) -> sense.
+*   LM358 comparator: (+) = sense, (-) = Vt, output pulled up by 10k, 1Meg
+*   positive feedback from the output to (+). TRIP = high when Vin is over the
+*   threshold: Vin_trip = Vt / 0.2 = 1.45V to 8.75V.
+*   Hysteresis at sense = 3.28V * (40k||10k)/1Meg = 26mV, so 131mV on Vin.
+*   LED: S8050 (100k base from the output) switching a 330 ohm + LED from 3V3.
+*   The base resistor is 100k, not 1k, on purpose: with 1k the transistor's
+*   base held the tripped output at 0.92V, below a logic high; at 100k it
+*   sits at 3.07V and the transistor still passes about 3mA to the LED.
+*
+* TL431: ideal shunt regulator with 0.05 ohm dynamic resistance (a
+* transconductance that conducts only above 2.495V*(1+vtol)). The LM358 as a
+* comparator is a pure open-collector sink (real stage sources to VCC-1.5V; the
+* pull-up makes the high a true logic high), same model as
+* measurement_tools/frequency_counter. S8050: generic NPN, BF=200.
+*
+* Case parameters (smoke_test.py rewrites): pos = trimpot wiper 0..1,
+* vtol = TL431 reference error (fraction), vin = monitored voltage,
+* vs = the 3V3 rail, bf = the S8050's gain.
+
+.param vs=3.3
+.param pos=0.5
+.param vtol=0
+.param vin=3.0
+.param vref431={2.495*(1+vtol)}
+
+Vcc    vcc 0 DC {vs}
+Vmon   mon 0 DC {vin}
+
+* TL431 shunt
+Rk     vcc ka 330
+Gtl    ka 0 VALUE = {max(0, V(ka) - vref431) * 20}
+
+* trip reference ladder
+Rt1    ka t1 5.1k
+Rpa    t1 vt {10k*(1-pos)+1}
+Rpb    vt t2 {10k*pos+1}
+Rt2    t2 0 2k
+
+* monitored input divider
+Rd1    mon d1 10k
+Rd2    d1 d2 10k
+Rd3    d2 d3 10k
+Rd4    d3 sense 10k
+Rd5    sense 0 10k
+
+* comparator with hysteresis
+Rh     out sense 1meg
+Ecmp   c 0 vt sense 1
+Sdrv   out 0 c 0 swlow
+Rpu    vcc out 10k
+.model swlow SW(Vt=0 Vh=0.0005 Ron=50 Roff=1e12)
+
+* LED indicator
+Rb     out b 100k
+Q1     col b 0 S8050
+Rled   vcc led 330
+Vsl    led led2 DC 0
+Dled   led2 col DLED
+.param bf=200
+.model S8050 NPN(IS=2e-14 BF={bf} VAF=100 RB=10 RC=0.3)
+.model DLED D(IS=1e-18 N=1.9 RS=5)
+
+.control
+op
+let vtrip_ref = v(vt)
+let vsense = v(sense)
+let vk = v(ka)
+let ik = (v(vcc) - v(ka)) / 330
+let vout = v(out)
+let ib = (v(out) - v(b)) / 100k
+let iled = i(vsl)
+let vce = v(col)
+echo --- results ---
+print vtrip_ref vsense vk ik vout ib iled vce
+quit
+.endc
+
+.end

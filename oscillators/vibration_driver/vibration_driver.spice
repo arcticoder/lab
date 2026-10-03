@@ -6,11 +6,16 @@
 *   S8050 emitter -> GND ; base <- 1k from the GPIO, 10k base pull-down
 *   1N5817 across the motor: anode on the collector, cathode on VCC
 *
-* Motor modeled as its stalled winding: R=33 ohm (3V / 90mA, the Seeed mini
-* vibrating motor's rated maximum) in series with L=1mH. Back-EMF is not
-* modeled: a spinning motor draws LESS than this, so the current and
-* dissipation here are the conservative case. Inductance is an assumed
-* value for a small coreless motor, not a datasheet figure.
+* Motor, two cases (the 2026-10-02 order's listing gives rated 3V / 80-90mA
+* and stall current 120mA max):
+*   running: R=33 ohm (3V / 90mA, the rated maximum) — the load the driver
+*            carries for hours; back-EMF is folded into this resistance.
+*   stalled: R=25 ohm (3V / 120mA, the listing's stall maximum) — a blocked
+*            rotor, e.g. a dipper arm held in water or a finger on the motor.
+* Both in series with L=1mH. Inductance is an assumed value for a small
+* coreless motor, not a datasheet figure. The transient run uses the stalled
+* case: it is the conservative one for the turn-off spike and the supply
+* current peak.
 *
 * S8050 modeled with a generic NPN (BF=200 typical; the smoke test also
 * checks the circuit saturates at a pessimistic gain of 50). 1N5817 is
@@ -34,11 +39,18 @@ Dfly  c   vcc D1N5817
 
 .control
 op
-echo --- GPIO high: collector, base current, supply current ---
+echo --- running (33 ohm), GPIO high: collector, base current, supply current ---
 let ic_on = -i(vcc)
 let ib_on = -i(vg)
 let vce_on = v(c)
 print vce_on ic_on ib_on
+alter rm = 25
+op
+echo --- stalled (25 ohm), GPIO high ---
+let ic_stall = -i(vcc)
+let ib_stall = -i(vg)
+let vce_stall = v(c)
+print vce_stall ic_stall ib_stall
 alter vg = 0
 op
 echo --- GPIO low: supply current (should be ~0) ---
@@ -48,7 +60,7 @@ alter vg pulse = [ 0 3.3 0 10n 10n 0.5m 1m ]
 tran 1u 5m
 let vpk = vecmax(v(c))
 let isup_pk = vecmax(-i(vcc))
-echo --- 1kHz 50 percent PWM: collector peak, supply current peak ---
+echo --- stalled, 1kHz 50 percent PWM: collector peak, supply current peak ---
 print vpk isup_pk
 quit
 .endc

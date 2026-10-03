@@ -36,9 +36,11 @@ its own digital control pin (logic high = closed/conducting). Useful for:
 analog multiplexer (tier9 `MUX`), sample-and-hold gating (tier9 `SAMHOLD`),
 synchronous demodulator switching (tier4 `DEMOD`).
 
-Standard DIP-14 pinout (verify against the specific manufacturer's
-datasheet before building — this is the common legacy 4000-series pinout,
-consistent across TI/ON Semi/Fairchild, but confirm before relying on it):
+DIP-14 pinout, **corrected 2026-10-02 against TI's CD4066B datasheet**
+(SCES, 14-pin PDIP figure 4-1). The table this entry carried before had
+`VSS` on pin 6 and `Control 3` on pin 7, which is wrong: `VSS` is pin 7, as on
+nearly every 14-pin 4000-series part, and pin 6 is `Control C`. Switches are
+labelled A–D in the datasheet and 1–4 in this repo (A=1 … D=4).
 
 | Pin | Function | Pin | Function |
 |---|---|---|---|
@@ -47,8 +49,25 @@ consistent across TI/ON Semi/Fairchild, but confirm before relying on it):
 | 3 | Switch 2 I/O B | 12 | Control 4 |
 | 4 | Switch 2 I/O A | 11 | Switch 4 I/O A |
 | 5 | Control 2 | 10 | Switch 4 I/O B |
-| 6 | VSS (GND) | 9 | Switch 3 I/O B |
-| 7 | Control 3 | 8 | Switch 3 I/O A |
+| 6 | Control 3 | 9 | Switch 3 I/O B |
+| 7 | **VSS (GND)** | 8 | Switch 3 I/O A |
+
+Datasheet limits that matter at 3.3V: supply (VDD−VSS) 3–18V, so the Pico's
+3V3 pin is at the bottom of the range; signal pins must stay between VSS and
+VDD; control-high threshold is 0.7×VDD (2.3V at 3.3V, so a 3.3V GPIO
+clears it); unused control pins must be tied to VSS or VDD, never left
+floating. On-resistance at 3.3V isn't in the datasheet table (it quotes 5V
+and up) and is much higher than at 5V: budget about 1kΩ, not the 200Ω the
+`cd4066_switch_tester` netlist assumes.
+
+**Bench-history caveat.** The 2026-08-28 pass of switch 1 on all ten chips was
+recorded against the old table, which put the ground wire on pin 6. Which pin
+actually carried ground on the bench is not recorded. A chip with VSS left
+floating and its other pins tied to ground can still switch, through its
+input protection diodes, so that pass shows the switches conduct and
+block, not that the wiring was right. Re-run `cd4066_switch_tester` once with
+ground on pin 7 (its `breadboard.md` now says so) the next time one is
+assembled; no need to build it just for this.
 
 Switches are bidirectional — either I/O pin can be signal in or out.
 
@@ -244,6 +263,18 @@ adjustable shunt regulator/reference: Cathode, Anode, Reference. Internal
 bandgap reference is 2.495V between Ref and Anode; feeding back a
 resistor divider from Cathode to Ref sets any output from 2.5V up to 36V,
 regulated by the device sinking current at Cathode to hold Ref at 2.495V.
+**Pinout and limits, added 2026-10-02 from TI's TL431 datasheet
+(SLVS543S):** TO-92 (LP package), flat face toward you, leads down, left to
+right: **1 = CATHODE, 2 = ANODE, 3 = REF** (TI's table: LP cathode 1, anode 2,
+ref 3; the figure's top-to-bottom order is the same). The `TL431A` grade has
+Vref 2.470–2.520V (±1%, 2.495V typical), continuous cathode current 1–100mA,
+minimum cathode current for regulation 0.4mA typical and 1mA maximum,
+cathode voltage from Vref to 36V. AliExpress clones in TO-92 normally follow
+this order; check the first build's cathode reads about 2.49V with REF tied
+to it and a 330Ω pull-up from 3V3 (`safety/overvoltage_monitor/`).
+**Don't put a capacitor on the cathode**: the TL431 can oscillate with
+capacitive loads from about 1nF to several µF.
+
 Needs a pull-up/current source into Cathode (it only sinks, never
 sources) — unlike the LM358 buffer in
 [voltage_reference_lm358](../signal_conditioning/voltage_reference_lm358/),
@@ -662,10 +693,16 @@ then right pad: `PD5 PD6`, `PD7 GND`, `CLK GND`, `RDY1 RDY0`, `GND VCC`,
 `CTL1 CTL0`, `PB7 PB6`, `PB5 PB4`.
 `sigrok`'s generic profile for this chip names 16 channels `D0`–`D15`; the
 expected mapping is `PB0`–`PB7` → `D0`–`D7` and `PD0`–`PD7` → `D8`–`D15`
-(from the sigrok project's description of the FX2 family, **not yet confirmed
-on this board** — `check_capture.py --find-channel` confirms it). Several pads
+(from the sigrok project's description of the FX2 family; **confirmed on this
+board 2026-10-02**: a signal on pad `PB0` toggles only `D0`, so `PB0`→`D0`
+holds. The other pads were not individually probed). Several pads
 are `VCC`; keep signal wires off them. J4 (bottom left, 2 pads) is the EEPROM
 jumper, kept out; the jumper on the right is the LED power switch.
+
+**First capture (2026-10-02).** Pico GP15 → `PB0`, Pico GND → J2's bottom-row
+`GND`: `check_capture.py` read the Pico's 1kHz/25% PWM as 999.9Hz / 25.0%
+(24 full periods) at 1MHz and again at 4MHz, and `--find-channel` reported
+`D0` alone. 4MHz is not the board's ceiling, only the fastest rate tried.
 
 **WSL attachment (2026-10-01).** `sigrok-cli` uploads `fx2lafw` to RAM on first
 use and the board re-enumerates; `usbipd` drops the reconnected device
@@ -695,3 +732,79 @@ also supports 9-axis motion fusion if an external magnetometer is added
 later, though nothing here currently plans for that. Interfaces to the
 Pico over I2C (SDA/SCL + 3V3 + GND, 4 wires total) — no analog frontend
 needed, unlike most other tier5 sensor nodes.
+
+---
+
+## Piezo element, 12mm disc, with wire leads (2026-10-02 order)
+
+10 ordered 2026-10-02, not yet received. See
+[orders.md](orders.md#piezo-element-12mm-disc-leaded--variant-wire-12mm-10pcs).
+Same family as the bare 12mm discs above, but with leads attached at the
+factory, so none of the soldering that destroyed a bare disc on 2026-09-16.
+Per the listing's 12mm table (FT-12T-16A1): resonance 16.5±0.7kHz, resonant
+impedance ≤400Ω, static capacitance 5000pF ±30%, brass plate 12mm, ceramic
+10mm, plate 0.13mm, total thickness 0.33mm, allowable input 1.5–30Vp-p,
+operating −20 to +70°C. Other sizes on the same page have other numbers
+(35mm: 2.6kHz, 35000pF); the first table shown on the page (4.1kHz,
+28000pF) is the 27mm disc's. The page's headline calls it a "welding wire"
+buzzer; the variant ordered is the wired 12mm × 10.
+
+What the capacitance means for `signal_conditioning/charge_amplifier/`: a
+5nF source into a charge amplifier with `Cf` = 10nF gives a closed-loop
+voltage gain of `Cp/Cf`≈0.5 for a voltage-mode disturbance, and a charge
+sensitivity of `1/Cf` = 100mV per nC. The ±30% tolerance is a gain
+uncertainty in the former, not in the latter. Measure the real value of one
+disc with `measurement_tools/capacitance_bridge`'s method if it matters (it
+is below that tool's range: 5nF is not measurable by it; see its README).
+
+---
+
+## Linear Hall sensors, 49E / SS49E (TO-92) — 2026-10-02 orders
+
+15 ordered 2026-10-02 (10 as "49E", 5 as "SS49E"), not yet received. See
+[orders.md](orders.md#linear-hall-effect-sensor-49e--variant-10pcslot-49e).
+Three-pin TO-92, flat face toward you, legs down: `VCC`, `GND`, `OUT` left
+to right (**recalled from the usual 49E/SS49E datasheet, confirm against
+the physical part and a magnet before powering; a reversed 49E heats up**).
+Ratiometric analog output: at zero field `OUT` ≈ VCC/2, and it moves
+about 1.4mV per gauss at 5V (recalled datasheet typical, scales with VCC),
+north-pole-facing-the-marked-face raising it. Supply 2.7–6.5V per the usual
+datasheet, so 3.3V works and keeps `OUT` inside the Pico ADC's range. The
+zero-field output has a unit-to-unit offset of roughly ±10% of VCC; that is
+why `HALLAMP` nulls it with a trimpot rather than just amplifying `OUT`.
+The 49E clones sold as "OH49E/AH49E" should behave the same; the 40AF/41F
+numbers in the SS49E listing's title are latching parts and must not be
+mistaken for it. Verify by the zero-field level: a linear part reads about
+half of VCC with no magnet; a latching or switch part reads at one rail.
+
+---
+
+## ADS1115 16-bit ADC module — 2026-10-02 order
+
+1 ordered 2026-10-02, not yet received. See
+[orders.md](orders.md#ads1115-16-bit-adc-module--1-pc). Module pins per the
+listing's photo, in order: `VDD, GND, SCL, SDA, ADDR, ALRT, A0, A1, A2, A3`
+(photo-transcribed, so provisional until the board is in hand; see
+`kb/ordering_ingestion_notes.md` on transcription slips). Address 0x48 with
+`ADDR` to GND (0x49 to VDD, 0x4A to SDA, 0x4B to SCL). VDD 2.0–5.5V, analog
+inputs must stay within GND−0.3V…VDD+0.3V. Programmable full scale
+±0.256, 0.512, 1.024, 2.048, 4.096, 6.144V (the last two cannot be used
+above VDD), 8–860 SPS, internal reference and oscillator. Single-ended
+inputs only use the positive half, so on 3.3V the usable span is 0–3.3V.
+Used by `signal_conditioning/adc_ads1115/`.
+
+---
+
+## Coin vibration motor, 1027 type — 2026-10-02 order
+
+10 ordered 2026-10-02, not yet received. See
+[orders.md](orders.md#coin-vibration-motor--variant-10pcs-1027). Flat coin
+motor, 10mm diameter, 2.7mm thick, two flying leads: red = +, blue or black
+= −. Listing: rated 3V; the headline says 3–5V but the performance table says
+2.7–3.3V, and the table is the one to trust (a coin motor run at 5V wears out
+fast). Starting voltage 2.3V, rated current 80–90mA, **stall current 120mA
+max**, speed 10000–12000rpm (167–200Hz), operating −20 to +70°C. Brushed,
+8-flat coreless, so it makes brush noise on whatever rail feeds it. Used by
+`oscillators/vibration_driver/` (revised 2026-10-02 for the 120mA stall
+figure) and, later, `RIPPLETANK`'s dipper.
+
