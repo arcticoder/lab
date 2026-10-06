@@ -55,16 +55,21 @@ circuit is ever trusted as an unattended monitor; pick N against how
 often this kind of breadboard contact glitch actually recurs rather than
 guessing a number now.
 
-### `lockin_amplifier` — gain error found on the bench (2026-10-05)
+### `lockin_amplifier` — `SIG` wiring fault found on the bench (2026-10-05)
 
-Wired and run 2026-10-05: structure right, in-phase X 4–5× the design value
-(see that circuit's README status). `diagnose_gain.py` (SIG→GP28) was written
-to split source side from gain stage; the user's reading and the part found
-go into the README, `breadboard.md`'s troubleshooting table and
-`kb/lockin_bench_notes.md`, then `optical_shadow_readout` becomes startable.
-If the cause is not a wrong resistor (SIG correct, `Rin`/`Rf` read right),
-the model missed something: re-run the simulation with the measured values
-before touching the design.
+Wired and run 2026-10-05: structure right, in-phase X 4–5× the design value.
+`diagnose_gain.py` read 18–20mV on the `GP28` node (3.3mV expected); the user
+confirmed `Rbias` is 1kΩ and the `GP8`/`GP9` resistors are 1MΩ. Live probes
+from the session (details in `kb/lockin_bench_notes.md`) showed the node is
+nearly floating and no source reaches it at DC, so the model isn't wrong, the
+wiring is. `trace_node.py` and the row-by-row table in `breadboard.md` are
+the next step and sit in `TODO-arcticoder.md` item 1. When the user reports
+which row differs: record the fix in the README status, the troubleshooting
+table and the kb, drop the "Gain too high" table's now-misleading 15mV row
+wording if it no longer fits, and move item 2 (`optical_shadow_readout`) to
+startable. If all four rows match and still look floating, the follow-up is
+the `VMO` check in that table; if the node then holds firmly and the signal
+is still 5× large, re-simulate with measured values.
 
 ### `RP2040-Zero` — pin-map pass when it moves into a build (arrives with the 2026-10-05 order)
 

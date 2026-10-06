@@ -32,13 +32,17 @@ status lives in `README.md`'s "built & bench-tested" table.
 ## Ready to build now — parts on hand
 
 1. [ ] **`signal_conditioning/lockin_amplifier` (`LOCKIN`/`DEMOD`) — find
-       the part making the gain 4–5× too high.** Wired 2026-10-05: the sign,
-       90° and interferer checks behave, but in-phase X reads 1.1V against
-       0.26V, so the ratio checks fail. One jumper from row `SIG` to GP28
-       (pin 34), `mpremote mount . run diagnose_gain.py`, then follow the
-       table in [breadboard.md](../signal_conditioning/lockin_amplifier/breadboard.md)
-       § "Gain too high" (one resistor swap at most). Eight `[PASS]` lines is
-       done; leave it assembled, item 2 builds on it.
+       why the `SIG` row isn't `SIG`.** The `GP28` reading was 18–20mV
+       against 3.3mV expected, but `Rbias` and the `GP8`/`GP9` resistors are
+       right. Probing from the Pico showed that node is nearly floating and
+       none of the three sources reaches it at DC: a wiring fault, not a
+       part value. Move the `GP28` jumper to four rows in turn (`Cin`'s +
+       lead, `Rbias`'s free lead, the far lead of each 1MΩ), running `mpremote
+       run trace_node.py` each time; the table in
+       [breadboard.md](../signal_conditioning/lockin_amplifier/breadboard.md)
+       § "`SIG` does not behave like `SIG`" says which lead to move. Then
+       `mpremote run main.py`; eight `[PASS]` lines is done. Leave it
+       assembled, item 2 builds on it.
 2. [ ] **`signal_conditioning/optical_shadow_readout` (`FORCEBAL`'s optical
        readout) — change the lock-in's front end.** Needs item 1 wired; no
        other parts to find. Swap the test-signal resistors for a TIA, a

@@ -166,5 +166,48 @@ big going in. One jumper, then one reading.
 | about 15mV (10–20mV) | The signal arriving at `SIG` is 4–5× too big | Pull `Rbias`; read it. A 5.1kΩ in place of 1kΩ gives about 5×. If `Rbias` is 1kΩ, read the `GP8` and `GP9` 1MΩ resistors (a 220kΩ in either gives about 4.5×) |
 | anything else | Report the number | |
 
+**2026-10-05 result: 18–20mV, with `Rbias` read as 1kΩ and the `GP8`/`GP9` resistors read as 1MΩ.** The parts are right, so the fault is in how the `SIG` row is wired. See "`SIG` does not behave like `SIG`" below.
+
 4. Fix the part, move the jumper off GP28, and run `mpremote run main.py`.
    The in-phase `VB-VA` should come to about 260mV.
+
+## `SIG` does not behave like `SIG` (2026-10-05)
+
+The node on the `GP28` jumper is not the node in the schematic. With `Rbias`
+1kΩ to Vmid and the three test sources through 1MΩ, every number below would
+be small and firm. Measured with the Pico's own pins (`trace_node.py`):
+
+| Measurement | Design value | Measured |
+|-------------|--------------|----------|
+| Rest level | Vmid, 1.11–1.14V | 1.131V |
+| Move under `GP28`'s 50–80kΩ pull-up / pull-down | +30 to +45mV / −16 to −25mV | +1998mV / −1062mV (nearly floating: relaxes back to 1.131V over about 0.25s) |
+| DC step when `GP8`, `GP9` or `GP6` goes 0→1 | 3.3mV / 3.3mV / 6.6mV | 0.0–0.3mV on all three (no DC path from any of them) |
+| Step at about 1kHz, `GP8` / `GP9` / `GP6` | 3.3mV / 3.3mV / 6.6mV | 17mV / 18mV / 47mV, flat for half-periods from 0.2ms to 18ms, then decaying over about 20ms |
+| `GP10`, `GP11`, unwired `GP12` toggled | | 0mV (not clock pickup) |
+
+So the 18mV "SIG swing" arrives by AC coupling only, and the row has no 1kΩ
+hold to Vmid. A 1MΩ resistor would pass DC. Either `GP28` is on a row that
+does not touch `Rbias`, `Cin` and the three 1MΩ resistors, or those parts
+are not where the table puts them. The pencil labels on the board show a
+`SIG` row on each side of the centre channel; the photo can't say which one
+`GP28` is on.
+
+### Find the break
+
+Run `mpremote run trace_node.py` (nothing to mount) with the `GP28` jumper on
+each row below, one at a time, and write down the four lines. Every row that
+is truly `SIG` gives the same result.
+
+| Put the `GP28` jumper on | Row |
+|--------------------------|-----|
+| 1 | the row of `Cin`'s **+** lead |
+| 2 | the row of `Rbias`'s lead that is not on `VMO` |
+| 3 | the row of the `GP8` 1MΩ's far lead (the end that is not on the `GP8` row) |
+| 4 | the row of the `GP9` 1MΩ's far lead |
+
+| Result | Means | Fix |
+|--------|-------|-----|
+| All four match, DC steps 3mV, pulls move tens of mV | `SIG` is right; the first jumper was on a different row | Leave the jumper here and rerun `diagnose_gain.py` |
+| All four match and still look floating | `Rbias` isn't reaching `VMO`, or `VMO` is not Vmid | Move the jumper to the `VMO` row: it should hold firmly (pull moves under 30mV) and read 1.11–1.14V |
+| One row differs from the other three | That lead is in a different strip | Move it into the row of the others |
+| Row 3 or 4 shows DC steps near 1.6V | That 1MΩ's far lead is not on `SIG`; it is on a row with no other part | Move it |
