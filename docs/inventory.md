@@ -251,8 +251,8 @@ in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 Placed for the `lab/` repo's spacetime research build; new rows go here
 first, with full specs/links/datasheets in `lab/docs/orders.md` and
 `lab/docs/parts_reference.md`. Move each row up into its proper table
-above once physically received. All five rows below are one order placed
-2026-10-02 (transit a few weeks).
+above once physically received. The first five rows are one order placed
+2026-10-02, the last four another placed 2026-10-05 (transit a few weeks each).
 
 | Component | Quantity | Notes |
 |-----------|----------|-------|
@@ -261,6 +261,10 @@ above once physically received. All five rows below are one order placed
 | Linear Hall sensor SS49E, TO-92 (variant "SS49E", 5pcs) | 5 | Ordered 2026-10-02 as a replacement for the line above; both orders went through, so 15 in total. Listing bundles latching/switch part numbers: check each top mark on arrival. |
 | ADS1115 16-bit ADC module (I2C) | 1 | Ordered 2026-10-02, different listing from the 2026-10-01 candidate. One unit only; a refund is the plan if it is a dud. For `lab/signal_conditioning/adc_ads1115/`. Whether its headers are soldered is not stated. |
 | Coin vibration motor, 3V, 10×2.7mm (variant "10Pcs 1027") | 10 | Ordered 2026-10-02. Rated 3V, 80–90mA, stall 120mA max, starts at 2.3V. For `lab/oscillators/vibration_driver/`. |
+| Solder wick, 1.0mm × 1.5m (variant "1.0mm 1.5m/1Pcs") | 1 | Ordered 2026-10-05. Clears the GY-521's bridged header pins (`ACCELIF`) and any ADS1115 header bridge. |
+| Neodymium disc magnet, N42, D6×3mm, radially magnetized (variant "N42 NdFeB D6x3mm/10PCS") | 10 | Ordered 2026-10-05. Poles on the curved sides, not the flat faces; for `HALLAMP`'s field source. |
+| RP2040-Zero board (USB-C, 18×23.5mm, castellated) | 1 | Ordered 2026-10-05. Headers probably not fitted. A second RP2040 for semi-permanent builds; see `parts_reference.md#rp2040-zero` for the pinout differences from the Pico. |
+| Breadboard, 800-point | 1 | Ordered 2026-10-05, second full-size board for builds that stay assembled. |
 
 ---
 
@@ -285,4 +289,4 @@ sourcing in [TODO-arcticoder.md](TODO-arcticoder.md)).
 | Soldering iron stand          | 1        | Included with iron                                          |
 | Soldering tip, 5/32 in.       | 2        | Included with iron                                          |
 | 18-in-1 wire stripper/crimper pliers | 1 | Received 2026-09-03; high-carbon steel + PVC handle. Resolves the wire-stripper dependency that was blocking `psu_ultralow_v1`/`psu_low_v2` AA-holder lead termination in `lab/`. |
-| Solder wick (desoldering braid) | 0 | Needed since 2026-09-24 — a few header pins bridged while soldering the GY-521 module for `signal_conditioning/accelerometer_interface`; wick is the clearing method (procedure in that circuit's `breadboard.md`), so that circuit's first power-up waits on it. **Not part of the 2026-10-02 order** (it was taken out of the cart earlier and never put back); goes on the next order. Not yet ordered. |
+| Solder wick (desoldering braid) | 0 | Needed since 2026-09-24 — a few header pins bridged while soldering the GY-521 module for `signal_conditioning/accelerometer_interface`; wick is the clearing method (procedure in that circuit's `breadboard.md`), so that circuit's first power-up waits on it. **Ordered 2026-10-05** (see "On Order"). |

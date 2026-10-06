@@ -17,10 +17,9 @@ the converted `.md` files are tracked).
 
 ## Candidates found, not yet in any cart
 
-No candidates are pending as of 2026-10-02: the ADS1115, coin motor, piezo
-and Hall-sensor candidates were ordered together (see "On order" at the
-bottom). The solder wick was not in that order and still needs a cart; see
-`TODO-arcticoder.md`'s "Next order".
+No candidates are pending as of 2026-10-05: the solder wick and disc magnets
+were ordered that day (see "On order"). Nothing on the list needs a purchase
+before the next design pass.
 
 ---
 
@@ -120,18 +119,7 @@ notes below stay for that day.
 
 ## In cart (not yet checked out)
 
-Empty as of 2026-10-02: the 2026-10-02 order (see "On order") took everything
-that was in the cart except the solder wick, which was removed from the cart
-before checkout and has not been re-added.
-
-### Solder wick (desoldering braid)
-
-- No specific listing recorded — any basic roll.
-- A few header pins on the GY-521 module bridged while soldering it for
-  `signal_conditioning/accelerometer_interface` (2026-09-24). Wick is how
-  the bridge gets cleared (procedure in that circuit's `breadboard.md`),
-  so `ACCELIF`'s first power-up waits on this item arriving.
-- Not part of the 2026-10-02 order. Needs to go into the next one.
+Empty as of 2026-10-05.
 
 ---
 
@@ -661,3 +649,53 @@ string: the titles bundle many part numbers.
   12000rpm. This is above the 90mA that `vibration_driver` was sized for;
   the design was revised 2026-10-02 (see its README).
 - Not yet received.
+
+### 2026-10-05 order (4 line items)
+
+Placed 2026-10-05, AliExpress, transit a few weeks. Checkout total not
+recorded here.
+
+#### Solder wick — variant "1.0mm 1.5m/1Pcs"
+
+- Listing: "2.0mm 3.5mm 1.5M Welding Wires Desoldering Braid Solder Remover Mesh
+  Wick Wire Repair Tool Soldering Braid Tape Copper Wire" —
+  [item 1005010113718196](https://www.aliexpress.com/item/1005010113718196.html).
+  1.0mm width, 1.5m length, one roll.
+- Clears the bridged GY-521 header pins (`ACCELIF`'s first power-up), and any
+  bridge on the ADS1115's headers. Not yet received.
+
+#### Neodymium disc magnets — variant "N42 NdFeB D6x3mm/10PCS"
+
+- Listing: "10/50PCS/LOT Disc N42 Radial Magnetization NdFeB Magnet 6*1 6*2 6*3
+  6*4 Strong Permanent Neodymium Magnets 6x1 6x2 6x3 6x4 6x5" —
+  [item 1005012687239354](https://www.aliexpress.com/item/1005012687239354.html).
+  10 discs, 6mm diameter × 3mm, N42, nickel-copper-nickel plated, max 80°C.
+- **Radially magnetized**: the poles are on the curved sides (north and south
+  halves of the cylinder wall), not on the two flat faces. For `HALLAMP`'s
+  field source, a flat face brought to the sensor sees little axial field;
+  present the disc with its side to the sensor and rotate it to find the pole
+  (the sensor's reading flips sign across 180°). Measured 3.03mm × 6.00mm in
+  the listing's photos.
+- Listing's attached test report (a 20×6×2mm sample, not this size) reads Fe
+  63.1%, Nd 5.20%, Pr 1.99%, Gd 2.84%, Y 0.84%, B 1.05%, with no Dy or Tb
+  detected. That is about 11% total rare earth against the roughly 30% in
+  typical NdFeB, so treat the listed N42 grade as unverified; strength on
+  arrival is untested. Not yet received.
+
+#### RP2040-Zero microcontroller board — 1 pc
+
+- Listing: "RP2040-Zero RP2040 For Raspberry Pi Microcontroller PICO Development
+  Board Module Dual-core Cortex M0+ Processor 2MB Flash" —
+  [item 1005005108143219](https://www.aliexpress.com/item/1005005108143219.html).
+- Ordered so a second RP2040 can stay wired into a semi-permanent build while
+  the Pico moves on to the next experiment. Details, pinout and differences
+  from the Pico are in [parts_reference.md](parts_reference.md#rp2040-zero).
+- The listing does not say whether pin headers are fitted; assume they are
+  not until it arrives. Not yet received.
+
+#### 800-point breadboard — 1 pc
+
+- A second 800-point breadboard (the on-hand full-size one is 830-point):
+  circuits are going semi-permanent, and breadboard-and-wire proved cheaper
+  than perfboard for what these validations need. Listing not recorded.
+  Not yet received.

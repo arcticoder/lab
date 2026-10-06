@@ -98,3 +98,13 @@ pin is the only one known to be wired (GP15), and how to run the capture with
 the Pico script in the background. The earlier rule still holds: the session
 can't elevate `usbipd`, and the user's pasted output is evidence of what the
 Windows side looked like at that time, not a promise about now.
+
+## 2026-10-05: rig left plugged in for `lockin_amplifier`
+
+`mpremote run main.py` from the session shell reproduced the user's run (the
+first-run `floor` anomaly did not repeat). GP28 was free on that rig, so a
+single added jumper gives a second ADC probe; see `lockin_bench_notes.md` for
+the folded-ripple technique and `mpremote mount . run` for importing a
+circuit's own `main.py` into a diagnostic. The session didn't touch any pin
+the circuit doesn't already drive in `main.py`.
+

@@ -159,7 +159,8 @@ def evaluate(r):
         )
     )
     out.append(("no-signal offset small", abs(x0) <= ZERO_MAX, f"X0 {x0*1e3:+.1f}mV, limit ±{ZERO_MAX*1e3:.0f}mV"))
-    out.append(("in-phase signal gives a positive X", X_MIN <= x1 <= X_MAX, f"X {x1*1e3:+.0f}mV, limits {X_MIN*1e3:.0f}-{X_MAX*1e3:.0f}mV"))
+    hint = " (too large: gain stage clips; see breadboard.md 'Gain too high')" if x1 > 2 * X_MAX else ""
+    out.append(("in-phase signal gives a positive X", X_MIN <= x1 <= X_MAX, f"X {x1*1e3:+.0f}mV, limits {X_MIN*1e3:.0f}-{X_MAX*1e3:.0f}mV{hint}"))
     if x1 > 0:
         ratio = x["anti_phase"] / x1
         out.append(("anti-phase signal flips the sign", ANTI_RATIO[0] <= ratio <= ANTI_RATIO[1], f"X/X_inphase {ratio:+.2f}, limits {ANTI_RATIO}"))
