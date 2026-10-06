@@ -24,8 +24,12 @@ interferer alone moves X by about 0.12V, a tenth of in-phase. What is wrong
 is the size: at that amplitude the gain stage's output clips (the LM358 stops
 at about 1.8V and 0.02V), which flattens the in-phase and anti-phase readings
 and breaks the ratio checks. A duty sweep of the in-phase test pulse (2% to
-50%) grew X from 68mV to 1.26V, so the signal path is live. `diagnose_gain.py` finds which stage is
-responsible (below).
+50%) grew X from 68mV to 1.26V, so the signal path is live. `diagnose_gain.py`
+put the fault on the source side (18–20mV on the `GP28` node against 3.3mV
+expected), and `Rbias` and the `GP8`/`GP9` resistors read right. Further probes
+with the Pico's own pins show that node is nearly floating and reached by the
+test sources only through AC coupling, so the `SIG` wiring is the suspect, not
+a resistor value. `trace_node.py` finds the break (below).
 
 ---
 
@@ -35,6 +39,7 @@ responsible (below).
 |------|---------|
 | `lockin_amplifier.spice` | ngspice transient netlist of the whole signal path, with case parameters the smoke test rewrites |
 | `diagnose_gain.py` | One-jumper probe: reads the 1kHz ripple on SIG or OUT1 through GP28 to say whether the source side or the gain stage is too hot (`mpremote mount . run diagnose_gain.py`) |
+| `trace_node.py` | Says what the node on the `GP28` jumper is connected to: pull-up/down test, DC steps from `GP8`/`GP9`/`GP6`, and the ~1kHz step (`mpremote run trace_node.py`) |
 | `smoke_test.py` | Seven simulated bench states plus a DC-offset case, then `main.py` against a mocked `machine` (register values, pin release, decision logic) |
 | `main.py` | MicroPython: generates the clocks, test signal and interferer, reads both outputs, prints a table and PASS/FAIL lines (about 15s) |
 | `breadboard.md` | Wiring tables and failure table |
@@ -110,6 +115,12 @@ side. Metal-film resistors from the kit are all five-band `brown black black
 x brown` for 1kΩ, 10kΩ, 100kΩ and 1MΩ, differing only in the fourth band, and
 a 5.1kΩ part is the other likely stand-in for the 1kΩ `Rbias`. Wiring steps
 and the decision table are in `breadboard.md` § "Gain too high".
+
+Result: the `GP28` node swung 18–20mV, but `Rbias` is 1kΩ and the `GP8`/`GP9`
+resistors are 1MΩ. The node behaves as nearly floating (a 50–80kΩ pull moves
+it by volts, where 1kΩ to Vmid would allow tens of mV) and none of the three
+sources moves it at DC. `breadboard.md` § "`SIG` does not behave like `SIG`"
+has the measurements and the row-by-row check.
 
 ## What this does not show
 

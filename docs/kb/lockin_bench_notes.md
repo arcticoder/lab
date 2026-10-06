@@ -59,3 +59,42 @@ from running on import). Tested on GP26, where the A average showed 0.5mV.
 - GP10/GP11 jumpers are about 100mm because the Pico shares the centre
   channel with the ICs; that length is acceptable (offset −28mV). Now in
   `breadboard.md`.
+
+## Source side diagnosed: the `GP28` node is not SIG (2026-10-05, later)
+
+User's `diagnose_gain.py` reading: signal off 5.2mV p-p, in phase 24.8mV,
+net 19.7mV on the `GP28` node (design 3.3mV, so the "about 15mV" row);
+`Rbias` read 1kΩ, `GP8`/`GP9` resistors 1MΩ. Session re-ran it with the rig
+left plugged in (18.1mV) and probed further. All with the Pico's own pins:
+
+- **Shape.** A 40-bin fold shows a clean square wave, about ±8.5mV, that flips
+  with `GP9` against `GP8`. So the ripple is real, not an ADC artifact.
+- **DC step** (pin held 0 then 1 for 1s each, 40000-sample means): 0.0–0.3mV
+  for `GP8`, `GP9`, `GP6`; design 3.3, 3.3, 6.6mV. A connected 1MΩ would give
+  more than 1V here, so no source reaches the node through a resistor.
+- **Software-toggled step vs half-period:** 17mV from 217µs to 18ms, 10mV at
+  74ms, about 0 at DC. Step response: 18–25mV decaying over about 20ms.
+- **`GP28` pad pull as a current injector** (pad register
+  `0x4001C000 + 4 + 28*4`, bit 3 pull-up, bit 2 pull-down; `ADC(28)` leaves
+  the pad with pulls off, so writing the bits works and the original value
+  is restored): rest 1.131V, pull-up +1998mV, pull-down −1062mV, relaxing back
+  with about 0.25s time constant. With a 50–80kΩ pull, that is a node held by
+  roughly 0.5–1MΩ. Design: 1kΩ, under 50mV. Reusable for any ADC pin: it
+  turns an ADC pin into a "how firmly is this node held" probe without
+  moving a lead.
+- **Controls:** toggling `GP10`, `GP11` and the unwired `GP12` moves the node
+  by 0mV, so it is not clock pickup or on-chip crosstalk. `GP6`'s 1kHz
+  step (47mV) is 2.7× `GP8`'s, which tracks the number of resistors on it,
+  not a clean resistance ratio.
+- **What this rules out and what is open.** Resistor values are out (right
+  parts, and a resistor path would pass DC). Not established: which row
+  `GP28` is on. The photo's pencil labels show a `SIG` row on each side of the
+  centre channel; the photo can't say which, or whether they are joined. A
+  single consistent topology for the AC-only coupling was not found by
+  reasoning; don't write one into the docs until the row-by-row check
+  (`trace_node.py`, `breadboard.md`) says which strip differs.
+- The gain stage itself is unverified: 18–20mV × 100 is about 2V, which would
+  clip, matching X 1.1V, so nothing so far says it is wrong.
+- Rejected on the way: capacitive pickup from stray coupling (a pF-scale
+  stray gives well under 1mV here), and `Rbias` = 5.1kΩ (would still give a DC
+  step).

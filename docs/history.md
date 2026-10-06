@@ -4599,3 +4599,25 @@ The knowledge-base notes are in `kb/lockin_bench_notes.md` and `kb/rp2040_zero_n
 `breadboard-stage5.jpg` and `diagnose_gain.py` are untracked.
 <!-- ------ -->
 ---
+The part values aren't the fault. The `SIG` wiring is, and I haven't yet found which lead is wrong. I ran the checks over `mpremote` on your rig; the docs are updated and nothing is committed.
+
+Your reading (19.7mV against 3.3mV) landed on the "signal arriving too big" row, but with `Rbias` at 1kΩ and the `GP8`/`GP9` resistors at 1MΩ, no resistor swap is left to try. I reproduced the 18mV reading, then probed with the Pico's own pins:
+
+- **The ripple is real.** It's a clean ~17mV p-p square wave on the `GP28` node, and it flips sign between `GP8` and `GP9`.
+- **No DC path from the sources.** Holding `GP8`, `GP9` or `GP6` at a constant level moves the node by 0.0–0.3mV. A connected 1MΩ would move it by over 1V.
+- **The node is nearly floating.** `GP28`'s internal pull-up and pull-down (50–80kΩ) move it by +2.0V and −1.1V, and it relaxes back over about 0.25s. A 1kΩ hold to Vmid would allow tens of mV.
+- **It isn't clock pickup.** Toggling `GP10`, `GP11` and the unwired `GP12` does nothing.
+
+So the 18mV arrives by AC coupling only, and that node has no firm hold to Vmid. That would make X read ~4–5× high because the gain stage then sees about 18mV instead of 3.3mV. I haven't found a single wiring layout that explains all of it, so I wrote no such explanation into the docs.
+
+**What I can't see:** which row the `GP28` jumper is on. The pencil labels in the stage-5 photo show a `SIG` row on each side of the centre channel, and the photo doesn't show which one the jumper is on or whether the two are joined.
+
+**What changed**
+- **New script:** `trace_node.py` runs the pull, DC-step and 1kHz tests above and prints four lines.
+- **Item 1 in `TODO-arcticoder.md` is rewritten.** Move the `GP28` jumper to four rows in turn: `Cin`'s + lead, `Rbias`'s free lead, and the far lead of each 1MΩ. Run `mpremote run trace_node.py` on each; every row that is truly `SIG` should give the same four lines. The table in `breadboard.md` says what each outcome means and which lead to move. Then run `main.py`.
+- **Docs:** I updated `breadboard.md`, the README, `TODO-agent.md`, and `kb/lockin_bench_notes.md`. The kb entry records the pull-probe trick and the rejected hypotheses for future sessions.
+- **Orders:** nothing needs ordering for this, so there's no "Next order" section. Three other on-hand builds are still queued behind item 1, and the 2026-10-02 and 2026-10-05 shipments are still en route.
+
+`smoke_test.py` still passes.
+<!-- ------ -->
+---
