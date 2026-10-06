@@ -1015,3 +1015,12 @@ there are at least three. Rules this pass followed:
   free-shipping line; the cart stays "add, check the total, don't pay a fee",
   and the next design pass supplies the top-up.
 
+## "Next order" section exists only when a purchase must precede everything else (2026-10-05)
+
+When nothing needs buying first, the section is deleted (not left as "no
+action"), and the in-transit parts go in an "En route — no action" section
+placed after "Ready to build now" so no empty-handed note sits above the
+first real task. Re-add "Next order" at the top as soon as a design needs a
+part that isn't on hand or en route. The user's order on 2026-10-05 (wick,
+magnets, RP2040-Zero, breadboard) cleared the section.
+

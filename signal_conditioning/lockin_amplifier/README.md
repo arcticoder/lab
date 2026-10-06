@@ -12,13 +12,20 @@ the *amplitude of a signal that is in phase with a reference*, which is what
 the weak-signal sensor chains (`TIA`, `CHGAMP`, `HALLAMP`, an optical balance
 readout) need.
 
-**Status: designed and simulated 2026-10-02 (`smoke_test.py` green, 26
-checks); not built.** Every part is on hand. `main.py` was compiled under
-MicroPython on the Pico, and its own `start()`, `set_state()` and `shutdown()`
-were run on the Pico with GP15 standing in for the REFB pin: the logic analyzer
-read 1000Hz with the pin high 48.0% of the period (the complement's design
-value), unchanged after a 90° re-sync. The whole script has not run against
-this circuit (it drives pins the session can't see).
+**Status: built on the bench 2026-10-05; the demodulator works but the
+in-phase reading is about 4–5× the design value (1.1V against 0.26V), so the
+run does not pass yet.** Designed and simulated 2026-10-02 (`smoke_test.py`
+green, 26 checks). The first run read `VB` low in every state (0.026V at `floor`, 0.14V under
+the second run's value in phase); two runs after it read both nodes near
+1.12V at `floor`, with `VA` repeating to within 16mV. The structure is right
+on the bench: the sign flips with the signal phase (X +1.08V in phase,
+−1.39V anti-phase), 90° reads near zero (+0.14V), 45° reads between, and the
+interferer alone moves X by about 0.12V, a tenth of in-phase. What is wrong
+is the size: at that amplitude the gain stage's output clips (the LM358 stops
+at about 1.8V and 0.02V), which flattens the in-phase and anti-phase readings
+and breaks the ratio checks. A duty sweep of the in-phase test pulse (2% to
+50%) grew X from 68mV to 1.26V, so the signal path is live. `diagnose_gain.py` finds which stage is
+responsible (below).
 
 ---
 
@@ -27,6 +34,7 @@ this circuit (it drives pins the session can't see).
 | File | Purpose |
 |------|---------|
 | `lockin_amplifier.spice` | ngspice transient netlist of the whole signal path, with case parameters the smoke test rewrites |
+| `diagnose_gain.py` | One-jumper probe: reads the 1kHz ripple on SIG or OUT1 through GP28 to say whether the source side or the gain stage is too hot (`mpremote mount . run diagnose_gain.py`) |
 | `smoke_test.py` | Seven simulated bench states plus a DC-offset case, then `main.py` against a mocked `machine` (register values, pin release, decision logic) |
 | `main.py` | MicroPython: generates the clocks, test signal and interferer, reads both outputs, prints a table and PASS/FAIL lines (about 15s) |
 | `breadboard.md` | Wiring tables and failure table |
@@ -92,6 +100,16 @@ Simulated numbers (`ngspice`, LM358 as a 1MHz-GBW, 1.8V-ceiling behavioral model
 The phase response is a triangle, not a cosine: gating a square wave with a
 square clock gives X proportional to `1 − 2|φ|/180°`. That is why 45° reads
 0.49 and not 0.71.
+
+## Finding the gain error (2026-10-05)
+
+Expected SIG swing is 3.3mV p-p (3.3V from GP8 through 1MΩ into the 1kΩ
+`Rbias`). A SIG swing near 3mV puts the fault in the gain stage (`Rin`,
+`Rf`, or `Cin` wrongly placed); a swing near 15mV puts it in the source
+side. Metal-film resistors from the kit are all five-band `brown black black
+x brown` for 1kΩ, 10kΩ, 100kΩ and 1MΩ, differing only in the fourth band, and
+a 5.1kΩ part is the other likely stand-in for the 1kΩ `Rbias`. Wiring steps
+and the decision table are in `breadboard.md` § "Gain too high".
 
 ## What this does not show
 

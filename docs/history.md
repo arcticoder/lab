@@ -4563,3 +4563,39 @@ The logic analyzer check passes, so I ran it from the session rather than leavin
 - The LED-to-photodiode light level in `optical_shadow_readout` is an estimate. Its first run will measure it.
 <!-- ------ -->
 ---
+The lock-in works structurally, but its in-phase output is 4–5× too big, so one part in the signal path is probably the wrong value. I haven't pinned down which one. I didn't commit anything.
+
+**What the rig shows**
+
+I re-ran `main.py` over mpremote.
+- **First-run failure:** the `VB` ≈ 0.026V `floor` reading didn't repeat. Two later runs read both nodes near 1.12V and the `floor` offset was −28mV, so that failure was a one-off.
+- **What works:** the sign flips with phase, 90° reads near zero, 45° reads in between, and the interferer alone gives about a tenth of the in-phase reading.
+- **The fault:** in-phase X is +1.08V against the expected 0.26V. At that size the first stage clips, because the LM358 output only swings from about 0V to 1.8V. That clipping is why the ratio checks fail too, so it's one fault, not several.
+- **Not yet determined:** I couldn't measure the gain directly. Narrow test pulses are bandwidth-limited and clip differently each way, and the photos don't let me read the resistor bands.
+
+**Likely causes (unconfirmed)**
+- **`Rbias`:** a 5.1kΩ in place of the 1kΩ would give about 5×.
+- **`Rin`:** a 2.2kΩ in place of the 10kΩ would give about 4.5×.
+- **A source resistor:** a 220kΩ in place of one of the 1MΩ resistors would give about 4.5×.
+
+**Your next step** (item 1 in `TODO-arcticoder.md`)
+1. Run one jumper from row `SIG` to GP28 (pin 34).
+2. From the lock-in folder, run `mpremote mount . run diagnose_gain.py`. I wrote that script, and it ran on the live Pico.
+3. A reading near 3mV on the last line means the gain stage is at fault (`Rin` or `Rf`). A reading near 15mV means the signal side is (`Rbias` or a source 1MΩ).
+
+The table in `breadboard.md` under "Gain too high" gives the follow-up for each case. If those parts all read correctly, the design missed something and I'll re-simulate with the measured values. `main.py` now points to that section when X is more than twice its upper limit.
+
+**Your build notes**
+- **100nF caps:** the leg-to-rail routing for `S1`/`S2` is now in `breadboard.md`.
+- **Jumper length:** 103mm for the GP10/GP11 jumpers is fine, since the offset stayed inside its limit. That's recorded in `breadboard.md`.
+
+**Supply chain**
+- **Orders:** all four are logged in `orders.md` and `inventory.md`. The "Next order" section is gone because nothing needs buying first. An "En route" section sits after "Ready to build now", and the wick and magnet notes in the Blocked entries are updated.
+- **Magnets:** they're radially magnetized, so the poles are on the curved sides. `hall_amplifier`'s step now says to hold the curved side toward the sensor. The listing's test report shows only about 11% rare earth, so I treated their strength as unverified.
+- **RP2040-Zero:** it has differences from the Pico, listed in `parts_reference.md`. The main ones: GP16 is the onboard LED (`frequency_counter` and `vibration_driver` use it as an output), GP25 has no LED, and there's no `ADC_VREF` pin. I'll write per-circuit pin maps only when you move a circuit onto it.
+
+The knowledge-base notes are in `kb/lockin_bench_notes.md` and `kb/rp2040_zero_notes.md`. I also updated the `todo_list_conventions.md` and `live_bench_measurement_notes.md` notes.
+
+`breadboard-stage5.jpg` and `diagnose_gain.py` are untracked.
+<!-- ------ -->
+---

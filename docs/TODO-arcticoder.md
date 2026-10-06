@@ -11,12 +11,13 @@ shows up here. See
 reasoning/history behind this file's structure — that's where it lives
 now, not in this file itself.
 
-Worked strictly top-to-bottom, one section at a time. "Next order" comes
-first because it's the only section with a real clock (AliExpress
-transit runs a few weeks). "Ready to build now" is a ranked queue, not a
-menu — item 1 is genuinely the most valuable thing to build next; see
-[kb/todo_list_conventions.md](kb/todo_list_conventions.md) for the
-ranking method if you want it. "Blocked", "Deferred", and "Backlog" are
+Worked strictly top-to-bottom, one section at a time. A "Next order"
+section goes first whenever a purchase has to happen before anything else
+(AliExpress transit runs a few weeks); it is absent while nothing is
+waiting on one. "Ready to build now" is a ranked queue, not a menu — item 1
+is genuinely the most valuable thing to build next; see
+[kb/todo_list_conventions.md](kb/todo_list_conventions.md) for the ranking
+method if you want it. "En route", "Blocked", "Deferred", and "Backlog" are
 reference sections, not action items, until something changes their
 status — they're placed *after* every actionable section on purpose, so
 you never have to read past a "no action needed" note to reach the next
@@ -28,31 +29,16 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ---
 
-## Next order — action needed
-
-- [ ] **AliExpress: add the solder wick and disc magnets to the cart, then
-      check the total before paying.** Nothing in "Ready to build now" waits
-      on this; it is first only because transit takes weeks. Add: solder wick,
-      any basic roll (`ACCELIF`'s first power-up; also clears a bridge if the
-      ADS1115's header pins arrive loose and need soldering), and small
-      neodymium disc magnets, about 6×3mm, 10–20 pcs (`hall_amplifier`'s
-      field source). If checkout shows no shipping fee, pay. If it still
-      shows one, don't: the next design pass adds the top-up. Prices weren't
-      verifiable from here.
-
-Already en route (ordered 2026-10-02): 10 leaded 12mm piezo discs, 15 linear
-Hall sensors (10 × 49E, 5 × SS49E), 1 ADS1115 module, 10 coin vibration
-motors. Details and listing numbers in [orders.md](orders.md).
-
 ## Ready to build now — parts on hand
 
-1. [ ] **`signal_conditioning/lockin_amplifier` (`LOCKIN`/`DEMOD`) — wire it
-       and run it.** Strongest-justified tier6 node, and item 2 builds on it.
-       Two LM358, two CD4066B (switch 1 of each; **ground on pin 7**, the
-       old pinout was wrong), about 25 resistors and capacitors; wiring
-       tables in its [breadboard.md](../signal_conditioning/lockin_amplifier/breadboard.md),
-       then `mpremote run main.py` (15s). Eight `[PASS]` lines is done; the
-       in-phase reading should be near 260mV. Leave it assembled.
+1. [ ] **`signal_conditioning/lockin_amplifier` (`LOCKIN`/`DEMOD`) — find
+       the part making the gain 4–5× too high.** Wired 2026-10-05: the sign,
+       90° and interferer checks behave, but in-phase X reads 1.1V against
+       0.26V, so the ratio checks fail. One jumper from row `SIG` to GP28
+       (pin 34), `mpremote mount . run diagnose_gain.py`, then follow the
+       table in [breadboard.md](../signal_conditioning/lockin_amplifier/breadboard.md)
+       § "Gain too high" (one resistor swap at most). Eight `[PASS]` lines is
+       done; leave it assembled, item 2 builds on it.
 2. [ ] **`signal_conditioning/optical_shadow_readout` (`FORCEBAL`'s optical
        readout) — change the lock-in's front end.** Needs item 1 wired; no
        other parts to find. Swap the test-signal resistors for a TIA, a
@@ -77,14 +63,22 @@ motors. Details and listing numbers in [orders.md](orders.md).
        (Schmitt) path is added later, only when a sensor needs counting.
 
 Nothing else is startable right now: everything else on the list is waiting
-on the 2026-10-02 shipment, the wick, or is Deferred or undesigned.
+on the 2026-10-02 or 2026-10-05 shipments, or is Deferred or undesigned.
+
+## En route — no action
+
+Ordered 2026-10-02: 10 leaded 12mm piezo discs, 15 linear Hall sensors
+(10 × 49E, 5 × SS49E), 1 ADS1115 module, 10 coin vibration motors. Ordered
+2026-10-05: solder wick (1.0mm × 1.5m), 10 N42 disc magnets (6×3mm,
+radially magnetized), 1 RP2040-Zero board, a second 800-point breadboard.
+Details and listing numbers in [orders.md](orders.md).
 
 ## Blocked — waiting on a shipment
 
 - [ ] **`ACCELIF`** (`signal_conditioning/accelerometer_interface`) —
-      blocked on the solder wick, **not** in the 2026-10-02 order (see "Next
-      order"). A few GY-521 header pins bridged during soldering
-      (2026-09-24); wick clears them. When it arrives: lay the braid over
+      blocked on the solder wick (ordered 2026-10-05, see "En route"). A few
+      GY-521 header pins bridged during soldering (2026-09-24); wick clears
+      them. When it arrives: lay the braid over
       the bridge, press the iron on the braid for 2–3 seconds, lift both
       together, and check the row by eye (steps in that circuit's
       [breadboard.md](../signal_conditioning/accelerometer_interface/breadboard.md)).
@@ -105,7 +99,8 @@ on the 2026-10-02 shipment, the wick, or is Deferred or undesigned.
       [breadboard.md](../signal_conditioning/hall_amplifier/breadboard.md),
       `mpremote run main.py`, turn the trimpot until the reading holds at
       0.94V, `[PASS]` for the noise line is done; the magnet test waits on the
-      magnets in "Next order". Try a second sensor if the first can't be nulled.
+      magnets (ordered 2026-10-05). Hold a magnet with its curved side toward
+      the sensor, not a flat face (the discs are radially magnetized). Try a second sensor if the first can't be nulled.
 - [ ] **`adc_ads1115`** (`signal_conditioning/adc_ads1115`, tier9
       `ADCDRV`) — designed and simulated; blocked on the ADS1115 module
       (1 ordered 2026-10-02). Parts otherwise on hand (10kΩ ×3, 100nF,

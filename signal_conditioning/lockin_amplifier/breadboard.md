@@ -47,6 +47,10 @@ Name the rows as you go: `VMR`, `VMO`, `SIG`, `C2`, `INN`, `OUT1`, `XA`, `XB`, `
 | `S1` pins 5, 6, 12 and `S2` pins 5, 6, 12 (unused controls: never leave them floating) | − rail |
 | 100nF across each of `U1`, `U2`, `S1`, `S2` | + rail to − rail, next to the chip |
 
+For `S1` and `S2` the supply pins are 7 pins apart (17.78mm), too far for a
+100nF capacitor to bridge them directly. Put one leg in pin 14's row and the
+other in the − rail hole nearest pin 14; the rail is tied to pin 7 anyway.
+
 ### 2. Vmid and its buffer (`U1B`)
 
 | From | To |
@@ -102,6 +106,10 @@ Name the rows as you go: `VMR`, `VMO`, `SIG`, `C2`, `INN`, `OUT1`, `XA`, `XB`, `
 | `U2` pin 7 | Pico GP27 (pin 32) |
 
 Keep the GP10/GP11 jumpers short and away from the `SIG`, `C2` and `INN` rows.
+With the Pico on the same centre channel as the ICs, about 100mm is as short
+as these two jumpers get; what matters is the route, so lay them over the
+power rails, not over the `SIG`, `C2` and `INN` rows. The 2026-10-05 build
+used about 100mm and read a no-signal offset of −28mV, inside the 50mV limit.
 
 ## Run
 
@@ -138,4 +146,25 @@ passes). The other lines are judged against it.
 | in-phase X small (under 120mV) but other ratios right | A resistor in the gain path is the wrong value: check `Rf` (1MΩ), `Rin` (10kΩ), `Rbias` (1kΩ) |
 | anti-phase doesn't flip | GP9's 1MΩ missing (the signal is only on GP8) |
 | interferer alone is not near zero | `A` and `B` averagers unequal (a 100kΩ or 1µF wrong), or `S1`/`S2` skew: check both chips are CD4066B with `VDD` on pin 14 |
+| `floor` row has `VB` near 0V on the first run after plugging in, then fine on the next run | The `B` averager read low in every state of that first run (0.026V at `floor`); the next two runs were normal. Seen once, 2026-10-05; if it recurs, check `Cb`'s polarity and that `U2` pins 5/6 are on the right rows |
+| Sign, 90° and interferer behave, but the in-phase X is 4–5× the 260mV expected (X above 1V) and the ratio checks fail | The gain stage clips (output stops at about 1.8V and 0.02V). See "Gain too high" below |
 | Everything fails at the first run on one chip pair | Swap in another CD4066B; switch 1 of every chip tested good, but `VSS` must be on pin 7 |
+
+## Gain too high (in-phase X above about 0.6V)
+
+Seen 2026-10-05: in-phase X +1.08V, anti-phase −1.39V, and the other states
+sensible. A part in the signal path is the wrong value, or the signal is too
+big going in. One jumper, then one reading.
+
+1. Wire a jumper from row `SIG` to Pico GP28 (pin 34). Nothing else moves.
+2. From this folder: `mpremote mount . run diagnose_gain.py`
+3. Read the last line, `test-signal ripple on GP28`:
+
+| Reading | Means | Next |
+|---------|-------|------|
+| about 3mV (2–5mV) | Source side is right; the gain stage is 4–5× too hot | Pull `Rin` and `Rf` one at a time and read each with `measurement_tools/resistance_measurement` (10kΩ and 1MΩ expected). A 2.2kΩ in `Rin`'s place gives about 4.5× |
+| about 15mV (10–20mV) | The signal arriving at `SIG` is 4–5× too big | Pull `Rbias`; read it. A 5.1kΩ in place of 1kΩ gives about 5×. If `Rbias` is 1kΩ, read the `GP8` and `GP9` 1MΩ resistors (a 220kΩ in either gives about 4.5×) |
+| anything else | Report the number | |
+
+4. Fix the part, move the jumper off GP28, and run `mpremote run main.py`.
+   The in-phase `VB-VA` should come to about 260mV.

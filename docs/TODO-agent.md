@@ -55,17 +55,38 @@ circuit is ever trusted as an unattended monitor; pick N against how
 often this kind of breadboard contact glitch actually recurs rather than
 guessing a number now.
 
+### `lockin_amplifier` — gain error found on the bench (2026-10-05)
+
+Wired and run 2026-10-05: structure right, in-phase X 4–5× the design value
+(see that circuit's README status). `diagnose_gain.py` (SIG→GP28) was written
+to split source side from gain stage; the user's reading and the part found
+go into the README, `breadboard.md`'s troubleshooting table and
+`kb/lockin_bench_notes.md`, then `optical_shadow_readout` becomes startable.
+If the cause is not a wrong resistor (SIG correct, `Rin`/`Rf` read right),
+the model missed something: re-run the simulation with the measured values
+before touching the design.
+
+### `RP2040-Zero` — pin-map pass when it moves into a build (arrives with the 2026-10-05 order)
+
+Differences from the Pico are in `parts_reference.md#rp2040-zero` and
+`kb/rp2040_zero_notes.md`. Do the per-circuit pass (breadboard tables by
+silkscreen name; `GP16` and `GP25` remaps) only when the user says a circuit
+moves to the Zero, not for all circuits ahead of time. First candidates:
+anything that stays assembled as a sensor front end.
+
 ### Next design pass — what to pick and why (2026-10-02)
 
 The 2026-10-02 pass designed `lockin_amplifier`, `optical_shadow_readout`,
 `hall_amplifier`, `frequency_counter` and `overvoltage_monitor` (see the
 Completed entry below), so "Ready to build now" has four on-hand builds
 again. Carts fill from designs (`kb/todo_list_conventions.md`, "Carts fill
-from designs"): the AliExpress cart currently holds the wick and magnets
-only, so a design that needs a cheap AliExpress part is also a top-up. None of
-the candidates below needs one yet. If the user reports a shipping fee on that
-cart, pick the first candidate that does and add its part to "Next order";
-otherwise pick for dependency value.
+from designs"): the AliExpress cart is empty since the 2026-10-05 order (wick, magnets,
+RP2040-Zero, second breadboard), so a design that needs a cheap AliExpress
+part is a top-up for the next order. None of the candidates below needs one
+yet; pick for dependency value. Queue state 2026-10-05: four on-hand builds
+(`lockin_amplifier` in diagnosis, then `optical_shadow_readout`,
+`overvoltage_monitor`, `frequency_counter`), so no design pass is due until
+one of them finishes.
 
 Candidates, none blocked on a decision:
 

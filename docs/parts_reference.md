@@ -808,3 +808,44 @@ max**, speed 10000–12000rpm (167–200Hz), operating −20 to +70°C. Brushed,
 `oscillators/vibration_driver/` (revised 2026-10-02 for the 120mA stall
 figure) and, later, `RIPPLETANK`'s dipper.
 
+
+## RP2040-Zero (2026-10-05 order)
+
+Item [1005005108143219](https://www.aliexpress.com/item/1005005108143219.html);
+ordered 2026-10-05, not yet received. Same RP2040 and 2MB flash (W25Q16JV) as
+the Pico, on an 18.00 × 23.50mm board with USB-C, BOOT and RESET buttons, an
+ME6211-class 3.3V LDO (listing says 800mA; treat 500mA as the limit) and one
+WS2812 RGB LED on GP16. Pitch 2.54mm; castellated edges so it can also be
+soldered flat onto a board.
+
+Pins, from the listing's pinout text (taken as listed, not checked against a
+board): header pins `5V`, `GND`, `3V3`, `GP0`–`GP15` and `GP26`–`GP29`
+(20 GPIO); back solder pads `GP17`–`GP25` and a `GND`. `GP16` is the LED's
+data line.
+
+Differences from the Pico that matter to this repo's scripts:
+
+| Pico behaviour in this repo | On the Zero |
+|-----------------------------|-------------|
+| Pin numbers in `main.py` files | Same GPIO numbers; no change for `GP0`–`GP15` and `GP26`–`GP28` |
+| `GP16` used as an output (`frequency_counter`, `vibration_driver`) | `GP16` is the WS2812's data pin and is not on a header. Remap to a header pin (`GP0`–`GP15`), keeping a PWM-capable pin |
+| `GP25` onboard LED (`fuse_test_voltmeter`) | No plain LED; `GP25` is a back pad. The script runs but nothing lights |
+| 3V3(OUT) pin 36, GND pin 38 etc. in breadboard tables | Pin numbers differ; use the silkscreen names `3V3`, `GND`, `GPn` |
+| `GP29` | Free ADC3 on a header (on the Pico it measures VSYS) |
+| `ADC_VREF` pin (planned `REFGEN2`) | Not broken out, so an external ADC reference can't be fitted |
+| Breadboard width | Narrower than the Pico (18mm against 21mm), so it leaves more free holes on each side of the channel |
+
+Firmware: the Pico's MicroPython UF2 should run on it (same RP2040 and
+flash size); hold BOOT while plugging in to get the drive. Needs a USB-C
+data cable; the Pico on hand uses micro-USB.
+
+## Neodymium disc magnets, N42 D6×3mm (2026-10-05 order)
+
+Item [1005012687239354](https://www.aliexpress.com/item/1005012687239354.html),
+variant "N42 NdFeB D6x3mm/10PCS": 10 discs, 6.00mm × 3.03mm (listing photo
+of calipers), nickel-copper-nickel, up to 80°C. **Radially magnetized**: the
+north and south poles are the two halves of the cylinder wall, so the flat
+faces are not the poles. The listing's composition report (a 20×6×2mm
+sample, not this size) shows about 11% rare earth in total, lower than usual
+for NdFeB. Not yet received; strength untested.
+
