@@ -25,8 +25,6 @@ Powered from [psu_pico_rail](../../power_supplies/psu_pico_rail/).
 | Resistor | 10 kΩ (reference leg, `Rref`) | 1 |
 | Resistor | 220 Ω (LED current limit) | 1 |
 | LED | any color on hand | 1 |
-| Dupont M-M jumper (red) | 12–20cm | 1 |
-| Dupont M-M jumper (black) | 12–20cm | 1 |
 
 ---
 

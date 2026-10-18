@@ -19,7 +19,6 @@ Both USB devices need to be attached to WSL for the host script and
 |-----------|----------|
 | Raspberry Pi Pico (USB-connected) | 1 |
 | CY7C68013A board, jumper J4 removed, Mini-USB cable | 1 |
-| Dupont jumper (M-M or M-F as the board's header needs) | 2 |
 
 ---
 

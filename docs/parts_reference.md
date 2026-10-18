@@ -7,7 +7,26 @@ one exists.
 
 ---
 
-## Breadboard variants on hand / on order
+---
+
+## AD9833 DDS signal generator module
+
+Not yet ordered (candidates in [orders.md](orders.md#ad9833-dds-signal-generator-module-testsig)).
+Chip facts from the Analog Devices data sheet, Rev. E (read 2026-10-17 from a
+mirror; the analog.com server did not answer): 28-bit phase accumulator,
+`f = word × MCLK / 2²⁸`, output 0 to MCLK/2 (12.5MHz at 25MHz); 10-bit DAC;
+VDD 2.3V to 5.5V (below 2.7V `CAP/2.5V` is tied to VDD); 4.5mA typical; sine,
+triangle, or the DAC's MSB as a square wave; VOUT 38mV to 650mV, typically 0.6V
+p-p, through an on-chip 200Ω; SPI-style write, SCLK up to 40MHz, SCLK high when
+FSYNC falls, data taken on the falling edge. Control register (D15 D14 = 00):
+D13 B28, D12 HLB, D11 FSELECT, D10 PSELECT, D8 RESET, D7 SLEEP1, D6 SLEEP12,
+D5 OPBITEN, D3 DIV2, D1 MODE. Frequency registers are addressed by D15 D14 =
+01 (FREQ0) or 10 (FREQ1), phase registers by 110/111. THD −56 to −66dBc,
+wideband SFDR −60dBc. The module's own parts (oscillator frequency, header
+order, any added output stage) are not on the data sheet and must be read off
+the board on arrival.
+
+## Breadboard variants on hand
 
 | Type | Tie points | Size | Source |
 |---|---|---|---|
@@ -15,6 +34,7 @@ one exists.
 | SYB-170 (received, 2-pack) | 170 | same as above | second listing, separate order; received 2026-08-24 |
 | MB-102 (received) | 400 (300 terminal-strip + 100 distribution-bar) | 8.5 × 5.5 × 1.0cm | [manual](manuals/400-tie-points-solderless-breadboard-_mb-102_-for-diy-electronics.md); received 2026-08-24 |
 | Full breadboard (existing inventory) | 830 | — | SunFounder Thales kit, see `inventory.md` |
+| Full breadboard, 800-point | 800 | — | second full-size board; ordered 2026-10-05, arrived by 2026-10-17 (listing not recorded) |
 
 MB-102 terminal strips: rows labeled a–e and f–j are connected horizontally
 within a row, split by the center DIP channel. Distribution bars (side
@@ -737,7 +757,7 @@ needed, unlike most other tier5 sensor nodes.
 
 ## Piezo element, 12mm disc, with wire leads (2026-10-02 order)
 
-10 ordered 2026-10-02, not yet received. See
+10 ordered 2026-10-02; arrived by 2026-10-17, untested. See
 [orders.md](orders.md#piezo-element-12mm-disc-leaded--variant-wire-12mm-10pcs).
 Same family as the bare 12mm discs above, but with leads attached at the
 factory, so none of the soldering that destroyed a bare disc on 2026-09-16.
@@ -761,7 +781,7 @@ is below that tool's range: 5nF is not measurable by it; see its README).
 
 ## Linear Hall sensors, 49E / SS49E (TO-92) — 2026-10-02 orders
 
-15 ordered 2026-10-02 (10 as "49E", 5 as "SS49E"), not yet received. See
+15 ordered 2026-10-02 (10 as "49E", 5 as "SS49E"); arrived by 2026-10-17, top marks not yet checked. See
 [orders.md](orders.md#linear-hall-effect-sensor-49e--variant-10pcslot-49e).
 Three-pin TO-92, flat face toward you, legs down: `VCC`, `GND`, `OUT` left
 to right (**recalled from the usual 49E/SS49E datasheet, confirm against
@@ -781,7 +801,7 @@ half of VCC with no magnet; a latching or switch part reads at one rail.
 
 ## ADS1115 16-bit ADC module — 2026-10-02 order
 
-1 ordered 2026-10-02, not yet received. See
+1 ordered 2026-10-02; arrived by 2026-10-17, untested (header state not reported). See
 [orders.md](orders.md#ads1115-16-bit-adc-module--1-pc). Module pins per the
 listing's photo, in order: `VDD, GND, SCL, SDA, ADDR, ALRT, A0, A1, A2, A3`
 (photo-transcribed, so provisional until the board is in hand; see
@@ -797,7 +817,7 @@ Used by `signal_conditioning/adc_ads1115/`.
 
 ## Coin vibration motor, 1027 type — 2026-10-02 order
 
-10 ordered 2026-10-02, not yet received. See
+10 ordered 2026-10-02; arrived by 2026-10-17, untested. See
 [orders.md](orders.md#coin-vibration-motor--variant-10pcs-1027). Flat coin
 motor, 10mm diameter, 2.7mm thick, two flying leads: red = +, blue or black
 = −. Listing: rated 3V; the headline says 3–5V but the performance table says
@@ -812,7 +832,7 @@ figure) and, later, `RIPPLETANK`'s dipper.
 ## RP2040-Zero (2026-10-05 order)
 
 Item [1005005108143219](https://www.aliexpress.com/item/1005005108143219.html);
-ordered 2026-10-05, not yet received. Same RP2040 and 2MB flash (W25Q16JV) as
+ordered 2026-10-05; arrived by 2026-10-17 (headers and USB-C cable not reported). Same RP2040 and 2MB flash (W25Q16JV) as
 the Pico, on an 18.00 × 23.50mm board with USB-C, BOOT and RESET buttons, an
 ME6211-class 3.3V LDO (listing says 800mA; treat 500mA as the limit) and one
 WS2812 RGB LED on GP16. Pitch 2.54mm; castellated edges so it can also be
@@ -847,5 +867,5 @@ of calipers), nickel-copper-nickel, up to 80°C. **Radially magnetized**: the
 north and south poles are the two halves of the cylinder wall, so the flat
 faces are not the poles. The listing's composition report (a 20×6×2mm
 sample, not this size) shows about 11% rare earth in total, lower than usual
-for NdFeB. Not yet received; strength untested.
+for NdFeB. Arrived by 2026-10-17; strength untested.
 

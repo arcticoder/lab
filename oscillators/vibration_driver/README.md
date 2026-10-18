@@ -8,8 +8,8 @@ motor's current, and no motor or speaker is on hand (inventory checked
 (see `docs/TODO-arcticoder.md`).
 
 **Status: designed and simulated 2026-10-01, revised 2026-10-02 for the motor
-that was ordered (`smoke_test.py` green); not built. The motor is on order**
-(2026-10-02, `docs/orders.md` "On order"). The `main.py` was exercised
+that was ordered (`smoke_test.py` green); not built. The motors arrived**
+(ordered 2026-10-02, on hand by 2026-10-17; `docs/orders.md`). The `main.py` was exercised
 against a host-side mock only.
 
 ---

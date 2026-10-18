@@ -18,6 +18,18 @@ matching, so don't assume one file makes the other redundant.
 
 ---
 
+## 2026-10-17
+
+- **Both October AliExpress orders arrived** (2026-10-02: leaded piezo discs
+  ×10, 49E ×10, SS49E ×5, ADS1115 ×1, coin motors ×10; 2026-10-05: solder
+  wick, N42 magnets ×10, RP2040-Zero, 800-point breadboard). Their blocked
+  bullets (`ACCELIF`, `CHGAMP`, `hall_amplifier`, `adc_ads1115`,
+  `vibration_driver`) moved to "Ready to build now".
+- **`lockin_amplifier` gain error diagnosed** (not yet fixed): the `Rbias`
+  slot holds a 10kΩ. The fix and rerun stay in `TODO-arcticoder.md` item 1.
+- Jump wires and Dupont jumpers dropped from the inventory; storage bags
+  assigned in `inventory.md`.
+
 ## 2026-10-02
 
 - **`SCOPELA`'s first capture passed (bench check, run from the session shell

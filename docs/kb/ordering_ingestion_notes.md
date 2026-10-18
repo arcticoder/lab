@@ -65,7 +65,7 @@ silkscreen on arrival. General lesson: treat photo-transcribed pin labels
 as provisional until the physical part confirms them, especially single
 characters that could be OCR confusions (D/U, O/0, B/8, etc.).
 
-## Moving an item from "on order" to "received" touches 3 files, not 1
+## Moving an item from "on order" to "received" touches 3 files, not 1 (4 since 2026-10-17: add the storage bag)
 
 When a physical part arrives, it needs updating in all of: `lab/docs/inventory.md`
 (delete from the "On Order" table, add to/create the appropriate received-parts
@@ -75,7 +75,17 @@ subsection entry with the received date), and `lab/docs/parts_reference.md`
 to say "received <date>" for accuracy — it's easy to migrate the other two
 files and forget this one since it doesn't have an explicit on-order/received
 table structure). Did this for the RXEF005/RXEF050/1N5817/AA-holder batch on
-2026-08-21 — used as the template for future arrivals.
+2026-08-21 — used as the template for future arrivals. Since 2026-10-17 the
+fourth edit is the bag assignment in `inventory.md` § Storage (see
+`inventory_storage_notes.md`), and each circuit's `breadboard.md`/README that
+said "on order" needs its wording changed too (`grep -rn "on order"`).
+
+The 2026-10-17 arrival report covered both October orders at once, with no
+per-item dates; the rows say "arrived by 2026-10-17" and `orders.md` moved
+the whole "On order" block into "Received" (entries kept, "not yet received"
+replaced). Top marks, headers and untested state were not reported, so the
+rows keep "untested" and name what is still to check (Hall sensor top marks,
+whether the ADS1115 and RP2040-Zero headers are soldered).
 
 ## AliExpress listing titles can misuse standard part-family terminology, not just bundle SKUs
 
@@ -253,9 +263,9 @@ hardware-timed logic analyzers, and is why they're supported
 out-of-the-box by PulseView with zero vendor software. So a listing
 titled "CY7C68013A 24MHz 8-channel logic analyzer" or similar *is* the
 `SCOPELA` purchase, not a sub-part needed to build one. Most listings
-ship with an 8-wire Dupont test-clip cable included; if not, the
-existing M-M/M-F Dupont jumper stock in `inventory.md`
-covers it. Check whether the board is USB-A dongle-style (plugs
+ship with an 8-wire Dupont test-clip cable included; if not,
+the bench's own Dupont jumpers cover it (jumper wires are not tracked in
+`inventory.md`). Check whether the board is USB-A dongle-style (plugs
 straight into a port, no cable needed) or has its own cable port before
 assuming no cable is needed.
 

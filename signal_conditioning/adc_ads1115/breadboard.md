@@ -5,11 +5,10 @@
 | Component | Quantity | On hand? |
 |-----------|----------|----------|
 | Raspberry Pi Pico (USB-connected) | 1 | yes |
-| ADS1115 16-bit ADC module | 1 | **on order** (2026-10-02). The listing doesn't say whether the 10 header pins are soldered; if they come loose in a bag, solder them first (iron on hand; the solder wick, still to order, clears a bridge) |
+| ADS1115 16-bit ADC module | 1 | on hand (arrived by 2026-10-17). Whether the 10 header pins are soldered isn't recorded; if they come loose in the bag, solder them first (iron and solder wick on hand) |
 | 10kΩ resistor | 3 (two divider, one `Rin`) | yes |
 | 100nF capacitor | 1 | yes |
 | 1N5817 Schottky diode | 2 | yes (18 untested) |
-| Jumper wires | about 10 | yes |
 
 Module pins: `VDD, GND, SCL, SDA, ADDR, ALRT, A0, A1, A2, A3`.
 

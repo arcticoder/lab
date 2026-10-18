@@ -53,7 +53,6 @@ comes back out.
 |-----------|-------|----------|
 | Raspberry Pi Pico | RP2040 | 1 |
 | Micro USB cable | data-capable, to PC | 1 |
-| Dupont M-M jumper | 22cm | 4 (2 probe, 2 arm switch) |
 | Slide switch (SPDT) | — | 1 — arm/disarm signal to GP15, see "Wire the arm switch" below |
 | AA battery holder (single-cell) | — | 1 (RXEF005 jig, 1.5V) or 2 in series (RXEF050 jig, 3.0V) |
 | AA battery | fresh | 1–2, matching holder count above |

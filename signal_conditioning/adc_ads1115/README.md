@@ -10,7 +10,7 @@ At ±4.096V full scale an ADS1115 step is 125µV, 6.4× finer; at ±2.048V it is
 62.5µV.
 
 **Status: designed and simulated 2026-10-01 (`smoke_test.py` green); not built.
-One module is on order** (2026-10-02, `docs/orders.md` "On order"; a different
+The module arrived** (ordered 2026-10-02, on hand by 2026-10-17, untested; a different
 listing from the one first picked, same pin labels and I2C address range).
 `main.py` was exercised against a host-side mock only.
 

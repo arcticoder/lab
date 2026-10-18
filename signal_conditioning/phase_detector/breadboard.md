@@ -27,9 +27,6 @@ circuit taps its existing output divider (see `ne555_astable/breadboard.md`
 | SN74HC86N | quad 2-input XOR gate, DIP-14 | 1 |
 | Resistor | 10 kΩ (lowpass, `Rf`) | 1 |
 | Ceramic capacitor | 100 nF (lowpass, `Cf`; EIA code `104`) | 1 |
-| Dupont M-M jumper (red) | 12–20cm | 1 |
-| Dupont M-M jumper (black) | 12–20cm | 2 |
-| Dupont M-M jumper (any color) | 12–20cm | 2 |
 
 ---
 

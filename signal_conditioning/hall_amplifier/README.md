@@ -10,7 +10,7 @@ the on-hand KY-003 module is a digital switch and can't stand in for it
 orders.
 
 **Status: designed and simulated 2026-10-02 (`smoke_test.py` green, 20
-checks); not built, sensors on order.** The sensor numbers come from the
+checks); not built; the sensors arrived (on hand by 2026-10-17, top marks unchecked).** The sensor numbers come from the
 Honeywell SS39ET/SS49E/SS59ET datasheet (read 2026-10-02), which describes the
 original part; the AliExpress "49E"/"SS49E" parts are clones and may differ.
 `main.py` was compiled under MicroPython on the Pico; its logic was run

@@ -23,7 +23,6 @@ front-end problem.
 | 1µF electrolytic capacitor | 4 (`Ca`, `Cb`, and two for `Cin`) | yes |
 | Push button | 1 | yes (10) |
 | Card or paper strip | 1 (the flag) | yes |
-| Jumper wires | about 40 | yes |
 
 Use the 830-point breadboard. Check each resistor's colour bands before it goes
 in (`docs/inventory.md` records a 10kΩ bin that held a 220Ω part).

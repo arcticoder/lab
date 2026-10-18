@@ -12,7 +12,6 @@
 | 3296 trimpot, 10kΩ (analog path only) | 1 | yes (10) |
 | 5.1kΩ resistor (analog path only) | 1 | yes (10) |
 | 100nF ceramic capacitor (LM358 supply) | 1 | yes (10) |
-| Jumper wires | about 10 | yes |
 
 Build the digital path and run the self-test first; add the analog path only
 when there is a sensor to count.

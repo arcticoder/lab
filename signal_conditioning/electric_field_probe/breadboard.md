@@ -24,8 +24,6 @@ why: it guarantees the op-amp output can never exceed the Pico ADC's own
 | TL082 | JFET-input dual op-amp, DIP-8 | 1 |
 | Resistor | 1 MΩ | 2 |
 | Electrode | any small bare conductor — a stripped jump-wire end or foil scrap | 1 |
-| Dupont M-M jumper (red) | 12–20cm | 1 |
-| Dupont M-M jumper (black) | 12–20cm | 2 |
 
 No dedicated probe/electrode part has been ordered — none is needed for
 a first build. Any small exposed conductor works; a bigger/flatter one

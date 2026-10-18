@@ -21,7 +21,6 @@ Powered from the Pico's 3V3(OUT) pin — the module draws ~4mA, far under
 | Component | Value | Quantity |
 |-----------|-------|----------|
 | GY-521 module (MPU-6050) | 8-pin header: VCC, GND, SCL, SDA, XDA, XCL, AD0, INT | 1 |
-| Dupont M-M jumper | 12–20cm | 4 |
 
 If the 8-pin header came loose in the bag rather than soldered on, solder
 it to the module first (short side of the pins through the board, long

@@ -4621,3 +4621,34 @@ So the 18mV arrives by AC coupling only, and that node has no firm hold to Vmid.
 `smoke_test.py` still passes.
 <!-- ------ -->
 ---
+The `Rbias` slot holds a 10kΩ, not a 1kΩ. Swap it for a 1kΩ and rerun. I haven't run `main.py` with the swap, and `VB` is stuck separately (second fault below).
+
+**Correction to my last message:** I said `SIG` was nearly floating and its wiring was wrong. That was wrong. Your row numbers show the `GP28` jumper was on row 50 (`C2`), one row past `SIG` (row 49). On `C2` a 36µA pull overpowers the op-amp's virtual ground, so it looked floating.
+
+**The fault, from your row-49 readings**
+- **DC steps:** 31.7mV (`GP8`) and 63.5mV (`GP6`), against 3.3mV and 6.6mV expected, so the node is held through about 9.7kΩ.
+- **Simulation:** with `Rbias` at 10kΩ the netlist gives X = +1.057V. You measured 1.08V on 10-05, and 1kΩ gives the design 0.264V.
+- **Your questions:** 3.1: leave the jumper on row 49, column j for `trace_node.py`, and take it off before `main.py`. 2.3.1: that row can't be the `VMO` row. `VMO` would show 0mV steps, and yours matched `SIG` exactly.
+
+**Second fault: `VB` is stuck.**
+- **What I saw:** `VB` read 1.1715V in all seven states of `main.py`. With `S2` closed alone, `B` didn't move, while `A` followed `S1` normally.
+- **The check:** `diagnose_demod.py` shows `B` failing and `A` passing.
+- **Bisecting:** the S1/S2 chip swap in `breadboard.md` separates a bad chip from loose wiring.
+
+**TODO restructure:**
+- **Order:** "Next order" is back at the top because nothing is en route. It lists the AD9833 module, plus header strips and a USB-C cable only if the new boards need them. Nothing waits on it.
+- **Cart:** the cart probably sits under the free-shipping line. I didn't pad it, and the section says to hold it if a fee shows. I couldn't open AliExpress listings from here, so `orders.md` has two search-found candidates marked "verify the variant".
+- **Build queue:** nine builds are ready, in ranked order, and the five that arrived are unblocked. `adc_ads1115` ranks third because a dud means a refund and the protection window is running; check its date on the order page. Items 3–7 can go on the second breadboard.
+
+**Another design:** the AD9833 test-signal source is `measurement_tools/signal_generator_ad9833/`. It's built from the datasheet, and its smoke test and the Pico analysis code pass. It hasn't been tried on the real module. I held the MAX6675 thermocouple back because its datasheet wouldn't download.
+
+**Inventory:**
+- **Jumper wires:** removed from the inventory, 45 circuit parts-table rows, and 17 rows in `pico`. The colour and length named in each wiring step were left alone.
+- **Arrivals:** logged in `inventory.md`, `orders.md` and `parts_reference.md`.
+- **Bags:** the bag map is at the top of `inventory.md`. `10K / 1K` is the only bag that mixes 1kΩ and 10kΩ, so I suggested splitting it. The chat notes don't say what it holds, so please tell me.
+
+**Your RP2040 brief:** saved as `kb/rp2040_performance_notes.md`. I measured on your Pico that the ADC with DMA runs at 100–499kSa/s, against 77kSa/s for a `read_u16` loop.
+
+Nothing is committed in either repo.
+<!-- ------ -->
+---

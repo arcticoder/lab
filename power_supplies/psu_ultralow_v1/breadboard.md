@@ -16,8 +16,6 @@ a battery interface with resettable overcurrent protection.
 | AA battery holder | single-cell, 5mm terminal | 1 |
 | AA alkaline battery | 1.5V | 1 |
 | Polyfuse | Littelfuse RXEF005 (50 mA slow-blow) | 1 |
-| Dupont M-M jumper (red) | 16–20cm | 1 |
-| Dupont M-M jumper (black) | 16–20cm | 1 |
 | SYB170 breadboard | 170-pin, 300V, <5A | 1 |
 
 ---

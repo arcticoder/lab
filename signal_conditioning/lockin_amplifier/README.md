@@ -25,11 +25,14 @@ is the size: at that amplitude the gain stage's output clips (the LM358 stops
 at about 1.8V and 0.02V), which flattens the in-phase and anti-phase readings
 and breaks the ratio checks. A duty sweep of the in-phase test pulse (2% to
 50%) grew X from 68mV to 1.26V, so the signal path is live. `diagnose_gain.py`
-put the fault on the source side (18–20mV on the `GP28` node against 3.3mV
-expected), and `Rbias` and the `GP8`/`GP9` resistors read right. Further probes
-with the Pico's own pins show that node is nearly floating and reached by the
-test sources only through AC coupling, so the `SIG` wiring is the suspect, not
-a resistor value. `trace_node.py` finds the break (below).
+read 15–20mV at the `SIG` end of the test signal (3.3mV expected), and the
+`trace_node.py` DC steps (31.7mV from `GP8` where 3.3mV is expected) put the
+cause at the part in the `Rbias` position: it holds `SIG` through about 9.7kΩ,
+so it is a 10kΩ, not a 1kΩ. Simulating the netlist with a 10kΩ `Rbias` gives
+X = +1.057V, against the 1.08V measured. Replacing it with a 1kΩ is the fix
+(`breadboard.md` § "The `GP28` row and `Rbias`"). On 2026-10-17 `main.py`
+also showed `VB` stuck at 1.1715V in every state, a second fault in the `S2`
+path that `diagnose_demod.py` isolates; it was not there on 2026-10-05.
 
 ---
 
@@ -39,7 +42,8 @@ a resistor value. `trace_node.py` finds the break (below).
 |------|---------|
 | `lockin_amplifier.spice` | ngspice transient netlist of the whole signal path, with case parameters the smoke test rewrites |
 | `diagnose_gain.py` | One-jumper probe: reads the 1kHz ripple on SIG or OUT1 through GP28 to say whether the source side or the gain stage is too hot (`mpremote mount . run diagnose_gain.py`) |
-| `trace_node.py` | Says what the node on the `GP28` jumper is connected to: pull-up/down test, DC steps from `GP8`/`GP9`/`GP6`, and the ~1kHz step (`mpremote run trace_node.py`) |
+| `trace_node.py` | Measures the node on the `GP28` jumper: DC steps from `GP8`/`GP9`/`GP6` (3.3V × holding resistance / 1MΩ, so on `SIG` it reads `Rbias`), the ~1kHz step, and pull-up/down. Put the jumper on row 49 (`SIG`) (`mpremote run trace_node.py`) |
+| `diagnose_demod.py` | Says whether each averager (A, B) moves between in-phase and anti-phase signal, to find a dead demodulator path (`mpremote mount . run diagnose_demod.py`) |
 | `smoke_test.py` | Seven simulated bench states plus a DC-offset case, then `main.py` against a mocked `machine` (register values, pin release, decision logic) |
 | `main.py` | MicroPython: generates the clocks, test signal and interferer, reads both outputs, prints a table and PASS/FAIL lines (about 15s) |
 | `breadboard.md` | Wiring tables and failure table |
@@ -116,11 +120,12 @@ x brown` for 1kΩ, 10kΩ, 100kΩ and 1MΩ, differing only in the fourth band, an
 a 5.1kΩ part is the other likely stand-in for the 1kΩ `Rbias`. Wiring steps
 and the decision table are in `breadboard.md` § "Gain too high".
 
-Result: the `GP28` node swung 18–20mV, but `Rbias` is 1kΩ and the `GP8`/`GP9`
-resistors are 1MΩ. The node behaves as nearly floating (a 50–80kΩ pull moves
-it by volts, where 1kΩ to Vmid would allow tens of mV) and none of the three
-sources moves it at DC. `breadboard.md` § "`SIG` does not behave like `SIG`"
-has the measurements and the row-by-row check.
+Result: the first reading (19.7mV) was taken with the `GP28` jumper one row
+past `SIG`, on `C2`, where the ripple is a copy of `SIG`'s. The 2026-10-17
+readings on `SIG` itself (row 49): DC steps of 31.7mV, 32.1mV and 63.5mV from
+`GP8`, `GP9` and `GP6`, which read a 9.7kΩ hold: `Rbias` is a 10kΩ. A 1kΩ
+`Rbias` should give 3.3mV, 3.3mV and 6.6mV. Details and the fix are in
+`breadboard.md` § "The `GP28` row and `Rbias`".
 
 ## What this does not show
 
