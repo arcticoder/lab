@@ -60,41 +60,64 @@ from running on import). Tested on GP26, where the A average showed 0.5mV.
   channel with the ICs; that length is acceptable (offset −28mV). Now in
   `breadboard.md`.
 
-## Source side diagnosed: the `GP28` node is not SIG (2026-10-05, later)
+## The `GP28` row, and why the first probe read a "floating" node (2026-10-05 data, corrected 2026-10-17)
 
-User's `diagnose_gain.py` reading: signal off 5.2mV p-p, in phase 24.8mV,
-net 19.7mV on the `GP28` node (design 3.3mV, so the "about 15mV" row);
-`Rbias` read 1kΩ, `GP8`/`GP9` resistors 1MΩ. Session re-ran it with the rig
-left plugged in (18.1mV) and probed further. All with the Pico's own pins:
+User's `diagnose_gain.py` reading on 2026-10-05: signal off 5.2mV p-p, in
+phase 24.8mV, net 19.7mV on the `GP28` node (design 3.3mV); `Rbias` read as
+1kΩ, `GP8`/`GP9` resistors 1MΩ. Session probes with the Pico's own pins
+(`trace_node.py` is the reusable form) found: a clean 1kHz square of about
+±8.5mV; 0.0–0.3mV DC steps from `GP8`/`GP9`/`GP6`; a step that decayed over
+about 20ms; and a node that moved +2.0V/−1.1V under `GP28`'s internal pull-up
+and pull-down and relaxed back in about 0.25s. The session read that as "`SIG`
+is nearly floating, the wiring is wrong" and said so in chat and in the docs.
+**That was wrong.** The user then gave the row numbers: the jumper was on row
+50, and `SIG` is row 49 (left and right halves joined by a jumper), so the
+probed node was the next row, `C2`:
 
-- **Shape.** A 40-bin fold shows a clean square wave, about ±8.5mV, that flips
-  with `GP9` against `GP8`. So the ripple is real, not an ADC artifact.
-- **DC step** (pin held 0 then 1 for 1s each, 40000-sample means): 0.0–0.3mV
-  for `GP8`, `GP9`, `GP6`; design 3.3, 3.3, 6.6mV. A connected 1MΩ would give
-  more than 1V here, so no source reaches the node through a resistor.
-- **Software-toggled step vs half-period:** 17mV from 217µs to 18ms, 10mV at
-  74ms, about 0 at DC. Step response: 18–25mV decaying over about 20ms.
-- **`GP28` pad pull as a current injector** (pad register
-  `0x4001C000 + 4 + 28*4`, bit 3 pull-up, bit 2 pull-down; `ADC(28)` leaves
-  the pad with pulls off, so writing the bits works and the original value
-  is restored): rest 1.131V, pull-up +1998mV, pull-down −1062mV, relaxing back
-  with about 0.25s time constant. With a 50–80kΩ pull, that is a node held by
-  roughly 0.5–1MΩ. Design: 1kΩ, under 50mV. Reusable for any ADC pin: it
-  turns an ADC pin into a "how firmly is this node held" probe without
-  moving a lead.
-- **Controls:** toggling `GP10`, `GP11` and the unwired `GP12` moves the node
-  by 0mV, so it is not clock pickup or on-chip crosstalk. `GP6`'s 1kHz
-  step (47mV) is 2.7× `GP8`'s, which tracks the number of resistors on it,
-  not a clean resistance ratio.
-- **What this rules out and what is open.** Resistor values are out (right
-  parts, and a resistor path would pass DC). Not established: which row
-  `GP28` is on. The photo's pencil labels show a `SIG` row on each side of the
-  centre channel; the photo can't say which, or whether they are joined. A
-  single consistent topology for the AC-only coupling was not found by
-  reasoning; don't write one into the docs until the row-by-row check
-  (`trace_node.py`, `breadboard.md`) says which strip differs.
-- The gain stage itself is unverified: 18–20mV × 100 is about 2V, which would
-  clip, matching X 1.1V, so nothing so far says it is wrong.
-- Rejected on the way: capacitive pickup from stray coupling (a pF-scale
-  stray gives well under 1mV here), and `Rbias` = 5.1kΩ (would still give a DC
-  step).
+- `C2` is `Cin`'s other lead; at 1kHz `Cin` is 159Ω against `Rin` = 10kΩ, so
+  `C2` carries 98% of `SIG`'s ripple (17.3mV measured there, 16.4mV on `SIG`).
+- DC is held at Vmid through `Rin` and the op-amp's virtual ground, so the
+  sources' DC steps vanish; a slow step decays with `Rin`·`Cin` ≈ 10ms.
+- The virtual ground only holds against about 1µA (`Rf` can supply
+  (1.8V−1.1V)/1MΩ). A 50–80kΩ pad pull injects 20–35µA, so `C2` and `INN`
+  look "soft" under that test. **Don't read a pull-test result on `C2`/`INN` as
+  a floating node, and don't read "tens of mV" there as proof of a firm hold.**
+
+On `SIG` itself (user, 2026-10-17): DC steps 31.7/32.1/63.5mV from `GP8`/`GP9`/
+`GP6`, 1kHz step 16.4mV, `diagnose_gain.py` ripple 15.5mV. The DC step is
+3.3V × R_hold / R_source, so R_hold is 9.7kΩ: the `Rbias` slot holds a 10kΩ.
+With 10kΩ the netlist gives X = +1.057V (1kΩ gives 0.264V), against 1.08V
+measured on 2026-10-05, and the 1kHz step is 10kΩ ∥ (Rin + Cin) = 5.0kΩ →
+16.5mV, as measured. The part had been reported as 1kΩ; the kit's 1kΩ and 10kΩ differ only
+in the fourth band, so a visual read can't separate them.
+
+Lessons for future sessions:
+
+- **Ask for the row number of a probe jumper before interpreting a probe**, or
+  make the script say what the node should look like on each candidate row.
+  The wrong-row reading was self-consistent and produced a plausible, wrong
+  fault.
+- **A measurement whose design value is far from the reading, with all named
+  parts "right", points at a mis-read part before it points at wiring.** The DC
+  step on the correct row read the resistance directly.
+- A part reported as "1kΩ" without a meter reading is not a measurement.
+  Keep `measurement_tools/resistance_measurement` as the arbiter for the 1k/10k
+  pair; a bag holding both (`10K / 1K`) is a hazard (`inventory.md` § Storage).
+
+## `VB` stuck, 2026-10-17
+
+`main.py` on 2026-10-17 (rig idle for twelve days, `Rbias` still 10kΩ): `VB`
+1.1715V in all seven states (±0.3mV), `VA` wandering 0.27–1.69V and drifting
+down state to state. `demodprobe`-style test (S1 only, then S2 only, no
+signal): with `S1` closed `A` settled to 1.131V and held it after `S1` opened;
+with `S2` closed `B` stayed at 1.172V, the same as with `S2` open. So the
+`S2`/`B` path was not connected (or `S2` never closed) and `A` was fine in DC.
+On 2026-10-05 `VB` did move (+0.34V/−0.78V), except in the first run after
+plugging in, when it read 0.026V: that early run was probably the same fault
+appearing intermittently, a loose contact on the `B` side (suspects:
+`GP11`→`S2` pin 13, `S2` pin 2→`Rb`, `Rb`→`B`, `Cb`, `U2` pins 5/6/7). The
+S1/S2 chip swap in `breadboard.md` separates a bad chip switch from wiring.
+`diagnose_demod.py` is the check; a test that compared A and B DC levels
+instead was tried and dropped, because a dead `B` sitting at 1.172V and a
+healthy one at 1.135V differ by less than the offsets the two channels have
+(the 2026-10-05 floor read −28mV).

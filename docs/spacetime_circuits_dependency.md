@@ -39,7 +39,7 @@ neither file shows a contiguous 1–9.
 ```mermaid
 graph TD
     subgraph tier5 ["Tier 5: Specialized Sensor Interfaces"]
-        %% status: designed/simulated 2026-10-02 (signal_conditioning/hall_amplifier/); SS49E/49E sensors on order, not built
+        %% status: designed/simulated 2026-10-02 (signal_conditioning/hall_amplifier/); SS49E/49E sensors on hand (arrived by 2026-10-17), not built
         HALLAMP["Hall Effect Sensor Amplifier"]
         EPFIELD["Electric Field Probe Conditioner"]
         LVDTAMP["LVDT Transducer Amplifier"]

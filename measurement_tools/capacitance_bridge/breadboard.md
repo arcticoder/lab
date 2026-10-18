@@ -23,7 +23,6 @@ is the capacitive counterpart to).
 |-----------|-------|----------|
 | Resistor | 100 kΩ (`Rref`) | 1 |
 | Capacitor under test (`Cx`) | any value from the aluminum electrolytic kit (1µF–470µF) — see "Range" in [README.md](README.md) | 1 |
-| Dupont M-M jumper | 12–20cm | 3 |
 
 ---
 

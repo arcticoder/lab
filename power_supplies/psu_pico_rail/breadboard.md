@@ -16,8 +16,6 @@ is two jumper wires, not a build.
 |-----------|-------|----------|
 | Raspberry Pi Pico | RP2040 | 1 |
 | Micro USB cable | to PC or USB power adapter | 1 |
-| Dupont M-M jumper (red) | 12–20cm | 1 |
-| Dupont M-M jumper (black) | 12–20cm | 1 |
 
 ---
 

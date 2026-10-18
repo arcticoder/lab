@@ -14,9 +14,7 @@ covers the general/batch procedure this one doesn't.)
 - 1× AA battery (fresh)
 - 1× 10 Ω resistor, 1/4 W (any one from the kit's resistor drawer)
 - 1× slide switch (SPDT) — arm/disarm signal, see step 6 below
-- 4× male-male jumper wires (2 for the probe, 2 for the switch)
-- 1× spare male-male jumper wire (or a bent solid-core jumper), kept aside
-  for shorting the resistor later — don't wire this one in yet
+- A spare jumper wire (or a bent solid-core jumper), kept aside for shorting the resistor later — don't wire this one in yet
 - Your 50 mA polyfuse
 
 ## What you're building

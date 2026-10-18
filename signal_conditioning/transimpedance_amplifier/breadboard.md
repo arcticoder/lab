@@ -23,8 +23,6 @@ Powered from [psu_low_v2](../../power_supplies/psu_low_v2/) — see
 | LM358P | dual op-amp, DIP-8 | 1 |
 | PT334-6C photodiode | 5mm, silicon PIN | 1 |
 | Resistor | 100 kΩ (feedback, `Rf`) | 1 |
-| Dupont M-M jumper (red) | 12–20cm | 2 |
-| Dupont M-M jumper (black) | 12–20cm | 2 |
 
 ---
 

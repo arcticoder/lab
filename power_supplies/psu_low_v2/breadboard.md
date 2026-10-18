@@ -17,8 +17,6 @@ polyfuse → output.
 | AA alkaline battery | 1.5V | 2 |
 | Schottky diode | 1N5817 (1A, 20V) | 1 |
 | Polyfuse | Littelfuse RXEF050 (500 mA slow-blow) | 1 |
-| Dupont M-M jumper (red) | 16–20cm | 1 |
-| Dupont M-M jumper (black) | 16–20cm | 1 |
 | SYB170 breadboard | 170-pin, 300V, <5A | 1 |
 
 ---

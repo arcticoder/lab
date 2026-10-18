@@ -9,12 +9,11 @@
 | CD4066BCN, DIP-14 | 2 (`S1` for REF, `S2` for REFB); use switch 1 of each | yes (10; switch 1 of every chip bench-tested) |
 | 10kΩ resistor | 3 (`Rm1`, `Rin`, `Rl1`) | yes (10) |
 | 5.1kΩ resistor | 1 (`Rm2`) | yes (10) |
-| 1kΩ resistor | 1 (`Rbias`) | yes (10) |
+| 1kΩ resistor | 1 (`Rbias`): bands `brown black black brown brown`. A 10kΩ (`... red brown`) here gave the 2026-10-05 gain error | yes (10) |
 | 100kΩ resistor | 2 (`Ra`, `Rb`) | yes (10) |
 | 1MΩ resistor | 5 (`Rf`, one from GP8, one from GP9, two in parallel from GP6) | yes (10) |
 | 1µF electrolytic capacitor (from the 16V/25V/50V kit) | 3 (`Cin`, `Ca`, `Cb`) | yes |
 | 100nF ceramic capacitor | 4 (one across the supply pins of each IC) | yes (10) |
-| Jumper wires | about 30 | yes |
 
 Use the 830-point breadboard. Check each resistor's colour bands before it
 goes in (`docs/inventory.md` records a 10kΩ bin that held a 220Ω part);
@@ -156,7 +155,7 @@ Seen 2026-10-05: in-phase X +1.08V, anti-phase −1.39V, and the other states
 sensible. A part in the signal path is the wrong value, or the signal is too
 big going in. One jumper, then one reading.
 
-1. Wire a jumper from row `SIG` to Pico GP28 (pin 34). Nothing else moves.
+1. Wire a jumper from row `SIG` (row 49, column j) to Pico GP28 (pin 34). Nothing else moves.
 2. From this folder: `mpremote mount . run diagnose_gain.py`
 3. Read the last line, `test-signal ripple on GP28`:
 
@@ -166,48 +165,59 @@ big going in. One jumper, then one reading.
 | about 15mV (10–20mV) | The signal arriving at `SIG` is 4–5× too big | Pull `Rbias`; read it. A 5.1kΩ in place of 1kΩ gives about 5×. If `Rbias` is 1kΩ, read the `GP8` and `GP9` 1MΩ resistors (a 220kΩ in either gives about 4.5×) |
 | anything else | Report the number | |
 
-**2026-10-05 result: 18–20mV, with `Rbias` read as 1kΩ and the `GP8`/`GP9` resistors read as 1MΩ.** The parts are right, so the fault is in how the `SIG` row is wired. See "`SIG` does not behave like `SIG`" below.
+**2026-10-05 result: 18–20mV, taken with the jumper one row past `SIG` (on `C2`), not on `SIG`.** A reading on `SIG` itself (row 49) found the `Rbias` slot holding a 10kΩ; see "The `GP28` row and `Rbias`" below. The jumper goes in row 49, column j.
 
 4. Fix the part, move the jumper off GP28, and run `mpremote run main.py`.
    The in-phase `VB-VA` should come to about 260mV.
 
-## `SIG` does not behave like `SIG` (2026-10-05)
+## The `GP28` row and `Rbias` (2026-10-05 reading, 2026-10-17 diagnosis)
 
-The node on the `GP28` jumper is not the node in the schematic. With `Rbias`
-1kΩ to Vmid and the three test sources through 1MΩ, every number below would
-be small and firm. Measured with the Pico's own pins (`trace_node.py`):
+Board rows: the `SIG` row is row 49 on both sides of the centre channel
+(joined by a jumper across it), and row 50 is the next row, `C2`. Put the
+`GP28` jumper in row 49, column j (`Cin`'s + lead). The 2026-10-05 reading
+(19.7mV) was taken with the jumper in row 50 (`C2`): `C2` carries a copy of
+the `SIG` ripple through `Cin` (98% of it at 1kHz), and DC is held at Vmid by
+`Rin` and the virtual ground, so it showed 0mV DC steps from the sources and a
+step that decayed with `Rin`·`Cin`, about 10ms. A pull of 20-35µA from a Pico
+pin overpowers that virtual ground (`Rf` supplies about 1µA), so `C2` also
+looked nearly floating. It isn't; that reading says nothing about `SIG`'s wiring.
 
-| Measurement | Design value | Measured |
-|-------------|--------------|----------|
-| Rest level | Vmid, 1.11–1.14V | 1.131V |
-| Move under `GP28`'s 50–80kΩ pull-up / pull-down | +30 to +45mV / −16 to −25mV | +1998mV / −1062mV (nearly floating: relaxes back to 1.131V over about 0.25s) |
-| DC step when `GP8`, `GP9` or `GP6` goes 0→1 | 3.3mV / 3.3mV / 6.6mV | 0.0–0.3mV on all three (no DC path from any of them) |
-| Step at about 1kHz, `GP8` / `GP9` / `GP6` | 3.3mV / 3.3mV / 6.6mV | 17mV / 18mV / 47mV, flat for half-periods from 0.2ms to 18ms, then decaying over about 20ms |
-| `GP10`, `GP11`, unwired `GP12` toggled | | 0mV (not clock pickup) |
+On row 49 (`mpremote run trace_node.py`, 2026-10-17):
 
-So the 18mV "SIG swing" arrives by AC coupling only, and the row has no 1kΩ
-hold to Vmid. A 1MΩ resistor would pass DC. Either `GP28` is on a row that
-does not touch `Rbias`, `Cin` and the three 1MΩ resistors, or those parts
-are not where the table puts them. The pencil labels on the board show a
-`SIG` row on each side of the centre channel; the photo can't say which one
-`GP28` is on.
+| Measurement | Design (`Rbias` 1kΩ) | Measured | `Rbias` 10kΩ would give |
+|-------------|----------------------|----------|-------------------------|
+| DC step, `GP8` / `GP9` / `GP6` | 3.3 / 3.3 / 6.6mV | 31.7 / 32.1 / 63.5mV | 32.7 / 32.7 / 65.0mV |
+| Step at about 1kHz, `GP8` | 3.0mV | 16.4mV | 16.5mV (10kΩ in parallel with `Rin`) |
+| `diagnose_gain.py` ripple | 3.3mV | 15.5mV | about 16mV |
+| Simulated in-phase X | 0.264V | 1.08V on the bench | 1.057V |
 
-### Find the break
+The DC step is 3.3V × (the resistance holding `SIG`) / 1MΩ, so the node is held
+by about 9.7kΩ. The part in the `Rbias` position is a 10kΩ. The kit's 1kΩ and
+10kΩ parts differ only in the fourth band (`brown black black brown brown` is
+1kΩ, `brown black black red brown` is 10kΩ), so a visual read can't be trusted
+for this pair; the resistance jig can. This also confirms `Cin` and `Rin` are connected and the gain
+stage's DC behaviour is as designed; the `GP8`, `GP9` and `GP6` resistors are right.
 
-Run `mpremote run trace_node.py` (nothing to mount) with the `GP28` jumper on
-each row below, one at a time, and write down the four lines. Every row that
-is truly `SIG` gives the same result.
+### Fix
 
-| Put the `GP28` jumper on | Row |
-|--------------------------|-----|
-| 1 | the row of `Cin`'s **+** lead |
-| 2 | the row of `Rbias`'s lead that is not on `VMO` |
-| 3 | the row of the `GP8` 1MΩ's far lead (the end that is not on the `GP8` row) |
-| 4 | the row of the `GP9` 1MΩ's far lead |
+1. Pull `Rbias` (row 49 to `VMO`). Read it with
+   `measurement_tools/resistance_measurement` (10kΩ expected, which confirms
+   the diagnosis) and put a 1kΩ in its place, checking the fourth band.
+2. `mpremote run trace_node.py` with the jumper on row 49: the DC steps should
+   read 3.3, 3.3 and 6.6mV and the 1kHz step about 3.0mV.
+3. Move the jumper off `GP28`, then `mpremote run main.py`.
 
-| Result | Means | Fix |
-|--------|-------|-----|
-| All four match, DC steps 3mV, pulls move tens of mV | `SIG` is right; the first jumper was on a different row | Leave the jumper here and rerun `diagnose_gain.py` |
-| All four match and still look floating | `Rbias` isn't reaching `VMO`, or `VMO` is not Vmid | Move the jumper to the `VMO` row: it should hold firmly (pull moves under 30mV) and read 1.11–1.14V |
-| One row differs from the other three | That lead is in a different strip | Move it into the row of the others |
-| Row 3 or 4 shows DC steps near 1.6V | That 1MΩ's far lead is not on `SIG`; it is on a row with no other part | Move it |
+### `B` does not respond (seen 2026-10-17)
+
+`main.py` read `VB` 1.1715V in all seven states while `VA` moved by hundreds of
+mV, and closing `S2` alone left `B` unchanged. That is a second fault, in the `S2`
+path, and it was not there on 2026-10-05 (both nodes moved then). After step 3
+above, if `VB` is still flat:
+
+1. `mpremote mount . run diagnose_demod.py`: `A` should show `[PASS]` and `B`
+   `[FAIL]` (a swing under 30mV between in phase and anti phase).
+2. Swap `S1` and `S2` (the two CD4066B chips, nothing else). If `B` now
+   responds and `A` does not, the chip's switch 1 is bad: use another chip.
+   If `B` still does not respond, the fault is in the wiring on that side:
+   `GP11` to `S2` pin 13, `S2` pin 1 on `OUT1`, `S2` pin 2 to `Rb`, `Rb` to `B`,
+   `Cb`'s lead, and `U2` pins 5, 6 and 7.

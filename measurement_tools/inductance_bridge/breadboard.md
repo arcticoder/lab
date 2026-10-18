@@ -27,7 +27,6 @@ limits the drive to 3.3mA into a shorted tank).
 | Capacitor | 10 nF (`Cd`) — kit ceramic, marked `103` | 1 |
 | Diode | 1N5817 Schottky | 1 |
 | Inductor under test (`Lx`) | any value from the color-ring assortment (1µH–1mH) | 1 |
-| Dupont M-M jumper | 12–20cm | 3 |
 
 Two 10nF capacitors are needed and they play different roles: `Cref`
 sets the resonant frequency (its tolerance sets the accuracy of the

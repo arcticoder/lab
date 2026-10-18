@@ -5,12 +5,11 @@
 | Component | Quantity | On hand? |
 |-----------|----------|----------|
 | Raspberry Pi Pico (USB-connected) | 1 | yes |
-| Vibration motor, 3V coin type, 10mm (the 2026-10-02 order, `docs/orders.md`) | 1 | **on order**, not yet received |
+| Vibration motor, 3V coin type, 10mm (the 2026-10-02 order, `docs/orders.md`) | 1 | on hand (arrived by 2026-10-17) |
 | S8050 NPN transistor (TO-92) | 1 | yes (2) |
 | 1N5817 Schottky diode | 1 | yes (18 untested) |
 | 1kΩ resistor | 1 | yes |
 | 10kΩ resistor | 1 | yes |
-| Jumper wires | 4 | yes |
 
 S8050 TO-92 pinout, flat face toward you, legs down: **E, B, C** left to right.
 

@@ -34,8 +34,6 @@ notes for why `HVPULSE` wasn't attempted in this same pass regardless.
 | Resistor | 100 Ω (reference divider, bottom leg) | 1 |
 | Resistor | 1 kΩ (TL431A pull-up, and the divider's top leg for the 2A setting) | 2 |
 | Resistor | 2 kΩ (divider top leg, added in series with a 1 kΩ, for the bench-check setting) | 1 |
-| Dupont M-M jumper (red) | 12–20cm | 2 |
-| Dupont M-M jumper (black) | 12–20cm | 2 |
 
 ---
 

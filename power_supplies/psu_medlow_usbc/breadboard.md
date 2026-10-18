@@ -32,8 +32,6 @@ fuse+bypass stage — does not model CC/PD negotiation)
 | USB-C wall adapter | 5V, 2–3A | 1 |
 | Polyfuse | Littelfuse RXEF050 (500 mA slow-blow) | 1 |
 | Ceramic capacitor | 100nF | 1 |
-| Dupont M-M jumper (red) | 16–20cm | 1 |
-| Dupont M-M jumper (black) | 16–20cm | 1 |
 | SYB170 breadboard | 170-pin, 300V, <5A | 1 |
 
 ---

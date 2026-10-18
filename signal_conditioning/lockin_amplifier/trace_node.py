@@ -20,8 +20,12 @@ GP10 and GP11 are set low so the demodulator switches stay off.
 Expected on the row named SIG (design values, Rbias 1kΩ to Vmid, 1MΩ sources):
   rest 1.11-1.14V; pull-up +30..45mV, pull-down -16..-25mV;
   GP8/GP9 DC step 3.3mV, GP6 6.6mV; 1kHz step 3.3mV.
-A node held by a much larger resistance moves by volts under the pulls. A node
-no source reaches shows 0mV DC steps.
+The DC step is the number to trust: it equals 3.3V x (the resistance holding
+the node) / 1MΩ, so it reads that resistance directly (31.7mV: about 9.7kΩ).
+The row after SIG (C2) gives 0mV DC steps and about the same 1kHz step, and it
+moves by volts under the pulls: the op-amp's virtual ground holds C2 and INN
+only against about 1µA, and the pulls push 20-35µA. Only SIG's own hold (Rbias)
+is meant to survive them.
 """
 
 import time
@@ -93,7 +97,7 @@ try:
     mem32[PAD] = orig
     time.sleep(1.5)
     print("rest %.3fV" % (rest / 1e3))
-    print("pull-up %+.0fmV   pull-down %+.0fmV   (tens of mV: held firmly; over 1000mV: nearly floating)" % (up - rest, dn - rest))
+    print("pull-up %+.0fmV   pull-down %+.0fmV   (SIG with Rbias 1kΩ: tens of mV; over 300mV: not SIG, or Rbias is wrong)" % (up - rest, dn - rest))
     print("DC step   " + "   ".join("GP%d %+.2fmV" % (p, dc_step(p)) for p in SOURCES))
     print("1kHz step GP8 %+.2fmV" % ac_step(8))
 finally:

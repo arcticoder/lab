@@ -14,10 +14,10 @@ now, not in this file itself.
 Worked strictly top-to-bottom, one section at a time. A "Next order"
 section goes first whenever a purchase has to happen before anything else
 (AliExpress transit runs a few weeks); it is absent while nothing is
-waiting on one. "Ready to build now" is a ranked queue, not a menu — item 1
+waiting on one, and it appears whenever nothing is en route. "Ready to build now" is a ranked queue, not a menu — item 1
 is genuinely the most valuable thing to build next; see
 [kb/todo_list_conventions.md](kb/todo_list_conventions.md) for the ranking
-method if you want it. "En route", "Blocked", "Deferred", and "Backlog" are
+method if you want it. "En route" (when something is), "Blocked", "Deferred", and "Backlog" are
 reference sections, not action items, until something changes their
 status — they're placed *after* every actionable section on purpose, so
 you never have to read past a "no action needed" note to reach the next
@@ -29,20 +29,39 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ---
 
+## Next order — AliExpress, add these and check the total before paying
+
+Nothing is en route; both October orders arrived. Nothing in the build list
+below waits on this order.
+
+- **AD9833 DDS module, 1 pc** — the source for
+  [signal_generator_ad9833](../measurement_tools/signal_generator_ad9833/)
+  (designed, tested against the data sheet); picks and the variant to avoid are
+  in [orders.md](orders.md) "Candidates found".
+- **2.54mm pin header strips** — only if the ADS1115 or the RP2040-Zero came
+  without headers soldered.
+- **USB-C data cable** — only if you have none spare for the RP2040-Zero.
+
+If the total shows a shipping fee, hold the cart; the next design pass
+([TODO-agent.md](TODO-agent.md)) supplies the top-up part.
+
 ## Ready to build now — parts on hand
 
-1. [ ] **`signal_conditioning/lockin_amplifier` (`LOCKIN`/`DEMOD`) — find
-       why the `SIG` row isn't `SIG`.** The `GP28` reading was 18–20mV
-       against 3.3mV expected, but `Rbias` and the `GP8`/`GP9` resistors are
-       right. Probing from the Pico showed that node is nearly floating and
-       none of the three sources reaches it at DC: a wiring fault, not a
-       part value. Move the `GP28` jumper to four rows in turn (`Cin`'s +
-       lead, `Rbias`'s free lead, the far lead of each 1MΩ), running `mpremote
-       run trace_node.py` each time; the table in
-       [breadboard.md](../signal_conditioning/lockin_amplifier/breadboard.md)
-       § "`SIG` does not behave like `SIG`" says which lead to move. Then
-       `mpremote run main.py`; eight `[PASS]` lines is done. Leave it
-       assembled, item 2 builds on it.
+Items 3–7 can go on the second 800-point breadboard, so item 1's wiring stays
+assembled for item 2.
+
+1. [ ] **`signal_conditioning/lockin_amplifier` (`LOCKIN`/`DEMOD`) — put a
+       1kΩ in `Rbias`'s place, then rerun.** The DC steps read 9.7kΩ there
+       (31.7mV where 3.3mV is expected), and a simulation with 10kΩ gives
+       X = 1.057V against the 1.08V measured. Pull it (row 49 to `VMO`), read
+       it on `measurement_tools/resistance_measurement` (10kΩ expected), fit a
+       `brown black black brown brown` part. With `GP28` on row 49, column j,
+       `mpremote run trace_node.py` should show 3.3, 3.3 and 6.6mV; then pull
+       the `GP28` jumper and `mpremote run main.py`. If `VB` is still flat near
+       1.17V (it was on 2026-10-17), follow "`B` does not respond" in
+       [breadboard.md](../signal_conditioning/lockin_amplifier/breadboard.md):
+       `mpremote mount . run diagnose_demod.py`, then swap the `S1` and `S2`
+       chips. Eight `[PASS]` lines is done; leave it assembled.
 2. [ ] **`signal_conditioning/optical_shadow_readout` (`FORCEBAL`'s optical
        readout) — change the lock-in's front end.** Needs item 1 wired; no
        other parts to find. Swap the test-signal resistors for a TIA, a
@@ -51,83 +70,69 @@ status lives in `README.md`'s "built & bench-tested" table.
        then `mpremote run main.py`; it asks for a phone flashlight and the
        flag. All `[PASS]` lines is done; it also reports how much light the
        LED really puts on the photodiode, the one number the design assumes.
-3. [ ] **`safety/overvoltage_monitor` (`OVERVOLT`) — wire it with its input
+3. [ ] **`signal_conditioning/adc_ads1115` (`ADCDRV`) — first power-up of the
+       module.** It doubles as the genuineness check, and a dud is a refund
+       claim; the buyer-protection end date is on the order page (not visible
+       to me). Solder the header first if it came loose. 10kΩ ×3, 100nF,
+       1N5817 ×2 ([breadboard.md](../signal_conditioning/adc_ads1115/breadboard.md));
+       `mpremote run main.py`. Four `[PASS]` lines is done.
+4. [ ] **`signal_conditioning/charge_amplifier` (`CHGAMP`) — retry with a
+       leaded piezo disc.** Retry of the 2026-09-16 attempt; the leaded discs
+       need no soldering to the disc. TL082, 1MΩ ×3, 10nF
+       ([breadboard.md](../signal_conditioning/charge_amplifier/breadboard.md));
+       `mpremote run main.py`. All `[PASS]` lines is done.
+5. [ ] **`signal_conditioning/accelerometer_interface` (`ACCELIF`) — clear the
+       bridged GY-521 pins, then wire four jumpers.** Wick arrived. Lay the
+       braid over the bridge, press the iron on it 2–3 seconds, lift both
+       together, check the row by eye (steps in
+       [breadboard.md](../signal_conditioning/accelerometer_interface/breadboard.md)).
+       `VCC`→3V3(OUT) (pin 36), `GND`→pin 38, `SDA`→GP4 (pin 6), `SCL`→GP5
+       (pin 7); module lying still; `mpremote run main.py`. All `[PASS]` lines
+       is done (a `WHO_AM_I` of `0x70`–`0x72` is a clone that still passes).
+       It's the measurement side of `VIBISO`.
+6. [ ] **`signal_conditioning/hall_amplifier` (`HALLAMP`) — first run of a
+       49E/SS49E, then the magnet test.** Read each sensor's top mark first
+       (the SS49E listing also sold latching types), then wire it per
+       [breadboard.md](../signal_conditioning/hall_amplifier/breadboard.md),
+       `mpremote run main.py`, and turn the trimpot until the reading holds at
+       0.94V. `[PASS]` for the noise line, then the magnet test: hold a disc
+       with its curved side toward the sensor, not a flat face. Try a second
+       sensor if the first can't be nulled.
+7. [ ] **`oscillators/vibration_driver` (`SIMPGEN`'s actuator stage) — wire it
+       and run it.** The driver `RIPPLETANK` needs; coin motors arrived. S8050,
+       1N5817, 1kΩ, 10kΩ ([breadboard.md](../oscillators/vibration_driver/breadboard.md));
+       `mpremote run main.py`. All `[PASS]` lines is done.
+8. [ ] **`safety/overvoltage_monitor` (`OVERVOLT`) — wire it with its input
        on the Pico's 3V3 pin.** First run of a TL431A from the batch; the 3V3
        rail is the known voltage that proves it trips and clears. TL431A,
        LM358, S8050, trimpot, LED
        ([breadboard.md](../safety/overvoltage_monitor/breadboard.md)); `mpremote
        run main.py`, trimpot to each end when asked. All `[PASS]` lines and
        the LED flipping is done.
-4. [ ] **`measurement_tools/frequency_counter` (`FREQC`/`SIMPLECNT`) — wire
+9. [ ] **`measurement_tools/frequency_counter` (`FREQC`/`SIMPLECNT`) — wire
        the digital path and run the loopback self-test.** First counting of
        a real signal by the Pico's PWM hardware; also the tool that reads
        `ne555_astable`'s frequency. GP16 → 10kΩ → GP3 with two 1N5817 clamps
        ([breadboard.md](../measurement_tools/frequency_counter/breadboard.md)),
        `mpremote run main.py` (6s). Six `[PASS]` lines is done; the analog
        (Schmitt) path is added later, only when a sensor needs counting.
+10. [ ] **Put the 2026-10-02 and 2026-10-05 arrivals in their bags** per the
+        table in [inventory.md](inventory.md) "Storage"; say what `10K / 1K`
+        holds so that row can be filled in.
 
-Nothing else is startable right now: everything else on the list is waiting
-on the 2026-10-02 or 2026-10-05 shipments, or is Deferred or undesigned.
+## Blocked — waiting on another item
 
-## En route — no action
-
-Ordered 2026-10-02: 10 leaded 12mm piezo discs, 15 linear Hall sensors
-(10 × 49E, 5 × SS49E), 1 ADS1115 module, 10 coin vibration motors. Ordered
-2026-10-05: solder wick (1.0mm × 1.5m), 10 N42 disc magnets (6×3mm,
-radially magnetized), 1 RP2040-Zero board, a second 800-point breadboard.
-Details and listing numbers in [orders.md](orders.md).
-
-## Blocked — waiting on a shipment
-
-- [ ] **`ACCELIF`** (`signal_conditioning/accelerometer_interface`) —
-      blocked on the solder wick (ordered 2026-10-05, see "En route"). A few
-      GY-521 header pins bridged during soldering (2026-09-24); wick clears
-      them. When it arrives: lay the braid over
-      the bridge, press the iron on the braid for 2–3 seconds, lift both
-      together, and check the row by eye (steps in that circuit's
-      [breadboard.md](../signal_conditioning/accelerometer_interface/breadboard.md)).
-      Then four jumpers: `VCC`→3V3(OUT) (pin 36), `GND`→pin 38,
-      `SDA`→GP4 (pin 6), `SCL`→GP5 (pin 7); module lying still;
-      `mpremote run main.py`. All lines `[PASS]` is done; a `WHO_AM_I` of
-      `0x70`–`0x72` is a clone that still passes. It's the measurement
-      side of `VIBISO` and the first power-up of the untested GY-521.
-- [ ] **`CHGAMP`** (tier5, charge amplifier) — blocked on the leaded
-      piezo discs (ordered 2026-10-02, 12mm, 5000pF). A 2026-09-16
-      attempt with the bare-disc batch destroyed one unit (fluxless
-      solder); all its parts went back to inventory. Retry once the leaded
-      piezo arrives.
-- [ ] **`hall_amplifier`** (`signal_conditioning/hall_amplifier`, tier5
-      `HALLAMP`) — designed and simulated; blocked on the 49E/SS49E sensors
-      (15 ordered 2026-10-02). Parts otherwise on hand (LM358, trimpot, eight
-      10kΩ, two 100kΩ, 5.1kΩ, 2kΩ). Wire it per its
-      [breadboard.md](../signal_conditioning/hall_amplifier/breadboard.md),
-      `mpremote run main.py`, turn the trimpot until the reading holds at
-      0.94V, `[PASS]` for the noise line is done; the magnet test waits on the
-      magnets (ordered 2026-10-05). Hold a magnet with its curved side toward
-      the sensor, not a flat face (the discs are radially magnetized). Try a second sensor if the first can't be nulled.
-- [ ] **`adc_ads1115`** (`signal_conditioning/adc_ads1115`, tier9
-      `ADCDRV`) — designed and simulated; blocked on the ADS1115 module
-      (1 ordered 2026-10-02). Parts otherwise on hand (10kΩ ×3, 100nF,
-      1N5817 ×2). Wire it per its
-      [breadboard.md](../signal_conditioning/adc_ads1115/breadboard.md) and
-      `mpremote run main.py`; four `[PASS]` lines is done, and it doubles as
-      the genuineness check on the module.
-- [ ] **`vibration_driver`** (`oscillators/vibration_driver`, `SIMPGEN`'s
-      actuator stage) — designed and simulated; blocked on the coin motors
-      (10 ordered 2026-10-02, 80–90mA rated, 120mA stall). Parts otherwise on
-      hand (S8050, 1N5817, 1kΩ, 10kΩ). It is the driver `RIPPLETANK` needs.
 - [ ] **`VIBISO`** (vibration isolation platform) — hold off on the
-      mechanical build itself until `ACCELIF` (first bullet above) is
-      assembled and passing, so there is something to measure isolation
-      quality with. For later: the on-hand Creality K1 (with PLA
-      filament stock) can print feet/platform parts once this is
-      actionable.
-- [ ] **`RIPPLETANK`** (2D ripple tank) — blocked on the coin motors (see
-      `vibration_driver` above): it becomes the wave dipper, driven by that
-      circuit. Whether a ~150Hz coin motor makes useful ripples is
-      untested; the mechanical side (a dipper arm and tank) is still to be
-      worked out. For later: the on-hand Creality K1 (PLA on hand) could
-      print a precise stepped/sloped depth insert once this is actionable.
+      mechanical build itself until `ACCELIF` (item 5) is assembled and
+      passing, so there is something to measure isolation quality with. For
+      later: the on-hand Creality K1 (with PLA filament stock) can print
+      feet/platform parts once this is actionable.
+- [ ] **`RIPPLETANK`** (2D ripple tank) — waits on `vibration_driver` (item
+      7): it becomes the wave dipper, driven by that circuit. Whether a
+      ~150Hz coin motor makes useful ripples is untested; the mechanical side
+      (a dipper arm and tank) is still to be worked out. For later: the
+      on-hand Creality K1 (PLA on hand) could print a precise stepped/sloped
+      depth insert once this is actionable.
 
 ## Deferred — considered and declined, no action needed
 

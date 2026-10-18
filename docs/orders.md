@@ -17,9 +17,29 @@ the converted `.md` files are tracked).
 
 ## Candidates found, not yet in any cart
 
-No candidates are pending as of 2026-10-05: the solder wick and disc magnets
-were ordered that day (see "On order"). Nothing on the list needs a purchase
-before the next design pass.
+Nothing is on order as of 2026-10-17: both October orders arrived. The
+candidate below is the one purchase a finished design needs.
+
+### AD9833 DDS signal generator module (`TESTSIG`)
+
+- For `measurement_tools/signal_generator_ad9833/` (designed 2026-10-17 from
+  the AD9833 data sheet; see [parts_reference.md](parts_reference.md#ad9833-dds-signal-generator-module)).
+  One module; search-found listings, not opened (AliExpress pages return no
+  content to the session), so **read the variant list and the board photo
+  before paying**:
+  - "AD9833 Programmable DDS Signal Generator Module, High-Speed
+    Sine/Triangle/Square Wave Output, SPI Interface for Arduino" —
+    [item 3256809871235889](https://www.aliexpress.us/item/3256809871235889.html)
+  - "AD9833 Programmable Microprocessors Serial Interface Module Sine Square
+    Wave DDS Signal Generator Module" —
+    [item 4000561216023](https://www.aliexpress.com/i/4000561216023.html)
+- Pick the plain single-chip board (7 header pins: `VCC`, `DGND`, `SDATA`,
+  `SCLK`, `FSYNC`, `AGND`, `OUT`) with its own 25MHz oscillator. Avoid boards
+  that add an amplifier stage or a "dual channel" second chip: the design
+  and its amplitude limits assume the chip's own 0.6V output. Prices on search
+  pages ran from about $2 to over $20; the cheap end is the target.
+- Record the selected variant string here when ordering, and whether the
+  header is soldered.
 
 ---
 
@@ -544,6 +564,132 @@ Empty as of 2026-10-05.
 
 ---
 
+### 2026-10-02 order (5 line items) — received by 2026-10-17
+
+Placed 2026-10-02, AliExpress; the whole order arrived by 2026-10-17 (reported). The ADS1115 and coin
+motor are different listings from the candidates recorded 2026-10-01, and
+only one ADS1115 was ordered (not two). Read each listing's own variant
+string: the titles bundle many part numbers.
+
+#### Piezo element, 12mm disc, leaded — variant "Wire-12mm-10PCS"
+
+- Listing: "5/10PCS Piezoelectric Piezo Ceramic Wafer Plate piezo element
+  Diameter 12MM 15MM 18MM 20MM 27MM 35MM 50MM For Buzzer Loudspeaker" (brand
+  Eiechip) — [item 1005003133740770](https://www.aliexpress.com/item/1005003133740770.html).
+  The same item number that was recorded in the cart as "12mm 12x8x0.55mm
+  Piezoelectric Diaphragm Piezo Disc with Wire Leads"; the listing title has
+  since changed. 10 ordered, not the 12 first planned.
+- Fills the `CHGAMP` blocker (leaded discs, no fluxless soldering).
+- Spec for the 12mm size (table "FT-12T-16A1"): resonance 16.5±0.7kHz,
+  static capacitance 5000pF ±30%, brass plate 12mm, ceramic 10mm, 0.13mm
+  plate, 0.33mm total, allowable input 1.5–30Vp-p, operating −20 to +70°C.
+  **The first parameter table on the listing page (4.1kHz, 28000pF) is the
+  27mm disc's, not this one's** — the page mixes sizes. Use the per-size
+  table. Static capacitance is what `CHGAMP`'s `Cf` choice cares about.
+- Received by 2026-10-17 (reported); untested.
+
+#### Linear Hall-effect sensor, 49E — variant "10pcs/lot 49E"
+
+- Listing: "49E TO-92 AH49E OH49E SS49E S49E Linear Hall-Effect IC" (brand
+  CazenOveyi) — [item 32912682330](https://www.aliexpress.com/item/32912682330.html).
+  10 ordered. Fills `HALLAMP`'s linear-sensor gap.
+- Received by 2026-10-17 (reported); untested.
+
+#### Linear Hall-effect sensor, SS49E — variant "SS49E", 5pcs
+
+- Listing: "5pcs/lot SS40AF SS41F SS495A SS49E S49E 40AF 41F 495A 49E high
+  sensitivity Hall sensor" (brand CazenOveyi) —
+  [item 1005007499191934](https://www.aliexpress.com/item/1005007499191934.html).
+  Intended as a replacement for the line above; both ended up in the order,
+  so 15 49E-family sensors are coming. The title bundles latching/switch
+  parts (40AF, 41F) next to the linear ones, so the selected variant string
+  "SS49E" is what matters. Check the top mark of each unit on arrival.
+- Received by 2026-10-17 (reported); untested.
+
+#### ADS1115 16-bit ADC module — 1 pc
+
+- Listing: "1 - 10PCS ADS1115 ADC Analog to Digital Converter Module with
+  Programmable Gain Amplifier 16 Bit I2C 2.0V To 5.5V for Arduino RPi" —
+  [item 1005009879589790](https://www.aliexpress.com/item/1005009879589790.html)
+  (not the 2026-10-01 candidate, item 32648046830). One ordered, deliberately:
+  if it is a dud the plan is a refund, then decide.
+- Pins per the listing's photo, front side, top to bottom: `VDD, GND, SCL,
+  SDA, ADDR, ALRT, A0, A1, A2, A3`; back side prints "Max AIN: VDD, VDD:
+  2.0–5.5V". Board 17 × 28mm in the photo notes, but the text says
+  38 × 18 × 3mm: the two disagree. The listing does not say whether the pin
+  headers are soldered; assume they may not be, and that a strip of headers
+  and the iron may be needed (the solder wick matters for that too).
+- Listing specs: 16-bit, I2C address 0x48–0x4B by `ADDR`, 4 single-ended or
+  2 differential channels, programmable full-scale ±0.256V to ±6.144V,
+  8–860 SPS, VDD 2.0–5.5V, 150µA in continuous mode. `adc_ads1115`'s design
+  already assumes all of that, so no redesign is needed.
+- Received by 2026-10-17 (reported); untested.
+
+#### Coin vibration motor — variant "10Pcs 1027"
+
+- Listing: "10Pcs DC 3V 3-5V Micro Vibration Motor 0820 0827 0830 0834
+  10000-12000rpm Coin Button Motor Wire Connection 1027 1030 1034 1234" —
+  [item 1005012621890312](https://www.aliexpress.com/item/1005012621890312.html).
+  Not the 2026-10-01 candidate listing (item 1005007703166995).
+- 10mm diameter × 2.7mm, leaded (red +, blue or black −). Rated 3V (working
+  range 2.7–3.3V in the performance table; "3–5V" in the headline), starting
+  voltage 2.3V, rated current 80–90mA, **stall current 120mA max**, 10000–
+  12000rpm. This is above the 90mA that `vibration_driver` was sized for;
+  the design was revised 2026-10-02 (see its README).
+- Received by 2026-10-17 (reported); untested.
+
+### 2026-10-05 order (4 line items) — received by 2026-10-17
+
+Placed 2026-10-05, AliExpress; the whole order arrived by 2026-10-17 (reported). Checkout total not
+recorded here.
+
+#### Solder wick — variant "1.0mm 1.5m/1Pcs"
+
+- Listing: "2.0mm 3.5mm 1.5M Welding Wires Desoldering Braid Solder Remover Mesh
+  Wick Wire Repair Tool Soldering Braid Tape Copper Wire" —
+  [item 1005010113718196](https://www.aliexpress.com/item/1005010113718196.html).
+  1.0mm width, 1.5m length, one roll.
+- Clears the bridged GY-521 header pins (`ACCELIF`'s first power-up), and any
+  bridge on the ADS1115's headers. Received by 2026-10-17 (reported); untested.
+
+#### Neodymium disc magnets — variant "N42 NdFeB D6x3mm/10PCS"
+
+- Listing: "10/50PCS/LOT Disc N42 Radial Magnetization NdFeB Magnet 6*1 6*2 6*3
+  6*4 Strong Permanent Neodymium Magnets 6x1 6x2 6x3 6x4 6x5" —
+  [item 1005012687239354](https://www.aliexpress.com/item/1005012687239354.html).
+  10 discs, 6mm diameter × 3mm, N42, nickel-copper-nickel plated, max 80°C.
+- **Radially magnetized**: the poles are on the curved sides (north and south
+  halves of the cylinder wall), not on the two flat faces. For `HALLAMP`'s
+  field source, a flat face brought to the sensor sees little axial field;
+  present the disc with its side to the sensor and rotate it to find the pole
+  (the sensor's reading flips sign across 180°). Measured 3.03mm × 6.00mm in
+  the listing's photos.
+- Listing's attached test report (a 20×6×2mm sample, not this size) reads Fe
+  63.1%, Nd 5.20%, Pr 1.99%, Gd 2.84%, Y 0.84%, B 1.05%, with no Dy or Tb
+  detected. That is about 11% total rare earth against the roughly 30% in
+  typical NdFeB, so treat the listed N42 grade as unverified; strength on
+  arrival is untested. Received by 2026-10-17 (reported); untested.
+
+#### RP2040-Zero microcontroller board — 1 pc
+
+- Listing: "RP2040-Zero RP2040 For Raspberry Pi Microcontroller PICO Development
+  Board Module Dual-core Cortex M0+ Processor 2MB Flash" —
+  [item 1005005108143219](https://www.aliexpress.com/item/1005005108143219.html).
+- Ordered so a second RP2040 can stay wired into a semi-permanent build while
+  the Pico moves on to the next experiment. Details, pinout and differences
+  from the Pico are in [parts_reference.md](parts_reference.md#rp2040-zero).
+- The listing does not say whether pin headers are fitted; assume they are
+  not until it arrives. Received by 2026-10-17 (reported); untested.
+
+#### 800-point breadboard — 1 pc
+
+- A second 800-point breadboard (the on-hand full-size one is 830-point):
+  circuits are going semi-permanent, and breadboard-and-wire proved cheaper
+  than perfboard for what these validations need. Listing not recorded.
+  Received by 2026-10-17 (reported); untested.
+
+---
+
 ## Cancelled
 
 ### Color-ring inductor assortment (0307, 1/4W)
@@ -574,128 +720,8 @@ Empty as of 2026-10-05.
 
 ---
 
+---
+
 ## On order (placed, not yet received)
 
-### 2026-10-02 order (5 line items)
-
-Placed 2026-10-02, AliExpress, transit a few weeks. The ADS1115 and coin
-motor are different listings from the candidates recorded 2026-10-01, and
-only one ADS1115 was ordered (not two). Read each listing's own variant
-string: the titles bundle many part numbers.
-
-#### Piezo element, 12mm disc, leaded — variant "Wire-12mm-10PCS"
-
-- Listing: "5/10PCS Piezoelectric Piezo Ceramic Wafer Plate piezo element
-  Diameter 12MM 15MM 18MM 20MM 27MM 35MM 50MM For Buzzer Loudspeaker" (brand
-  Eiechip) — [item 1005003133740770](https://www.aliexpress.com/item/1005003133740770.html).
-  The same item number that was recorded in the cart as "12mm 12x8x0.55mm
-  Piezoelectric Diaphragm Piezo Disc with Wire Leads"; the listing title has
-  since changed. 10 ordered, not the 12 first planned.
-- Fills the `CHGAMP` blocker (leaded discs, no fluxless soldering).
-- Spec for the 12mm size (table "FT-12T-16A1"): resonance 16.5±0.7kHz,
-  static capacitance 5000pF ±30%, brass plate 12mm, ceramic 10mm, 0.13mm
-  plate, 0.33mm total, allowable input 1.5–30Vp-p, operating −20 to +70°C.
-  **The first parameter table on the listing page (4.1kHz, 28000pF) is the
-  27mm disc's, not this one's** — the page mixes sizes. Use the per-size
-  table. Static capacitance is what `CHGAMP`'s `Cf` choice cares about.
-- Not yet received.
-
-#### Linear Hall-effect sensor, 49E — variant "10pcs/lot 49E"
-
-- Listing: "49E TO-92 AH49E OH49E SS49E S49E Linear Hall-Effect IC" (brand
-  CazenOveyi) — [item 32912682330](https://www.aliexpress.com/item/32912682330.html).
-  10 ordered. Fills `HALLAMP`'s linear-sensor gap.
-- Not yet received.
-
-#### Linear Hall-effect sensor, SS49E — variant "SS49E", 5pcs
-
-- Listing: "5pcs/lot SS40AF SS41F SS495A SS49E S49E 40AF 41F 495A 49E high
-  sensitivity Hall sensor" (brand CazenOveyi) —
-  [item 1005007499191934](https://www.aliexpress.com/item/1005007499191934.html).
-  Intended as a replacement for the line above; both ended up in the order,
-  so 15 49E-family sensors are coming. The title bundles latching/switch
-  parts (40AF, 41F) next to the linear ones, so the selected variant string
-  "SS49E" is what matters. Check the top mark of each unit on arrival.
-- Not yet received.
-
-#### ADS1115 16-bit ADC module — 1 pc
-
-- Listing: "1 - 10PCS ADS1115 ADC Analog to Digital Converter Module with
-  Programmable Gain Amplifier 16 Bit I2C 2.0V To 5.5V for Arduino RPi" —
-  [item 1005009879589790](https://www.aliexpress.com/item/1005009879589790.html)
-  (not the 2026-10-01 candidate, item 32648046830). One ordered, deliberately:
-  if it is a dud the plan is a refund, then decide.
-- Pins per the listing's photo, front side, top to bottom: `VDD, GND, SCL,
-  SDA, ADDR, ALRT, A0, A1, A2, A3`; back side prints "Max AIN: VDD, VDD:
-  2.0–5.5V". Board 17 × 28mm in the photo notes, but the text says
-  38 × 18 × 3mm: the two disagree. The listing does not say whether the pin
-  headers are soldered; assume they may not be, and that a strip of headers
-  and the iron may be needed (the solder wick matters for that too).
-- Listing specs: 16-bit, I2C address 0x48–0x4B by `ADDR`, 4 single-ended or
-  2 differential channels, programmable full-scale ±0.256V to ±6.144V,
-  8–860 SPS, VDD 2.0–5.5V, 150µA in continuous mode. `adc_ads1115`'s design
-  already assumes all of that, so no redesign is needed.
-- Not yet received.
-
-#### Coin vibration motor — variant "10Pcs 1027"
-
-- Listing: "10Pcs DC 3V 3-5V Micro Vibration Motor 0820 0827 0830 0834
-  10000-12000rpm Coin Button Motor Wire Connection 1027 1030 1034 1234" —
-  [item 1005012621890312](https://www.aliexpress.com/item/1005012621890312.html).
-  Not the 2026-10-01 candidate listing (item 1005007703166995).
-- 10mm diameter × 2.7mm, leaded (red +, blue or black −). Rated 3V (working
-  range 2.7–3.3V in the performance table; "3–5V" in the headline), starting
-  voltage 2.3V, rated current 80–90mA, **stall current 120mA max**, 10000–
-  12000rpm. This is above the 90mA that `vibration_driver` was sized for;
-  the design was revised 2026-10-02 (see its README).
-- Not yet received.
-
-### 2026-10-05 order (4 line items)
-
-Placed 2026-10-05, AliExpress, transit a few weeks. Checkout total not
-recorded here.
-
-#### Solder wick — variant "1.0mm 1.5m/1Pcs"
-
-- Listing: "2.0mm 3.5mm 1.5M Welding Wires Desoldering Braid Solder Remover Mesh
-  Wick Wire Repair Tool Soldering Braid Tape Copper Wire" —
-  [item 1005010113718196](https://www.aliexpress.com/item/1005010113718196.html).
-  1.0mm width, 1.5m length, one roll.
-- Clears the bridged GY-521 header pins (`ACCELIF`'s first power-up), and any
-  bridge on the ADS1115's headers. Not yet received.
-
-#### Neodymium disc magnets — variant "N42 NdFeB D6x3mm/10PCS"
-
-- Listing: "10/50PCS/LOT Disc N42 Radial Magnetization NdFeB Magnet 6*1 6*2 6*3
-  6*4 Strong Permanent Neodymium Magnets 6x1 6x2 6x3 6x4 6x5" —
-  [item 1005012687239354](https://www.aliexpress.com/item/1005012687239354.html).
-  10 discs, 6mm diameter × 3mm, N42, nickel-copper-nickel plated, max 80°C.
-- **Radially magnetized**: the poles are on the curved sides (north and south
-  halves of the cylinder wall), not on the two flat faces. For `HALLAMP`'s
-  field source, a flat face brought to the sensor sees little axial field;
-  present the disc with its side to the sensor and rotate it to find the pole
-  (the sensor's reading flips sign across 180°). Measured 3.03mm × 6.00mm in
-  the listing's photos.
-- Listing's attached test report (a 20×6×2mm sample, not this size) reads Fe
-  63.1%, Nd 5.20%, Pr 1.99%, Gd 2.84%, Y 0.84%, B 1.05%, with no Dy or Tb
-  detected. That is about 11% total rare earth against the roughly 30% in
-  typical NdFeB, so treat the listed N42 grade as unverified; strength on
-  arrival is untested. Not yet received.
-
-#### RP2040-Zero microcontroller board — 1 pc
-
-- Listing: "RP2040-Zero RP2040 For Raspberry Pi Microcontroller PICO Development
-  Board Module Dual-core Cortex M0+ Processor 2MB Flash" —
-  [item 1005005108143219](https://www.aliexpress.com/item/1005005108143219.html).
-- Ordered so a second RP2040 can stay wired into a semi-permanent build while
-  the Pico moves on to the next experiment. Details, pinout and differences
-  from the Pico are in [parts_reference.md](parts_reference.md#rp2040-zero).
-- The listing does not say whether pin headers are fitted; assume they are
-  not until it arrives. Not yet received.
-
-#### 800-point breadboard — 1 pc
-
-- A second 800-point breadboard (the on-hand full-size one is 830-point):
-  circuits are going semi-permanent, and breadboard-and-wire proved cheaper
-  than perfboard for what these validations need. Listing not recorded.
-  Not yet received.
+Nothing as of 2026-10-17: both October orders arrived.

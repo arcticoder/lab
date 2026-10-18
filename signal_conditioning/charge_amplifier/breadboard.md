@@ -24,12 +24,10 @@ Powered from [psu_pico_rail](../../power_supplies/psu_pico_rail/) — see
 | Component | Value | Quantity |
 |-----------|-------|----------|
 | TL082 | JFET-input dual op-amp, DIP-8 | 1 |
-| Piezo element | 12mm disc, **leaded** (2026-10-02 order, on order) | 1 |
+| Piezo element | 12mm disc, **leaded** (2026-10-02 order, on hand by 2026-10-17) | 1 |
 | Resistor | 1 MΩ (bias divider, `R1`/`R2`) | 2 |
 | Resistor | 1 MΩ (feedback, `Rf_bias`) | 1 |
 | Ceramic capacitor | 10 nF (feedback, `Cf`; EIA code `103`) | 1 |
-| Dupont M-M jumper (red) | 12–20cm | 1 |
-| Dupont M-M jumper (black) | 12–20cm | 2 |
 
 The 10nF cap is from the multilayer ceramic assortment already on hand
 (see `docs/parts_reference.md#multilayer-ceramic-capacitor-assortment-50v`

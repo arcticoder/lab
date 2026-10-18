@@ -18,7 +18,6 @@
 | 1MΩ resistor | 1 (hysteresis) | yes (10) |
 | 100nF ceramic capacitor | 1 (LM358 supply only; **none** on the TL431) | yes (10) |
 | Push button | 1 | yes (10) |
-| Jumper wires | about 20 | yes |
 
 Check each resistor's colour bands before it goes in; `docs/inventory.md`
 records a 10kΩ bin that held a 220Ω part.

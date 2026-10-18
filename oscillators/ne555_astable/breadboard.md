@@ -21,7 +21,6 @@ wave output.
 | Ceramic capacitor | 10 nF | 1 |
 | 4x AA battery holders + cells (from [psu_4xaa](../../power_supplies/psu_4xaa/)) | 6.0V raw | 1 |
 | Metal film resistor (for output validation, § 4) | 10 kΩ | 2 |
-| Dupont M-M jumper | assorted | ~10 |
 
 ---
 

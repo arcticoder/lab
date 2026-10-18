@@ -5,7 +5,7 @@
 | Component | Quantity | On hand? |
 |-----------|----------|----------|
 | Raspberry Pi Pico (USB-connected) | 1 | yes |
-| SS49E / 49E Hall sensor, TO-92 | 1 | **no** — 15 on order (2026-10-02, `docs/orders.md`) |
+| SS49E / 49E Hall sensor, TO-92 | 1 | yes (15, arrived by 2026-10-17; read each top mark first, `docs/orders.md`) |
 | LM358P, DIP-8 | 1 (`U1`) | yes (10) |
 | 3296 trimpot, 10kΩ | 1 | yes (10) |
 | 10kΩ resistor | 8 (3 above the trimpot, 3 below, `Rinp`, `Rinn`) | yes (10: leaves two spare) |
@@ -13,8 +13,7 @@
 | 5.1kΩ resistor | 1 | yes (10) |
 | 2kΩ resistor | 1 | yes (10) |
 | 100nF ceramic capacitor | 2 (sensor supply, LM358 supply) | yes (10) |
-| Jumper wires | about 20 | yes |
-| A magnet | 1 | **no** — see `docs/TODO-arcticoder.md` "Next order" |
+| A magnet | 1 | yes (10 N42 discs, 6×3mm, radially magnetized, arrived by 2026-10-17; strength untested) |
 
 Check each resistor's colour bands before it goes in; `docs/inventory.md`
 records a 10kΩ bin that held a 220Ω part.

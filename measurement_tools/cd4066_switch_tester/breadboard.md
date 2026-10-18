@@ -15,9 +15,6 @@ control pin driven by a Pico GPIO and I/O B probed by another.
 |-----------|-------|----------|
 | CD4066BCN | quad bilateral switch, DIP-14 | 1 |
 | Resistor | 10 kΩ | 2 |
-| Dupont M-M jumper (red) | 12–20cm | 1 |
-| Dupont M-M jumper (black) | 12–20cm | 1 |
-| Dupont M-M jumper | 22cm | 2 |
 
 ---
 

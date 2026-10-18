@@ -1024,3 +1024,26 @@ first real task. Re-add "Next order" at the top as soon as a design needs a
 part that isn't on hand or en route. The user's order on 2026-10-05 (wick,
 magnets, RP2040-Zero, breadboard) cleared the section.
 
+## Nothing en route brings "Next order" back; ranking after a batch arrival (2026-10-17)
+
+Both October orders arrived at once, so nothing was in transit. The user's
+standing aim is a few items always en route, so "Next order" returned at the
+top even though no build waits on it (the section says so in one sentence).
+Its content comes from a finished design (`signal_generator_ad9833`, one
+module) plus two conditional top-ups the arrival left open (header strips,
+a USB-C cable); the cart is not padded to cross the free-shipping line, and
+the section tells the user to hold the cart if a fee shows. The next design
+pass is told to produce a second cheap-part design.
+
+Ranking of the nine on-hand builds (the five-criteria method, plus one):
+`lockin_amplifier` (criterion 1, `optical_shadow_readout` builds on its
+wiring), `optical_shadow_readout`, then `adc_ads1115`: a *time-limited
+remedy* ranks a build earlier. The module is a single unit bought with a
+refund as the plan if it is a dud, and AliExpress buyer protection runs out;
+the date is on the order page, which the session can't see, so the bullet
+says to check it. After that `CHGAMP` (criteria 2+3), `ACCELIF` (criterion 1,
+`VIBISO`), `hall_amplifier`, `vibration_driver` (criterion 1,
+`RIPPLETANK`), `overvoltage_monitor`, `frequency_counter`. The second
+800-point breadboard means items 3 onward don't tear down the lock-in, which
+the list says. `VIBISO`/`RIPPLETANK` stay "Blocked", now waiting on a build
+instead of a shipment (section renamed "Blocked — waiting on another item").

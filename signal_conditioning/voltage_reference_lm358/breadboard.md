@@ -16,8 +16,6 @@ A 1kΩ/1kΩ divider off the [psu_pico_rail](../../power_supplies/psu_pico_rail/)
 | LM358P | dual op-amp, DIP-8 | 1 |
 | Resistor | 1 kΩ | 2 (+1 optional, see step 6) |
 | Push Button | momentary, 4-pin | 1 (optional, see step 6) |
-| Dupont M-M jumper (red) | 12–20cm | 2 |
-| Dupont M-M jumper (black) | 12–20cm | 2 |
 
 ---
 

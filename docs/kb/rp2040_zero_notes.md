@@ -1,4 +1,4 @@
-# KB: RP2040-Zero (ordered 2026-10-05) and the user's breadboard plan
+# KB: RP2040-Zero (ordered 2026-10-05, arrived by 2026-10-17) and the user's breadboard plan
 
 For future LLM sessions.
 
@@ -24,8 +24,9 @@ Full table in `docs/parts_reference.md#rp2040-zero`. The ones that bite:
 pin 36, GND pin 38) don't exist on it; write tables by silkscreen name when a
 circuit moves to it. Pinout was copied from the listing text, which lists
 header pins loosely; check against the board's silkscreen on arrival.
-Unknown until it arrives: whether headers are fitted, and the USB-C cable
-situation (the Pico on the bench uses micro-USB).
+Still unrecorded after arrival (2026-10-17): whether headers are fitted, and
+the USB-C cable situation (the Pico on the bench uses micro-USB). A circuit
+moving to the Zero needs both settled; ask once at that point.
 
 ## Order ingestion notes
 

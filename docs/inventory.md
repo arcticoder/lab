@@ -12,6 +12,49 @@ requiring `lab/` to be cloned alongside it — see
 
 ---
 
+## Storage — which bag holds what
+
+Parts live in twelve labelled bags. Assignments below come from the earlier
+chat-session notes (items placed then) plus placements for everything that
+arrived since (marked **new**); the placement rule for future arrivals is
+in `kb/inventory_storage_notes.md`. When a part moves, change it here.
+
+| Bag | Holds |
+|-----|-------|
+| `LEDS` | Red, blue, green, white, yellow LEDs (10 each), RGB LED, 7-segment display, WS2812 8-LED strip (the last two are placements I chose) |
+| `10R-330R` | 10Ω, 100Ω, 220Ω, 330Ω (10 each); the 1W metal-film 0.1Ω and 1Ω (20 each) in their own baggie inside it |
+| `1K-5.1K` | 1kΩ, 2kΩ, 5.1kΩ (10 each) |
+| `10K-1M` | 10kΩ, 100kΩ, 1MΩ (10 each); the 3296 10kΩ trimmers (10); the kit potentiometer |
+| `10K / 1K` | Contents not recorded in the chat notes; say what it holds and this row gets filled in |
+| `TRANSISTORS / CAPACITORS` | **Transistor sub-bag:** S8050 ×2, S8550 ×2, IRLZ44N, TL431A ×5. **Capacitor sub-bags, by value range:** the 10nF and 100nF kit capacitors, the 300-piece ceramic assortment, the 120-piece electrolytic kit |
+| `ICs & LCDs` | NE555 ×10, LM358P ×10, CD4066BCN ×10, TL082 ×10, SN74HC86N, 74HC595, I2C LCD 1602, Raspberry Pi Pico when stored; **new:** ADS1115 module, RP2040-Zero |
+| `SWITCHES / SENSORS` | Slide switches ×5, push buttons ×10, tilt switch, LDR ×2, the old NTC (suspect), MF52AT ×10, PIR, KY-003, GY-521, PT334-6C ×10, bare piezo discs ×19; **new:** leaded piezo discs ×10 (own baggie), 49E ×10 and SS49E ×5 (a baggie each, labelled) |
+| `PROTECTION` | RXEF005 ×20, RXEF050 ×20, 1N5817 ×20, glass fuses ×10, panel fuse holder |
+| `BATTERY HOLDERS` | 1×AA holders ×5 (four are in `psu_4xaa` while it is built) |
+| `BREADBOARDS` | 830-point, MB-102 400-point, SYB-170 ×3; **new:** 800-point |
+| `MISC` | CY7C68013A (SCOPELA) board, inductor assortment, 9G servo, passive and active buzzers, USB-C test board; **new:** coin vibration motors ×10, N42 magnets ×10 (own baggie) |
+
+Not bagged: USB cables, the mains adapters, the soldering tools and the
+solder wick (kept with the iron).
+
+**Placement changes I suggest for what is already inventoried:**
+
+- **Split `10K / 1K`, or empty it into `1K-5.1K` and `10K-1M`.** It is the one
+  place the 1kΩ and 10kΩ share a bag, and those two look the same except for
+  one band (`brown black black brown brown` against `... red brown`). The
+  lock-in's `Rbias` slot held a 10kΩ on 2026-10-05.
+- **Keep the magnets out of `SWITCHES / SENSORS`**, with the Hall sensors, the
+  servo and the buzzers, so a loose magnet never sits against a sensor. They
+  go in `MISC` in their own baggie.
+- **Keep the 49E and SS49E in separate labelled baggies.** The SS49E listing
+  also sold latching types, and the TO-92 body looks like a transistor or the
+  TL431A; the top mark is the only way to tell them apart.
+- **The 1W 0.1Ω and 1Ω resistors get their own baggie** inside `10R-330R`, since
+  their bodies are the big ones and a low value pulled by mistake is hard to
+  notice.
+
+---
+
 ## LEDs
 
 | Component  | Quantity |
@@ -97,93 +140,16 @@ new build, rather than by eye alone.
 | Component              | Quantity | Notes                                                    |
 |--------------------------|----------|-------------------------------------------------------------|
 | Breadboard (full)      | 1        | 830-point                                                 |
+| Breadboard (full, 800-point) | 1  | Second full-size board, for builds that stay assembled; ordered 2026-10-05, arrived by 2026-10-17 |
 | Breadboard (mini SYB-170) | 1     | 170-point, black; from a 6-in-1 color pack (AliExpress). See `lab/docs/orders.md` / `lab/docs/parts_reference.md` for full specs |
 | Micro USB Cable        | 1        | For Pico power + data                                     |
 | Mini-USB Cable         | 1        | Acquired directly (non-AliExpress) 2026-09-24; removed from the AliExpress cart. Used with `SCOPELA`'s CY7C68013A board |
 
 ---
 
-## Jump Wires (solid-core, pre-bent 90°)
+Jump wires and Dupont jumpers are not tracked here: circuits assume enough
+are on the bench.
 
-### Jump Wires Box — Left Side
-
-| Colour | Length (cm) | Quantity |
-|--------|-------------|----------|
-| Orange | 2.25        | 14       |
-| Red    | 2.5         | 10       |
-| Black  | 1.5         | 14       |
-
-### Jump Wires Box — Middle Left
-
-| Colour | Length (cm) | Quantity |
-|--------|-------------|----------|
-| White  | 1.5         | 14       |
-| White  | 5           | 10       |
-| Yellow | 2           | 12       |
-
-### Jump Wires Box — Middle Right
-
-| Colour      | Length (cm) | Quantity |
-|-------------|-------------|----------|
-| Black       | 0.4         | 10       |
-| Yellow      | 0.6         | 10       |
-| Green       | 1.0         | 10       |
-| Blue        | 1.25        | 10       |
-| Non-covered | 0.25        | 13       |
-
-### Jump Wires Box — Middle Top
-
-| Colour | Length (cm) | Quantity |
-|--------|-------------|----------|
-| Green  | 7.5         | 10       |
-| Blue   | 10          | 10       |
-
-### Jump Wires Box — Middle Bottom
-
-| Colour | Length (cm) | Quantity |
-|--------|-------------|----------|
-| Red    | 12.6        | 10       |
-
----
-
-## Jumper Wires (M-M Dupont, pre-cut)
-
-| Colour | Length (cm) | Quantity |
-|--------|-------------|----------|
-| Blue   | 16          | 2        |
-| Red    | 16          | 2        |
-| Black  | 16          | 2        |
-| Red    | 20          | 1        |
-| Blue   | 20          | 1        |
-| White  | 20          | 1        |
-| Blue   | 25          | 1        |
-| White  | 25          | 1        |
-| Red    | 25          | 1        |
-| Black  | 25          | 1        |
-| White  | 12          | 7        |
-| Black  | 12          | 7        |
-| Orange | 12          | 7        |
-| Blue   | 12          | 7        |
-| Green  | 12          | 7        |
-| Yellow | 12          | 7        |
-| Red    | 12          | 7        |
-
----
-
-## Dupont Wires (M-F)
-
-| Colour | Length (cm) | Quantity |
-|--------|-------------|----------|
-| Red    | 22          | 1        |
-| Yellow | 22          | 1        |
-| Grey   | 22          | 1        |
-| Orange | 22          | 1        |
-| Green  | 22          | 1        |
-| Blue   | 22          | 1        |
-| Purple | 22          | 1        |
-| Black  | 22          | 1        |
-| White  | 22          | 1        |
-| Beige  | 22          | 1        |
 ---
 
 ## Microcontroller
@@ -208,7 +174,7 @@ For the `lab/` repo's spacetime research PSU tiers (`psu_ultralow`,
 | Lenovo 65W USB-C PD wall adapter        | 1        | On the bench; profiles per `lab/docs/general_purpose_circuit_dependency.md`'s `PSUMEDHIGH` node (20V/3.25A, 15V/3A, 9V/2A, 5V/2A). Outputs nothing above USB default without a PD sink board negotiating it — see the PD trigger board in `lab/docs/orders.md` |
 | DC barrel wall adapter, 12V/1A (label "PSU") | 1 | Read 2026-09-25: input 100–240V~ 50/60Hz 1.2A, output 12V DC 1A, positive centre, made 2007. Plugged into one of the two drive enclosures. Passes the voltage, polarity and current checks for `psu_medlow_lm317`'s SparkFun kit; the label doesn't print the plug size, so the barrel is confirmed only by the fit test when the kit arrives |
 | DC barrel wall adapter, 12V/1.2A (CS-1208200) | 1 | Read 2026-09-25: input 100–240V~ 1.5A max 50/60Hz, output 12V DC 1.2A, centre positive. Plugged into the other drive enclosure. Same result as the adapter above — passes on the label, plug size unconfirmed. Either one can feed the SparkFun kit; the other stays with its enclosure |
-| AA battery holder (1×AA, single-cell)  | 5        | 5 received 2026-08-21 (the only batch); 4 went into `psu_4xaa`, leaving 1 unused. Ready for direct use in `psu_ultralow_v1`/`psu_low_v2`. Confirmed-working temporary lead termination (2026-08-28, ahead of the wire stripper order arriving): twist a non-covered 0.25cm jump wire around each bare holder lead and wrap in electrical tape — no soldering/crimping needed. Treat as a stand-in until leads are stripped/soldered to Dupont connectors, not a wiring defect if seen on a breadboard. The fifth holder is spare stock — `psu_4xaa` is the largest series stack, and nothing on this bench runs two AA-cell supplies simultaneously (each build is disassembled after its own bench check, see `lab/docs/kb/circuit_lifecycle_and_repo_scope.md`). |
+| AA battery holder (1×AA, single-cell)  | 5        | 5 received 2026-08-21 (the only batch); 4 went into `psu_4xaa`, leaving 1 unused. Ready for direct use in `psu_ultralow_v1`/`psu_low_v2`. Confirmed-working temporary lead termination (2026-08-28, ahead of the wire stripper order arriving): twist a bare solid-core jump wire around each bare holder lead and wrap in electrical tape — no soldering/crimping needed. Treat as a stand-in until leads are stripped/soldered to Dupont connectors, not a wiring defect if seen on a breadboard. The fifth holder is spare stock — `psu_4xaa` is the largest series stack, and nothing on this bench runs two AA-cell supplies simultaneously (each build is disassembled after its own bench check, see `lab/docs/kb/circuit_lifecycle_and_repo_scope.md`). |
 
 ---
 
@@ -243,28 +209,19 @@ in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 | GY-521 (MPU6050) 3-axis gyro/accelerometer module | 1 | Received 2026-09-20 (ordered 2026-09-10); untested. Substitutes for the originally-scoped ADXL335 to fill the tier5 `ACCELIF` gap. Designed/simulated 2026-09-23 as `lab/signal_conditioning/accelerometer_interface/`, not yet built. See `lab/docs/parts_reference.md#gy-521-mpu6050-3-axis-gyroaccelerometer-module`. |
 | EZ-USB FX2LP CY7C68013A USB core board (SCOPELA logic analyzer) | 1 | Received 2026-09-20 (ordered 2026-09-10); enumerates as `04b4:8613` with jumper J4 removed (keep J4 out). *Is* the `SCOPELA` tier purchase itself, not a component — no circuit design needed. **Bench-validated 2026-10-02**: with the Pico's GP15 on pad `PB0` and grounds shared, `sigrok-cli` captures `D0` (so `PB0`→`D0` holds) at 1MHz and 4MHz; 1kHz/25% wave read back as 999.9Hz / 25.0%; no other channel toggled. Under WSL it needs usbipd `bind` + `attach --auto-attach` on the firmware-loaded device (`lab/measurement_tools/logic_analyzer_check/breadboard.md`). Header pads are `PB0`–`PB7`/`PD0`–`PD7`, not `D0`–`D15` (see `parts_reference.md`). Mini-USB port, cable acquired 2026-09-24. See `lab/docs/parts_reference.md#ez-usb-fx2lp-cy7c68013a-usb-core-board-scopela-logic-analyzer`. |
 | Color-ring inductor assortment, 0307 1/4W (12 values, 1µH-1mH) — reorder | 120 | Received 2026-09-20 (ordered 2026-09-10); untested — color-band values not yet cross-checked against a known reading. Fills the tier3 `INDBRIDGE` gap; designed/simulated 2026-09-23 as `lab/measurement_tools/inductance_bridge/`, not yet built. See `lab/docs/parts_reference.md#color-ring-inductor-assortment-0307-14w`. |
+| Piezo element, 12mm disc, with wire leads (variant "Wire-12mm-10PCS") | 10 | Ordered 2026-10-02, arrived by 2026-10-17; untested. Leaded, so `CHGAMP` needs no soldering to the disc. 5000pF ±30%, resonance 16.5kHz per the listing's 12mm table. For `lab/signal_conditioning/charge_amplifier/`. Keep apart from the 19 bare discs above. See `lab/docs/orders.md`. |
+| Linear Hall sensor 49E, TO-92 (variant "10pcs/lot 49E") | 10 | Ordered 2026-10-02, arrived by 2026-10-17. For `HALLAMP` (`lab/signal_conditioning/hall_amplifier/`). Top mark not yet checked. |
+| Linear Hall sensor SS49E, TO-92 (variant "SS49E", 5pcs) | 5 | Ordered 2026-10-02 as a replacement for the line above; both orders went through, so 15 in total, arrived by 2026-10-17. Listing bundles latching/switch part numbers: check each top mark before use. Keep apart from the 49E bag. |
+| ADS1115 16-bit ADC module (I2C) | 1 | Ordered 2026-10-02, arrived by 2026-10-17; untested. One unit only; a refund is the plan if it is a dud. For `lab/signal_conditioning/adc_ads1115/`. Whether its headers are soldered is not recorded. |
+| Coin vibration motor, 3V, 10×2.7mm (variant "10Pcs 1027") | 10 | Ordered 2026-10-02, arrived by 2026-10-17; untested. Rated 3V, 80–90mA, stall 120mA max, starts at 2.3V. For `lab/oscillators/vibration_driver/`. |
+| Neodymium disc magnet, N42, D6×3mm, radially magnetized (variant "N42 NdFeB D6x3mm/10PCS") | 10 | Ordered 2026-10-05, arrived by 2026-10-17; strength untested. Poles on the curved sides, not the flat faces; for `HALLAMP`'s field source. |
+| RP2040-Zero board (USB-C, 18×23.5mm, castellated) | 1 | Ordered 2026-10-05, arrived by 2026-10-17. Whether headers are fitted is not recorded. A second RP2040 for semi-permanent builds; see `parts_reference.md#rp2040-zero` for the pinout differences from the Pico. |
 
 ---
 
 ## On Order (AliExpress)
 
-Placed for the `lab/` repo's spacetime research build; new rows go here
-first, with full specs/links/datasheets in `lab/docs/orders.md` and
-`lab/docs/parts_reference.md`. Move each row up into its proper table
-above once physically received. The first five rows are one order placed
-2026-10-02, the last four another placed 2026-10-05 (transit a few weeks each).
-
-| Component | Quantity | Notes |
-|-----------|----------|-------|
-| Piezo element, 12mm disc, with wire leads (variant "Wire-12mm-10PCS") | 10 | Ordered 2026-10-02. Leaded, so `CHGAMP` needs no soldering to the disc. 5000pF ±30%, resonance 16.5kHz per the listing's 12mm table. For `lab/signal_conditioning/charge_amplifier/`. See `lab/docs/orders.md`. |
-| Linear Hall sensor 49E, TO-92 (variant "10pcs/lot 49E") | 10 | Ordered 2026-10-02. For `HALLAMP` (`lab/signal_conditioning/hall_amplifier/`). Top mark not yet checked. |
-| Linear Hall sensor SS49E, TO-92 (variant "SS49E", 5pcs) | 5 | Ordered 2026-10-02 as a replacement for the line above; both orders went through, so 15 in total. Listing bundles latching/switch part numbers: check each top mark on arrival. |
-| ADS1115 16-bit ADC module (I2C) | 1 | Ordered 2026-10-02, different listing from the 2026-10-01 candidate. One unit only; a refund is the plan if it is a dud. For `lab/signal_conditioning/adc_ads1115/`. Whether its headers are soldered is not stated. |
-| Coin vibration motor, 3V, 10×2.7mm (variant "10Pcs 1027") | 10 | Ordered 2026-10-02. Rated 3V, 80–90mA, stall 120mA max, starts at 2.3V. For `lab/oscillators/vibration_driver/`. |
-| Solder wick, 1.0mm × 1.5m (variant "1.0mm 1.5m/1Pcs") | 1 | Ordered 2026-10-05. Clears the GY-521's bridged header pins (`ACCELIF`) and any ADS1115 header bridge. |
-| Neodymium disc magnet, N42, D6×3mm, radially magnetized (variant "N42 NdFeB D6x3mm/10PCS") | 10 | Ordered 2026-10-05. Poles on the curved sides, not the flat faces; for `HALLAMP`'s field source. |
-| RP2040-Zero board (USB-C, 18×23.5mm, castellated) | 1 | Ordered 2026-10-05. Headers probably not fitted. A second RP2040 for semi-permanent builds; see `parts_reference.md#rp2040-zero` for the pinout differences from the Pico. |
-| Breadboard, 800-point | 1 | Ordered 2026-10-05, second full-size board for builds that stay assembled. |
+Nothing on order as of 2026-10-17: the 2026-10-02 and 2026-10-05 orders have arrived (their rows are in the tables above, dated). New rows go here first when an order is placed, with full specs/links/datasheets in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 
 ---
 
@@ -289,4 +246,4 @@ sourcing in [TODO-arcticoder.md](TODO-arcticoder.md)).
 | Soldering iron stand          | 1        | Included with iron                                          |
 | Soldering tip, 5/32 in.       | 2        | Included with iron                                          |
 | 18-in-1 wire stripper/crimper pliers | 1 | Received 2026-09-03; high-carbon steel + PVC handle. Resolves the wire-stripper dependency that was blocking `psu_ultralow_v1`/`psu_low_v2` AA-holder lead termination in `lab/`. |
-| Solder wick (desoldering braid) | 0 | Needed since 2026-09-24 — a few header pins bridged while soldering the GY-521 module for `signal_conditioning/accelerometer_interface`; wick is the clearing method (procedure in that circuit's `breadboard.md`), so that circuit's first power-up waits on it. **Ordered 2026-10-05** (see "On Order"). |
+| Solder wick (desoldering braid), 1.0mm × 1.5m | 1 | Ordered 2026-10-05, arrived by 2026-10-17. Clears the GY-521's bridged header pins (procedure in `signal_conditioning/accelerometer_interface/breadboard.md`) and any bridge on the ADS1115's or RP2040-Zero's headers. |
