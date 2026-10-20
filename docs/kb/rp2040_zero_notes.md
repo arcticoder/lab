@@ -5,7 +5,7 @@ For future LLM sessions.
 ## Why it was ordered
 
 The user wants a second RP2040 so a circuit can stay wired while the Pico
-moves to the next experiment, and a second 800-point breadboard for the same
+moves to the next experiment, and a second full-size breadboard (ordered as 800-point, arrived 830-point) for the same
 reason: the user compared breadboard-and-wire against perfboard on cost and
 chose breadboards, as long as the breadboard version supports the
 validation. So "semi-permanent" in this repo means a circuit left on its own

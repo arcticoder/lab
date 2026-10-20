@@ -100,6 +100,17 @@ if those are on the same breadboard).
 
 ---
 
+## On the RP2040-Zero instead of the Pico
+
+`main.py` reads `GP28` (ADC2), which the Zero has on its header, so nothing in it
+changes. Wire by silkscreen name: Zero `3V3` to `U1` pin 8, `GND` to pin 4 and the
+piezo's ground lead, `GP28` to pin 1. (The Zero's 3V3 comes from its own LDO,
+good for 500mA; this circuit draws under 1mA.) Solder the Zero's headers and
+flash MicroPython first ([parts_reference.md](../../docs/parts_reference.md#rp2040-zero),
+"First power-up"); with two boards attached, `mpremote connect id:<serial> run main.py`.
+
+---
+
 ## Expected behavior
 
 At rest, the output should read close to ~1.65V (VCC/2) — see

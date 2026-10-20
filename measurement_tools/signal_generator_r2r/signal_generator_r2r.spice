@@ -1,0 +1,80 @@
+* signal_generator_r2r — 8-bit R-2R ladder DAC on Pico GPIO, LM358 buffer
+*
+* Eight Pico pins (bit 0 = LSB) each drive a 2R leg (2kΩ) of an R-2R ladder
+* (R = 1kΩ); the LSB end has a 2R termination to ground. The ladder's open
+* circuit output is 3.3V x code/256 behind R = 1kΩ. A 1kΩ load from the ladder
+* output to ground (RL) halves it, so the swing is 0..1.65V: inside the LM358's
+* 3.3V input range (VCC - 1.5V = 1.8V) with every one of the 256 codes usable.
+* An LM358 voltage follower (10kΩ to ground keeps its output stage out of
+* crossover) drives the output.
+*
+* Each Pico pin is modelled as an ideal 0/3.3V source behind `ron` ohms (the
+* RP2040 pad's output resistance at the default 4mA drive is tens of ohms;
+* 40 is an assumption, the bench calibration measures whatever it really is).
+* LM358: the lock-in's behavioral model (gain 1e5, output limited to
+* 0.02..1.8V), without its pole because this is a static operating point.
+*
+* Case parameters, rewritten by smoke_test.py for each run:
+*   code  the 8-bit value written to the pins (0..255)
+*   ron   pin output resistance
+*   rr    the R of the ladder; the 2R legs are 2*rr
+
+.param vdd=3.3
+.param code=128
+.param ron=40
+.param rr=1k
+
+.subckt lm358 inp inn out
+Eg  x 0 inp inn 1e5
+Bo  o 0 V = min(max(V(x), 0.02), 1.8)
+Ro  o out 50
+.ends
+
+Vb0 s0 0 DC {vdd*(floor(code/1)   - 2*floor(code/2))}
+Vb1 s1 0 DC {vdd*(floor(code/2)   - 2*floor(code/4))}
+Vb2 s2 0 DC {vdd*(floor(code/4)   - 2*floor(code/8))}
+Vb3 s3 0 DC {vdd*(floor(code/8)   - 2*floor(code/16))}
+Vb4 s4 0 DC {vdd*(floor(code/16)  - 2*floor(code/32))}
+Vb5 s5 0 DC {vdd*(floor(code/32)  - 2*floor(code/64))}
+Vb6 s6 0 DC {vdd*(floor(code/64)  - 2*floor(code/128))}
+Vb7 s7 0 DC {vdd*(floor(code/128) - 2*floor(code/256))}
+
+Rp0 s0 d0 {ron}
+Rp1 s1 d1 {ron}
+Rp2 s2 d2 {ron}
+Rp3 s3 d3 {ron}
+Rp4 s4 d4 {ron}
+Rp5 s5 d5 {ron}
+Rp6 s6 d6 {ron}
+Rp7 s7 d7 {ron}
+
+R2b0 d0 n0 {2*rr}
+R2b1 d1 n1 {2*rr}
+R2b2 d2 n2 {2*rr}
+R2b3 d3 n3 {2*rr}
+R2b4 d4 n4 {2*rr}
+R2b5 d5 n5 {2*rr}
+R2b6 d6 n6 {2*rr}
+R2b7 d7 n7 {2*rr}
+R2t  n0 0 {2*rr}
+
+Rs1 n1 n0 {rr}
+Rs2 n2 n1 {rr}
+Rs3 n3 n2 {rr}
+Rs4 n4 n3 {rr}
+Rs5 n5 n4 {rr}
+Rs6 n6 n5 {rr}
+Rs7 n7 n6 {rr}
+
+RL  n7 0 {rr}
+Xu1 n7 out out lm358
+Rl1 out 0 10k
+
+.nodeset v(out)=0.8 v(n7)=0.8 v(xu1.x)=0.8
+
+.control
+op
+print v(n7) v(out)
+quit
+.endc
+.end

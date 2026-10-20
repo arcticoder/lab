@@ -17,29 +17,25 @@ the converted `.md` files are tracked).
 
 ## Candidates found, not yet in any cart
 
-Nothing is on order as of 2026-10-17: both October orders arrived. The
-candidate below is the one purchase a finished design needs.
+Nothing is on order as of 2026-10-19, and no current design needs a purchase:
+the function generator is built from parts on hand (`measurement_tools/signal_generator_r2r/`).
 
-### AD9833 DDS signal generator module (`TESTSIG`)
+### RP2350-Zero (user-sourced boards, 2026-10-19)
 
-- For `measurement_tools/signal_generator_ad9833/` (designed 2026-10-17 from
-  the AD9833 data sheet; see [parts_reference.md](parts_reference.md#ad9833-dds-signal-generator-module)).
-  One module; search-found listings, not opened (AliExpress pages return no
-  content to the session), so **read the variant list and the board photo
-  before paying**:
-  - "AD9833 Programmable DDS Signal Generator Module, High-Speed
-    Sine/Triangle/Square Wave Output, SPI Interface for Arduino" —
-    [item 3256809871235889](https://www.aliexpress.us/item/3256809871235889.html)
-  - "AD9833 Programmable Microprocessors Serial Interface Module Sine Square
-    Wave DDS Signal Generator Module" —
-    [item 4000561216023](https://www.aliexpress.com/i/4000561216023.html)
-- Pick the plain single-chip board (7 header pins: `VCC`, `DGND`, `SDATA`,
-  `SCLK`, `FSYNC`, `AGND`, `OUT`) with its own 25MHz oscillator. Avoid boards
-  that add an amplifier stage or a "dual channel" second chip: the design
-  and its amplitude limits assume the chip's own 0.6V output. Prices on search
-  pages ran from about $2 to over $20; the cheap end is the target.
-- Record the selected variant string here when ordering, and whether the
-  header is soldered.
+- Listing: "1~10PCS RP2350-Zero Mini Development Board RP2350 Based on Raspberry Pi
+  RP2350A Dual-Core Built-in 520KB 4MB Flash Type-c USB" —
+  [item 1005010561137398](https://www.aliexpress.com/item/1005010561137398.html).
+  Found by the user after paying C$1.48 for the RP2040-Zero; price and shipping of
+  this one not recorded.
+- Worth one board only alongside another need (no shipping fee for it alone). Two
+  things to settle first, both in [kb/rp2350_notes.md](kb/rp2350_notes.md): the
+  peripheral base addresses differ from the RP2040's (0x40050000 is the system PLL
+  there, which this repo's raw-register scripts would write), and chip stepping A2
+  has erratum E9 (a pad pull-down can fail).
+- Also sourced by the user and not taken: STM32F411 "STM32F103C8T6 CH32F103C8T6 ... STM32F411
+  ST-LINK V2" ([item 1005006351138382](https://www.aliexpress.com/item/1005006351138382.html)),
+  and ESP32-C3 PRO MINI ([item 1005007403000818](https://www.aliexpress.com/item/1005007403000818.html)).
+  Reasons in the kb note.
 
 ---
 
@@ -681,9 +677,9 @@ recorded here.
 - The listing does not say whether pin headers are fitted; assume they are
   not until it arrives. Received by 2026-10-17 (reported); untested.
 
-#### 800-point breadboard — 1 pc
+#### Full-size breadboard (ordered as "800-point") — 1 pc
 
-- A second 800-point breadboard (the on-hand full-size one is 830-point):
+- A second full-size breadboard, ordered as 800-point; it arrived as an 830-point board, the same as the first:
   circuits are going semi-permanent, and breadboard-and-wire proved cheaper
   than perfboard for what these validations need. Listing not recorded.
   Received by 2026-10-17 (reported); untested.

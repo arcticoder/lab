@@ -102,7 +102,7 @@ Lessons for future sessions:
   step on the correct row read the resistance directly.
 - A part reported as "1kΩ" without a meter reading is not a measurement.
   Keep `measurement_tools/resistance_measurement` as the arbiter for the 1k/10k
-  pair; a bag holding both (`10K / 1K`) is a hazard (`inventory.md` § Storage).
+  pair; the 1kΩ and 10kΩ sit in separate sub-bags (`inventory.md` § Storage).
 
 ## `VB` stuck, 2026-10-17
 
@@ -121,3 +121,27 @@ S1/S2 chip swap in `breadboard.md` separates a bad chip switch from wiring.
 instead was tried and dropped, because a dead `B` sitting at 1.172V and a
 healthy one at 1.135V differ by less than the offsets the two channels have
 (the 2026-10-05 floor read −28mV).
+
+## 2026-10-19: fix confirmed, then a mechanical fault
+
+The user pulled `Rbias` and read it on `resistance_measurement` with a 10kΩ
+reference: 10.15kΩ (it had been taken for a 1kΩ). Replaced with a 1kΩ;
+`trace_node.py` on row 49-j then read 3.23/3.34/6.52mV DC steps and a 3.28mV
+1kHz step, so the `Rbias` diagnosis is confirmed against a meter-grade reading,
+and the jig is the method that settled it. (The user also reported the earlier
+jumper as on 49-j; my first probes ran with it where they had said, row 50,
+and the readings fit `C2`; since 49-j they are `SIG`'s.)
+
+The board then fell off its shelf. `main.py` after the fix: `VA` 0.98V, `VB`
+0.73V at `floor`, ratio checks failing, `diagnose_demod.py` showing neither
+averager responding; the user found dislodged `S2` pins, which accounts for
+the `VB`-stuck reading of 2026-10-17 as well. After re-seating: `VA`/`VB` both
+about 0.025V (the LM358's output-low floor), `X0` +3.9mV, and states moving
+the averagers by tens of mV, upward only. A mid-rail reference at 0V explains
+that exactly (U1A + input at 0V, OUT1 at its floor, only positive excursions
+get through the switches); `diagnose_levels.py` was added to walk the levels.
+Not verified live: the Pico was not attached to Windows (`usbipd list` showed
+no 2e8a device) when this was written.
+
+Lesson: a rig that has been dropped or moved gets a power walk before any
+signal-level diagnosis.

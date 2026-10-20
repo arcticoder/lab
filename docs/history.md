@@ -4648,7 +4648,34 @@ The `Rbias` slot holds a 10kΩ, not a 1kΩ. Swap it for a 1kΩ and rerun. I have
 - **Bags:** the bag map is at the top of `inventory.md`. `10K / 1K` is the only bag that mixes 1kΩ and 10kΩ, so I suggested splitting it. The chat notes don't say what it holds, so please tell me.
 
 **Your RP2040 brief:** saved as `kb/rp2040_performance_notes.md`. I measured on your Pico that the ADC with DMA runs at 100–499kSa/s, against 77kSa/s for a `read_u16` loop.
+<!-- ------ -->
+---
+The `Rbias` fix is confirmed on the bench. The lock-in is still failing, on a second fault: both averagers read about 0.03V, and I couldn't walk the levels without the probe jumper on a row.
 
-Nothing is committed in either repo.
+**Lock-in**
+- **Fix confirmed:** your `trace_node.py` numbers (3.23, 3.34 and 6.52mV DC steps, 3.28mV at 1kHz) match the design, so the 10kΩ-in-`Rbias` diagnosis was right.
+- **Rig now:** it wasn't attached when this started. After you plugged it in, a live switch test showed `OUT1` at 0.024V with either switch closed, which is the LM358's floor. That puts the mid-rail reference (`VMO`) at ground after the fall.
+- **Next:** the `GP28` jumper is off the board (the pad was floating). Put it on each row in turn and run `diagnose_levels.py`. The table in `breadboard.md` ("After the fix") says what each row should read and which leg to re-seat.
+- **Jumper row:** my first probes ran with the jumper where you'd reported it then (row 50), and the readings fit `C2`. I've recorded your row map, `SIG` at 49 and `GP8` through 51-a to 49-c, in the doc.
+
+**Function generator:** I built the R-2R DDS (`measurement_tools/signal_generator_r2r/`) and removed the AD9833 plan everywhere.
+- **PIO and DMA work from MicroPython.** `loopback_test.py` reads the output pins back and matched the table exactly at 2 to 62.5 MS/s, including a 1.95MHz sine and a 4096-byte table. An altered sample is caught.
+- **Two bugs came from the real Pico** and weren't visible in host tests: `int.bit_length` and stepped slices don't exist in MicroPython.
+- **A DMA channel can't chain to itself** (datasheet), so two channels chain to each other.
+- **Ladder values:** I used 2kΩ and 1kΩ, not 10kΩ and 5.1kΩ. The ratio is exact, and the 10kΩ and 5.1kΩ stock stays free for the lock-in.
+- **Calibration:** the Pico measures all 256 ladder levels with its ADC. In simulation, 5% resistors take distortion from −39dB to −57dB, the 8-bit floor.
+- **Ceiling:** the LM358P's slew rate (0.3V/µs, TI datasheet) limits a 1.28V p-p sine to about 75kHz. `main.py` measures the real figure once the ladder is built.
+- **Not run:** the analog side. All 28 smoke tests pass.
+
+**Your other points**
+- **Headers:** soldering them and flashing the Zero is now a TODO item (item 3, ahead of the ADS1115), with the firmware steps.
+- **ADS1115 and charge amplifier on the Zero:** yes, both circuits only use pins the Zero has. I added "On the RP2040-Zero" sections with silkscreen names.
+- **Magnets:** they can't damage the FX2LP board. Keep them away from hard drives and the Hall sensors, which only read wrong while a magnet is near.
+- **Inventory:** I applied your corrections: no `10K / 1K` bag, an `INDUCTORS` bag, both breadboards 830-point, the Zero in the Microcontroller table, the cancelled order removed, and `psu_4xaa` disassembled. I left the cancelled order's entry in `orders.md` as log history.
+- **Boards:**
+  - **RP2350-Zero:** add one only to a cart that has another need. The datasheet shows its PWM base address is 0x400A8000 versus 0x40050000 on the RP2040, and 0x40050000 is the system PLL on the RP2350. This repo's raw-register scripts would write it. Chip stepping A2 also has erratum E9, where a pad pull-down can fail.
+  - **STM32F411:** skip it. PIO plus DMA already does what it offers.
+  - **ESP32-C3:** skip it.
+- **Orders:** nothing is en route and nothing needs buying, so the Next order section lists only the optional RP2350-Zero.
 <!-- ------ -->
 ---

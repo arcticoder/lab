@@ -55,47 +55,52 @@ circuit is ever trusted as an unattended monitor; pick N against how
 often this kind of breadboard contact glitch actually recurs rather than
 guessing a number now.
 
-### `lockin_amplifier` — `Rbias` is a 10kΩ; second fault in the `B` path (2026-10-17)
+### `lockin_amplifier` — `Rbias` fixed; mid-rail reference at 0V after a fall (2026-10-19)
 
-Diagnosed 2026-10-17 from DC steps on the `SIG` row (`trace_node.py`): the
-node is held by 9.7kΩ, so the `Rbias` slot holds a 10kΩ; simulation with
-10kΩ gives X = 1.057V against 1.08V measured. The earlier "`SIG` is nearly
-floating" reading came from the `GP28` jumper sitting on row 50 (`C2`), one
-row past `SIG` (row 49): `C2` copies `SIG`'s ripple through `Cin`, and a 36µA
-pull overpowers the virtual ground there. Lesson recorded in
-`kb/lockin_bench_notes.md`. Item 1 in `TODO-arcticoder.md` is the fix and
-rerun. When the user reports back: record the result in the README status
-and `TODO-completed.md`, and if `VB` is still flat, the S1/S2 chip swap in
-`breadboard.md` decides chip against wiring. After that, `optical_shadow_readout`
-is startable.
+`Rbias` was a 10kΩ (read 10.15kΩ on `resistance_measurement`); replaced with a 1kΩ,
+and `trace_node.py` on row 49-j reads the design values. Then the board fell,
+`S2`'s pins were dislodged, and after re-seating them both averagers read about
+0.03V; a live check showed `OUT1` at 0.024V with either switch closed, so the
+`VMO` reference is at ground. The user finds the leg with `diagnose_levels.py` and
+the table in `breadboard.md`. Not probed further: the `GP28` jumper was off the
+board. When the user reports back: README status, `TODO-completed.md`, the kb;
+then `optical_shadow_readout` is startable, and `signal_generator_r2r` can drive
+the lock-in's `SIG` row.
 
-### `RP2040-Zero` — pin-map pass when it moves into a build (arrives with the 2026-10-05 order)
+### `RP2040-Zero` — per-circuit pass done for `adc_ads1115` and `charge_amplifier` (2026-10-19)
 
-Differences from the Pico are in `parts_reference.md#rp2040-zero` and
-`kb/rp2040_zero_notes.md`. Do the per-circuit pass (breadboard tables by
-silkscreen name; `GP16` and `GP25` remaps) only when the user says a circuit
-moves to the Zero, not for all circuits ahead of time. First candidates:
-anything that stays assembled as a sensor front end.
+Both circuits only use pins the Zero has (`GP4`, `GP5`, `GP26`, `GP28`, `3V3`, `GND`),
+so `main.py` is unchanged; their `breadboard.md` files gained an "On the RP2040-Zero"
+section by silkscreen name. First power-up steps (headers, firmware UF2, usbipd, picking a
+board with `mpremote connect id:`) are in `parts_reference.md#rp2040-zero`. Other
+circuits get the same pass only when the user says one moves to the Zero; the ones that
+use `GP16` (`frequency_counter`, `vibration_driver`) need a pin remap, not just names.
 
-### Next design pass — what to pick and why (2026-10-17)
+### `RP2350` chip guard — when an RP2350 board is in hand
 
-Queue state 2026-10-17: nine on-hand builds, nothing en route. The 2026-10-17
-pass designed `signal_generator_ad9833` (`TESTSIG`); it needs one AliExpress
-part, which is the whole of "Next order" in `TODO-arcticoder.md`. Carts fill
-from designs (`kb/todo_list_conventions.md`), and a cart under the free-shipping
-line isn't paid, so the next pass should produce a second design that needs a
-cheap AliExpress part. Two were looked at and not taken:
+Not started: no RP2350 board is on hand or ordered. Raw-register scripts write RP2040
+peripheral addresses (`0x40050000` is `PLL_SYS` on the RP2350). Before such a board runs
+any of them, add a chip check to each (`lockin_amplifier`, `frequency_counter`,
+`signal_generator_r2r`, `trace_node.py`) and audit `Pin.PULL_DOWN` uses against erratum E9.
+Facts in `kb/rp2350_notes.md`.
 
-- **`THERMOAMP`** (a K-thermocouple interface; MAX6675 module plus probe):
-  graph node, cheap, Pico SPI. Held back because the MAX6675 data sheet could
-  not be fetched on 2026-10-17 (analog.com and the Maxim mirror timed out, the
-  index mirrors gave only the first page); a part isn't listed from recall.
-  Fetch it first (the Rev. 2 PDF from radiolocman or alldatasheet through a
-  browser-like fetch, or the user's download), then design. Resolution is
-  0.25°C and the range 0–1024°C, so it suits hot parts, not calorimetry
+### Next design pass — what to pick and why (2026-10-19)
+
+Queue state 2026-10-19: eleven on-hand builds, nothing en route, no purchase pending.
+The user rejects buying cheap AliExpress modules whose shipping makes them cost more than
+their listing (they want builds from parts on hand where a software route exists), so the
+2026-10-17 `TESTSIG` plan around an AD9833 module became `signal_generator_r2r`, a software
+DDS on an R-2R ladder. A purchase therefore comes only from a design that cannot be made
+from stock; none of the candidates below needs one. Two bought-part ideas looked at and
+left:
+
+- **`THERMOAMP`** (a K-thermocouple interface; MAX6675 module plus probe): graph node, cheap,
+  Pico SPI. Held back because its data sheet could not be fetched on 2026-10-17 (a part isn't
+  listed from recall), and because a module of that price carries the same shipping problem.
+  Resolution is 0.25°C and the range 0–1024°C, so it suits hot parts, not calorimetry
   (`MF52AT` thermistors are finer near room temperature).
-- **A load-cell front end (HX711 + load cell)** for a direct force readout:
-  not on the dependency graph, so it needs a graph decision before a design.
+- **A load-cell front end (HX711 + load cell)**: not on the dependency graph, so it needs a
+  graph decision before a design.
 
 Candidates already on this file, none blocked on a decision:
 
@@ -228,17 +233,21 @@ strength of a netlist alone.
 
 ## Completed (moved out)
 
-- **2026-10-17**: `measurement_tools/signal_generator_ad9833/` (`TESTSIG`)
-  designed from the AD9833 data sheet (Rev. E): driver, DMA capture and
-  waveform analysis, a model of the chip's registers, `smoke_test.py` green.
-  The pass caught two faults before the bench: the ADC FIFO holds 12-bit counts
-  (the first scale used 16-bit), and the capture's first samples are not clean
-  and must be skipped; a hardware run on the lock-in rig's `GP28` also showed
-  that sampling a 5kΩ node at 100kSa/s adds 170mV of noise, so the capture is
-  for low-impedance sources only (written into the README). Also written this
-  pass: `kb/rp2040_performance_notes.md` (the user's throughput brief plus ADC
-  DMA measurements), `kb/inventory_storage_notes.md`, `diagnose_demod.py` and
-  `trace_node.py` for the lock-in.
+- **2026-10-19**: `measurement_tools/signal_generator_r2r/` (`TESTSIG`): a software DDS,
+  PIO + two chained DMA channels playing a sine table to an 8-bit R-2R ladder (1kΩ/2kΩ)
+  and an LM358P buffer, calibrated against the Pico's ADC. Built after the user rejected
+  the AD9833-module plan (cost with shipping); every part is on hand. Checked on a Pico:
+  `loopback_test.py` reads the output pins back through a second PIO state machine and DMA
+  and matched the table exactly at 2.0 to 62.5MS/s (256-byte table), 31.3 and 62.5MS/s
+  (32-byte table, a DMA hand-off every 8 words, a 1.95MHz sine) and with the 4096-byte
+  table a 1kHz sine uses; an altered sample is caught (negative control). The RP2040
+  datasheet corrected my first design: a DMA channel can't chain to itself, so two channels
+  chain to each other. Real hardware also found what the host tests couldn't: MicroPython
+  `int` has no `bit_length()` and `bytes` no stepped slices. Simulation: with 5% resistors the
+  sine's distortion falls from −39dB to −57dB (the 8-bit floor) once calibrated; the Python
+  ladder model agrees with ngspice to under 0.01mV. Not run: the analog side. Also written
+  this pass: `diagnose_levels.py` and `diagnose_demod.py` for the lock-in, `kb/rp2350_notes.md`,
+  `kb/inventory_storage_notes.md` and `kb/rp2040_performance_notes.md`.
 
 - **2026-10-02**: five circuits designed, simulated, smoke-tested and
   documented, all `main.py` files compiled under MicroPython on the Pico and

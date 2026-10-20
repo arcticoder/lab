@@ -129,7 +129,7 @@ python signal_conditioning/lockin_amplifier/smoke_test.py
 python signal_conditioning/optical_shadow_readout/smoke_test.py
 python signal_conditioning/hall_amplifier/smoke_test.py
 python measurement_tools/frequency_counter/smoke_test.py
-python measurement_tools/signal_generator_ad9833/smoke_test.py
+python measurement_tools/signal_generator_r2r/smoke_test.py
 python safety/overvoltage_monitor/smoke_test.py
 ```
 
@@ -211,7 +211,7 @@ sequence this drives.
 | `signal_conditioning/optical_shadow_readout/` | Modulated LED + PT334-6C + TIA read through the lock-in's demodulator: how much light gets past a flag, with ambient light and lamp flicker rejected | tier5 `FORCEBAL`'s optical readout (designed 2026-10-02; every part on hand; builds on `lockin_amplifier`) |
 | `signal_conditioning/hall_amplifier/` | SS49E/49E linear Hall sensor + LM358 difference amplifier with a trimpot null, 9.2mV per gauss about 0.94V | tier5 `HALLAMP` (designed 2026-10-02; sensors on hand) |
 | `measurement_tools/frequency_counter/` | Pico PWM-slice hardware edge counter, auto-ranged by a software gate; digital path (10kΩ + 1N5817 clamps) and an LM358 Schmitt path for sensor outputs | tier2 `FREQC` and bootstrap `SIMPLECNT` (designed 2026-10-02; every part on hand) |
-| `measurement_tools/signal_generator_ad9833/` | AD9833 DDS module driven by the Pico over SPI (sine/triangle/square, 0.1Hz–12.5MHz); the Pico's ADC reads OUT by DMA and checks amplitude, shape and the module's real clock | `TESTSIG` (designed 2026-10-17 from the data sheet; one module to order) |
+| `measurement_tools/signal_generator_r2r/` | Software DDS: PIO + two chained DMA channels play a sine table to an 8-bit R-2R ladder (1kΩ/2kΩ) on GP0..GP7, LM358P buffer; the Pico calibrates the ladder against its own ADC | `TESTSIG` (designed 2026-10-19; PIO/DMA half verified on a Pico, ladder not yet built; every part on hand) |
 | `safety/overvoltage_monitor/` | TL431A reference + LM358 comparator with hysteresis, trimpot trip point 1.5–8.8V, LED and a `TRIP` line for the Pico | safety `OVERVOLT` (designed 2026-10-02; every part on hand; first use of the TL431A batch) |
 Each of these (except `psu_medlow_lm317`, a kit with no netlist
 of its own — see its own README) has a SPICE netlist, a generated
