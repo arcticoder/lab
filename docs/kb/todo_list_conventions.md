@@ -1044,6 +1044,17 @@ the date is on the order page, which the session can't see, so the bullet
 says to check it. After that `CHGAMP` (criteria 2+3), `ACCELIF` (criterion 1,
 `VIBISO`), `hall_amplifier`, `vibration_driver` (criterion 1,
 `RIPPLETANK`), `overvoltage_monitor`, `frequency_counter`. The second
-800-point breadboard means items 3 onward don't tear down the lock-in, which
+second 830-point breadboard means items 3 onward don't tear down the lock-in, which
 the list says. `VIBISO`/`RIPPLETANK` stay "Blocked", now waiting on a build
 instead of a shipment (section renamed "Blocked — waiting on another item").
+
+## Correction 2026-10-19: no module purchase for the function generator
+
+The 2026-10-17 pass above listed an AD9833 module as the "Next order". The user rejected it:
+cheap AliExpress modules are not cheap once shipping is counted, and a software DDS on an
+R-2R ladder (PIO + DMA, resistors and an LM358 on hand) does the job. The AD9833 folder, its
+`orders.md` and `parts_reference.md` entries were deleted (the dropped-path rule). "Next order"
+now says nothing is needed and offers one optional board; the TODO's ranking added the
+header-soldering and Zero-flash step ahead of the ADS1115. Lesson: before listing a part for
+a cart, ask whether a software or on-hand route exists, especially for a part whose price is
+mostly shipping.

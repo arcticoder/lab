@@ -157,7 +157,7 @@ graph TD
         PRECBOX["Precision Decade Box"]
         LOADBANK["Resistive Load Bank"]
         NOISEGEN["Precision Noise Source"]
-        %% status: designed 2026-10-17 (measurement_tools/signal_generator_ad9833/, AD9833 module); module not yet ordered
+        %% status: designed 2026-10-19 (measurement_tools/signal_generator_r2r/, PIO+DMA R-2R DDS); digital half verified on a Pico, ladder not built, every part on hand
         TESTSIG["Calibrated Test Signal Generator"]
         THERMOAMP["Thermocouple Amplifier"]
     end

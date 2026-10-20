@@ -22,13 +22,23 @@ matching, so don't assume one file makes the other redundant.
 
 - **Both October AliExpress orders arrived** (2026-10-02: leaded piezo discs
   ×10, 49E ×10, SS49E ×5, ADS1115 ×1, coin motors ×10; 2026-10-05: solder
-  wick, N42 magnets ×10, RP2040-Zero, 800-point breadboard). Their blocked
+  wick, N42 magnets ×10, RP2040-Zero, second 830-point breadboard). Their blocked
   bullets (`ACCELIF`, `CHGAMP`, `hall_amplifier`, `adc_ads1115`,
   `vibration_driver`) moved to "Ready to build now".
 - **`lockin_amplifier` gain error diagnosed** (not yet fixed): the `Rbias`
   slot holds a 10kΩ. The fix and rerun stay in `TODO-arcticoder.md` item 1.
 - Jump wires and Dupont jumpers dropped from the inventory; storage bags
   assigned in `inventory.md`.
+
+## 2026-10-19
+
+- **`lockin_amplifier`'s `Rbias` fixed**: `resistance_measurement` read the slot's
+  part at 10.15kΩ; a 1kΩ now sits there and `trace_node.py` reads the design values.
+  The run still fails on a separate fault (the mid-rail reference at 0V after the board
+  fell), which stays in `TODO-arcticoder.md` item 1.
+- Inventory corrected from the user's notes: no `10K / 1K` bag, an `INDUCTORS` bag,
+  both breadboards 830-point, the RP2040-Zero in the Microcontroller table, the
+  cancelled-order section removed, `psu_4xaa` disassembled (all five AA holders back).
 
 ## 2026-10-02
 

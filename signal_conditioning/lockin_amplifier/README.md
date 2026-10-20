@@ -27,12 +27,14 @@ and breaks the ratio checks. A duty sweep of the in-phase test pulse (2% to
 50%) grew X from 68mV to 1.26V, so the signal path is live. `diagnose_gain.py`
 read 15–20mV at the `SIG` end of the test signal (3.3mV expected), and the
 `trace_node.py` DC steps (31.7mV from `GP8` where 3.3mV is expected) put the
-cause at the part in the `Rbias` position: it holds `SIG` through about 9.7kΩ,
-so it is a 10kΩ, not a 1kΩ. Simulating the netlist with a 10kΩ `Rbias` gives
-X = +1.057V, against the 1.08V measured. Replacing it with a 1kΩ is the fix
-(`breadboard.md` § "The `GP28` row and `Rbias`"). On 2026-10-17 `main.py`
-also showed `VB` stuck at 1.1715V in every state, a second fault in the `S2`
-path that `diagnose_demod.py` isolates; it was not there on 2026-10-05.
+cause at the part in the `Rbias` position: it holds `SIG` through about 9.7kΩ.
+Reading it on `resistance_measurement` gave 10.15kΩ; replaced with a 1kΩ on
+2026-10-19, after which `trace_node.py` reads 3.23, 3.34 and 6.52mV (design
+3.3, 3.3, 6.6) and the 1kHz step 3.28mV. Simulating the netlist with a 10kΩ
+`Rbias` had given X = +1.057V, against the 1.08V measured on 2026-10-05.
+**The run still does not pass:** the board fell off a shelf and dislodged `S2`'s
+pins; after re-seating them both averagers read about 0.025V, a mid-rail
+reference at 0V. `diagnose_levels.py` and the table in `breadboard.md` find it.
 
 ---
 
@@ -42,7 +44,8 @@ path that `diagnose_demod.py` isolates; it was not there on 2026-10-05.
 |------|---------|
 | `lockin_amplifier.spice` | ngspice transient netlist of the whole signal path, with case parameters the smoke test rewrites |
 | `diagnose_gain.py` | One-jumper probe: reads the 1kHz ripple on SIG or OUT1 through GP28 to say whether the source side or the gain stage is too hot (`mpremote mount . run diagnose_gain.py`) |
-| `trace_node.py` | Measures the node on the `GP28` jumper: DC steps from `GP8`/`GP9`/`GP6` (3.3V × holding resistance / 1MΩ, so on `SIG` it reads `Rbias`), the ~1kHz step, and pull-up/down. Put the jumper on row 49 (`SIG`) (`mpremote run trace_node.py`) |
+| `trace_node.py` | Measures the node on the `GP28` jumper: DC steps from `GP8`/`GP9`/`GP6` (3.3V × holding resistance / 1MΩ, so on `SIG` it reads `Rbias`), the ~1kHz step, and pull-up/down. Put the jumper on row 49, column j (`SIG`) (`mpremote run trace_node.py`) |
+| `diagnose_levels.py` | DC power walk: reads the `GP28` jumper's row, A and B and says ground / Vmid / 3.3V rail (`mpremote run diagnose_levels.py`) |
 | `diagnose_demod.py` | Says whether each averager (A, B) moves between in-phase and anti-phase signal, to find a dead demodulator path (`mpremote mount . run diagnose_demod.py`) |
 | `smoke_test.py` | Seven simulated bench states plus a DC-offset case, then `main.py` against a mocked `machine` (register values, pin release, decision logic) |
 | `main.py` | MicroPython: generates the clocks, test signal and interferer, reads both outputs, prints a table and PASS/FAIL lines (about 15s) |

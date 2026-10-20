@@ -108,3 +108,13 @@ the folded-ripple technique and `mpremote mount . run` for importing a
 circuit's own `main.py` into a diagnostic. The session didn't touch any pin
 the circuit doesn't already drive in `main.py`.
 
+## Two boards, and the rig not being attached (2026-10-19)
+
+When the RP2040-Zero is also attached, plain `mpremote run` picks the first board it finds.
+Name the board: `mpremote devs` lists serial numbers and `mpremote connect id:<serial> ...`
+selects one. On 2026-10-19 the session started with `mpremote: no device found` and
+`usbipd.exe list` showing no `2e8a` device at all: the user had not plugged the rig in. Check
+`usbipd.exe list` first; if the Pico isn't in it, it's unplugged, not a WSL problem. The user
+plugged it in mid-session and `mpremote devs` listed `/dev/ttyACM0` at once (no attach step
+was needed that time).
+

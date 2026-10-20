@@ -33,6 +33,22 @@ worn, check its orientation with the forward-drop check in
 `ALRT` stays unconnected. Most modules carry I2C pull-ups; if the scan is empty,
 add 5.1kΩ from SDA and from SCL to 3V3.
 
+## On the RP2040-Zero instead of the Pico
+
+Nothing in `main.py` changes: it uses GP4 (`SDA`), GP5 (`SCL`) and GP26 (ADC), and
+the Zero has all three on its header. Wire by silkscreen name:
+
+| Pico table above | RP2040-Zero |
+|------------------|-------------|
+| `3V3(OUT)` (pin 36) | `3V3` |
+| GND (pin 38) | `GND` |
+| GP4 (pin 6), GP5 (pin 7), GP26 (pin 31) | `GP4`, `GP5`, `GP26` |
+
+The module's headers and the Zero's headers must be soldered first, and the Zero
+needs MicroPython flashed once ([parts_reference.md](../../docs/parts_reference.md#rp2040-zero),
+"First power-up"). With two boards attached, pick one: `mpremote connect id:<serial> run main.py`
+(`mpremote devs` lists the serial numbers).
+
 ## Run
 
 ```bash

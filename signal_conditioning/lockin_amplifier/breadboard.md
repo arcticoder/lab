@@ -198,26 +198,61 @@ by about 9.7kΩ. The part in the `Rbias` position is a 10kΩ. The kit's 1kΩ and
 for this pair; the resistance jig can. This also confirms `Cin` and `Rin` are connected and the gain
 stage's DC behaviour is as designed; the `GP8`, `GP9` and `GP6` resistors are right.
 
-### Fix
+Row map of the 2026-10-19 build (from the user): the `SIG` row is row 49 on
+both halves of the board (left and right joined by a jumper across the centre
+channel). `GP8` goes to 51-a, labelled `GP8` on the left; a 1MΩ runs from 51-d to
+49-c, so that resistor's far lead is on the `SIG` row (not `VMO`). The `GP28`
+jumper goes in 49-j.
 
-1. Pull `Rbias` (row 49 to `VMO`). Read it with
-   `measurement_tools/resistance_measurement` (10kΩ expected, which confirms
-   the diagnosis) and put a 1kΩ in its place, checking the fourth band.
-2. `mpremote run trace_node.py` with the jumper on row 49: the DC steps should
-   read 3.3, 3.3 and 6.6mV and the 1kHz step about 3.0mV.
-3. Move the jumper off `GP28`, then `mpremote run main.py`.
+### Fix (done 2026-10-19)
 
-### `B` does not respond (seen 2026-10-17)
+1. The `Rbias` slot read 10.15kΩ on `measurement_tools/resistance_measurement`
+   (10kΩ reference). It was replaced with a 1kΩ.
+2. `mpremote run trace_node.py` with the jumper on row 49, column j now reads
+   DC steps of 3.23, 3.34 and 6.52mV (design 3.3, 3.3 and 6.6mV) and a 1kHz step
+   of 3.28mV (design 3.0–3.3mV): the source side is right.
+3. Pull the `GP28` jumper, then `mpremote run main.py`.
 
-`main.py` read `VB` 1.1715V in all seven states while `VA` moved by hundreds of
-mV, and closing `S2` alone left `B` unchanged. That is a second fault, in the `S2`
-path, and it was not there on 2026-10-05 (both nodes moved then). After step 3
-above, if `VB` is still flat:
+### After the fix: levels on 2026-10-19
 
-1. `mpremote mount . run diagnose_demod.py`: `A` should show `[PASS]` and `B`
-   `[FAIL]` (a swing under 30mV between in phase and anti phase).
+The board fell off its shelf between the fix and the first `main.py`: `VA`
+0.98V and `VB` 0.73V at `floor` and every ratio check failing, and
+`diagnose_demod.py` showed neither averager moving with the signal (−7.0mV
+and −2.8mV, the same direction). Re-seating the dislodged `S2` pins changed
+the picture, not for the better: `VA` and `VB` both read about 0.025V at
+`floor` (the LM358 output-low floor is about 0.02V), `X0` is +3.9mV, and the
+in-phase, quadrature and interferer states move `VA`/`VB` by tens of mV
+upward only. That pattern is a mid-rail reference that has dropped to 0V:
+`U1A`'s + input at 0V puts `OUT1` at its floor, the demodulator passes only
+the upward half of the signal, and the followers sit at their floor.
+
+Walk the levels with `mpremote run diagnose_levels.py`, `GP28` on each row in
+turn:
+
+| `GP28` on | Expected | If it reads 0V |
+|-----------|----------|----------------|
+| `+` rail | 3.3V | `3V3(OUT)` jumper to the rail came out when the board fell |
+| `VMR` | 1.115V | `Rm1` (10kΩ from the + rail) open, or its leg dislodged |
+| `VMO` | 1.115V | `U1` pin 5 not on `VMR`, `U1` pin 7 not on `VMO`, or pin 8 / pin 4 not on the rails |
+| `INN` | 1.115V | `U1A` in saturation: `Rf` or `Rin` leg dislodged, or `U1` pin 3 not on `VMO` |
+| `OUT1` | 1.115V (no signal) | `U1` pin 1 not on `OUT1`, `Rl1` to the wrong rail |
+| `U2` pin 8, `S1`/`S2` pin 14 | 3.3V | that chip's supply leg dislodged |
+| `U2` pin 4, `S1`/`S2` pin 7 | 0V | (0V is the right reading here) |
+
+The first row that disagrees is the fault. When every level matches, run
+`mpremote mount . run diagnose_demod.py` again: `A` and `B` should each swing
+at least 30mV in opposite directions between in phase and anti phase.
+
+### `B` does not respond (seen 2026-10-17, explained 2026-10-19)
+
+`main.py` read `VB` 1.1715V in all seven states while `VA` moved by hundreds
+of mV; closing `S2` alone left `B` unchanged. The board had since fallen and
+the `S2` pins were found dislodged, so that was a loose contact on the `S2`
+side, as the 2026-10-05 first-run oddity probably was. If `VB` goes flat again:
+
+1. `mpremote mount . run diagnose_demod.py`: `A` `[PASS]`, `B` `[FAIL]`.
 2. Swap `S1` and `S2` (the two CD4066B chips, nothing else). If `B` now
    responds and `A` does not, the chip's switch 1 is bad: use another chip.
-   If `B` still does not respond, the fault is in the wiring on that side:
-   `GP11` to `S2` pin 13, `S2` pin 1 on `OUT1`, `S2` pin 2 to `Rb`, `Rb` to `B`,
-   `Cb`'s lead, and `U2` pins 5, 6 and 7.
+   If `B` still does not respond, the wiring on that side: `GP11` to `S2`
+   pin 13, `S2` pin 1 on `OUT1`, `S2` pin 2 to `Rb`, `Rb` to `B`, `Cb`'s lead,
+   and `U2` pins 5, 6 and 7.

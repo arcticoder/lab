@@ -89,3 +89,35 @@ the loop can't give, reach for DMA or PIO before reaching for C.
   loop; with a `ticks_us()` call per sample (as `diagnose_gain.py` does) it is
   30–40kSa/s.
 - Not measured: PIO programs, core 1, fixed-point filters.
+
+## Measured here, 2026-10-19: PIO + DMA from MicroPython (`signal_generator_r2r`)
+
+The user's brief said MicroPython isn't covered and PIO/DMA is hard to reach from it. It isn't:
+`rp2.StateMachine`, `@rp2.asm_pio` and `rp2.DMA` did the whole job, and the result matched a
+byte-exact check at every rate tried. What was measured and learned:
+
+- **Endless table playback = two DMA channels chaining to each other.** RP2040 datasheet
+  §2.5.2: "A channel can not chain to itself." Each channel reads one table period through a
+  ring (`ring_size` = log2 of the table bytes, `ring_sel=0`) so its read pointer is back at the
+  start when it finishes; `TRANS_COUNT` reloads on each trigger. `chain_to=other.channel`
+  works in this MicroPython (the attribute exists).
+- **The ring needs the table aligned to its own size.** A `bytearray` isn't; allocate twice
+  the size and use the aligned half (`uctypes.addressof` gives the address).
+- **PIO output at one byte per clock**: `out(pins, 8)` with autopull at 32 bits, shift right.
+  DMA fed it at 62.5MS/s (15.6M words/s) with no mismatches over 2048-sample captures, with a
+  hand-off between channels every 8 words (32-byte table at 62.5MS/s, 1.95MHz sine). The rate
+  is set by the state machine's clock divider register (`0x50200C8` for SM0:
+  INT in 31:16, FRAC in 15:8), a single write, glitch-free for a frequency change.
+- **Byte-exact self-test without an instrument**: a second state machine on the same PIO
+  (`in_(pins, 8)`, autopush at 32 bits, shift right) reads the output pins back at twice
+  the output rate into RAM by DMA (`RXF1` at `0x50200024`, DREQ 5); the capture must repeat
+  the table exactly. A table with one altered sample gives one mismatch per period, so the
+  check can fail. Output rates above half the system clock can't be oversampled.
+- **After `stop()` re-init the state machine.** Reconfiguring the pins as plain outputs
+  (to park them) detaches them from the PIO; `sm.init(...)` on the next start gives them back.
+- **MicroPython gaps that host tests hide**: `int.bit_length()` is missing; `bytes` and
+  `bytearray` don't take stepped slices (`b[0::2]`); a quarter-wave table build (4096 bytes)
+  takes 190ms, and 680ms through the nearest-level search.
+- Float math on the Pico: a Goertzel distortion estimate over 4000 samples and 8
+  harmonics takes 1.2s. Fine for a bench check, not for a loop.
+

@@ -9,23 +9,6 @@ one exists.
 
 ---
 
-## AD9833 DDS signal generator module
-
-Not yet ordered (candidates in [orders.md](orders.md#ad9833-dds-signal-generator-module-testsig)).
-Chip facts from the Analog Devices data sheet, Rev. E (read 2026-10-17 from a
-mirror; the analog.com server did not answer): 28-bit phase accumulator,
-`f = word × MCLK / 2²⁸`, output 0 to MCLK/2 (12.5MHz at 25MHz); 10-bit DAC;
-VDD 2.3V to 5.5V (below 2.7V `CAP/2.5V` is tied to VDD); 4.5mA typical; sine,
-triangle, or the DAC's MSB as a square wave; VOUT 38mV to 650mV, typically 0.6V
-p-p, through an on-chip 200Ω; SPI-style write, SCLK up to 40MHz, SCLK high when
-FSYNC falls, data taken on the falling edge. Control register (D15 D14 = 00):
-D13 B28, D12 HLB, D11 FSELECT, D10 PSELECT, D8 RESET, D7 SLEEP1, D6 SLEEP12,
-D5 OPBITEN, D3 DIV2, D1 MODE. Frequency registers are addressed by D15 D14 =
-01 (FREQ0) or 10 (FREQ1), phase registers by 110/111. THD −56 to −66dBc,
-wideband SFDR −60dBc. The module's own parts (oscillator frequency, header
-order, any added output stage) are not on the data sheet and must be read off
-the board on arrival.
-
 ## Breadboard variants on hand
 
 | Type | Tie points | Size | Source |
@@ -34,7 +17,7 @@ the board on arrival.
 | SYB-170 (received, 2-pack) | 170 | same as above | second listing, separate order; received 2026-08-24 |
 | MB-102 (received) | 400 (300 terminal-strip + 100 distribution-bar) | 8.5 × 5.5 × 1.0cm | [manual](manuals/400-tie-points-solderless-breadboard-_mb-102_-for-diy-electronics.md); received 2026-08-24 |
 | Full breadboard (existing inventory) | 830 | — | SunFounder Thales kit, see `inventory.md` |
-| Full breadboard, 800-point | 800 | — | second full-size board; ordered 2026-10-05, arrived by 2026-10-17 (listing not recorded) |
+| Full breadboard, 830-point (second) | 830 | — | second full-size board; ordered 2026-10-05 as "800-point" (listing not recorded), arrived by 2026-10-17 and is 830-point like the first |
 
 MB-102 terminal strips: rows labeled a–e and f–j are connected horizontally
 within a row, split by the center DIP channel. Distribution bars (side
@@ -855,9 +838,27 @@ Differences from the Pico that matter to this repo's scripts:
 | `ADC_VREF` pin (planned `REFGEN2`) | Not broken out, so an external ADC reference can't be fitted |
 | Breadboard width | Narrower than the Pico (18mm against 21mm), so it leaves more free holes on each side of the channel |
 
-Firmware: the Pico's MicroPython UF2 should run on it (same RP2040 and
-flash size); hold BOOT while plugging in to get the drive. Needs a USB-C
-data cable; the Pico on hand uses micro-USB.
+### First power-up
+
+Headers and a USB-C data cable arrived (headers not yet soldered). Steps:
+
+1. Solder the header pins (long side down into a breadboard to hold them square,
+   the board on top, one pad at a time; the solder wick clears a bridge).
+2. Hold `BOOT`, plug in the USB-C cable, release: a drive named `RPI-RP2` appears in
+   Windows. Copy `RPI_PICO-20251209-v1.27.0.uf2` onto it (the same MicroPython
+   build the Pico on the bench runs, from
+   `https://micropython.org/resources/firmware/RPI_PICO-20251209-v1.27.0.uf2`; the
+   board also works with micropython.org's `WAVESHARE_RP2040_ZERO` build). It
+   reboots by itself.
+3. Attach it to WSL: `usbipd.exe list`, then `usbipd.exe attach --wsl --busid <id>`
+   (`bind` once, from an administrator shell, if it says "not shared").
+4. `mpremote devs` lists it (`2e8a:0005`). Check the chip with
+   `mpremote connect id:<serial> exec "import sys; print(sys.implementation)"`.
+5. `mpremote connect id:<serial> mount . run loopback_test.py` in
+   `measurement_tools/signal_generator_r2r/` is a no-wiring self-test of its PIO and DMA.
+
+With the Pico and the Zero both attached, always name the board:
+`mpremote connect id:<serial> ...`; plain `mpremote run` picks the first it finds.
 
 ## Neodymium disc magnets, N42 D6×3mm (2026-10-05 order)
 

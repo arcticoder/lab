@@ -14,44 +14,45 @@ requiring `lab/` to be cloned alongside it — see
 
 ## Storage — which bag holds what
 
-Parts live in twelve labelled bags. Assignments below come from the earlier
-chat-session notes (items placed then) plus placements for everything that
-arrived since (marked **new**); the placement rule for future arrivals is
-in `kb/inventory_storage_notes.md`. When a part moves, change it here.
+Parts live in labelled bags. The assignments come from the earlier chat-session
+notes plus the user's corrections of 2026-10-17; the placement rule for future
+arrivals is in `kb/inventory_storage_notes.md`. When a part moves, change it
+here.
 
 | Bag | Holds |
 |-----|-------|
 | `LEDS` | Red, blue, green, white, yellow LEDs (10 each), RGB LED, 7-segment display, WS2812 8-LED strip (the last two are placements I chose) |
-| `10R-330R` | 10Ω, 100Ω, 220Ω, 330Ω (10 each); the 1W metal-film 0.1Ω and 1Ω (20 each) in their own baggie inside it |
-| `1K-5.1K` | 1kΩ, 2kΩ, 5.1kΩ (10 each) |
-| `10K-1M` | 10kΩ, 100kΩ, 1MΩ (10 each); the 3296 10kΩ trimmers (10); the kit potentiometer |
-| `10K / 1K` | Contents not recorded in the chat notes; say what it holds and this row gets filled in |
+| `RESISTORS` | Three sub-bags: `10ohm-330ohm` (10Ω, 100Ω, 220Ω, 330Ω, 10 each; the 1W metal-film 0.1Ω and 1Ω in their own baggie), `1K-5.1K` (1kΩ, 2kΩ, 5.1kΩ), `10K-1M` (10kΩ, 100kΩ, 1MΩ; the 3296 10kΩ trimmers; the kit potentiometer) |
 | `TRANSISTORS / CAPACITORS` | **Transistor sub-bag:** S8050 ×2, S8550 ×2, IRLZ44N, TL431A ×5. **Capacitor sub-bags, by value range:** the 10nF and 100nF kit capacitors, the 300-piece ceramic assortment, the 120-piece electrolytic kit |
-| `ICs & LCDs` | NE555 ×10, LM358P ×10, CD4066BCN ×10, TL082 ×10, SN74HC86N, 74HC595, I2C LCD 1602, Raspberry Pi Pico when stored; **new:** ADS1115 module, RP2040-Zero |
-| `SWITCHES / SENSORS` | Slide switches ×5, push buttons ×10, tilt switch, LDR ×2, the old NTC (suspect), MF52AT ×10, PIR, KY-003, GY-521, PT334-6C ×10, bare piezo discs ×19; **new:** leaded piezo discs ×10 (own baggie), 49E ×10 and SS49E ×5 (a baggie each, labelled) |
+| `ICs & LCDs` | NE555 ×10, LM358P ×10, CD4066BCN ×10, TL082 ×10, SN74HC86N, 74HC595, I2C LCD 1602, Raspberry Pi Pico when stored, ADS1115 module, RP2040-Zero |
+| `SWITCHES / SENSORS` | Slide switches ×5, push buttons ×10, tilt switch, LDR ×2, the old NTC (suspect), MF52AT ×10, PIR, KY-003, GY-521, PT334-6C ×10, bare piezo discs ×19, leaded piezo discs ×10, 49E ×10 and SS49E ×5 |
 | `PROTECTION` | RXEF005 ×20, RXEF050 ×20, 1N5817 ×20, glass fuses ×10, panel fuse holder |
-| `BATTERY HOLDERS` | 1×AA holders ×5 (four are in `psu_4xaa` while it is built) |
-| `BREADBOARDS` | 830-point, MB-102 400-point, SYB-170 ×3; **new:** 800-point |
-| `MISC` | CY7C68013A (SCOPELA) board, inductor assortment, 9G servo, passive and active buzzers, USB-C test board; **new:** coin vibration motors ×10, N42 magnets ×10 (own baggie) |
+| `BATTERY HOLDERS` | 1×AA holders ×5 (all five; `psu_4xaa` is disassembled) |
+| `BREADBOARDS` | Both 830-point boards, MB-102 400-point, SYB-170 ×3 |
+| `INDUCTORS` | The inductor assortment (too big for `MISC`) |
+| `MISC` | CY7C68013A (SCOPELA) board, 9G servo, passive and active buzzers, USB-C test board, coin vibration motors ×10, N42 magnets ×10 (bubble-wrapped) |
 
 Not bagged: USB cables, the mains adapters, the soldering tools and the
 solder wick (kept with the iron).
 
-**Placement changes I suggest for what is already inventoried:**
+**Placement notes:**
 
-- **Split `10K / 1K`, or empty it into `1K-5.1K` and `10K-1M`.** It is the one
-  place the 1kΩ and 10kΩ share a bag, and those two look the same except for
-  one band (`brown black black brown brown` against `... red brown`). The
-  lock-in's `Rbias` slot held a 10kΩ on 2026-10-05.
-- **Keep the magnets out of `SWITCHES / SENSORS`**, with the Hall sensors, the
-  servo and the buzzers, so a loose magnet never sits against a sensor. They
-  go in `MISC` in their own baggie.
-- **Keep the 49E and SS49E in separate labelled baggies.** The SS49E listing
-  also sold latching types, and the TO-92 body looks like a transistor or the
-  TL431A; the top mark is the only way to tell them apart.
-- **The 1W 0.1Ω and 1Ω resistors get their own baggie** inside `10R-330R`, since
-  their bodies are the big ones and a low value pulled by mistake is hard to
-  notice.
+- **Magnets.** The 6×3mm N42 discs are kept bubble-wrapped in `MISC`, away from
+  the Hall sensors in `SWITCHES / SENSORS`. They can't damage the FX2LP board
+  next to them in `MISC`: nothing on it stores data magnetically (the firmware
+  loads from the host, the EEPROM is not a magnetic part), and a disc this size
+  is not strong enough to induce harmful currents by moving past it. The things
+  that do care are hard drives (the two drive enclosures on the bench), magnetic
+  stripe cards, and a Hall sensor whose reading will jump while a disc is near
+  it. Steel tweezers and screwdriver tips pick up a magnetized edge, which is
+  a nuisance, not damage.
+- **Look-alike parts get a baggie each, labelled**: 49E vs SS49E (the SS49E
+  listing also sold latching types, and the TO-92 body looks like a transistor
+  or the TL431A), the 1W 0.1Ω/1Ω resistors vs the quarter-watt ones, leaded vs
+  bare piezo. Already the case for the 1W resistors.
+- **1kΩ and 10kΩ differ in one colour band** (`brown black black brown brown`
+  against `... red brown`), and a 10kΩ was found in the lock-in's 1kΩ slot on
+  2026-10-05; `measurement_tools/resistance_measurement` is the arbiter.
 
 ---
 
@@ -72,10 +73,11 @@ solder wick (kept with the iron).
 
 All values below are the SunFounder Thales kit's standard **1/4W (0.25W)**
 axial resistors — the kit does not include any higher-wattage part. No
-value/quantity row here is individually rated ≥1W; a circuit needing more
-than ~0.2W of continuous dissipation at a given value needs a
-series/parallel network of these to spread the load, not a single
-higher-wattage part pulled from this table. See
+value/quantity row in this table is individually rated ≥1W. The 1W parts on
+hand are not from the kit: the 0.1Ω and 1Ω metal-film resistors listed under
+"Prototyping, Analog ICs & Test Equipment" below. A circuit needing more than
+~0.2W of continuous dissipation at another value needs a series/parallel
+network of these to spread the load. See
 `lab/measurement_tools/fuse_test_voltmeter/breadboard.md` for a worked
 example (RXEF050 tier's 10 Ω test load).
 
@@ -140,7 +142,7 @@ new build, rather than by eye alone.
 | Component              | Quantity | Notes                                                    |
 |--------------------------|----------|-------------------------------------------------------------|
 | Breadboard (full)      | 1        | 830-point                                                 |
-| Breadboard (full, 800-point) | 1  | Second full-size board, for builds that stay assembled; ordered 2026-10-05, arrived by 2026-10-17 |
+| Breadboard (full, second) | 1  | 830-point, the same as the first (ordered 2026-10-05 as "800-point"); for builds that stay assembled; arrived by 2026-10-17 |
 | Breadboard (mini SYB-170) | 1     | 170-point, black; from a 6-in-1 color pack (AliExpress). See `lab/docs/orders.md` / `lab/docs/parts_reference.md` for full specs |
 | Micro USB Cable        | 1        | For Pico power + data                                     |
 | Mini-USB Cable         | 1        | Acquired directly (non-AliExpress) 2026-09-24; removed from the AliExpress cart. Used with `SCOPELA`'s CY7C68013A board |
@@ -157,6 +159,7 @@ are on the bench.
 | Component              | Quantity | Notes                         |
 |------------------------|----------|-------------------------------|
 | Raspberry Pi Pico      | 1        | RP2040, no wireless           |
+| RP2040-Zero (USB-C, 18×23.5mm, castellated) | 1 | Ordered 2026-10-05, arrived by 2026-10-17. Headers came with it, not yet soldered. Second RP2040 for semi-permanent builds; see `parts_reference.md#rp2040-zero` for the pinout differences from the Pico |
 
 ---
 
@@ -174,7 +177,7 @@ For the `lab/` repo's spacetime research PSU tiers (`psu_ultralow`,
 | Lenovo 65W USB-C PD wall adapter        | 1        | On the bench; profiles per `lab/docs/general_purpose_circuit_dependency.md`'s `PSUMEDHIGH` node (20V/3.25A, 15V/3A, 9V/2A, 5V/2A). Outputs nothing above USB default without a PD sink board negotiating it — see the PD trigger board in `lab/docs/orders.md` |
 | DC barrel wall adapter, 12V/1A (label "PSU") | 1 | Read 2026-09-25: input 100–240V~ 50/60Hz 1.2A, output 12V DC 1A, positive centre, made 2007. Plugged into one of the two drive enclosures. Passes the voltage, polarity and current checks for `psu_medlow_lm317`'s SparkFun kit; the label doesn't print the plug size, so the barrel is confirmed only by the fit test when the kit arrives |
 | DC barrel wall adapter, 12V/1.2A (CS-1208200) | 1 | Read 2026-09-25: input 100–240V~ 1.5A max 50/60Hz, output 12V DC 1.2A, centre positive. Plugged into the other drive enclosure. Same result as the adapter above — passes on the label, plug size unconfirmed. Either one can feed the SparkFun kit; the other stays with its enclosure |
-| AA battery holder (1×AA, single-cell)  | 5        | 5 received 2026-08-21 (the only batch); 4 went into `psu_4xaa`, leaving 1 unused. Ready for direct use in `psu_ultralow_v1`/`psu_low_v2`. Confirmed-working temporary lead termination (2026-08-28, ahead of the wire stripper order arriving): twist a bare solid-core jump wire around each bare holder lead and wrap in electrical tape — no soldering/crimping needed. Treat as a stand-in until leads are stripped/soldered to Dupont connectors, not a wiring defect if seen on a breadboard. The fifth holder is spare stock — `psu_4xaa` is the largest series stack, and nothing on this bench runs two AA-cell supplies simultaneously (each build is disassembled after its own bench check, see `lab/docs/kb/circuit_lifecycle_and_repo_scope.md`). |
+| AA battery holder (1×AA, single-cell)  | 5        | 5 received 2026-08-21 (the only batch); 4 were used in `psu_4xaa` (since disassembled; all 5 are back in inventory). Ready for direct use in `psu_ultralow_v1`/`psu_low_v2`. Confirmed-working temporary lead termination (2026-08-28, ahead of the wire stripper order arriving): twist a bare solid-core jump wire around each bare holder lead and wrap in electrical tape — no soldering/crimping needed. Treat as a stand-in until leads are stripped/soldered to Dupont connectors, not a wiring defect if seen on a breadboard. All five are on hand: `psu_4xaa` is the largest series stack, and nothing on this bench runs two AA-cell supplies simultaneously (each build is disassembled after its own bench check, see `lab/docs/kb/circuit_lifecycle_and_repo_scope.md`). |
 
 ---
 
@@ -212,28 +215,15 @@ in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 | Piezo element, 12mm disc, with wire leads (variant "Wire-12mm-10PCS") | 10 | Ordered 2026-10-02, arrived by 2026-10-17; untested. Leaded, so `CHGAMP` needs no soldering to the disc. 5000pF ±30%, resonance 16.5kHz per the listing's 12mm table. For `lab/signal_conditioning/charge_amplifier/`. Keep apart from the 19 bare discs above. See `lab/docs/orders.md`. |
 | Linear Hall sensor 49E, TO-92 (variant "10pcs/lot 49E") | 10 | Ordered 2026-10-02, arrived by 2026-10-17. For `HALLAMP` (`lab/signal_conditioning/hall_amplifier/`). Top mark not yet checked. |
 | Linear Hall sensor SS49E, TO-92 (variant "SS49E", 5pcs) | 5 | Ordered 2026-10-02 as a replacement for the line above; both orders went through, so 15 in total, arrived by 2026-10-17. Listing bundles latching/switch part numbers: check each top mark before use. Keep apart from the 49E bag. |
-| ADS1115 16-bit ADC module (I2C) | 1 | Ordered 2026-10-02, arrived by 2026-10-17; untested. One unit only; a refund is the plan if it is a dud. For `lab/signal_conditioning/adc_ads1115/`. Whether its headers are soldered is not recorded. |
+| ADS1115 16-bit ADC module (I2C) | 1 | Ordered 2026-10-02, arrived by 2026-10-17; untested. One unit only; a refund is the plan if it is a dud. For `lab/signal_conditioning/adc_ads1115/`. Headers came with it, not yet soldered. |
 | Coin vibration motor, 3V, 10×2.7mm (variant "10Pcs 1027") | 10 | Ordered 2026-10-02, arrived by 2026-10-17; untested. Rated 3V, 80–90mA, stall 120mA max, starts at 2.3V. For `lab/oscillators/vibration_driver/`. |
 | Neodymium disc magnet, N42, D6×3mm, radially magnetized (variant "N42 NdFeB D6x3mm/10PCS") | 10 | Ordered 2026-10-05, arrived by 2026-10-17; strength untested. Poles on the curved sides, not the flat faces; for `HALLAMP`'s field source. |
-| RP2040-Zero board (USB-C, 18×23.5mm, castellated) | 1 | Ordered 2026-10-05, arrived by 2026-10-17. Whether headers are fitted is not recorded. A second RP2040 for semi-permanent builds; see `parts_reference.md#rp2040-zero` for the pinout differences from the Pico. |
 
 ---
 
 ## On Order (AliExpress)
 
 Nothing on order as of 2026-10-17: the 2026-10-02 and 2026-10-05 orders have arrived (their rows are in the tables above, dated). New rows go here first when an order is placed, with full specs/links/datasheets in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
-
----
-
-## Cancelled / needs replacement
-
-Ordered, then cancelled by the seller/platform before shipping (refund in
-progress, not a "received" or "on order" state — track replacement
-sourcing in [TODO-arcticoder.md](TODO-arcticoder.md)).
-
-| Component                                    | Quantity | Notes                                                           |
-|-----------------------------------------------|----------|--------------------------------------------------------------------|
-| Color-ring inductor assortment, 0307 1/4W (12 values, 1µH-1mH) | 120 | Ordered 2026-08-30; **cancelled by AliExpress 2026-09-07 (shipping issue)**, refund processed. **Reordered 2026-09-10** — see the "On Order" table above and `lab/docs/parts_reference.md#color-ring-inductor-assortment-0307-14w`. |
 
 ---
 

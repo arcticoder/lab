@@ -5,17 +5,24 @@ repo on 2026-10-17 (it had been done in a web chat). The bag map lives in
 `docs/inventory.md` § "Storage — which bag holds what"; this note is the rule
 for filling it in.
 
-## The twelve bags
+## The bags (corrected 2026-10-17)
 
-`MISC`, `SWITCHES / SENSORS`, `PROTECTION`, `10K / 1K`, `10K-1M`, `1K-5.1K`,
-`10R-330R`, `BATTERY HOLDERS`, `BREADBOARDS`, `ICs & LCDs`, `TRANSISTORS /
-CAPACITORS` (subdivided: capacitor sub-bags by value range, one transistor
-sub-bag), `LEDS`. The assignments the user had already made (from the chat
-history they pasted): NE555, TL082, SN74HC86N → `ICs & LCDs`; 3296 trimmers →
-`10K-1M`; TL431A, IRLZ44N → the transistor sub-bag; piezo discs, GY-521,
-KY-003, MF52AT → `SWITCHES / SENSORS`; CY7C68013A board and the inductor
-assortment → `MISC`. Everything else in the map is a placement chosen by
-function on 2026-10-17 and marked as such where it was a judgment call.
+`MISC`, `SWITCHES / SENSORS`, `PROTECTION`, `RESISTORS` (three sub-bags:
+`10K-1M`, `1K-5.1K`, `10ohm-330ohm`), `BATTERY HOLDERS`, `BREADBOARDS`,
+`ICs & LCDs`, `TRANSISTORS / CAPACITORS` (capacitor sub-bags by value range,
+one transistor sub-bag), `LEDS`, `INDUCTORS` (the assortment is too big for
+`MISC`). **There is no `10K / 1K` bag**: the pasted chat history listed one
+and I carried it into the first map; the user corrected it. Take bag lists
+from the user's current statement, not from an old chat export.
+
+The user's own assignments (chat history plus corrections): NE555, TL082,
+SN74HC86N → `ICs & LCDs`; 3296 trimmers → `10K-1M`; TL431A, IRLZ44N → the
+transistor sub-bag; piezo discs (bare and leaded), GY-521, KY-003, MF52AT,
+49E and SS49E → `SWITCHES / SENSORS`; ADS1115 module and RP2040-Zero →
+`ICs & LCDs`; coin motors and N42 magnets → `MISC`; CY7C68013A board → `MISC`;
+inductor assortment → `INDUCTORS`; new 830-point board → `BREADBOARDS`; 1W
+resistors already in their own baggie. Everything else was a placement I
+chose by function and marked as such.
 
 ## Placement rule for a new part
 
@@ -31,17 +38,15 @@ function on 2026-10-17 and marked as such where it was a judgment call.
 3. **Look-alike parts get a baggie each, labelled**: 49E vs SS49E (the SS49E
    listing also sold latching types), 1W 0.1Ω/1Ω vs quarter-watt resistors,
    leaded vs bare piezo.
-4. Mains adapters, cables and tools are not bagged.
+4. Mains adapters, cables and tools are not bagged. Tell the user, when it
+   matters, that magnets stay bubble-wrapped and away from the Hall sensors
+   and the drive enclosures (they can't hurt the FX2LP board).
 5. Add the bag in the same edit that moves the row from "On Order" to a
    received table, and record the date as "arrived by <date>" when the user
    reports a whole batch without per-item dates.
 
 ## Open
 
-- `10K / 1K`: the chat history doesn't say what it holds. It is the one bag
-  that mixes the two resistors that differ in a single colour band (`brown
-  black black brown brown` against `... red brown`); the lock-in's `Rbias`
-  slot held a 10kΩ, so the map suggests splitting it. Ask once, then fill in.
 - The capacitor sub-bag boundaries are not recorded; the map lists the
   capacitor families, not the sub-bags.
 
