@@ -273,6 +273,14 @@ every row above.
 
 ---
 
+## Force balance and fab-assembled instrument (`hardware/`)
+
+The plan, the gates and the status are in [docs/research_instrument_plan.md](docs/research_instrument_plan.md); the task list is
+`docs/TODO-agent.md` Part A. `hardware/balance/` holds the torsion balance (parametric CAD, analytic model, noise prediction check),
+`hardware/instrument/` the JLCPCB-assembled electronics (requirements, pin map, parts, analog simulations), and `hardware/README.md`
+how the toolchain (KiCad, SKiDL, CadQuery, Freerouting, the JLC parts snapshot) is set up.
+`python tools/force_noise_budget.py` prints the force-noise prediction; the CAD checks run with `~/.venvs/lab-hw/bin/python hardware/balance/smoke_test.py`.
+
 ## Repo structure
 
 ```

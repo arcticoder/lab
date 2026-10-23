@@ -56,6 +56,30 @@ ngspice; LTspice is optional), and manufacturing files exported for a fully
 assembled JLCPCB order. The result must be an instrument that can support a
 publishable (arXiv-level) experimental study, not a set of one-circuit boards.
 
+**Progress, 2026-10-22 (Sonnet 5.5 session; details in `docs/research_instrument_plan.md`):**
+- A0 done (scope note in `kb/circuit_lifecycle_and_repo_scope.md`, memory updated).
+- G1 proposed, awaiting the user's one-line confirmation. G2 done as a first cut: `hardware/balance/`
+  (parametric CadQuery model, analytic model, render, smoke test; mass, inertia and centre of mass solved
+  from the CAD; no collisions over the swing). G3 done: `tools/force_noise_budget.py` reproduces six
+  published numbers, predicts 0.11 nN (1σ, 1000 s, in air), conditional GO; air currents decide it (flips
+  at 4 mm/s fluctuation).
+- Findings that change this plan: **no permanent magnet on the arm** (an N42 disc is 7 nN/√Hz of field
+  noise; the damper magnets are fixed to the base) so the coil calibration below is replaced by
+  **electrostatic plates** (grounded through the strip, no lead, no moment), transferred to absolute force
+  with weights or wire riders; the readout (5 pN/√Hz) is far below the environment, so the electronics need
+  not be exotic. Lead current is limited by USB to about 0.4 A.
+- A4 toolchain done (KiCad 7 + venv with SKiDL, kiutils, easyeda2kicad, CadQuery; Freerouting 2.5.0; JLC parts
+  snapshot); the only gap is ERC/DRC from `kicad-cli` (KiCad 8+, user's sudo; `pcbnew` gives DRC in the venv).
+- A5 (prototype before layout) needs the user: the print, the materials order, the lock-in and optical readout.
+- WP1 (requirements, pin map, USB power budget), WP2 (48 JLC-stocked parts, all machine-placed SMT, 25 extended) and
+  WP3 (TIA, LED sink, device-current sink, plate driver in ngspice) are done: `hardware/instrument/`. WP3 caught an 8.6%
+  plate-driver overshoot and a wrong shunt value in the BOM. **Next: WP4 (schematic).** It needs: the Raspberry Pi RP2040
+  hardware design reference (fetch from datasheets.raspberrypi.com and follow it for the crystal, flash and USB), the ADS131A04's
+  pin table and input network (datasheet pages on AVSS/VNCP and the reference), symbols and footprints from `easyeda2kicad` by
+  LCSC number, and a SKiDL description with connectivity checks (every IC pin accounted for). KiCad 7 has no CLI ERC, so
+  ERC is either SKiDL's own plus a pin-table test or KiCad 9 if the user installs it. WP5 (layout) and WP7 (order) wait on A5
+  per the plan's own rule.
+
 **Hard constraints:**
 - **All electronic parts are SMT parts sourced and placed by JLCPCB** from its own
   library. The user does not mail parts to the fab, so the through-hole parts on
@@ -187,10 +211,10 @@ SMT sensor-head boards in the same order:
      ADXL355-class if needed) and optionally one on the beam.
   4. Temperature: 0603 NTCs or digital temperature sensors at the points G2/G3 name.
 - **Actuators and stimulus:**
-  1. Calibration-coil driver: a linear current source (op-amp + MOSFET + precision
-     shunt, DAC-set), bipolar if possible; the same driver can feed the Helmholtz
-     compensation if A2 adopts it. The coil itself (wound bobbin or ready-made) is a
-     sourcing decision for the user.
+  1. Electrostatic plate driver (replaces the coil: see the progress note): a DAC-set op-amp stage
+     on a boosted rail, 0 to about 24 V (2 µN with the G2 plates), reading its own output
+     through a divider into the ADC. Active magnetic compensation, if A2 adopts it, would use a
+     separate coil driver on the board, not on the arm.
   2. Disturbance injection: drivers for vibration actuators (the coin motors via a
      screw terminal, or a JLC-stocked SMD motor/buzzer if preferred) and a
      controllable heater (SMD resistor) for thermal-coupling tests.
@@ -257,7 +281,7 @@ SMT sensor-head boards in the same order:
       scripts that produce the G1 numbers (noise spectra, calibration, coupling
       coefficients with uncertainties).
 - [ ] WP9 — Bring-up and experiment procedures for the user, including the
-      calibration sequence from A2 and the measurement campaign (durations,
+      calibration sequence from A2 (electrostatic plates against weights or wire riders) and the measurement campaign (durations,
       repeats, conditions logged).
 - [ ] WP10 — The order: a "Next order" entry in `TODO-arcticoder.md` with the JLC
       upload steps and settings (the user gets the quote), plus off-board items

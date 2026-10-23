@@ -1,0 +1,31 @@
+led_sink: IR LED current sink, reference gated by an SPDT analog switch from the PIO
+* 3.3 V analog rail, IR26-21C (1.2 V at 20 mA, 940 nm), AO3400A sink (Ciss 630 pF, Crss 75 pF, Vth 1.45 V: JLC listing data),
+* sense resistor 51 ohm (1.02 V = 20 mA), reference switched between the DAC level and 0 V by an SN74LVC1G3157 (6 ohm on-resistance;
+* modelled as a behavioral selector plus that resistance, because ideal switches stall the transient solver).
+* Result (hardware/instrument/smoke_test.py): the op-amp drives the gate directly and is stable without compensation:
+* every Rg/Cc tried made the edge worse. The edge settles to 1% in under 0.5 us after a sub-microsecond gate-charge spike.
+.include oa.inc
+.param vdac=1.02
+.model led D(IS=5.6e-12 N=2 RS=3 CJO=20p)
+.model nmos NMOS(LEVEL=1 VTO=1.45 KP=20 LAMBDA=0.01)
+.options method=gear reltol=1e-3 abstol=1e-9 vntol=1e-5 itl4=200
+
+Vcca vcca 0 DC 3.3
+Vg   g 0 PULSE(0 3.3 20u 10n 10n 250u 500u)
+Bsel sel 0 V = V(g) > 1.65 ? {vdac} : 0
+Ron  sel ref 6
+Cref ref 0 10p
+Xu   ref fb gate vcca 0 oa_tlv9062
+Cgs  gate src 555p
+Cgd  gate dn 75p
+M1   dn gate src src nmos
+Dl   vcca dn led
+Rs   src 0 51
+Rfb  fb src 1
+
+.control
+tran 100n 1.1m
+wrdata led_tran.txt v(src) v(dn)
+quit
+.endc
+.end

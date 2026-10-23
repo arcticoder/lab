@@ -175,6 +175,24 @@ the fix is just the documentation-wording one in
 
 </details>
 
+## Scope change 2026-10-22: a fabricated research instrument
+
+The user now wants the repo to produce an instrument that can support a publishable
+experimental measurement, ordered as JLCPCB-assembled boards, not a set of one-circuit
+breadboard builds. What that changes and what it doesn't:
+
+- **Changes:** for the fabricated-instrument work (`docs/research_instrument_plan.md`,
+  `TODO-agent.md` Part A) ranking and design choices may use research value, and the
+  measurement goal (G1), a mechanical design with a model (G2) and a force-noise prediction
+  with a go/no-go (G3) come before any schematic or parts table. The older line that the
+  repo's own scope stops at design and bench validation no longer applies to that work.
+- **Unchanged:** the breadboard circuits stay ephemeral, parts return to inventory, the 50V DC /
+  30V AC line holds, and breadboard builds are now validation steps for blocks of the instrument.
+- **Standing constraints:** the user does no hand soldering, so nothing in the design may need it;
+  a fab order uses only the fab's own SMT parts (no customer-supplied parts mailed in), so the
+  through-hole parts on hand are not part of the board design (sensor roles go to SMT parts JLC
+  stocks); one consolidated order, so shipping is paid once.
+
 ## No multimeter — ever (recurring correction, see also [[instrument_not_absence_framing]])
 
 The user does not own or use a handheld multimeter; every measurement on
