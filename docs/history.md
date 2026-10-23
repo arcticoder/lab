@@ -4679,3 +4679,23 @@ The `Rbias` fix is confirmed on the bench. The lock-in is still failing, on a se
 - **Orders:** nothing is en route and nothing needs buying, so the Next order section lists only the optional RP2350-Zero.
 <!-- ------ -->
 ---
+The plan is at the top of `docs/TODO-agent.md`, as a section called "Next session plan". It's the only file I changed, and nothing in it has been started.
+
+**Part A: a JLCPCB-assembled research instrument.**
+- **A default experiment, for you to confirm or veto:** a force-balance testbed. Displacement is read optically by a digital lock-in in firmware, which replaces the CD4066 analog lock-in. Force is calibrated with a coil acting on an N42 magnet. Vibration, field (your 49E/SS49E) and temperature (MF52AT) are monitored, and the coin motors inject known disturbances. That uses the parts you bought and produces the numbers a force-balance study reports: a noise floor, a calibration constant, and how much vibration, temperature and field leak in.
+- **The board:**
+  - an RP2040 directly on the board, from Raspberry Pi's published minimal design;
+  - a 24-bit simultaneous-sampling ADC (ADS131M04, if stock and price check out);
+  - rail-to-rail op-amps, replacing the LM358's limits;
+  - drivers for the coil and the motors.
+- **No soldering for you:** owned sensors plug into fab-assembled sockets or screw terminals, and everything goes in one order so shipping is paid once.
+- **The work:** KiCad and ngspice toolchain setup, then ten work packages from requirements through Gerber, BOM and placement files and firmware. It ends with a list of decisions for you: the experiment, a budget ceiling, on-board RP2040 versus a Pico socket, the ADC's cost, and where the coil comes from.
+
+**Part B: the lock-in.** Your walk shows the DC chain is healthy, and the next step is simply rerunning `main.py`. Part B also has the script and table fixes for the flaw above.
+
+**Part C: what the bridged headers change.**
+- Don't power the ADS1115 until a photo shows which pins are bridged. A bridge between `VDD` and `GND` would short the 3.3V rail.
+- The header-soldering, ADS1115-on-Zero and GY-521 items move to Deferred, since the board will carry its own ADC and accelerometer.
+- The R-2R generator stays: its ladder needs only the breadboard, so it can run on the Pico once the lock-in work is done.
+<!-- ------ -->
+---

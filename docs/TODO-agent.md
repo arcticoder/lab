@@ -35,6 +35,234 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
 
 ---
 
+## Next session plan (written 2026-10-22 by Opus 5.5, for Sonnet 5.5 to action)
+
+The user switched models and asked for detailed action recommendations only;
+nothing below has been started. Work top to bottom. Part A is the new main
+direction; Part B finishes the lock-in diagnosis; Part C is the housekeeping the
+user's 2026-10-22 report triggers. Follow the usual conventions (no quotes of the
+user, TODO-arcticoder one-line style, datasheet-checked parts, real pass/fail
+smoke tests). The 2026-10-22 chat about PCB fabs versus soldering was not to be
+written to the kb; record only the decisions as stated here.
+
+### Part A — a fabricated, fully assembled research instrument (JLCPCB)
+
+**What changed.** The user stops hand soldering (header bridges again on the
+ADS1115 on 2026-10-22; the braid stuck instead of wicking) and wants boards
+designed in KiCad, analog blocks validated in ngspice (KiCad's simulator is
+ngspice; LTspice is optional, not required), and manufacturing files exported for
+a fully assembled JLCPCB order. Not a set of one-circuit boards: since the order
+costs real money, the result must be an instrument usable for an experimental
+physics study, and it must put the parts already bought to use (N42 magnets, coin
+vibration motors, leaded piezo discs, 49E/SS49E Hall sensors, PT334-6C
+photodiodes, MF52AT thermistors, LEDs). Hard constraints: **no soldering by the
+user** (everything SMT/THT-assembled by the fab; off-board parts connect through
+assembled sockets or screw terminals), **one consolidated order** (shipping once),
+USB-powered, everything under the repo's 50V DC / 30V AC line.
+
+#### A0. Record the scope change (first, small)
+
+- [ ] Update `kb/circuit_lifecycle_and_repo_scope.md` and the memory
+      `lab_circuit_ephemeral_and_repo_scope` (no quotes): the repo now aims at a
+      fabricated research instrument; breadboard builds become validation steps
+      for blocks of it; ranking for the PCB work may use research-use value. Also a
+      feedback memory: the user does no more hand soldering, so no design may
+      require it (leaded parts plug into sockets or terminals).
+
+#### A1. Define the reference experiment before any schematic
+
+- [ ] Write `docs/research_instrument_plan.md` (user-facing). Recommended default,
+      to be stated as a proposal the user can veto in one line of
+      `TODO-arcticoder.md`: **a small force-balance testbed**, the measurement
+      every thrust-balance paper reports, built from the parts on hand.
+  - Displacement: an optical shadow/lever readout (LED + photodiode), read by a
+    **digital lock-in** (the light is modulated by PIO, the photodiode signal is
+    sampled synchronously and demodulated in firmware). This retires the CD4066
+    analog lock-in, whose faults this month were all breadboard contacts.
+  - Calibration: a known electromagnetic force from a coil acting on an N42 disc,
+    with the coil current measured on a shunt (the standard in-situ calibration of
+    torsion/beam thrust balances).
+  - Environment and disturbances: vibration (MEMS accelerometer on the board, piezo
+    discs on the structure), magnetic field (49E/SS49E heads), temperature (MF52AT
+    thermistors at several points), and coin vibration motors to inject known
+    disturbances (measure transfer functions; also `VIBISO` and the ripple tank).
+  - Output of the study: force noise floor versus frequency (N/√Hz), the
+    calibration constant and its drift, and coupling coefficients to vibration,
+    temperature and field. Tie each number to `spacetime_circuits_dependency.md`
+    ("Bench-scale resolution budget", `tools/resolution_budget.py`).
+  - Mechanics (balance beam, mounts, coil former, sensor heads) printed on the K1:
+    a later work package; the PCB fixes mounting holes and connector positions
+    now.
+
+#### A2. Architecture (recommended; verify every part before committing)
+
+Main board, 4-layer (signal / GND / power / signal), roughly 100×80mm, plus small
+sensor-head boards in the same order:
+
+- **MCU: RP2040 on the board** from Raspberry Pi's published minimal design (fetch
+  their KiCad files from the "Hardware design with RP2040" document; check the
+  licence): QSPI flash, 12MHz crystal, USB-C, BOOTSEL and RESET buttons, SWD pads.
+  Keeps every RP2040 register address this repo's code uses (not RP2350: see
+  `kb/rp2350_notes.md`). Fallback if layout risk looks too high: a socket for a Pico
+  (2×20 female headers assembled by the fab).
+- **Power:** USB-C 5V in (ESD protection such as a USBLC6-2, polyfuse), separate
+  3.3V regulators for digital and analog (low-noise LDO for analog), ferrite split,
+  one ground plane with a defined star point near the ADC.
+- **Precision ADC for the signal channels:** compare ADS131M04 (24-bit, 4
+  simultaneous channels, up to 32kSa/s, SPI: fits the digital lock-in and vibration
+  channels; read by PIO+DMA per `kb/rp2040_performance_notes.md`), ADS1220 (24-bit,
+  slower) and ADS1115 (16-bit, 860Sa/s, too slow for a kHz lock-in). Recommended:
+  ADS131M04 if its 3.3V operation, price and JLC stock check out. Slow housekeeping
+  (thermistors, supply monitor) on the RP2040's own ADC.
+- **Op-amps:** rail-to-rail CMOS parts JLC stocks (candidates: OPA2376, OPA2333,
+  TLV9062, MCP6022); the LM358 limits in `kb/lm358_single_supply_design_notes.md`
+  are what this removes. Simulate with the vendor's model, not the generic one.
+- **Front ends** (carry the numbers over from the validated designs):
+  1. Optical ×2: modulated LED current sink (DAC-set current, PIO-gated) and a
+     photodiode TIA with anti-alias filter into the ADC (`transimpedance_amplifier`,
+     `optical_shadow_readout`).
+  2. Hall ×2: ratiometric difference amplifier with a DAC-set null instead of a
+     trimpot (`hall_amplifier`).
+  3. Piezo charge amplifier ×2 (`charge_amplifier`).
+  4. Thermistor inputs ×4 (dividers to the RP2040 ADC, `thermal_monitor`).
+  5. On-board MEMS accelerometer (choose by noise density; ADXL355 is the
+     low-noise option but costly, a cheaper part for a first board is acceptable)
+     plus an I2C header for an external one.
+- **Actuators and stimulus:**
+  1. Calibration-coil driver: a linear current source (op-amp + MOSFET + shunt,
+     DAC-set) preferred over an H-bridge for a clean, known force; bipolar if the
+     part count allows. The coil itself is an open sourcing question (wound bobbin
+     or ready-made air-core coil).
+  2. Vibration-motor drivers ×2–4: logic-level N-MOSFET low side, flyback diode,
+     PWM (`vibration_driver`).
+  3. Stimulus DAC: decide between the verified PIO+DMA R-2R (`signal_generator_r2r`,
+     with a 0.1% resistor array; costs 8 GPIOs) and a DAC chip (a dual 12-bit SPI
+     DAC is DC-capable for LED current and Hall null; an I2S audio DAC gives a clean
+     sine to about 20kHz). At least one DC-capable DAC is needed either way.
+- **Connections without soldering:** TO-92 Hall sensors, thermistors, photodiodes
+  and LEDs plug into fab-assembled female header sockets on the sensor heads; coin
+  motors, coil and piezo leads go into screw terminals; heads connect to the main
+  board through 2.54mm headers and the Dupont leads already on the bench (or
+  pre-crimped JST cables if added to a cart). Label every connector pin in
+  silkscreen.
+- **Bring-up aids:** labelled test pads on every analog node, an SWD header, status
+  LEDs, a spare-GPIO header, mounting holes matching the printed mechanics.
+- **Pin budget** (do it early): RP2040 has 30 GPIOs; ADC SPI, DAC, LED modulation,
+  motor PWM ×2–4, coil enable, I2C, thermistor ADC pins and the R-2R option must
+  fit. The R-2R's 8 pins are the first thing to cut.
+
+#### A3. Toolchain in WSL (verify each step and record versions)
+
+- [ ] Install KiCad 8 or 9 with `kicad-cli` (`sch erc`, `pcb drc`, `pcb export
+      gerbers/drill/pos`, `sch export bom/pdf`, `pcb render` to PNG; the renders are
+      how layouts get visually reviewed in-session with the Read tool).
+- [ ] Parts data: `easyeda2kicad` (symbols/footprints/3D by LCSC number) and the
+      `jlcparts` database (stock, basic vs extended). Extended parts carry a
+      per-part setup fee at JLC; prefer basic parts and count the extended ones.
+- [ ] Design entry: decide between a script-generated netlist (SKiDL, reviewable
+      and testable Python) imported into pcbnew, and KiCad schematics written with a
+      file library such as `kiutils`. Criteria: ERC must run, a human-readable PDF
+      schematic must come out, and edits must be diffable.
+- [ ] Routing: critical nets (USB pair at 90Ω differential, crystal, ADC inputs,
+      reference, TIA inputs) placed and routed deliberately; the rest may go
+      through Freerouting (DSN/SES). Set design rules from JLC's current published
+      capabilities (fetch them, don't recall them).
+- [ ] Simulation: ngspice as now, vendor op-amp models (`set ngbehavior=ps` for
+      PSpice-format models); every analog block gets a netlist and a pass/fail
+      `smoke_test.py` like the existing circuits.
+
+#### A4. Work packages (each PR-sized, in this order)
+
+- [ ] WP1 — Requirements and block diagram in `docs/research_instrument_plan.md`;
+      the pin budget; a power budget (USB 500mA ceiling vs motors and coil).
+- [ ] WP2 — Part selection table (`hardware/<board>/parts.md`): LCSC number,
+      basic/extended, stock, price, datasheet limits at 3.3V, the vendor SPICE
+      model's location.
+- [ ] WP3 — Simulations of each analog block with the chosen parts (TIA and
+      anti-alias filter, Hall amp with DAC null, charge amp, LED current sink, coil
+      current source and its stability, regulator noise into the ADC).
+- [ ] WP4 — Schematic, hierarchical by block; ERC clean; PDF export committed.
+- [ ] WP5 — Layout: RP2040 per the reference layout, ADC per its datasheet's layout
+      section, analog/digital partition, decoupling at every pin, USB pair,
+      mounting holes, silkscreen; DRC clean against JLC's rules.
+- [ ] WP6 — Visual review from `kicad-cli pcb render` top/bottom images and a
+      written checklist (connector orientation, pin-1 marks, labels, clearances).
+- [ ] WP7 — Fabrication outputs in `hardware/<board>/fab/`: Gerbers + drill (zip),
+      BOM and CPL in JLC's column format (check rotations against JLC's
+      placement preview), and a README of order settings (layers, 1.6mm,
+      surface finish, assembly sides, quantity minimums: check the current ones).
+- [ ] WP8 — Firmware and host software: MicroPython bring-up scripts per block with
+      `[PASS]`/`[FAIL]` lines; digital lock-in in fixed point; ADC by PIO+DMA; USB
+      streaming to a host-side Python logger (timestamped CSV or HDF5). Write
+      against the board's pin map now so it is ready on arrival.
+- [ ] WP9 — Bring-up procedure for the user (rails first, then flash, then each
+      block), and the experiment procedure from A1.
+- [ ] WP10 — The order: a "Next order" entry in `TODO-arcticoder.md` with the JLC
+      upload steps and settings (the user gets the quote; prices aren't visible
+      from the session), plus any off-board items (coil, cables) for an AliExpress
+      cart in the same window so nothing ships alone.
+
+#### A5. Decisions to put to the user (one line each in TODO-arcticoder, when reached)
+
+The reference experiment (A1); a budget ceiling for the order; RP2040 on the board
+vs a Pico socket; ADS131M04 cost; the coil's source.
+
+### Part B — lock-in amplifier: reading of the 2026-10-22 level walk
+
+User readings with `diagnose_levels.py`: + rail 3.300V, `VMR` 1.142V, `VMO`
+1.143V, `OUT1` 1.134V, `U2` pin 8 and `S1`/`S2` pin 14 at 3.300V, `U2` pin 4 and
+`S1`/`S2` pin 7 at 0.017V: all correct. `INN` read 0.758V, which is exactly what
+`GP28` read on 2026-10-19 with its jumper touching nothing (`trace_node.py` rest
+0.758V), and a truly floating `INN` could not leave `OUT1` at Vmid: so that reading
+was almost certainly a jumper without contact. The `A`/`B` numbers it printed are
+meaningless: the script opens both switches, so `A` and `B` sit on their 1µF
+capacitors and drift (0.39V to 1.84V between runs). Conclusion: the DC chain is
+healthy now; the 2026-10-19 state (`OUT1` at 0.024V) is gone, most likely re-seated
+during the walk. This rig has now had intermittent contacts three times.
+
+- [ ] B1 — Fix `diagnose_levels.py` (my flaw): (a) after the rest reading, apply
+      `GP28`'s pad pull-up and pull-down (as `trace_node.py` does) and print "the
+      jumper is not on a driven node" when the rest is not ground/Vmid/rail and the
+      pulls move it by volts (note: `INN`/`C2` are also soft under the pulls but rest
+      at Vmid); (b) read `A` and `B` with `S1` and `S2` closed, so each reads `OUT1`
+      through its switch (a real check of both switch paths), and stop printing the
+      switches-open values; (c) host-side test of the classification.
+- [ ] B2 — `breadboard.md` § "After the fix": add the readings that are not 0V (the
+      0.75–0.76V floating-pad value; `A`/`B` drift with the switches open), so the
+      table covers what the user actually saw.
+- [ ] B3 — `TODO-arcticoder.md` item 1: the walk passed; next is `mpremote run
+      main.py`; if `VA`/`VB` are not near Vmid at `floor`, `mpremote mount . run
+      diagnose_demod.py`; re-probe `INN` only with the jumper pushed firmly into the
+      `INN` strip.
+- [ ] B4 — If the user leaves the rig plugged in, run `main.py` and the
+      switch-closed probe from the session before asking anything.
+- [ ] B5 — Keep items 1–2 (lock-in, optical readout) in the queue: the optical
+      readout's measured light level is the one number the PCB's optical channel
+      needs, and the working breadboard lock-in is the reference for the digital
+      lock-in firmware.
+
+### Part C — housekeeping from the same report
+
+- [ ] C1 — ADS1115 module: headers soldered with bridges. Tell the user not to power
+      it until a photo shows which pins are bridged (a `VDD`–`GND` bridge shorts the
+      3V3 rail). Move `TODO-arcticoder.md` items 3 (headers + Zero flash) and 4
+      (`adc_ads1115` on the Zero) to "Deferred" with one line each: the PCB carries
+      its own ADC, and no more hand soldering. Same for `ACCELIF` (the GY-521 has
+      bridged pins since 2026-09-24): Deferred, superseded by the board's
+      accelerometer.
+- [ ] C2 — RP2040-Zero (headers loose, not soldered): stays in inventory; usable
+      later on a fab board with a socket, or press-fit for a temporary test only.
+      Remove the soldering wording from `parts_reference.md#rp2040-zero` "First
+      power-up" (step 1).
+- [ ] C3 — `signal_generator_r2r`: its ladder build needs no soldering (breadboard),
+      so it can run on the Pico once items 1–2 are done; reword item 5 accordingly.
+      Its PIO+DMA code carries over to the board whichever stimulus option WP2
+      picks.
+- [ ] C4 — `inventory.md`: note the ADS1115 module and GY-521 as "headers bridged,
+      not usable as is".
+
+---
+
 ## Open items
 
 ### `THERM` — main.py has no debounce on the alarm decision, non-urgent
