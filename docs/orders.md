@@ -135,11 +135,20 @@ notes below stay for that day.
 
 ## In cart (not yet checked out)
 
-Empty as of 2026-10-05.
+### Stainless-steel sheet, 304, 0.05 mm (torsion strip)
+
+- Listing: https://www.aliexpress.com/item/1005001877385583.html
+- Variant: 0.05 × 100 × 1000 mm (304 stainless); the 4 mm strip is cut from it, so one sheet is many strips.
+- Added to the cart 2026-10-23; other cart lines are in `TODO-arcticoder.md` "Next order".
 
 ---
 
 ## Received
+
+### M3 hardware (arrived before 2026-10-23)
+
+- M3 hex nuts, black carbon steel, 55 pieces: https://www.aliexpress.com/item/4000602853448.html
+- M3 recessed pan head screws, GB818, 304 stainless: 50 pieces each of 10 mm, 12 mm and 14 mm (listing URLs not recorded).
 
 ### SYB-170 Mini Breadboard — 6-in-1 pack (black selected)
 

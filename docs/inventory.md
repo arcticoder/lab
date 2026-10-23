@@ -146,6 +146,10 @@ new build, rather than by eye alone.
 | Breadboard (mini SYB-170) | 1     | 170-point, black; from a 6-in-1 color pack (AliExpress). See `lab/docs/orders.md` / `lab/docs/parts_reference.md` for full specs |
 | Micro USB Cable        | 1        | For Pico power + data                                     |
 | Mini-USB Cable         | 1        | Acquired directly (non-AliExpress) 2026-09-24; removed from the AliExpress cart. Used with `SCOPELA`'s CY7C68013A board |
+| M3 hex nut, black carbon steel | 55 | AliExpress item 4000602853448; magnetic (keep clear of the balance's moving parts); bag not recorded |
+| M3 recessed pan head screw, GB818, 304 stainless, 10 mm | 50 | bag not recorded |
+| M3 recessed pan head screw, GB818, 304 stainless, 12 mm | 50 | bag not recorded |
+| M3 recessed pan head screw, GB818, 304 stainless, 14 mm | 50 | bag not recorded |
 
 ---
 

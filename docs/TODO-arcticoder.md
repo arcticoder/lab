@@ -31,29 +31,30 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ## What I need from you
 
-1. **Confirm or edit the measurement goal** (G1) in
-   [research_instrument_plan.md](research_instrument_plan.md): one line back. Nothing is laid out until
-   it is settled; the force-noise prediction already says it is reachable (a conditional go).
-2. **Decide the enclosure material** for the balance's draught shield (the biggest noise term):
-   acrylic or acetate panels on a printed frame, or something you already have. One line.
-3. **Do not power the ADS1115 module** (its headers were soldered with bridges): the fab board will carry
+1. **Do not power the ADS1115 module** (its headers were soldered with bridges): the fab board will carry
    its own ADC, so the module is shelved.
-4. **Optional, for ERC/DRC from the command line:** KiCad 7 is installed and works for design and
-   Gerber export, but its `kicad-cli` can't run the electrical-rules check. If you want it: `sudo
-   add-apt-repository ppa:kicad/kicad-9.0-releases && sudo apt update && sudo apt install kicad`
-   (it needs your password; I can't run it). Not required to continue.
 
 ## Next order — AliExpress: materials for the balance
 
-Nothing is en route. These are the mechanics' own parts (the board's electronics come from the fab, not
-this cart). Check the total before paying; if a fee shows, hold the cart.
+The stainless sheet is already in the cart. The screws and nuts on hand cover the printed balance
+(18 × M3×12 and 14 nuts needed; 50 and 55 owned). Add the lines below, then check the total before
+paying; if a shipping fee shows on any line, hold the cart.
 
-- **Stainless-steel shim or foil, 0.05 mm (50 µm) thick**, about 100 × 100 mm: the torsion strip is cut
-  from it (4 mm wide). Two sheets, so a spoiled cut costs nothing.
-- **Copper sheet, 1 mm thick**, about 100 × 100 mm: the damper vane (20 × 22 mm).
-- **Copper foil tape, conductive adhesive**, 10–20 mm wide: the faces of the two calibration plates.
-- **M3 screw, nut and washer assortment** (6 to 16 mm screws).
-- **Steel rod, 10 mm diameter**, about 100 mm long: cut into the ballast slug (21 mm) and spare.
+- **Acrylic, clear, 3 mm cast or extruded**, cut to size by the seller (custom-size listings): 2 × 240 × 160,
+  2 × 243 × 160 and 1 × 266 × 266 mm (the enclosure panels and lid, from the CAD's cut list). The
+  frame slots are 3 mm; if the listing's thickness is 2 or 2.5 mm, change `PANEL_T` in `params.py` first.
+- **Foam sealing tape, self-adhesive, 3 mm thick, about 5 m**: seals the panel edges.
+- **Copper sheet, 0.3 mm thick, 30 × 30 mm or the smallest size listed** (the vane is 20 × 22 mm and the
+  CAD uses 0.3 mm: damping goes with thickness, and 1 mm over-damps it to a ratio of about 2).
+- **Copper foil tape, single-sided, conductive adhesive, 10 to 20 mm wide, the shortest roll (about 1 m
+  is plenty)**: covers the two calibration-plate faces (20 × 8 mm each). The listing has to say
+  "conductive adhesive"; Kapton and polyimide tapes are insulators and are not this.
+- **Brass rod, 10 mm diameter, 50 mm or longer**: cut into the ballast (18 mm) and spares. Brass replaces
+  the steel rod: steel would pick up force from the damper magnets.
+- **M3 flat washers, 304 stainless, 3.2 mm inner and 7 mm outer diameter, 50 pieces**: 18 are used under
+  the screw heads.
+- **M3 hex nuts, 304 stainless, 20 pieces**: the lower strip clamp rides on the moving arm, so its two nuts
+  have to be non-magnetic; the black carbon-steel nuts on hand are for the fixed parts only.
 - **Calibration weights, 1 mg to 500 mg** (an analytical-balance weight set): turns the plate voltage into
   an absolute force (the plan's metrology section). Pick a class stated in the listing.
 
@@ -78,12 +79,12 @@ Search names only; I couldn't open listings from here, so read each variant befo
        flag. All `[PASS]` lines is done; it also reports how much light the
        LED really puts on the photodiode, the one number the force-noise prediction assumes.
 3. [ ] **Print the balance** (`hardware/balance/cad/*.stl`, PLA, 3 walls, about 30% infill): `arm`,
-       `base`, `upright_a`, `upright_b`, `beam`, `top_clamp_a/b`, `low_clamp_a/b`, `vane_holder`,
-       `elec_arm`, `elec_fixed`, `damper_holder`, `sensor_bracket`, `flag` (0.2 mm layers, flat on the
-       bed; `flag` may be better cut from card). Largest part 200 × 32 × 28 mm. The strip, vane, ballast
-       and screws wait on the materials order; the printed frame alone lets you check fit, the
-       centre-of-mass offset and the sensor bracket's gap. The balance is the plan's A5 prototype
-       (the real noise spectrum before any board is laid out), so its readout is item 2.
+       `base`, `gantry`, `top_clamp_a/b`, `low_clamp_a/b`, `vane_holder`, `elec_arm`, `elec_fixed`,
+       `damper_holder`, `sensor_bracket`, `flag`, the four `encl_post_*` posts (0.2 mm layers, flat on
+       the bed; `flag` may be better cut from card). The strip, vane, ballast, acrylic and washers wait
+       on the materials order; the printed parts alone let you check fit, the centre-of-mass offset
+       and the sensor bracket's gap. The balance is the plan's A5 prototype (the real noise spectrum
+       before any board is laid out), so its readout is item 2.
 4. [ ] **`measurement_tools/signal_generator_r2r` (`TESTSIG`) — wire the ladder and run the
        bring-up.** Nine 2kΩ, eight 1kΩ, one 10kΩ, an LM358P and 100nF
        ([breadboard.md](../measurement_tools/signal_generator_r2r/breadboard.md)); on the Pico once

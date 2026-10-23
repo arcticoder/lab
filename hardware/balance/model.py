@@ -67,11 +67,13 @@ def disc_field_on_axis(z, br=None, radius=None, height=None):
     return br / 2 * ((z + h) / math.sqrt(r**2 + (z + h) ** 2) - z / math.sqrt(r**2 + z**2))
 
 
-def eddy_damping_estimate(face_gap=1.5e-3, vane_t=1.0e-3, vane_radius=0.060, sigma=5.8e7):
+def eddy_damping_estimate(face_gap=None, vane_t=None, vane_radius=0.060, sigma=5.8e7):
     """First-order eddy-current damping of a copper vane between two opposed N42 discs [assume:
     c = sigma B^2 t A with A the disc footprint; right to about a factor of two at best].
     Returns (c at the vane, N*s/m; the damping ratio it gives at the flag radius when the vane
     fully covers the discs; B between the discs, T)."""
+    face_gap = (1.5e-3 - 0.0) if face_gap is None else face_gap
+    vane_t = P.VANE_THICKNESS if vane_t is None else vane_t
     b = 2 * disc_field_on_axis(face_gap)
     area = math.pi * (P.N42_DIAMETER / 2) ** 2
     c_vane = sigma * b**2 * vane_t * area

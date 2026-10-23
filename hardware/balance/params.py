@@ -22,8 +22,8 @@ T_K = 295.0  # room temperature
 ARM_HALF_LENGTH = 0.100  # pivot to the end mass / flag / device mount; l in the model
 # mass and inertia of the whole moving assembly come from the CAD (balance.py prints them; the
 # smoke test fails if these two numbers drift more than 3% from it) [design]
-MOVING_MASS = 0.0559  # kg
-MOVING_INERTIA = 2.983e-4  # kg*m^2 about the pivot axis
+MOVING_MASS = 0.0463  # kg
+MOVING_INERTIA = 2.807e-4  # kg*m^2 about the pivot axis
 STRIP_WIDTH = 4.0e-3  # m; stainless shim stock
 STRIP_THICKNESS = 50e-6  # m
 STRIP_LENGTH = 30e-3  # m, free length between the two clamps
@@ -31,7 +31,12 @@ STRIP_SHEAR_MODULUS = 77e9  # Pa, 304/316 stainless [assume: typical handbook va
 STRIP_YIELD_PA = 200e6  # Pa, conservative for annealed 304 [assume]
 FLAG_AT = ARM_HALF_LENGTH  # the optical flag sits at the arm end
 
+# --- masses on the arm must be non-magnetic: brass, not steel [design]. A steel slug of the ballast's size would carry an
+# induced moment of about 2e-4 A*m^2 in the Earth's field (m = V B / (N mu0), N about 0.3), above the 1e-4 stray allowance.
+BRASS_DENSITY = 8.5e-3  # g/mm^3 (C360 brass; rod listings say H59/H62/C36000)
+
 # --- damping: copper vane on the arm moving between fixed N42 discs [design] ---
+VANE_THICKNESS = 0.3e-3  # m: the damping goes with thickness; 1 mm gave a damping ratio of 2.1 fully engaged, 0.3 mm gives about 0.6
 # the same non-contact eddy-current damper as Soni & Roy [pub]: no power, no
 # permanent magnet on the moving arm (the magnets are fixed to the base)
 DAMPING_RATIO = 0.5  # zeta; set by the vane-to-magnet gap (tuned on the bench)
@@ -81,6 +86,15 @@ EPS0 = 8.8541878128e-12
 N42_BR = 1.32  # T, nominal for N42 [assume: strength untested, listing's report is for another size]
 N42_DIAMETER = 6e-3
 N42_THICKNESS = 3e-3
+
+# --- enclosure: a printed frame with drop-in acrylic panels (the air-current term is the budget's largest) [design] ---
+ENCL_INNER = (240e-3, 240e-3, 160e-3)  # clear volume, m
+PANEL_T = 3e-3  # acrylic thickness bought; the frame's slots are PANEL_T + 0.4 mm, so a thickness change is one number
+ENCL_POST = 20e-3  # corner post cross-section, m
+ENCL_MIN_CLEARANCE = 10e-3  # nearest moving or fixed balance part to a panel
+
+# --- fasteners: what the CAD's holes take, and what is already owned (inventory.md) ---
+FASTENER_OWNED = {"M3 nut": 55, "M3x10 pan head screw": 50, "M3x12 pan head screw": 50, "M3x14 pan head screw": 50}
 
 # --- printing -------------------------------------------------------------------
 PRINT_VOLUME = (220e-3, 220e-3, 250e-3)  # Creality K1 build volume [assume; check the manual]

@@ -5,8 +5,9 @@ Audience: future LLM sessions. Facts found while setting up the fab-assembled in
 
 ## What exists and what doesn't
 
-- KiCad **7.0.11** was already installed; `kicad-cli` there has only `pcb export` and `sch export`.
-  `sch erc` and `pcb drc` are KiCad 8+. `pcbnew` imports under `/usr/bin/python3` (3.12), not under the
+- KiCad **9.0.9** (user installed it from the KiCad 9 PPA on 2026-10-23, replacing 7.0.11): `kicad-cli` has
+  `sch erc`, `pcb drc`, `pcb render` and the exports. The symbol/footprint library packages stayed at 7.0.11.
+  `pcbnew` imports under `/usr/bin/python3` (3.12), not under the
   conda Python (3.13): use `~/.venvs/lab-hw/bin/python`, a venv with `--system-site-packages`.
 - No sudo from the session (a password is required), so apt installs are the user's to run.
 - `pip install skidl` prints "KICADn_SYMBOL_DIR missing" warnings on import: set `KICAD7_SYMBOL_DIR=/usr/share/kicad/symbols` (and the footprint dir) before using SKiDL's KiCad library lookups.
