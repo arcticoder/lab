@@ -38,8 +38,10 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
 ## Next session plan (written 2026-10-22 by Opus 5.5, for Sonnet 5.5 to action)
 
 The user switched models and asked for detailed action recommendations only;
-nothing below has been started. Work top to bottom. Part A is the new main
-direction; Part B finishes the lock-in diagnosis; Part C is the housekeeping the
+nothing below has been started. Revised 2026-10-22 after the user's review:
+Part A now starts with three gates (measurement goal, mechanics, force-noise
+prediction) and uses only the fab's own SMT parts. Work top to bottom. Part A is
+the new main direction; Part B finishes the lock-in diagnosis; Part C is the housekeeping the
 user's 2026-10-22 report triggers. Follow the usual conventions (no quotes of the
 user, TODO-arcticoder one-line style, datasheet-checked parts, real pass/fail
 smoke tests). The 2026-10-22 chat about PCB fabs versus soldering was not to be
@@ -50,162 +52,228 @@ written to the kb; record only the decisions as stated here.
 **What changed.** The user stops hand soldering (header bridges again on the
 ADS1115 on 2026-10-22; the braid stuck instead of wicking) and wants boards
 designed in KiCad, analog blocks validated in ngspice (KiCad's simulator is
-ngspice; LTspice is optional, not required), and manufacturing files exported for
-a fully assembled JLCPCB order. Not a set of one-circuit boards: since the order
-costs real money, the result must be an instrument usable for an experimental
-physics study, and it must put the parts already bought to use (N42 magnets, coin
-vibration motors, leaded piezo discs, 49E/SS49E Hall sensors, PT334-6C
-photodiodes, MF52AT thermistors, LEDs). Hard constraints: **no soldering by the
-user** (everything SMT/THT-assembled by the fab; off-board parts connect through
-assembled sockets or screw terminals), **one consolidated order** (shipping once),
-USB-powered, everything under the repo's 50V DC / 30V AC line.
+ngspice; LTspice is optional), and manufacturing files exported for a fully
+assembled JLCPCB order. The result must be an instrument that can support a
+publishable (arXiv-level) experimental study, not a set of one-circuit boards.
+
+**Hard constraints:**
+- **All electronic parts are SMT parts sourced and placed by JLCPCB** from its own
+  library. The user does not mail parts to the fab, so the through-hole parts on
+  hand (49E/SS49E, PT334-6C, MF52AT, 5mm LEDs, leaded piezo) are not part of the
+  design; their roles go to JLC-stocked SMT equivalents (for example a SOT-23
+  linear Hall sensor, an SMD photodiode, 0603 NTCs, an SMD LED or IR emitter, a
+  MEMS accelerometer). Purely mechanical items that need no soldering (the N42
+  discs as a calibration target, the coin motors' flying leads into a
+  fab-assembled screw terminal) may still be used where they fit, but nothing
+  depends on them.
+- **No soldering by the user.** Sensor heads are separate small JLC-assembled SMT
+  boards joined to the main board by cables (check what pre-crimped cable JLC or an
+  AliExpress cart in the same order window can supply, so nothing needs crimping).
+- **One consolidated order** (shipping paid once), USB-powered, everything under the
+  repo's 50V DC / 30V AC line.
+- **No schematic, parts table or layout before the three gates in A1 pass.**
 
 #### A0. Record the scope change (first, small)
 
 - [ ] Update `kb/circuit_lifecycle_and_repo_scope.md` and the memory
       `lab_circuit_ephemeral_and_repo_scope` (no quotes): the repo now aims at a
-      fabricated research instrument; breadboard builds become validation steps
-      for blocks of it; ranking for the PCB work may use research-use value. Also a
-      feedback memory: the user does no more hand soldering, so no design may
-      require it (leaded parts plug into sockets or terminals).
+      fabricated research instrument for a publishable study; breadboard builds
+      become validation steps; ranking for this work may use research value.
+      Feedback memories: the user does no more hand soldering, and fab orders use
+      only the fab's own SMT parts (no customer-supplied parts).
 
-#### A1. Define the reference experiment before any schematic
+#### A1. Three gates before any electronics design
 
-- [ ] Write `docs/research_instrument_plan.md` (user-facing). Recommended default,
-      to be stated as a proposal the user can veto in one line of
-      `TODO-arcticoder.md`: **a small force-balance testbed**, the measurement
-      every thrust-balance paper reports, built from the parts on hand.
-  - Displacement: an optical shadow/lever readout (LED + photodiode), read by a
-    **digital lock-in** (the light is modulated by PIO, the photodiode signal is
-    sampled synchronously and demodulated in firmware). This retires the CD4066
-    analog lock-in, whose faults this month were all breadboard contacts.
-  - Calibration: a known electromagnetic force from a coil acting on an N42 disc,
-    with the coil current measured on a shunt (the standard in-situ calibration of
-    torsion/beam thrust balances).
-  - Environment and disturbances: vibration (MEMS accelerometer on the board, piezo
-    discs on the structure), magnetic field (49E/SS49E heads), temperature (MF52AT
-    thermistors at several points), and coin vibration motors to inject known
-    disturbances (measure transfer functions; also `VIBISO` and the ripple tank).
-  - Output of the study: force noise floor versus frequency (N/√Hz), the
-    calibration constant and its drift, and coupling coefficients to vibration,
-    temperature and field. Tie each number to `spacetime_circuits_dependency.md`
-    ("Bench-scale resolution budget", `tools/resolution_budget.py`).
-  - Mechanics (balance beam, mounts, coil former, sensor heads) printed on the K1:
-    a later work package; the PCB fixes mounting holes and connector positions
-    now.
+These define the scientific value; the electronics only implement them. Results go
+in `docs/research_instrument_plan.md` (user-facing), with the calculations in a
+script (`tools/force_noise_budget.py`, pass/fail smoke test like the circuits).
 
-#### A2. Architecture (recommended; verify every part before committing)
+- [ ] **G1 — Measurement goal (one paragraph, then the user confirms it).** State
+      the claim the instrument supports if it meets its predicted performance. A
+      bare "build an instrument" goal is not enough; the question must be specific
+      and answerable at the achievable sensitivity. Recommended default to propose:
+      *quantify the spurious-force mechanisms that have produced false positives in
+      the small-thrust literature (current in the device's power leads interacting
+      with the ambient and geomagnetic field, ohmic heating and thermal expansion,
+      convection) on an open, low-cost, fully SMT-assembled balance, with the
+      power-feed geometry and current as the controlled variables*, alongside the
+      instrument claim (for example: an open µN-scale force balance with
+      characterized vibrational, thermal and magnetic couplings at a parts cost
+      under $X). The cited literature in `spacetime_circuits_dependency.md` is where
+      those mechanisms are documented; cite the specific papers. Fill in $X and the
+      force scale from G3, not before.
+- [ ] **G2 — First mechanical design, with a model.** The mechanics are the
+      experiment, so this comes before the PCB. A concrete design (OpenSCAD or
+      CadQuery source in the repo, printable on the K1): balance type (beam on a
+      knife edge or flexure, or a torsion pendulum on a fibre or flexure pivot), arm
+      lengths, pivot stiffness (flexure geometry and material), mass and moment of
+      inertia, resonant frequency and Q, the displacement-to-force conversion, the
+      calibration actuator's position and lever arm, sensor locations (optical
+      readout at the arm's end, accelerometer on the base, field and temperature
+      sensors near the device under test), and the isolation concept (a printed
+      or bought passive stage; what `VIBISO` becomes). An analytic model at
+      minimum (spring constant, resonance, thermal-expansion paths of PLA versus
+      a stiffer material, the magnetic coupling geometry of the calibration
+      coil); FEA where the analytic model is doubtful. The PCB's mounting holes,
+      head-board sizes and connector positions are then set by this design.
+- [ ] **G3 — End-to-end force-noise prediction and a go/no-go.** Chain every noise
+      source to force: photodiode shot noise and LED intensity noise; TIA thermal
+      and op-amp voltage/current noise; ADC noise; digital lock-in bandwidth; then
+      displacement noise, through the mechanical transfer function of G2, to force
+      noise in N/√Hz versus frequency. Add the environmental terms: floor
+      vibration (seismic/building noise spectra from the literature, attenuated by
+      the isolation concept), thermal drift (temperature spectrum × expansion
+      coefficients), air currents, magnetic noise × the balance's magnetic moment.
+      Compare against `tools/resolution_budget.py`'s table and against at least two
+      published balances from the cited papers (take their reported noise floors
+      from the papers, don't recall them). **Go/no-go:** if the predicted floor
+      can't support G1's claim, change the mechanics, optics or environment (G2/A2)
+      and repeat; don't proceed to parts or schematic until it does. Record the
+      decision and the numbers.
 
-Main board, 4-layer (signal / GND / power / signal), roughly 100×80mm, plus small
-sensor-head boards in the same order:
+#### A2. Environment control and absolute metrology (plan them; cost them)
+
+- [ ] **Environment.** For each dominant term from G3, a control and its expected
+      suppression: a closed enclosure against air currents (printed or acrylic box,
+      draught shield), thermal mass and insulation with logged temperatures, a
+      magnetic strategy (passive mu-metal is costly; active compensation with a
+      Helmholtz pair driven by the board's coil driver, fed back from the field
+      sensor, is the low-cost option; at minimum, measure and report the field),
+      a heavy reference surface on soft feet, and vacuum flagged explicitly as out
+      of scope for the first iteration with its expected effect stated (air damping
+      and convection). Only the controls G3 shows to be necessary for G1 go into
+      the first build.
+- [ ] **Absolute calibration and uncertainty budget.** The coil-and-magnet actuator
+      is a relative calibration; establish the absolute scale independently. Two
+      candidates: (1) a known force from gravity, by tilting the balance a measured
+      angle (measured with the board's accelerometer) or by placing small known
+      masses; (2) the coil's force constant measured against (1), then used in-situ.
+      Current measured on a precision shunt (0.1% or better, characterized against
+      a reference), displacement scale from the optical readout calibrated with a
+      known displacement (a micrometer stage or a printed step gauge). Write the
+      uncertainty budget for the calibration constant, and for its drift over a
+      measurement campaign (repeat calibration intervals, temperature dependence).
+
+#### A3. Architecture (after the gates; verify every part before committing)
+
+Main board, 4-layer (signal / GND / power / signal), size set by G2, plus small
+SMT sensor-head boards in the same order:
 
 - **MCU: RP2040 on the board** from Raspberry Pi's published minimal design (fetch
   their KiCad files from the "Hardware design with RP2040" document; check the
   licence): QSPI flash, 12MHz crystal, USB-C, BOOTSEL and RESET buttons, SWD pads.
   Keeps every RP2040 register address this repo's code uses (not RP2350: see
-  `kb/rp2350_notes.md`). Fallback if layout risk looks too high: a socket for a Pico
-  (2×20 female headers assembled by the fab).
-- **Power:** USB-C 5V in (ESD protection such as a USBLC6-2, polyfuse), separate
-  3.3V regulators for digital and analog (low-noise LDO for analog), ferrite split,
-  one ground plane with a defined star point near the ADC.
-- **Precision ADC for the signal channels:** compare ADS131M04 (24-bit, 4
-  simultaneous channels, up to 32kSa/s, SPI: fits the digital lock-in and vibration
-  channels; read by PIO+DMA per `kb/rp2040_performance_notes.md`), ADS1220 (24-bit,
-  slower) and ADS1115 (16-bit, 860Sa/s, too slow for a kHz lock-in). Recommended:
-  ADS131M04 if its 3.3V operation, price and JLC stock check out. Slow housekeeping
-  (thermistors, supply monitor) on the RP2040's own ADC.
+  `kb/rp2350_notes.md`). Fallback if layout risk looks too high: a Pico socket.
+- **Power:** USB-C 5V in (ESD protection, polyfuse), separate 3.3V regulators for
+  digital and analog (low-noise LDO for analog), ferrite split, one ground plane
+  with a defined star point near the ADC. G3 sets how low the analog rail's noise
+  must be.
+- **Precision ADC:** compare ADS131M04 (24-bit, 4 simultaneous channels, up to
+  32kSa/s, SPI: fits the digital lock-in and vibration channels; read by PIO+DMA per
+  `kb/rp2040_performance_notes.md`), ADS1220 (24-bit, slower) and ADS1115 (too slow
+  for a kHz lock-in). G3 decides whether its noise matters. Slow housekeeping on
+  the RP2040's own ADC.
 - **Op-amps:** rail-to-rail CMOS parts JLC stocks (candidates: OPA2376, OPA2333,
-  TLV9062, MCP6022); the LM358 limits in `kb/lm358_single_supply_design_notes.md`
-  are what this removes. Simulate with the vendor's model, not the generic one.
-- **Front ends** (carry the numbers over from the validated designs):
-  1. Optical ×2: modulated LED current sink (DAC-set current, PIO-gated) and a
-     photodiode TIA with anti-alias filter into the ADC (`transimpedance_amplifier`,
-     `optical_shadow_readout`).
-  2. Hall ×2: ratiometric difference amplifier with a DAC-set null instead of a
-     trimpot (`hall_amplifier`).
-  3. Piezo charge amplifier ×2 (`charge_amplifier`).
-  4. Thermistor inputs ×4 (dividers to the RP2040 ADC, `thermal_monitor`).
-  5. On-board MEMS accelerometer (choose by noise density; ADXL355 is the
-     low-noise option but costly, a cheaper part for a first board is acceptable)
-     plus an I2C header for an external one.
+  TLV9062, MCP6022), chosen on G3's noise numbers; simulate with the vendor's model.
+- **Front ends**, all SMT, on the main board or the heads per G2's sensor
+  locations:
+  1. Optical readout (number of channels from G2): modulated SMD LED or IR emitter
+     with a DAC-set current sink (PIO-gated), SMD photodiode, TIA and anti-alias
+     filter into the ADC; demodulated in firmware (digital lock-in).
+  2. Magnetic field: SMD linear Hall sensors (or a 3-axis magnetometer chip if G3
+     needs better resolution) near the device under test; ratiometric amplifier with
+     a DAC-set null where an analog sensor is used.
+  3. Vibration: MEMS accelerometer on the base (noise density chosen from G3;
+     ADXL355-class if needed) and optionally one on the beam.
+  4. Temperature: 0603 NTCs or digital temperature sensors at the points G2/G3 name.
 - **Actuators and stimulus:**
-  1. Calibration-coil driver: a linear current source (op-amp + MOSFET + shunt,
-     DAC-set) preferred over an H-bridge for a clean, known force; bipolar if the
-     part count allows. The coil itself is an open sourcing question (wound bobbin
-     or ready-made air-core coil).
-  2. Vibration-motor drivers ×2–4: logic-level N-MOSFET low side, flyback diode,
-     PWM (`vibration_driver`).
-  3. Stimulus DAC: decide between the verified PIO+DMA R-2R (`signal_generator_r2r`,
-     with a 0.1% resistor array; costs 8 GPIOs) and a DAC chip (a dual 12-bit SPI
-     DAC is DC-capable for LED current and Hall null; an I2S audio DAC gives a clean
-     sine to about 20kHz). At least one DC-capable DAC is needed either way.
-- **Connections without soldering:** TO-92 Hall sensors, thermistors, photodiodes
-  and LEDs plug into fab-assembled female header sockets on the sensor heads; coin
-  motors, coil and piezo leads go into screw terminals; heads connect to the main
-  board through 2.54mm headers and the Dupont leads already on the bench (or
-  pre-crimped JST cables if added to a cart). Label every connector pin in
-  silkscreen.
-- **Bring-up aids:** labelled test pads on every analog node, an SWD header, status
-  LEDs, a spare-GPIO header, mounting holes matching the printed mechanics.
-- **Pin budget** (do it early): RP2040 has 30 GPIOs; ADC SPI, DAC, LED modulation,
-  motor PWM ×2–4, coil enable, I2C, thermistor ADC pins and the R-2R option must
-  fit. The R-2R's 8 pins are the first thing to cut.
+  1. Calibration-coil driver: a linear current source (op-amp + MOSFET + precision
+     shunt, DAC-set), bipolar if possible; the same driver can feed the Helmholtz
+     compensation if A2 adopts it. The coil itself (wound bobbin or ready-made) is a
+     sourcing decision for the user.
+  2. Disturbance injection: drivers for vibration actuators (the coin motors via a
+     screw terminal, or a JLC-stocked SMD motor/buzzer if preferred) and a
+     controllable heater (SMD resistor) for thermal-coupling tests.
+  3. Test currents for G1's spurious-force study: a driver that passes a known
+     current through a dummy load and leads of chosen geometry.
+  4. Stimulus DAC: a DC-capable DAC chip is required (LED current, coil current,
+     Hall null); the PIO+DMA R-2R (`signal_generator_r2r`) is optional and costs 8
+     GPIOs.
+- **Bring-up aids:** labelled test pads on every analog node, SWD header, status
+  LEDs, spare-GPIO header, mounting holes from G2.
+- **Pin budget** early: 30 GPIOs for ADC SPI, DAC, LED modulation, actuator PWMs,
+  I2C, housekeeping ADC pins.
 
-#### A3. Toolchain in WSL (verify each step and record versions)
+#### A4. Toolchain in WSL (verify each step and record versions)
 
-- [ ] Install KiCad 8 or 9 with `kicad-cli` (`sch erc`, `pcb drc`, `pcb export
-      gerbers/drill/pos`, `sch export bom/pdf`, `pcb render` to PNG; the renders are
-      how layouts get visually reviewed in-session with the Read tool).
+- [ ] KiCad 8 or 9 with `kicad-cli` (`sch erc`, `pcb drc`, export of
+      Gerbers/drill/positions/BOM/PDF, `pcb render` to PNG for in-session visual
+      review).
 - [ ] Parts data: `easyeda2kicad` (symbols/footprints/3D by LCSC number) and the
-      `jlcparts` database (stock, basic vs extended). Extended parts carry a
-      per-part setup fee at JLC; prefer basic parts and count the extended ones.
-- [ ] Design entry: decide between a script-generated netlist (SKiDL, reviewable
-      and testable Python) imported into pcbnew, and KiCad schematics written with a
-      file library such as `kiutils`. Criteria: ERC must run, a human-readable PDF
-      schematic must come out, and edits must be diffable.
-- [ ] Routing: critical nets (USB pair at 90Ω differential, crystal, ADC inputs,
-      reference, TIA inputs) placed and routed deliberately; the rest may go
-      through Freerouting (DSN/SES). Set design rules from JLC's current published
-      capabilities (fetch them, don't recall them).
-- [ ] Simulation: ngspice as now, vendor op-amp models (`set ngbehavior=ps` for
+      `jlcparts` database (stock, basic versus extended; extended parts carry a
+      per-part setup fee, so count them).
+- [ ] Design entry: script-generated netlist (SKiDL) imported into pcbnew, or KiCad
+      schematics written through a file library such as `kiutils`. Criteria: ERC
+      runs, a readable PDF schematic comes out, edits are diffable.
+- [ ] Routing: critical nets (USB pair, crystal, ADC inputs, reference, TIA inputs)
+      placed and routed deliberately; the rest may go through Freerouting. Design
+      rules from JLC's current published capabilities (fetched, not recalled).
+- [ ] Simulation: ngspice with vendor op-amp models (`set ngbehavior=ps` for
       PSpice-format models); every analog block gets a netlist and a pass/fail
-      `smoke_test.py` like the existing circuits.
+      `smoke_test.py`.
+- [ ] Mechanics: OpenSCAD or CadQuery in the repo, with a script that exports STLs
+      and computes the G2 model numbers from the same parameters.
 
-#### A4. Work packages (each PR-sized, in this order)
+#### A5. Prototype check before the order (de-risks iteration)
 
-- [ ] WP1 — Requirements and block diagram in `docs/research_instrument_plan.md`;
-      the pin budget; a power budget (USB 500mA ceiling vs motors and coil).
+- [ ] Before committing to layout, test G2's mechanics and the optical readout's
+      displacement sensitivity with what is already on the bench: a printed beam,
+      the breadboard optical readout and lock-in (`optical_shadow_readout`, no
+      soldering), the Pico. Compare the measured resonance, Q and displacement noise
+      with the G2/G3 predictions. A disagreement over a factor of a few sends the
+      design back to G2/G3, not to the fab.
+
+#### A6. Work packages (after A1–A5, each PR-sized, in order)
+
+- [ ] WP1 — Requirements, block diagram, pin budget, power budget (USB 500mA versus
+      coil, heater and actuators), all traced to G1–G3.
 - [ ] WP2 — Part selection table (`hardware/<board>/parts.md`): LCSC number,
-      basic/extended, stock, price, datasheet limits at 3.3V, the vendor SPICE
-      model's location.
-- [ ] WP3 — Simulations of each analog block with the chosen parts (TIA and
-      anti-alias filter, Hall amp with DAC null, charge amp, LED current sink, coil
-      current source and its stability, regulator noise into the ADC).
-- [ ] WP4 — Schematic, hierarchical by block; ERC clean; PDF export committed.
-- [ ] WP5 — Layout: RP2040 per the reference layout, ADC per its datasheet's layout
-      section, analog/digital partition, decoupling at every pin, USB pair,
-      mounting holes, silkscreen; DRC clean against JLC's rules.
-- [ ] WP6 — Visual review from `kicad-cli pcb render` top/bottom images and a
-      written checklist (connector orientation, pin-1 marks, labels, clearances).
-- [ ] WP7 — Fabrication outputs in `hardware/<board>/fab/`: Gerbers + drill (zip),
-      BOM and CPL in JLC's column format (check rotations against JLC's
-      placement preview), and a README of order settings (layers, 1.6mm,
-      surface finish, assembly sides, quantity minimums: check the current ones).
-- [ ] WP8 — Firmware and host software: MicroPython bring-up scripts per block with
-      `[PASS]`/`[FAIL]` lines; digital lock-in in fixed point; ADC by PIO+DMA; USB
-      streaming to a host-side Python logger (timestamped CSV or HDF5). Write
-      against the board's pin map now so it is ready on arrival.
-- [ ] WP9 — Bring-up procedure for the user (rails first, then flash, then each
-      block), and the experiment procedure from A1.
+      basic/extended, stock, price, datasheet limits at 3.3V, noise figures used in
+      G3, vendor SPICE model location.
+- [ ] WP3 — Simulations of each analog block with the chosen parts; check each
+      against its G3 noise allocation.
+- [ ] WP4 — Schematic, hierarchical by block; ERC clean; PDF committed.
+- [ ] WP5 — Layout: RP2040 per the reference layout, ADC per its datasheet, analog
+      and digital partition, decoupling, USB pair, mounting holes and connector
+      positions from G2, silkscreen pin names; DRC clean against JLC's rules.
+- [ ] WP6 — Visual review from `kicad-cli pcb render` images and a written checklist.
+- [ ] WP7 — Fabrication outputs in `hardware/<board>/fab/`: Gerbers + drill, BOM and
+      CPL in JLC's format (rotations checked against JLC's placement preview), and an
+      order-settings README (layers, thickness, finish, assembly sides, quantity
+      minimums checked at the time).
+- [ ] WP8 — Firmware and host software: bring-up scripts per block with
+      `[PASS]`/`[FAIL]` lines; fixed-point digital lock-in; ADC by PIO+DMA; USB
+      streaming to a host-side Python logger (timestamped CSV or HDF5); analysis
+      scripts that produce the G1 numbers (noise spectra, calibration, coupling
+      coefficients with uncertainties).
+- [ ] WP9 — Bring-up and experiment procedures for the user, including the
+      calibration sequence from A2 and the measurement campaign (durations,
+      repeats, conditions logged).
 - [ ] WP10 — The order: a "Next order" entry in `TODO-arcticoder.md` with the JLC
-      upload steps and settings (the user gets the quote; prices aren't visible
-      from the session), plus any off-board items (coil, cables) for an AliExpress
-      cart in the same window so nothing ships alone.
+      upload steps and settings (the user gets the quote), plus off-board items
+      (coil, cables, enclosure materials, calibration masses) for an AliExpress cart
+      in the same window.
+- [ ] WP11 — The paper: a LaTeX skeleton (`docs/paper/`) started at G1 and filled as
+      results come in: apparatus (from G2/A3), noise model (G3) against measurement,
+      calibration and its uncertainty (A2), systematics, the G1 result, and
+      open-source availability.
 
-#### A5. Decisions to put to the user (one line each in TODO-arcticoder, when reached)
+#### A7. Decisions to put to the user (one line each in TODO-arcticoder, when reached)
 
-The reference experiment (A1); a budget ceiling for the order; RP2040 on the board
-vs a Pico socket; ADS131M04 cost; the coil's source.
+The G1 measurement goal; the G3 go/no-go outcome; which environment controls the
+first build includes (A2); a budget ceiling for the order; RP2040 on the board
+versus a Pico socket; the coil's source; whether the on-hand coin motors and N42
+discs are used as off-board mechanical parts.
 
 ### Part B — lock-in amplifier: reading of the 2026-10-22 level walk
 
