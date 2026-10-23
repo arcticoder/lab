@@ -1,0 +1,36 @@
+dut_source: device-under-test current sink, AOD4184A in an op-amp loop
+* 5 V rail, load = leads and device card (rload) plus an on-board ballast (rbal), AOD4184A (Ciss 1.5 nF, Crss 135 pF, Rg 3.5 ohm,
+* Vth 2.1 V, gFS 37 S at 5 A: KP = 2 x gFS^2 / (2 x 5 A) = 274 A/V^2 in the level-1 model), shunt rs = 1 ohm.
+* The set point is the DAC voltage / 10; the loop must settle without ringing for every load. r1/cc make the loop an integrator
+* with its crossover far below the gate pole (Ro x Ciss = 100 ohm x 1.5 nF).
+.include oa.inc
+.param vset=0.30
+.param rload=1
+.param rbal=4.7
+.param r1=1000
+.param cc=1e-8
+.param rgate=0
+.param kp=274
+.param cgs=1.365n
+.model nmos NMOS(LEVEL=1 VTO=2.1 KP={kp} LAMBDA=0.005)
+.options method=gear reltol=1e-3 abstol=1e-9 vntol=1e-5 itl4=200
+
+Vcc  vcc 0 DC 5
+Vst  sp 0 PULSE(0.05 {vset} 100u 1u 1u 6m 12m)
+Xu   sp fb gate vcc 0 oa_tlv9062
+Rgt  gate gg {rgate}
+Cgs  gg src {cgs}
+Cgd  gg dn 135p
+M1   dn gg src src nmos
+Rl   vcc d1 {rload}
+Rb   d1 dn {rbal}
+Rs   src 0 1
+R1   fb src {r1}
+Cc   gate fb {cc}
+
+.control
+tran 200n 4m
+wrdata dut_tran.txt v(src)
+quit
+.endc
+.end

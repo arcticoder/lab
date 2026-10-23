@@ -239,7 +239,17 @@ turn:
 | `U2` pin 8, `S1`/`S2` pin 14 | 3.3V | that chip's supply leg dislodged |
 | `U2` pin 4, `S1`/`S2` pin 7 | 0V | (0V is the right reading here) |
 
-The first row that disagrees is the fault. When every level matches, run
+The first row that disagrees is the fault. The script (`diagnose_levels.py`) also reads the jumper
+row's response to `GP28`'s own pull-up and pull-down and says "floating" when the jumper is not
+touching a node: on 2026-10-19 and 2026-10-22 a floating pad read 0.758V and moved by volts under the pulls,
+which looks like an `INN` fault and is only a jumper that wasn't seated. `INN` and `C2` (virtual
+ground) rest at Vmid and move by volts under the pulls too; every other row stays within millivolts.
+`A` and `B` are read with `S1` and then `S2` closed (the open-switch values it printed before were
+the capacitors drifting, 0.39V to 1.84V between runs, and meant nothing).
+
+The walk of 2026-10-22 read every point correctly (`+` rail 3.300V, `VMR` 1.142V, `VMO` 1.143V, `OUT1`
+1.134V, `U2` pin 8 and `S1`/`S2` pin 14 at 3.300V, `U2` pin 4 and `S1`/`S2` pin 7 at 0.017V): the
+DC chain is healthy and the 2026-10-19 fault has cleared. When every level matches, run
 `mpremote mount . run diagnose_demod.py` again: `A` and `B` should each swing
 at least 30mV in opposite directions between in phase and anti phase.
 

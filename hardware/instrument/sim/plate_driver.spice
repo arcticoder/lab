@@ -1,0 +1,27 @@
+plate_driver: electrostatic plate driver, OPA197 on the 24 V boost rail, gain 5.7
+* DAC 0 to 4.096 V (MCP4728 at 2.048 V reference, gain 2) -> 0 to 23.3 V, inside the 24 V rail.
+* A 100 ohm series resistor isolates the cable's capacitance; the plates are about 20 pF, the cable up to 300 pF.
+.include oa.inc
+.param cload=300p
+.param vstep=3.9
+.param cf=10p
+.options method=gear reltol=1e-3 abstol=1e-9 vntol=1e-5 itl4=200
+
+Vcc  vcc 0 DC 24
+Vdac dac 0 PULSE(0 {vstep} 50u 100n 100n 2m 4m)
+Xu   dac fb op vcc 0 oa_opa197
+Rf   op fb 47k
+Rg   fb 0 10k
+Cf   op fb {cf}
+Rsr  op out 100
+Cl   out 0 {cload}
+Rl   out 0 10Meg
+
+.control
+tran 100n 1m
+wrdata plate_tran.txt v(out)
+dc Vdac 0 4.0 0.1
+wrdata plate_dc.txt v(out)
+quit
+.endc
+.end

@@ -4711,3 +4711,36 @@ Part A of `docs/TODO-agent.md` is rewritten from your review; Parts B and C are 
 - **Updated:** the architecture now follows the gates (heater and test-current drivers for the G1 study), the toolchain includes mechanical CAD, the work packages add analysis scripts and a WP11 paper skeleton, and the list of decisions to put to you includes the G1 goal and the G3 outcome.
 <!-- ------ -->
 ---
+I got through the gates, a first mechanical design, the electronics requirements and parts, and the analog simulations. I stopped before the schematic, layout and order. Per the plan, layout waits on a prototype check, which needs you.
+
+**What your TODO needs from you is at the top of `docs/TODO-arcticoder.md`:**
+1. Confirm or edit the measurement goal (G1) in `docs/research_instrument_plan.md`.
+2. Decide the enclosure material.
+3. Don't power the ADS1115 (the bridged headers).
+4. Optionally install KiCad 9 for ERC from the command line (needs your password).
+5. Order the balance's materials: 50 µm stainless shim, 1 mm copper sheet, copper foil tape, an M3 assortment, 10 mm steel rod, and 1 mg–500 mg calibration weights. Listings couldn't be opened from here, so read each variant before paying.
+6. Print the balance parts (`hardware/balance/cad/*.stl`).
+
+**The gates**
+- **G1, goal (proposed):** quantify the spurious forces that dominate small-thrust experiments: lead-current Lorentz force in the ambient field, and heat and convection. The instrument claim is a balance resolving a few nN in a 1000 s measurement, at a parts cost I can fill in from the bill of materials.
+- **G2, mechanics:** a printable torsion balance in CadQuery, with every number in one parameters file.
+  - **Fixes the CAD forced:** a centre of mass 10.8 mm off the axis, and three collisions across the arm's swing.
+  - **Magnet decision:** no permanent magnet on the arm. An N42 disc there would cost about 7 nN/√Hz of field noise, so your magnets damp from fixed positions and calibration uses electrostatic plates.
+- **G3, force-noise prediction:** the model matches six published numbers from two papers. It predicts 0.11 nN (1σ) per 1000 s in air, a conditional GO. Air currents dominate, and the verdict flips if the air-speed fluctuation is 4 mm/s instead of 1 mm/s. That figure is the thing the prototype must measure.
+
+**Electronics.**
+- **Parts:** 48 JLC-stocked parts, all machine-placed SMT, 25 of them extended, about $24 of components per board.
+- **Power:** from USB, the lead current is capped at 300 mA.
+- **Simulations:** four analog blocks in ngspice, with these caught before layout:
+  - an 8.6% plate-driver overshoot;
+  - a wrong 100 mΩ shunt in my bill of materials, where the design needs 1 Ω;
+  - a wrong photodiode polarity in my first simulation, which I fixed.
+
+**Not done, or not verified**
+- No schematic, layout or Gerber files, and nothing is order-ready. The simulations use behavioural op-amp models; TI's SPICE models should replace them before layout.
+- The environmental noise terms are assumptions until the prototype measures them. The cost picture is rough: JLC's fee pages returned nothing to this session.
+- The Pico wasn't attached for the lock-in, so I couldn't recheck it live. Your level walk shows the DC chain is healthy; the `INN` reading was the jumper not touching the row, and `diagnose_levels.py` now says "floating" in that case.
+
+All 30 smoke tests pass; the CAD checks in them need `~/.venvs/lab-hw/bin/python`. Nothing is committed.
+<!-- ------ -->
+---

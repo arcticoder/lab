@@ -29,35 +29,46 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ---
 
-## Next order — AliExpress, nothing needed; one optional board
+## What I need from you
 
-Nothing is en route and no build below waits on an order.
+1. **Confirm or edit the measurement goal** (G1) in
+   [research_instrument_plan.md](research_instrument_plan.md): one line back. Nothing is laid out until
+   it is settled; the force-noise prediction already says it is reachable (a conditional go).
+2. **Decide the enclosure material** for the balance's draught shield (the biggest noise term):
+   acrylic or acetate panels on a printed frame, or something you already have. One line.
+3. **Do not power the ADS1115 module** (its headers were soldered with bridges): the fab board will carry
+   its own ADC, so the module is shelved.
+4. **Optional, for ERC/DRC from the command line:** KiCad 7 is installed and works for design and
+   Gerber export, but its `kicad-cli` can't run the electrical-rules check. If you want it: `sudo
+   add-apt-repository ppa:kicad/kicad-9.0-releases && sudo apt update && sudo apt install kicad`
+   (it needs your password; I can't run it). Not required to continue.
 
-- **RP2350-Zero ×1** (the listing you found, [orders.md](orders.md) "Candidates
-  found") — a third controller for parallel builds. Add it only to a cart that has
-  another need, so shipping isn't paid alone; check the total first. Before it runs
-  any raw-register `main.py` here, those scripts need a chip check
-  ([kb/rp2350_notes.md](kb/rp2350_notes.md)); that is an agent task, done when one is in hand.
+## Next order — AliExpress: materials for the balance
+
+Nothing is en route. These are the mechanics' own parts (the board's electronics come from the fab, not
+this cart). Check the total before paying; if a fee shows, hold the cart.
+
+- **Stainless-steel shim or foil, 0.05 mm (50 µm) thick**, about 100 × 100 mm: the torsion strip is cut
+  from it (4 mm wide). Two sheets, so a spoiled cut costs nothing.
+- **Copper sheet, 1 mm thick**, about 100 × 100 mm: the damper vane (20 × 22 mm).
+- **Copper foil tape, conductive adhesive**, 10–20 mm wide: the faces of the two calibration plates.
+- **M3 screw, nut and washer assortment** (6 to 16 mm screws).
+- **Steel rod, 10 mm diameter**, about 100 mm long: cut into the ballast slug (21 mm) and spare.
+- **Calibration weights, 1 mg to 500 mg** (an analytical-balance weight set): turns the plate voltage into
+  an absolute force (the plan's metrology section). Pick a class stated in the listing.
+
+Search names only; I couldn't open listings from here, so read each variant before paying.
 
 ## Ready to build now — parts on hand
 
-Two controllers are free to use: the Pico stays on the lock-in (items 1–2), the
-RP2040-Zero takes one other build at a time (items 3–5 and on), by silkscreen name
-and with `mpremote connect id:<serial>` when both are attached. Builds that need `GP16`
-(items 9 and 11) run on the Pico or remap that pin.
-
-1. [ ] **`signal_conditioning/lockin_amplifier` (`LOCKIN`/`DEMOD`) — find
-       why the mid-rail reference is at 0V after the board fell.** `Rbias`
-       is fixed (the 10kΩ is out, `trace_node.py` reads the design values), but
-       `main.py` reads both averagers near 0.03V, and a live check on 2026-10-19
-       showed `OUT1` sitting at 0.024V with either switch closed. Put the `GP28`
-       jumper (it was off the board; row 49, column j is `SIG`) on each row in turn
-       (`+` rail, `VMR`, `VMO`, `INN`, `OUT1`, the chips' supply pins),
-       `mpremote run diagnose_levels.py`; the table in
-       [breadboard.md](../signal_conditioning/lockin_amplifier/breadboard.md)
-       § "After the fix" says what each row should read and which leg to
-       re-seat. Then pull the jumper and `mpremote run main.py`; eight `[PASS]`
-       lines is done. Leave it assembled; item 2 builds on it.
+1. [ ] **`signal_conditioning/lockin_amplifier` (`LOCKIN`/`DEMOD`) — run it.** The 2026-10-22 level walk
+       read every point correctly (`+` rail 3.300V, `VMR` 1.142V, `VMO` 1.143V, `OUT1` 1.134V, supply pins
+       3.3V, ground pins 0.017V); the `INN` reading (0.758V) was the jumper not touching the row, since
+       the same value shows with it off the board. So the DC chain is healthy. Pull the `GP28` jumper and
+       `mpremote run main.py`; if `VA`/`VB` aren't near 1.1V at `floor`, `mpremote mount . run
+       diagnose_demod.py`. To re-probe `INN`, push the jumper firmly into the `INN` strip and run
+       `diagnose_levels.py` (it now says "floating" for a jumper not on a node). Eight `[PASS]` lines is
+       done; leave it assembled, item 2 builds on it.
 2. [ ] **`signal_conditioning/optical_shadow_readout` (`FORCEBAL`'s optical
        readout) — change the lock-in's front end.** Needs item 1 wired; no
        other parts to find. Swap the test-signal resistors for a TIA, a
@@ -65,41 +76,25 @@ and with `mpremote connect id:<serial>` when both are attached. Builds that need
        flag ([breadboard.md](../signal_conditioning/optical_shadow_readout/breadboard.md)),
        then `mpremote run main.py`; it asks for a phone flashlight and the
        flag. All `[PASS]` lines is done; it also reports how much light the
-       LED really puts on the photodiode, the one number the design assumes.
-3. [ ] **Solder the headers on the ADS1115 module and the RP2040-Zero, then
-       flash and self-test the Zero.** Both need their pins before anything else
-       uses them. Steps and the firmware file are in
-       [parts_reference.md](parts_reference.md#rp2040-zero) "First power-up". Done
-       when `mpremote connect id:<serial> mount . run loopback_test.py` (in
-       [signal_generator_r2r](../measurement_tools/signal_generator_r2r/)) prints
-       seven `[PASS]` lines on the Zero: no wiring, and it exercises its PIO and DMA.
-4. [ ] **`signal_conditioning/adc_ads1115` (`ADCDRV`) — first power-up of the
-       module, on the Zero.** It doubles as the genuineness check, and a dud is a
-       refund claim; the buyer-protection end date is on the order page (not visible
-       to me). 10kΩ ×3, 100nF, 1N5817 ×2
-       ([breadboard.md](../signal_conditioning/adc_ads1115/breadboard.md), with the Zero's
-       pin names); `mpremote run main.py`. Four `[PASS]` lines is done.
-5. [ ] **`measurement_tools/signal_generator_r2r` (`TESTSIG`) — wire the ladder and
-       run the bring-up.** Nine 2kΩ, eight 1kΩ, one 10kΩ, an LM358P and 100nF
-       ([breadboard.md](../measurement_tools/signal_generator_r2r/breadboard.md)); on the Zero
-       after item 4 is torn down. `mpremote mount . run main.py`: eight `[PASS]` lines
-       is done, and the run prints the real frequency ceiling. It then drives the lock-in's
-       `SIG` row through 200kΩ for a sinusoid test once item 1 passes.
-6. [ ] **`signal_conditioning/charge_amplifier` (`CHGAMP`) — retry with a
+       LED really puts on the photodiode, the one number the force-noise prediction assumes.
+3. [ ] **Print the balance** (`hardware/balance/cad/*.stl`, PLA, 3 walls, about 30% infill): `arm`,
+       `base`, `upright_a`, `upright_b`, `beam`, `top_clamp_a/b`, `low_clamp_a/b`, `vane_holder`,
+       `elec_arm`, `elec_fixed`, `damper_holder`, `sensor_bracket`, `flag` (0.2 mm layers, flat on the
+       bed; `flag` may be better cut from card). Largest part 200 × 32 × 28 mm. The strip, vane, ballast
+       and screws wait on the materials order; the printed frame alone lets you check fit, the
+       centre-of-mass offset and the sensor bracket's gap. The balance is the plan's A5 prototype
+       (the real noise spectrum before any board is laid out), so its readout is item 2.
+4. [ ] **`measurement_tools/signal_generator_r2r` (`TESTSIG`) — wire the ladder and run the
+       bring-up.** Nine 2kΩ, eight 1kΩ, one 10kΩ, an LM358P and 100nF
+       ([breadboard.md](../measurement_tools/signal_generator_r2r/breadboard.md)); on the Pico once
+       items 1–2 are done. `mpremote mount . run main.py`: eight `[PASS]` lines is done, and the run
+       prints the real frequency ceiling. Its PIO + DMA code carries over to the fab board.
+5. [ ] **`signal_conditioning/charge_amplifier` (`CHGAMP`) — retry with a
        leaded piezo disc.** Retry of the 2026-09-16 attempt; the leaded discs
        need no soldering to the disc. TL082, 1MΩ ×3, 10nF
        ([breadboard.md](../signal_conditioning/charge_amplifier/breadboard.md));
        `mpremote run main.py`. All `[PASS]` lines is done.
-7. [ ] **`signal_conditioning/accelerometer_interface` (`ACCELIF`) — clear the
-       bridged GY-521 pins, then wire four jumpers.** Wick arrived. Lay the
-       braid over the bridge, press the iron on it 2–3 seconds, lift both
-       together, check the row by eye (steps in
-       [breadboard.md](../signal_conditioning/accelerometer_interface/breadboard.md)).
-       `VCC`→3V3(OUT) (pin 36), `GND`→pin 38, `SDA`→GP4 (pin 6), `SCL`→GP5
-       (pin 7); module lying still; `mpremote run main.py`. All `[PASS]` lines
-       is done (a `WHO_AM_I` of `0x70`–`0x72` is a clone that still passes).
-       It's the measurement side of `VIBISO`.
-8. [ ] **`signal_conditioning/hall_amplifier` (`HALLAMP`) — first run of a
+6. [ ] **`signal_conditioning/hall_amplifier` (`HALLAMP`) — first run of a
        49E/SS49E, then the magnet test.** Read each sensor's top mark first
        (the SS49E listing also sold latching types), then wire it per
        [breadboard.md](../signal_conditioning/hall_amplifier/breadboard.md),
@@ -107,33 +102,34 @@ and with `mpremote connect id:<serial>` when both are attached. Builds that need
        0.94V. `[PASS]` for the noise line, then the magnet test: hold a disc
        with its curved side toward the sensor, not a flat face. Try a second
        sensor if the first can't be nulled.
-9. [ ] **`oscillators/vibration_driver` (`SIMPGEN`'s actuator stage) — wire it
+7. [ ] **`oscillators/vibration_driver` (`SIMPGEN`'s actuator stage) — wire it
        and run it.** The driver `RIPPLETANK` needs; coin motors arrived. S8050,
        1N5817, 1kΩ, 10kΩ ([breadboard.md](../oscillators/vibration_driver/breadboard.md));
        `mpremote run main.py`. All `[PASS]` lines is done.
-10. [ ] **`safety/overvoltage_monitor` (`OVERVOLT`) — wire it with its input
+8. [ ] **`safety/overvoltage_monitor` (`OVERVOLT`) — wire it with its input
        on the Pico's 3V3 pin.** First run of a TL431A from the batch; the 3V3
        rail is the known voltage that proves it trips and clears. TL431A,
        LM358, S8050, trimpot, LED
        ([breadboard.md](../safety/overvoltage_monitor/breadboard.md)); `mpremote
        run main.py`, trimpot to each end when asked. All `[PASS]` lines and
        the LED flipping is done.
-11. [ ] **`measurement_tools/frequency_counter` (`FREQC`/`SIMPLECNT`) — wire
+9. [ ] **`measurement_tools/frequency_counter` (`FREQC`/`SIMPLECNT`) — wire
        the digital path and run the loopback self-test.** First counting of
        a real signal by the Pico's PWM hardware; also the tool that reads
        `ne555_astable`'s frequency. GP16 → 10kΩ → GP3 with two 1N5817 clamps
        ([breadboard.md](../measurement_tools/frequency_counter/breadboard.md)),
        `mpremote run main.py` (6s). Six `[PASS]` lines is done; the analog
        (Schmitt) path is added later, only when a sensor needs counting.
+
 ## Blocked — waiting on another item
 
 - [ ] **`VIBISO`** (vibration isolation platform) — hold off on the
-      mechanical build itself until `ACCELIF` (item 7) is assembled and
-      passing, so there is something to measure isolation quality with. For
+      mechanical build itself until the fab board's accelerometer is running (or
+      a spare accelerometer is on hand), so there is something to measure isolation quality with. For
       later: the on-hand Creality K1 (with PLA filament stock) can print
       feet/platform parts once this is actionable.
 - [ ] **`RIPPLETANK`** (2D ripple tank) — waits on `vibration_driver` (item
-      9): it becomes the wave dipper, driven by that circuit. Whether a
+      7): it becomes the wave dipper, driven by that circuit. Whether a
       ~150Hz coin motor makes useful ripples is untested; the mechanical side
       (a dipper arm and tank) is still to be worked out. For later: the
       on-hand Creality K1 (PLA on hand) could print a precise stepped/sloped
@@ -141,6 +137,14 @@ and with `mpremote connect id:<serial>` when both are attached. Builds that need
 
 ## Deferred — considered and declined, no action needed
 
+- `signal_conditioning/adc_ads1115` (`ADCDRV`) and `accelerometer_interface` (`ACCELIF`) — the
+  ADS1115 module's and the GY-521's headers were soldered with bridges (the GY-521 since 2026-09-24,
+  the ADS1115 on 2026-10-22), and the fab board carries its own ADC and accelerometer, so neither
+  module is built. The designs stay in the repo as references. The ADS1115's refund window, if it
+  matters, is on the order page.
+- RP2040-Zero (headers loose, not soldered) and the optional RP2350-Zero — the fab board carries its
+  own RP2040. The Zero stays in inventory for a press-fit test only; the RP2350 needs a chip check in the
+  raw-register scripts first ([kb/rp2350_notes.md](kb/rp2350_notes.md)).
 - `protection/active_current_limiter` (`ACTIVELIM`) — designed and
   simulated, one IRLZ44N on hand, but nothing on this bench needs its
   protection yet: it exists to guard `psu_medhigh`/`psu_high`, and that

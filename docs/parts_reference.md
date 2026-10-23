@@ -842,8 +842,9 @@ Differences from the Pico that matter to this repo's scripts:
 
 Headers and a USB-C data cable arrived (headers not yet soldered). Steps:
 
-1. Solder the header pins (long side down into a breadboard to hold them square,
-   the board on top, one pad at a time; the solder wick clears a bridge).
+1. The header pins came loose and were not soldered (the user stopped hand soldering on
+   2026-10-22). Until a fab board replaces this, the Zero is used press-fit only: pins in a
+   breadboard, the board pressed down onto them, for a short test.
 2. Hold `BOOT`, plug in the USB-C cable, release: a drive named `RPI-RP2` appears in
    Windows. Copy `RPI_PICO-20251209-v1.27.0.uf2` onto it (the same MicroPython
    build the Pico on the bench runs, from

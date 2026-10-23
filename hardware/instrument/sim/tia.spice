@@ -1,0 +1,24 @@
+tia: photodiode head transimpedance amplifier
+* Rf 10 kOhm, Cf 1 nF: transimpedance 10 kV/A, corner 1/(2 pi Rf Cf) = 16 kHz, well under the loop's crossover.
+.include oa.inc
+.param rf=10k
+.param cf=1n
+.param cd=70p
+
+Vcc vcc 0 DC 3.3
+Vb  b 0 DC 0.1
+Iph in 0 DC 100u AC 1
+Cd  in 0 {cd}
+Ci  in 0 5p
+Xu  b in out vcc 0 oa_tlv9062
+Rf  in out {rf}
+Cf  in out {cf}
+Rl  out 0 100k
+
+.control
+set wr_vecnames
+ac dec 40 10 100Meg
+wrdata tia_ac.txt vdb(out) vp(out)
+quit
+.endc
+.end
