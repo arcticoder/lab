@@ -4699,3 +4699,15 @@ The plan is at the top of `docs/TODO-agent.md`, as a section called "Next sessio
 - The R-2R generator stays: its ladder needs only the breadboard, so it can run on the Pico once the lock-in work is done.
 <!-- ------ -->
 ---
+Part A of `docs/TODO-agent.md` is rewritten from your review; Parts B and C are unchanged, and nothing else was edited.
+
+- **Parts sourcing:** every electronic part is now an SMT part that JLCPCB supplies and places. The through-hole parts on hand are out of the design, replaced by JLC-stocked equivalents: SOT-23 Hall sensors, SMD photodiode and emitter, 0603 NTCs, a MEMS accelerometer. The N42 discs and coin motors remain only as optional off-board mechanical parts that need no soldering, and nothing depends on them.
+- **New A1, three gates before any electronics design:**
+  - **G1, measurement goal:** a one-paragraph claim you confirm. My proposed default is to quantify the spurious-force mechanisms behind false positives in the small-thrust literature: power-lead currents interacting with the ambient and geomagnetic field, heating, and convection. Feed geometry and current are the controlled variables, alongside an open µN-scale balance at a stated cost. The force scale and cost get filled in from G3.
+  - **G2, mechanical design with a model:** balance type, pivot stiffness, resonance and Q, the lever arms, thermal-expansion paths, the coil's coupling geometry, sensor locations and an isolation concept. The PCB's mounting holes and connector positions come from this.
+  - **G3, force-noise prediction:** every source chained through to N/√Hz, compared against the resolution budget and two published balances taken from the cited papers. If the predicted floor can't support G1, the design goes back to G2, not on to parts or a schematic.
+- **New A2, environment and metrology:** each dominant noise term gets a control and its expected suppression: enclosure, thermal mass, active Helmholtz compensation (mu-metal is costly), a heavy surface. Vacuum is flagged as out of scope for the first build, with its effect stated. Absolute calibration comes from gravity (tilt or known masses) against the coil, with a precision shunt and an uncertainty budget that includes drift.
+- **New A5, a prototype check before the order:** a printed beam with the existing breadboard optical readout and the Pico. If measured resonance, Q and displacement noise disagree with the model, the design goes back to G2 and G3 rather than to the fab.
+- **Updated:** the architecture now follows the gates (heater and test-current drivers for the G1 study), the toolchain includes mechanical CAD, the work packages add analysis scripts and a WP11 paper skeleton, and the list of decisions to put to you includes the G1 goal and the G3 outcome.
+<!-- ------ -->
+---
