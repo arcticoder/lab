@@ -4744,3 +4744,32 @@ I got through the gates, a first mechanical design, the electronics requirements
 All 30 smoke tests pass; the CAD checks in them need `~/.venvs/lab-hw/bin/python`. Nothing is committed.
 <!-- ------ -->
 ---
+All six items are applied. The full smoke suite passes (30 run, 0 failed) and the force-noise budget is still a conditional GO at 0.108 nN (1σ, 1000 s). Nothing is committed.
+
+**What changed in the design**
+- **G1:** it's confirmed with the wording you gave, in the plan doc. The $X placeholder remains until the BOM is final.
+- **Enclosure:** the printed frame has drop-in slots for 3 mm acrylic panels, with foam tape on the edges. Panel thickness is `PANEL_T` in `params.py`. The balance sits inside with 11 mm clearance to every wall and the lid.
+- **KiCad 9.0.9:** the toolchain docs now say ERC, DRC and render run from `kicad-cli`.
+- **Stainless sheet:** it's recorded as in the cart in `orders.md`, with the listing URL and the 0.05 × 100 × 1000 mm variant. One sheet gives many 4 mm strips.
+- **Owned hardware:** the M3 nuts and the 10, 12 and 14 mm screws are in `inventory.md` and `orders.md`. The bag isn't recorded.
+- **CAD:** I regenerated the exports and `views.png` and deleted the old upright, beam and `y_counter` STLs.
+- **Damper:** with the 0.3 mm vane, fully engaged damping is about 0.6, against about 2.1 with 1 mm.
+- **Mass:** moving mass is now 46.3 g and inertia 2.81 × 10⁻⁴ kg·m².
+
+**Copper and foil tape**
+- **Copper sheet:** the 100 × 100 mm size had no reason behind it. It's now 0.3 mm thick, 30 × 30 mm or the smallest listed. Damping scales with thickness, so 1 mm over-damps. The vane is only 20 × 22 mm.
+- **Foil tape:** it must be single-sided copper tape with conductive adhesive, 10–20 mm wide, shortest roll (about 1 m). The listing has to say conductive adhesive; the Kapton tape you found is an insulator, so it isn't this.
+
+**Screws, nuts and washers**
+- **Screws:** you own enough. The CAD uses 18 × M3×12 and 14 nuts.
+- **Washers:** buy 50 M3 flat washers in 304 stainless (3.2 mm inner, 7 mm outer diameter).
+- **Stainless nuts:** buy 20 M3 hex nuts in 304 stainless. The lower strip clamp sits on the moving arm, so its two nuts must be non-magnetic. Your black carbon-steel nuts are for the fixed parts only.
+- **Brass rod:** buy a 10 mm brass rod, 50 mm or longer, in place of the steel one. The damper magnets would pull on steel.
+
+The rest of the order is in `TODO-arcticoder.md`: the three acrylic sizes from the CAD cut list (2 × 240×160, 2 × 243×160, 1 × 266×266 mm, all 3 mm), 3 mm foam sealing tape, and the calibration weights. The enclosure, G1 and KiCad items are off your list, which now holds only the ADS1115 warning.
+
+I also updated the plan's G2 table and the TODO print list, which now has `gantry` and the four `encl_post_*` posts.
+
+Next is the WP4 schematic, using SKiDL with `kicad-cli sch erc`.
+<!-- ------ -->
+---

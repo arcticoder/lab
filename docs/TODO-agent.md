@@ -69,15 +69,14 @@ publishable (arXiv-level) experimental study, not a set of one-circuit boards.
   with weights or wire riders; the readout (5 pN/√Hz) is far below the environment, so the electronics need
   not be exotic. Lead current is limited by USB to about 0.4 A.
 - A4 toolchain done (KiCad 7 + venv with SKiDL, kiutils, easyeda2kicad, CadQuery; Freerouting 2.5.0; JLC parts
-  snapshot); the only gap is ERC/DRC from `kicad-cli` (KiCad 8+, user's sudo; `pcbnew` gives DRC in the venv).
+  snapshot); KiCad was upgraded to 9.0.9 on 2026-10-23, so `kicad-cli sch erc` / `pcb drc` / `pcb render` are available.
 - A5 (prototype before layout) needs the user: the print, the materials order, the lock-in and optical readout.
 - WP1 (requirements, pin map, USB power budget), WP2 (48 JLC-stocked parts, all machine-placed SMT, 25 extended) and
   WP3 (TIA, LED sink, device-current sink, plate driver in ngspice) are done: `hardware/instrument/`. WP3 caught an 8.6%
   plate-driver overshoot and a wrong shunt value in the BOM. **Next: WP4 (schematic).** It needs: the Raspberry Pi RP2040
   hardware design reference (fetch from datasheets.raspberrypi.com and follow it for the crystal, flash and USB), the ADS131A04's
   pin table and input network (datasheet pages on AVSS/VNCP and the reference), symbols and footprints from `easyeda2kicad` by
-  LCSC number, and a SKiDL description with connectivity checks (every IC pin accounted for). KiCad 7 has no CLI ERC, so
-  ERC is either SKiDL's own plus a pin-table test or KiCad 9 if the user installs it. WP5 (layout) and WP7 (order) wait on A5
+  LCSC number, and a SKiDL description with connectivity checks (every IC pin accounted for). ERC is `kicad-cli sch erc` (KiCad 9.0.9) plus a pin-table test. WP5 (layout) and WP7 (order) wait on A5
   per the plan's own rule.
 
 **Hard constraints:**

@@ -1,7 +1,7 @@
 # Research instrument plan — a fab-assembled force balance
 
 Status: gates G1–G3, requirements (WP1), candidate parts (WP2) and the analog block simulations (WP3) done
-2026-10-22 (G1 awaits the user's confirmation); no schematic, layout or order yet; layout waits on the A5 prototype check. The task list that drives this is
+2026-10-22 (G1 confirmed 2026-10-23); no schematic, layout or order yet; layout waits on the A5 prototype check. The task list that drives this is
 [TODO-agent.md](TODO-agent.md) Part A; the scope decision is recorded in
 [kb/circuit_lifecycle_and_repo_scope.md](kb/circuit_lifecycle_and_repo_scope.md).
 
@@ -13,15 +13,14 @@ one consolidated order, USB power, nothing above the repo's 50 V DC / 30 V AC li
 
 ---
 
-## G1 — the measurement goal (proposed; the user confirms or edits one line)
+## G1 — the measurement goal (confirmed 2026-10-23)
 
-> **Quantify, on an open, fully assembled, low-cost torsion balance, the spurious forces that
-> dominate small-force and thrust measurements: the Lorentz force of supply-lead currents in the
-> ambient magnetic field, and the thermal and convective forces of a dissipating device, as
-> functions of current, lead geometry and dissipated power, in air, with the balance's force
-> noise, calibration constant and drift fully characterized.** The instrument claim that goes with
-> it: a force balance resolving forces down to a few nanonewtons in a 1000 s measurement at a
-> parts cost under $X (to be filled in from the bill of materials in WP2).
+> **Quantify, on an open, fully SMT-assembled, low-cost torsion balance operating in air, the spurious
+> forces that dominate small-force and thrust measurements — the Lorentz force of supply-lead currents
+> in the ambient magnetic field, and the thermal and convective forces of a dissipating device — as
+> functions of current, lead geometry and dissipated power, with the balance's force noise floor,
+> calibration constant and drift fully characterized.** Instrument claim: resolves forces to ≤ 0.4 nN
+> (5σ on a 20 nN term) in a 1000 s measurement at a parts cost under $X (filled from the final BOM).
 
 Why this question: the published small-thrust experiments agree that current-carrying leads and
 heat are the usual false positives. The Duif paper (arXiv:1706.04999) names heat dissipated on the
@@ -55,15 +54,15 @@ are exported to `hardware/balance/cad/` (printable on the K1: the largest part i
 |------|-------|
 | Type | Torsion balance: a horizontal arm on a taut stainless strip (4 mm × 50 µm × 30 mm), ±100 mm |
 | Torsion constant | 452 µN·m/rad (thin-strip formula plus the ribbon's tension term) |
-| Moving mass / inertia | 55.9 g / 2.98 × 10⁻⁴ kg·m² (from the CAD) |
+| Moving mass / inertia | 46.3 g / 2.81 × 10⁻⁴ kg·m² (from the CAD) |
 | Resonance | 0.196 Hz (period 5.1 s) |
 | Stiffness at the arm end | 0.0452 N/m: 1 µN moves the flag 22 µm (the Soni & Roy stand, below, is 54× stiffer) |
 | Measurement frequency | 0.05 Hz (the device under test is switched at this rate; the readout is lock-in demodulated) |
-| Damping | Copper vane on the arm between two N42 discs **fixed** to the base (eddy-current damper, as in Soni & Roy). Fully engaged it would give a damping ratio of about 2.1 (first-order estimate), so it is engaged partially: tuned to 0.5 on the bench |
+| Damping | Copper vane on the arm between two N42 discs **fixed** to the base (eddy-current damper, as in Soni & Roy). The 0.3 mm vane fully engaged gives a damping ratio of about 0.6 (first-order estimate; 1 mm would give 2.1); the bench tunes it to 0.5 by engagement |
 | Displacement readout | Flag on the arm crossing an LED-to-photodiode gap in a C-bracket (LED board above, photodiode board below, both small fab-assembled boards) |
 | Calibration and disturbance injection | Electrostatic plates (20 × 8 mm, 1 mm gap, at 80 mm). The moving plate is grounded through the strip, so it needs no lead wire and carries no magnetic moment. 5.7 µN at 40 V; around a 40 V bias, 283 nN per volt, so 1 mV is 0.28 nN |
-| Device mount | Vertical plate at +x for a terminal block and the device's leads; a dummy steel block stands in for the device's mass |
-| Balance trim | A steel ballast in the −x pocket and a y counter-mass are solved so the centre of mass is on the axis (CAD: 0.00 mm); a bench balancing procedure with the ballast trims it further |
+| Device mount | Vertical plate at +x for a terminal block and the device's leads; a dummy brass block stands in for the device's mass |
+| Balance trim | A brass ballast in the −x pocket, its hole offset in y, is solved so the centre of mass is on the axis (CAD: 0.00 mm); a bench balancing procedure with the ballast trims it further |
 
 **Design decisions this work forced** (each from a check that failed or a number that surprised):
 
@@ -80,9 +79,11 @@ are exported to `hardware/balance/cad/` (printable on the K1: the largest part i
   into torque far above the model's assumed 0.2 mm; the ballast and counter-mass are now solved.
 
 Parts the mechanics need that are not on hand (an AliExpress cart item list, in
-`TODO-arcticoder.md`): stainless-steel shim stock, 50 µm; copper sheet, 1 mm; an M3 screw, nut and
-washer assortment; a steel rod, 10 mm diameter, for the ballast; and 1 mg to 500 mg calibration
-weights. An enclosure (draught shield) is an open decision (see A2).
+`TODO-arcticoder.md`): stainless-steel shim stock, 50 µm (in the cart); copper sheet, 0.3 mm; conductive copper foil tape;
+a brass rod, 10 mm diameter, for the ballast (steel would feel the damper magnets); M3 washers and 304
+stainless nuts (screws and carbon-steel nuts are on hand); 3 mm acrylic panels and foam tape; and 1 mg
+to 500 mg calibration weights. The enclosure (draught shield) is decided: a printed frame with drop-in
+3 mm acrylic panels sealed with foam tape, sized by `PANEL_T` in `hardware/balance/params.py`.
 
 ## G3 — the end-to-end force-noise prediction, and the go/no-go
 
@@ -185,6 +186,6 @@ for one consolidated order and for proving the design on the breadboard balance 
 ## Next steps and decisions for the user
 
 See [TODO-agent.md](TODO-agent.md) (work packages WP1–WP11) and the top of
-[TODO-arcticoder.md](TODO-arcticoder.md). Decisions: confirm G1; the enclosure material; a budget
+[TODO-arcticoder.md](TODO-arcticoder.md). Decisions: a budget
 ceiling for the order; whether to print the balance now (it needs the stainless strip and copper from
 the next order) so A5 can measure the real noise before the boards are laid out.
