@@ -35,6 +35,157 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
 
 ---
 
+## Part D — balance materials review, 2026-10-23 (Opus 5.5 for Sonnet 5.5; do this before Part A's WP4)
+
+The user put five lines in the AliExpress cart, offered pre-sized acrylic stock or printed clear PETG in
+place of custom-cut acrylic, and asked which lines can be checked out. Evaluated here; the user was given the
+checkout answer in chat (summarized in D7). Work top to bottom; D1 and D2 change the CAD, so rerun
+`hardware/balance/balance.py`, `render.py`, `smoke_test.py` (venv Python) and `tools/force_noise_budget.py`
+after them. Standing rule from this review: **design to stock sizes** (whole sheets, standard pads and rods)
+instead of asking for custom cuts.
+
+### D1 — Enclosure: redesign around uncut 2 mm acrylic, 150 × 250 mm
+
+Decision: acrylic, not PETG. Reasons (record them in `research_instrument_plan.md`'s A2/enclosure text,
+paraphrased): the optical readout (IR LED, photodiode, flag) is all inside the box, so panel clarity only
+matters for looking in, not for the measurement; the current 240 × 160 mm walls and the 266 mm lid are larger
+than the K1's 220 × 220 mm bed, so printed panels would each need a seam; solid PETG panels would take about a
+kilogram of filament the user doesn't have. The user offered 2 mm sheets at 150 × 200, 150 × 250, 100 × 150,
+100 × 100, 80 × 80 mm and 1 mm sheets at 100 × 150, 150 × 200, 150 × 250, 200 × 300, 200 × 200 mm. Use **2 mm
+at 150 × 250 mm** (1 mm over 250 mm is flexible and would drum).
+
+Checked against the current CAD (bounding boxes, 2026-10-23): the balance's top is the gantry at z = 132 mm;
+the base is ±109 mm; the arm is ±100 mm in x and ±14 mm in y; the sensor bracket reaches x = −108 mm and the
+damper holder y = 54 mm. So:
+
+- [ ] **Walls:** four uncut 150 × 250 × 2 mm sheets, long edge horizontal, standing on the table, ends held in
+      vertical slots in the four corner posts. With 5 mm of each end in a slot, the clear span between post
+      faces stays 240 mm (clearance to the base edge stays 11 mm). Wall height 150 mm leaves 18 mm above the
+      gantry.
+- [ ] **Lid:** two uncut sheets side by side, long edges along x: 250 × 300 mm of cover over a roughly
+      244 × 244 mm opening. They rest on the wall tops and the post tops; their meeting seam sits on a
+      printed centre rib spanning the box (a 250 mm bar fits the bed diagonally; check with `printability`).
+      Make the posts and rib carry the lid level; check the lid's bearing on the wall tops along x (only
+      about 3 mm a side), and add a printed ledge on the posts if that is too little.
+- [ ] **Seal:** the user's cart has 0.3 mm double-sided PE foam tape, 3 mm wide, 10 m (D6). It doesn't
+      compress like a gasket, so use it as a shim: strips on both faces of each wall's vertical edges inside the
+      slots. New parameter `SEAL_T = 0.3e-3`; slot width `PANEL_T + 2*SEAL_T + 0.2 mm`. Strips on the wall tops
+      and the rib seal the lid. The lid stays removable: tape on the wall tops keeps its liner side up, or
+      the lid is taped down only for a run (pick one and write it into the assembly steps). Estimate the tape
+      length (about 4 m of the 10 m) and print it. If A5 measures air-current noise above the model's
+      assumption, a compressible EVA gasket becomes the next step (put that in the Deferred section, not now).
+- [ ] `params.py`: `PANEL_T = 2e-3`, `PANEL_STOCK = (250e-3, 150e-3)`, `SEAL_T`; replace the fixed
+      `ENCL_INNER` with values derived from the stock. `balance.py`: posts 150 mm tall, the lid replaced by two
+      stock panels plus the printed rib, `panel_cut_list()` returning stock counts.
+- [ ] Smoke test: every acrylic panel is an uncut stock sheet (the cut list is exactly six 250 × 150 × 2 mm
+      sheets); every printed enclosure part fits the bed; clearance ≥ `ENCL_MIN_CLEARANCE` to the walls and to the
+      lid underside; the lid covers the opening in both axes with bearing ≥ 3 mm on every edge.
+- [ ] Order line: **7 sheets** (6 plus a spare) of clear 2 mm acrylic, 150 × 250 mm.
+
+### D2 — Damper: the owned N42 discs are magnetized radially; remodel, re-orient, choose the vane thickness
+
+Found in this review, not by the user: the damper uses the ten N42 D6 × 3 mm discs, and both the listing
+and `inventory.md` say they are **radially** magnetized (poles on the curved sides). In the CAD the discs are
+flat-face to the vane, and `model.disc_field_on_axis()`/`eddy_damping_estimate()` assume **axial**
+magnetization, so the damping estimate (ζ ≈ 0.6 at full engagement, 0.3 mm vane) doesn't apply to these
+magnets. With radial magnetization, flat-face mounting puts the field mostly in the vane's plane, and eddy
+damping goes with the field *through* the vane.
+
+- [ ] Add `magpylib` to `~/.venvs/lab-hw` (record its version in `hardware/README.md`). Cross-check it against
+      `disc_field_on_axis()` for an axial disc (it must agree), then model the D6 × 3 mm discs with
+      diametric magnetization.
+- [ ] Re-orient the discs in the CAD: on edge (axis horizontal), one above and one below the vane, each with
+      its N–S diameter vertical, so a curved pole faces the vane; opposite poles face each other across the gap.
+      Mounting: printed cradles that let each disc turn freely about its own axis, so the two discs line up by
+      attraction during assembly, then fix them (the 0.3 mm double-sided tape, or a printed cap). Write those
+      steps into the assembly text.
+- [ ] Damping estimate from the modelled field: c = σ t ∫ B⊥² dA over the vane, keeping the existing
+      factor-of-two caveat. Also evaluate two discs per side, side by side with alternating poles (ten are owned),
+      which raises the field gradient and damping.
+- [ ] Choose the vane: the copper pad listing sells **20 × 20 mm at 0.3, 0.5, 0.8 and 1.0 mm** (D6 has the URL).
+      Damping can be lowered on the bench (partial engagement, a wider gap) but not raised past full engagement.
+      So the full-engagement ζ must be ≥ 0.6 (target 0.5); choose the thinnest variant that meets it, and the
+      magnet arrangement too if no single pair is enough. The user has been told to add the 1.0 mm variant
+      next to the 0.3 mm one, so both will arrive. Keep ≥ 1 mm of clearance between the vane and each magnet.
+- [ ] Vane size 20 × 20 mm (was 20 × 22): it is the pad uncut. At full engagement keep about 2 mm of vane
+      beyond the magnets' footprint on every side (eddy currents need the return path); move the damper
+      holder in y if needed. Attach the vane to its holder with the 0.3 mm double-sided tape (it is uncut, so
+      there is nothing to drill). Re-solve the ballast.
+- [ ] Phone-compass check for the user (one line in TODO-arcticoder's "What I need from you"): turn a disc
+      about its own axis flat on a table next to a phone's compass app. A full swing of the needle means radial
+      magnetization (use the new design); no change means axial (the old flat-face design stands, ζ ≈ 0.6 with
+      0.3 mm). Write the CAD so either orientation is one parameter (`MAGNET_MAGNETIZATION = "diametric"`).
+- [ ] Smoke test: the magpylib axial cross-check; the vane's full-engagement ζ ≥ 0.6 for the chosen
+      thickness and magnetization; vane overhang ≥ 2 mm; vane-to-magnet clearance ≥ 1 mm.
+
+### D3 — Ballast: from the 10 × 100 mm brass rod (uncut), plus trim
+
+The rod is the shortest the listing sells. 18 mm of it is the ballast, which means one saw cut; the user's
+inventory has no saw or file.
+
+- [ ] Printed **saw guide**: a V-block with a kerf slot and an end stop at the ballast length plus 0.5 mm, for a
+      junior hacksaw. Then filing to length. Add to "Next order" (D7): a junior hacksaw and a flat needle file,
+      unless the user already has them (the inventory shows neither).
+- [ ] **Printed-part mass uncertainty.** Find out what density `balance.py` uses for printed parts (infill,
+      walls). Real prints differ by ±10–20%. Turn that range into a centre-of-mass offset and into the tilt of the
+      hanging arm (it changes the plate gap, the vane gap and the flag height), and check them against the
+      existing 0.3 mm centre-of-mass check. If the range is wider than that check, the bench trim has to absorb it.
+      Free fix: the user reads each printed part's filament mass from the slicer (one line in
+      TODO-arcticoder's print item), and `params.py` gets a table of those masses that replaces the density
+      estimate.
+- [ ] **Trim without new parts:** flat trim pads on the arm at both ends and both sides (in the CAD). Trim weights:
+      spare 20 × 20 mm copper pads (about 1.1 g at 0.3 mm, 3.6 g at 1.0 mm) and squares of copper foil tape (about
+      0.04 g per cm²). All are non-magnetic. Write a bench balancing procedure that ends with a pass/fail
+      reading, using the optical readout or a level line on the arm, so the user isn't left guessing.
+
+### D4 — Strip cutting (0.05 mm 304 sheet, 100 × 1000 mm, in the cart)
+
+- [ ] Printed **strip-cutting guide**: two plates that clamp the shim with exactly 4.0 mm exposed, for scoring
+      several passes with a craft knife along a steel edge, then snapping. Length: the 30 mm free length plus
+      both clamp lengths (from the CAD). Work out what a ±0.2 mm width error does to κ (∝ w t³ plus the tension
+      term); the period measurement calibrates it anyway. Mention deburring with a fine file, because edge
+      kinks add anelastic loss. A craft knife and a steel ruler: one "if not owned" order line (they aren't in
+      the inventory either).
+
+### D5 — Calibration plates: copper foil tape (10 mm × 1 m, conductive acrylic adhesive, in the cart)
+
+- [ ] Check the electrical path for both plates in the CAD and the text, with no soldering. Moving plate: the
+      foil wraps the 20 × 8 mm face and runs along the arm to the lower strip clamp, where the clamp presses its
+      copper face against the strip (ground through the strip and the top clamp). Fixed plate: the foil wraps its
+      face and runs to an M3 screw, where a washer clamps a ring terminal or a stripped wire onto it. If the
+      path needs anything not on hand (ring terminals), add it to D7's order lines.
+- [ ] The listing sells single- and double-sided-conductive variants, and the user's selection reads only
+      "10mm x 1M". With the clamped joints above, both variants work; a foil-to-foil overlap joint needs the
+      conductive adhesive. Design so that no joint depends on the adhesive, and note that in the order record.
+- [ ] Keep exposed PLA away from the electrode gap: the foil covers each facing surface and 1 mm past its
+      edges. Stray charge on bare plastic near the gap is a known patch-potential term; write it into the
+      plan's systematic list if it isn't there.
+
+### D6 — Record the cart (orders.md "In cart"; paraphrase, no listing marketing text)
+
+- [ ] Foam tape: https://www.aliexpress.com/item/1005008202477750.html, variant 10 m / black / 3 mm / 0.3 mm;
+      PE foam, double-sided acrylic adhesive, 0.3 mm thick, rated 80 °C. Use: slot shim and lid seal (D1).
+- [ ] Copper pads: https://www.aliexpress.com/item/1005002935282949.html, variant 20 × 20 × 0.3 mm, 5 pieces;
+      the listing's spec table says "Carbide" (listing noise; the title and description say copper). Arrival
+      check: non-magnetic (a disc magnet doesn't pull it). Also the 1.0 mm variant once added (D2).
+- [ ] Copper foil tape: https://www.aliexpress.com/item/1005005694527982.html, variant 10 mm × 1 m; 99.98%
+      copper, conductive acrylic adhesive per the listing.
+- [ ] Brass rod: https://www.aliexpress.com/item/1005005771688003.html, variant 10 × 100 mm, 1 piece; length
+      ±1–5 mm per the listing.
+- [ ] Inventory "On Order" rows go in when the user says it's checked out, not before.
+
+### D7 — TODO-arcticoder.md
+
+- [ ] Remove "What I need from you" item 1 (ADS1115): the user had already shelved it. Replace it with the
+      phone-compass check (D2), one line, if D2 isn't settled by then.
+- [ ] "Next order": mark as in the cart the stainless sheet, foam tape, copper pads 0.3 mm, copper foil tape
+      and brass rod. Still to add before checkout: copper pads 20 × 20 × 1.0 mm (same listing as the 0.3 mm);
+      7 × clear acrylic 2 mm 150 × 250 mm; M3 flat washers 304, 50; M3 hex nuts 304, 20; calibration weights
+      1 mg–500 mg; and, if not owned, a junior hacksaw, a flat needle file, a craft knife and a steel ruler. Then
+      check out as one order. Remove the 3 mm acrylic and 3 mm foam lines.
+- [ ] Print item: new part names after D1–D4 (posts 150 mm, lid rib, magnet cradles, saw guide, strip guide),
+      and a request for the slicer's mass per part (D3).
+
 ## Next session plan (written 2026-10-22 by Opus 5.5, for Sonnet 5.5 to action)
 
 The user switched models and asked for detailed action recommendations only;
