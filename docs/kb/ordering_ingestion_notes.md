@@ -487,3 +487,16 @@ Smaller traps from the same ingestion:
 - The user's spec blocks use `[cite: ...]` markers from another tool; strip
   them when copying numbers.
 
+
+## Listing quirks and ledger handling seen 2026-10-23/24
+
+- **Spec tables can contradict the title.** The 20 x 20 x 0.3 mm copper pads' spec table says "Carbide"; the title and description say copper. Record the contradiction in `orders.md` and add an arrival check
+  (a disc magnet must not pull a copper part).
+- **Variant names hide specs.** The copper foil tape variant reads only "10mm x 1M" while the description lists single- and double-sided conductive adhesive: design so that no joint depends on the adhesive.
+  Rod and strip listings state lengths to within 1-5 mm. Several sheet listings only sell much larger sizes than a design needs; the user hunts listings, so give the exact variant a design can use.
+- **The user reads each listing before adding to the cart** and pastes title, variant and description; record URL and variant, paraphrase the description (no marketing text).
+- **Ledger across repos.** `docs/orders.md` and `docs/inventory.md` here stay the single record for every repo's parts. A cart line moves: "In cart" -> "Ordered, not yet arrived" (dated; inventory "On Order" rows) ->
+  "Received" (bag assigned; see `inventory_storage_notes.md`). The experiment repo's TODO-arcticoder says what is still to be added; the user does the checkout. Fabrication orders to JLC are not in `orders.md`
+  until placed; their rules are in the experiment repo (`docs/kb/fab_ordering_notes.md`, github.com/arcticoder/spurious-force-balance).
+- **Fasteners:** screws are 304 stainless pan head GB818 (10, 12, 14 mm, 50 each); the M3 nuts on hand are black carbon steel (magnetic). Parts on a moving arm that sits near magnets need 304 nuts and washers
+  (buy: 3.2 mm inner, 7 mm outer diameter washers).

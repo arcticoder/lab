@@ -58,3 +58,8 @@ and from every `breadboard.md` parts table, plus the `pico/` repo's parts and
 BOM tables. Not removed: wiring-step tables that name a wire type or colour
 per connection (they are instructions, not stock). Don't add jumper rows back
 to a parts table.
+
+## Hardware added 2026-10-23 (bag not recorded)
+
+M3 hex nuts (black carbon steel, 55) and 304 stainless GB818 pan head M3 screws (50 each of 10, 12, 14 mm) are in `inventory.md` "Prototyping and Cables" with no bag; ask for the bag at the next arrival check. The
+five AliExpress items ordered 2026-10-24 (stainless sheet, foam tape, copper pads, copper foil tape, brass rod) need a bag on arrival; the copper pads and the brass rod must be kept away from the N42 discs' bag.

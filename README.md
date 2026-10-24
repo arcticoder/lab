@@ -509,3 +509,9 @@ tools/
     ngspice_runner.py       shared ngspice-invocation/parsing helper for smoke_test.py scripts
     run_all_smoke_tests.py  finds and runs every smoke_test.py in the repo
 ```
+
+## License
+
+- **Code** (MIT, [LICENSE](LICENSE)): the Python and MicroPython sources (`main.py`, `diagnose_*.py`, `smoke_test.py`, `tools/`).
+- **Hardware designs and their documentation** (CERN-OHL-P v2, [LICENSE-HARDWARE](LICENSE-HARDWARE)): SPICE netlists, schematics and
+  breadboard guides, parts tables and BOMs, and the build and inventory documents.
