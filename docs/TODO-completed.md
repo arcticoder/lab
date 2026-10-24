@@ -18,6 +18,14 @@ matching, so don't assume one file makes the other redundant.
 
 ---
 
+## 2026-10-23
+
+- Split the torsion-balance experiment out into its own public repo,
+  [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance) (history kept): `hardware/`,
+  `tools/force_noise_budget.py`, the plan and the PCB toolchain notes moved; this repo keeps the circuits and the shared
+  inventory/orders ledger. The balance's AliExpress cart lines are recorded in `orders.md`; its README, scope note
+  and workspace file point at the new repo.
+
 ## 2026-10-17
 
 - **Both October AliExpress orders arrived** (2026-10-02: leaded piezo discs
