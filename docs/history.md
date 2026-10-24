@@ -4839,3 +4839,29 @@ I've written the split as **Part E** at the top of [docs/TODO-agent.md](docs/TOD
 I also updated my memory note on repo scope: experiment-specific work goes in its own repo under `~/Code/python`, gets added to your one workspace, and lab keeps the reusable circuits and the shared parts records.
 <!-- ------ -->
 ---
+Parts E and D are both done. The new repo is live and pushed, and lab is updated but not committed.
+
+**Part E: the split**
+- **Repo:** https://github.com/arcticoder/spurious-force-balance is public, with the description and 14 topics set and a README.
+- **Contents:** it has the experiment's history, a smoke-test runner, and its own TODO-agent, TODO-arcticoder and TODO-completed. Both repos' smoke tests pass (2 run in the new repo, 28 in lab) and the noise verdict is unchanged: conditional GO at 0.108 nN.
+- **Workspace:** the clone is in `~/Code/python/` and added to `lab.code-workspace`.
+- **Lab:** the moved files are removed. The README, scope note and TODO lists now point at the new repo, and the cart lines are in `orders.md`. Lab's changes are staged or modified but not committed.
+- **License:** still open for you. It's the first item in the new repo's TODO-arcticoder.
+
+**Part D: the design changes**
+- **Enclosure:** six uncut 2 mm, 150 × 250 mm acrylic sheets (four pinwheel walls and a two-sheet lid). The balance has 15 mm clearance inside.
+- **Damper:** I redesigned it for discs magnetized across the diameter, standing on edge, and modelled the field numerically. One 0.3 mm copper pad gives damping ratio 0.45 and two give 0.90, so the 1.0 mm pad isn't needed.
+- **Tilt problem found:** the arm hangs about 15 mm below the strip's lower end, so each millimetre of centre-of-mass offset tilts it by about 66 mrad. The vane and flag clearances allow about 16 mrad.
+  - A ±15% error in a printed part's mass moves the centre of mass about ±1 mm.
+  - I added slicer-mass inputs and trim seats on the arm for copper-pad or foil trim.
+  - The balancing step is required, not optional.
+- **Plate wiring:** a no-solder foil path, with a terminal screw on the fixed plate. The strip ground goes under the top clamp's screw washer.
+- **Jigs and guide:** a printed saw guide for the brass ballast, a strip-cutting guide, and a step-by-step `docs/assembly.md`.
+
+**Cart:** the five lines already in your cart can be checked out. The order now also needs 7 acrylic sheets, 50 stainless M3 washers, 20 stainless M3 nuts, 2 JST-SH 2-pin cables with flying leads, and the weights. If you don't own them, add a junior hacksaw, needle file, craft knife and steel ruler.
+
+**Your next steps (both in the new repo's TODO-arcticoder):**
+1. Slice the six moving printed parts without printing, and send me each part's mass in grams. I'll feed them into the model so the ballast comes out right.
+2. Run the optional compass check on one disc. If the needle doesn't swing, the discs are axial and the cradles need rework.
+<!-- ------ -->
+---

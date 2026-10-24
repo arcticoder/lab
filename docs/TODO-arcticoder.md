@@ -31,34 +31,10 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 ## What I need from you
 
-1. **Do not power the ADS1115 module** (its headers were soldered with bridges): the fab board will carry
-   its own ADC, so the module is shelved.
+1. **Do not power the ADS1115 module** (its headers were soldered with bridges): it is shelved.
 
-## Next order — AliExpress: materials for the balance
-
-The stainless sheet is already in the cart. The screws and nuts on hand cover the printed balance
-(18 × M3×12 and 14 nuts needed; 50 and 55 owned). Add the lines below, then check the total before
-paying; if a shipping fee shows on any line, hold the cart.
-
-- **Acrylic, clear, 3 mm cast or extruded**, cut to size by the seller (custom-size listings): 2 × 240 × 160,
-  2 × 243 × 160 and 1 × 266 × 266 mm (the enclosure panels and lid, from the CAD's cut list). The
-  frame slots are 3 mm; if the listing's thickness is 2 or 2.5 mm, change `PANEL_T` in `params.py` first.
-- **Foam sealing tape, self-adhesive, 3 mm thick, about 5 m**: seals the panel edges.
-- **Copper sheet, 0.3 mm thick, 30 × 30 mm or the smallest size listed** (the vane is 20 × 22 mm and the
-  CAD uses 0.3 mm: damping goes with thickness, and 1 mm over-damps it to a ratio of about 2).
-- **Copper foil tape, single-sided, conductive adhesive, 10 to 20 mm wide, the shortest roll (about 1 m
-  is plenty)**: covers the two calibration-plate faces (20 × 8 mm each). The listing has to say
-  "conductive adhesive"; Kapton and polyimide tapes are insulators and are not this.
-- **Brass rod, 10 mm diameter, 50 mm or longer**: cut into the ballast (18 mm) and spares. Brass replaces
-  the steel rod: steel would pick up force from the damper magnets.
-- **M3 flat washers, 304 stainless, 3.2 mm inner and 7 mm outer diameter, 50 pieces**: 18 are used under
-  the screw heads.
-- **M3 hex nuts, 304 stainless, 20 pieces**: the lower strip clamp rides on the moving arm, so its two nuts
-  have to be non-magnetic; the black carbon-steel nuts on hand are for the fixed parts only.
-- **Calibration weights, 1 mg to 500 mg** (an analytical-balance weight set): turns the plate voltage into
-  an absolute force (the plan's metrology section). Pick a class stated in the listing.
-
-Search names only; I couldn't open listings from here, so read each variant before paying.
+The torsion-balance experiment's orders and builds are in [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance)'s
+`docs/TODO-arcticoder.md`. The AliExpress cart is shared, so lines from both lists are one checkout.
 
 ## Ready to build now — parts on hand
 
@@ -78,24 +54,17 @@ Search names only; I couldn't open listings from here, so read each variant befo
        then `mpremote run main.py`; it asks for a phone flashlight and the
        flag. All `[PASS]` lines is done; it also reports how much light the
        LED really puts on the photodiode, the one number the force-noise prediction assumes.
-3. [ ] **Print the balance** (`hardware/balance/cad/*.stl`, PLA, 3 walls, about 30% infill): `arm`,
-       `base`, `gantry`, `top_clamp_a/b`, `low_clamp_a/b`, `vane_holder`, `elec_arm`, `elec_fixed`,
-       `damper_holder`, `sensor_bracket`, `flag`, the four `encl_post_*` posts (0.2 mm layers, flat on
-       the bed; `flag` may be better cut from card). The strip, vane, ballast, acrylic and washers wait
-       on the materials order; the printed parts alone let you check fit, the centre-of-mass offset
-       and the sensor bracket's gap. The balance is the plan's A5 prototype (the real noise spectrum
-       before any board is laid out), so its readout is item 2.
-4. [ ] **`measurement_tools/signal_generator_r2r` (`TESTSIG`) — wire the ladder and run the
+3. [ ] **`measurement_tools/signal_generator_r2r` (`TESTSIG`) — wire the ladder and run the
        bring-up.** Nine 2kΩ, eight 1kΩ, one 10kΩ, an LM358P and 100nF
        ([breadboard.md](../measurement_tools/signal_generator_r2r/breadboard.md)); on the Pico once
        items 1–2 are done. `mpremote mount . run main.py`: eight `[PASS]` lines is done, and the run
        prints the real frequency ceiling. Its PIO + DMA code carries over to the fab board.
-5. [ ] **`signal_conditioning/charge_amplifier` (`CHGAMP`) — retry with a
+4. [ ] **`signal_conditioning/charge_amplifier` (`CHGAMP`) — retry with a
        leaded piezo disc.** Retry of the 2026-09-16 attempt; the leaded discs
        need no soldering to the disc. TL082, 1MΩ ×3, 10nF
        ([breadboard.md](../signal_conditioning/charge_amplifier/breadboard.md));
        `mpremote run main.py`. All `[PASS]` lines is done.
-6. [ ] **`signal_conditioning/hall_amplifier` (`HALLAMP`) — first run of a
+5. [ ] **`signal_conditioning/hall_amplifier` (`HALLAMP`) — first run of a
        49E/SS49E, then the magnet test.** Read each sensor's top mark first
        (the SS49E listing also sold latching types), then wire it per
        [breadboard.md](../signal_conditioning/hall_amplifier/breadboard.md),
@@ -103,18 +72,18 @@ Search names only; I couldn't open listings from here, so read each variant befo
        0.94V. `[PASS]` for the noise line, then the magnet test: hold a disc
        with its curved side toward the sensor, not a flat face. Try a second
        sensor if the first can't be nulled.
-7. [ ] **`oscillators/vibration_driver` (`SIMPGEN`'s actuator stage) — wire it
+6. [ ] **`oscillators/vibration_driver` (`SIMPGEN`'s actuator stage) — wire it
        and run it.** The driver `RIPPLETANK` needs; coin motors arrived. S8050,
        1N5817, 1kΩ, 10kΩ ([breadboard.md](../oscillators/vibration_driver/breadboard.md));
        `mpremote run main.py`. All `[PASS]` lines is done.
-8. [ ] **`safety/overvoltage_monitor` (`OVERVOLT`) — wire it with its input
+7. [ ] **`safety/overvoltage_monitor` (`OVERVOLT`) — wire it with its input
        on the Pico's 3V3 pin.** First run of a TL431A from the batch; the 3V3
        rail is the known voltage that proves it trips and clears. TL431A,
        LM358, S8050, trimpot, LED
        ([breadboard.md](../safety/overvoltage_monitor/breadboard.md)); `mpremote
        run main.py`, trimpot to each end when asked. All `[PASS]` lines and
        the LED flipping is done.
-9. [ ] **`measurement_tools/frequency_counter` (`FREQC`/`SIMPLECNT`) — wire
+8. [ ] **`measurement_tools/frequency_counter` (`FREQC`/`SIMPLECNT`) — wire
        the digital path and run the loopback self-test.** First counting of
        a real signal by the Pico's PWM hardware; also the tool that reads
        `ne555_astable`'s frequency. GP16 → 10kΩ → GP3 with two 1N5817 clamps

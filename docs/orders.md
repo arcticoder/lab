@@ -139,7 +139,28 @@ notes below stay for that day.
 
 - Listing: https://www.aliexpress.com/item/1005001877385583.html
 - Variant: 0.05 × 100 × 1000 mm (304 stainless); the 4 mm strip is cut from it, so one sheet is many strips.
-- Added to the cart 2026-10-23; other cart lines are in `TODO-arcticoder.md` "Next order".
+- Added to the cart 2026-10-23; the other balance cart lines are below; the rest of the order list is in the spurious-force-balance repo's `docs/TODO-arcticoder.md`.
+
+### Foam tape, double-sided PE, 0.3 mm (torsion-balance enclosure)
+
+- Listing: https://www.aliexpress.com/item/1005008202477750.html; variant 10 m / black / 3 mm wide / 0.3 mm thick.
+- PE foam with acrylic adhesive, rated to 80 °C. Used as a slot shim and lid seal.
+
+### Copper pads, 0.3 mm (damper vane)
+
+- Listing: https://www.aliexpress.com/item/1005002935282949.html; variant 20 × 20 × 0.3 mm, 5 pieces.
+- The listing's spec table says "Carbide"; the title and description say copper. On arrival, check that a
+  disc magnet doesn't pull it. The 1.0 mm variant of this listing is also planned.
+
+### Copper foil tape, conductive adhesive
+
+- Listing: https://www.aliexpress.com/item/1005005694527982.html; variant 10 mm × 1 m.
+- 99.98% copper with conductive acrylic adhesive per the listing. For the calibration-plate faces.
+
+### Brass rod 10 mm (counterweight)
+
+- Listing: https://www.aliexpress.com/item/1005005771688003.html; variant 10 × 100 mm, 1 piece.
+- Length is stated to within 1–5 mm.
 
 ---
 

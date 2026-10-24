@@ -181,8 +181,7 @@ The user now wants the repo to produce an instrument that can support a publisha
 experimental measurement, ordered as JLCPCB-assembled boards, not a set of one-circuit
 breadboard builds. What that changes and what it doesn't:
 
-- **Changes:** for the fabricated-instrument work (`docs/research_instrument_plan.md`,
-  `TODO-agent.md` Part A) ranking and design choices may use research value, and the
+- **Changes:** for the fabricated-instrument work (now in the `spurious-force-balance` repo, see below) ranking and design choices may use research value, and the
   measurement goal (G1), a mechanical design with a model (G2) and a force-noise prediction
   with a go/no-go (G3) come before any schematic or parts table. The older line that the
   repo's own scope stops at design and bench validation no longer applies to that work.
@@ -192,6 +191,16 @@ breadboard builds. What that changes and what it doesn't:
   a fab order uses only the fab's own SMT parts (no customer-supplied parts mailed in), so the
   through-hole parts on hand are not part of the board design (sensor roles go to SMT parts JLC
   stocks); one consolidated order, so shipping is paid once.
+
+## Scope split 2026-10-23: one repo per experiment
+
+This repo is for building the spacetime-physics lab: reusable bench circuits plus the shared
+`docs/inventory.md` and `docs/orders.md` ledger. Work specific to one experiment (its plan, mechanics,
+noise model, fab files, procedures) lives in that experiment's own repo under `~/Code/python/`, added as a
+folder to `lab.code-workspace`. The first is [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance) (the torsion-balance study of
+spurious forces), split out with its history on 2026-10-23. A circuit built for an experiment stays here
+when it is reusable (`optical_shadow_readout`, `lockin_amplifier`), and the experiment links to it. The
+AliExpress cart and the ledger stay shared, so one checkout can carry lines from several repos.
 
 ## No multimeter — ever (recurring correction, see also [[instrument_not_absence_framing]])
 

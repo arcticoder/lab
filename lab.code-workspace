@@ -7,6 +7,9 @@
 			"path": "."
 		},
 		{
+			"path": "../spurious-force-balance"
+		},
+		{
 			"path": "../../asciimath/aqei-bridge"
 		}
 	],
