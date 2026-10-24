@@ -4812,3 +4812,30 @@ Part D also covers:
 I also saved a memory note to design around off-the-shelf sizes from now on, instead of asking you to find exact cuts.
 <!-- ------ -->
 ---
+I've written the split as **Part E** at the top of [docs/TODO-agent.md](docs/TODO-agent.md), ahead of Part D. It's planned only: no repo created, no files moved, nothing committed.
+
+**The new repo**
+- **Name:** `spurious-force-balance`, public, cloned to `~/Code/python/spurious-force-balance`. The name is free on your account.
+- **Description:** an open, low-cost torsion balance for measuring the spurious forces (supply-lead Lorentz forces, heating, convection) that dominate small-force and thrust experiments. It also names the printable CAD, the force-noise model and the JLCPCB-assembled RP2040 electronics.
+- **Topics:** 14 of them, including torsion-balance, metrology, force-measurement, kicad, jlcpcb, cadquery, rp2040 and open-source-hardware.
+- **README:** written for an outside physicist or maker. It covers the question (your confirmed G1 wording), status, the noise prediction, a map of the repo and how to run the checks.
+- **Workspace:** the clone gets added to `lab.code-workspace` as `../spurious-force-balance`, next to your existing three folders.
+
+**What moves**
+- **Files:** `hardware/` (as is), `tools/force_noise_budget.py`, the plan doc (renamed `docs/plan.md`) and the PCB toolchain notes. Paths stay the same, so no imports break.
+- **History:** kept, using `git filter-repo` on a throwaway clone, never on your working copy. Lab is already public and its commits use GitHub noreply emails, so this exposes nothing new.
+- **New files there:** a smoke-test runner and the experiment's own TODO pair, holding Parts A and D, the materials order and the "Print the balance" item.
+
+**What stays in lab**
+- The inventory and the orders ledger, one record for both repos. The AliExpress cart is still one checkout.
+- Every breadboard circuit. That includes the optical readout, the lock-in and the R-2R generator; the balance's prototype check uses them, so the experiment repo links to them.
+- The general RP2040 and datasheet notes.
+- Lab's README section and scope note become short pointers to the new repo. Its smoke-test count should drop from 30 to 28 with nothing failing.
+
+**Decision for you: a license.** Lab has none. If the new repo also has none, it's public but not "open" in the legal sense, even though the measurement goal calls the instrument open. Part E puts this as a one-line choice at the top of the new repo's TODO: CERN-OHL-P for the hardware plus MIT for the code, or no license like lab. No license gets added until you pick.
+
+**Run order for Sonnet:** Part E first, then Part D (the materials review) inside the new repo, so its edits land in the right place.
+
+I also updated my memory note on repo scope: experiment-specific work goes in its own repo under `~/Code/python`, gets added to your one workspace, and lab keeps the reusable circuits and the shared parts records.
+<!-- ------ -->
+---
