@@ -1058,3 +1058,13 @@ now says nothing is needed and offers one optional board; the TODO's ranking add
 header-soldering and Zero-flash step ahead of the ADS1115. Lesson: before listing a part for
 a cart, ask whether a software or on-hand route exists, especially for a part whose price is
 mostly shipping.
+
+## Opus plans, Sonnet actions: lettered Parts, "En route", cross-repo pointers (2026-10-24)
+
+The user alternates models with `/model` and uses it as a workflow: in **Opus mode** nothing is actioned; Opus analyzes and writes the next work as lettered **Parts** (A, D, F, G, ...) at
+the top of `docs/TODO-agent.md`, each task concrete and checkable (a file, a number, a smoke check). In **Sonnet mode** the user asks to process the tasks and Sonnet works them top to bottom, then
+replaces a finished Part's task list with a short summary of what a later session needs to remember and adds a dated entry to `docs/TODO-completed.md`. Anything that needs the user goes at the top
+of `TODO-arcticoder.md` ("What I need from you"), one line each. When the user places an order, the lines move from "Next order" to an **"En route"** section placed after every actionable section.
+
+Experiments live in their own repos (see `circuit_lifecycle_and_repo_scope.md`). When an experiment's items leave this list, leave one pointer line at the top of `TODO-arcticoder.md` naming the
+experiment's repo and saying the AliExpress cart is shared; keep this repo's circuits that the experiment depends on in the ready queue with one line saying so.

@@ -92,3 +92,9 @@ Things worth knowing:
 - `logic_analyzer_check/smoke_test.py`'s live check now SKIPs (not FAILs) when
   the board is attached but nothing toggles `D0`, because a smoke-test run
   while the Pico script isn't running is not a code fault.
+
+## Web tools for vendor pages (2026-10-24)
+
+`WebSearch` and `WebFetch` return vendor help and documentation pages readably (JLCPCB help and capabilities pages, OSH Park docs, community posts) but not interactive quote pages, and AliExpress pages return nothing readable;
+the user pastes listing text. A fetch summary can disagree with a search snippet (JLC's Combine Shipping page said 15 free days in the fetch and 7 in an older snippet): prefer the fetch of the live page, name its
+update date, and tag the claim. See the experiment repo's `docs/kb/fab_ordering_notes.md`.

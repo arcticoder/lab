@@ -200,7 +200,7 @@ noise model, fab files, procedures) lives in that experiment's own repo under `~
 folder to `lab.code-workspace`. The first is [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance) (the torsion-balance study of
 spurious forces), split out with its history on 2026-10-23. A circuit built for an experiment stays here
 when it is reusable (`optical_shadow_readout`, `lockin_amplifier`), and the experiment links to it. The
-AliExpress cart and the ledger stay shared, so one checkout can carry lines from several repos.
+AliExpress cart and the ledger stay shared, so one checkout can carry lines from several repos. Both repos are licensed MIT (code) plus CERN-OHL-P v2 (hardware designs and docs) since 2026-10-24.
 
 ## No multimeter — ever (recurring correction, see also [[instrument_not_absence_framing]])
 

@@ -1680,3 +1680,12 @@ When reasoning about which diode is validated vs. still-unchecked-spare in
 future sessions, use this physical marker rather than assuming order/count
 in the bin — and don't suggest re-taping or straightening the used one, since
 that would erase the marker.
+
+## Licenses, cross-repo links and third-party chat transcripts (2026-10-24)
+
+- **Licenses (`lab` and `spurious-force-balance`):** `LICENSE` is MIT (code: Python, MicroPython, tools) and `LICENSE-HARDWARE` is the CERN Open Hardware Licence v2 Permissive (hardware designs and their
+  documentation: SPICE netlists, schematics, breadboard guides, parts tables and BOMs, CAD outputs, build documents). Each README has a "License" section saying which is which. A CadQuery script is code (MIT)
+  whose output is hardware (CERN-OHL-P). The user chose this pair on 2026-10-24.
+- **Links between the repos are GitHub URLs** (`https://github.com/arcticoder/<repo>/blob/main/...`), never relative paths across repos.
+- **A third-party chat transcript the user drops into a repo** (for example an LLM answer about vendor policies) is ingested into a kb note, verified where possible against vendor pages, tagged by source
+  (`[second-hand]`, `[community]`, `[confirmed]`, `[verify at checkout]`), and then deleted from the working tree; the user does not commit these.

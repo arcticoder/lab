@@ -227,7 +227,15 @@ in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 
 ## On Order (AliExpress)
 
-Nothing on order as of 2026-10-17: the 2026-10-02 and 2026-10-05 orders have arrived (their rows are in the tables above, dated). New rows go here first when an order is placed, with full specs/links/datasheets in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
+Ordered 2026-10-24 (torsion-balance materials; details in `lab/docs/orders.md`; bag to assign on arrival):
+
+| Component | Quantity | Notes |
+|-----------|----------|-------|
+| Stainless steel sheet, 304, 0.05 × 100 × 1000 mm | 1 | the torsion strip is cut from it |
+| Foam tape, double-sided PE, 3 mm × 10 m, 0.3 mm thick | 1 | enclosure slot shim and lid seal |
+| Copper pad, 20 × 20 × 0.3 mm | 5 | damper vane and trim weights; check non-magnetic on arrival |
+| Copper foil tape, conductive adhesive, 10 mm × 1 m | 1 | trim material, spare ground strap |
+| Brass rod, 10 mm diameter × 100 mm | 1 | one saw cut makes the balance's ballast |
 
 ---
 
