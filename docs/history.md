@@ -4773,3 +4773,42 @@ I also updated the plan's G2 table and the TODO print list, which now has `gantr
 Next is the WP4 schematic, using SKiDL with `kicad-cli sch erc`.
 <!-- ------ -->
 ---
+I've written the evaluation and tasks as **Part D** at the top of [docs/TODO-agent.md](docs/TODO-agent.md), for Sonnet's next session. Your TODO list isn't edited yet; task D7 there tells Sonnet exactly how to update it. Nothing is committed.
+
+**All five lines in your cart can stay.** Add the rest below, then check out as one order. None of it has to wait for Sonnet's design changes.
+
+| Cart line | Verdict |
+|---|---|
+| Stainless sheet 0.05 mm | Fine |
+| Foam tape, 0.3 mm double-sided | Keep, with a different job. It's too thin to squash like a gasket, so it goes on the panel edges inside the frame slots, where it fills the gap. 10 m covers about 4 m of use. |
+| Copper 20×20×0.3 mm | Not too small: the vane becomes 20×20 mm, the piece as it arrives. **Also add the 20×20×1.0 mm variant from the same listing** (reason below). |
+| Copper foil tape 10 mm × 1 m | Fine. The connections will be clamped under screws, so they work whether or not your variant has conductive glue. |
+| Brass rod 10×100 mm | Fine. 18 mm gets cut off for the counterweight, using a printed saw guide. |
+
+**Still to add before checkout:**
+- **Acrylic:** 7 sheets of clear 2 mm acrylic at 150 × 250 mm.
+- **M3 washers:** 50, 304 stainless.
+- **M3 nuts:** 20, 304 stainless.
+- **Calibration weights:** a 1 mg–500 mg set.
+- **Tools, only if you don't own them** (none are in the inventory): a junior hacksaw, a flat needle file, a craft knife and a steel ruler. They're for cutting the brass and the 4 mm stainless strip.
+
+**Enclosure: go with your stock-size acrylic, not PETG.**
+- **Size:** 2 mm at 150 × 250 mm fits the balance without cutting a single sheet. Four sheets make the walls and two side by side make the lid. The space inside stays 240 mm wide and the walls clear the balance's top by 18 mm.
+- **Clarity doesn't matter:** the light source, sensor and flag are all inside the box, so clear panels only help you look in.
+- **Why not PETG:** the current wall and lid sizes are larger than the K1's 220 × 220 mm bed, so every printed panel would need a seam. Solid panels would also use about a kilogram of filament you'd have to buy.
+- **Why not 1 mm sheet:** it would flex across 250 mm.
+
+**The 1.0 mm copper is because of a mistake of mine in the damper design.** I modelled the damper magnets (the copper vane sits between them) as if magnetized through their flat faces. Both your listing and the inventory say they're magnetized across the diameter instead. Mounted the way I drew them, their field runs along the vane instead of through it, and the damping estimate doesn't hold.
+- **The fix:** stand the discs on edge in printed holders that let them turn and line up by attraction. Then model their real field to choose the vane thickness.
+- **Why buy both:** damping can be turned down on the bench but not up. With the 0.3 mm and 1.0 mm pieces both on hand, the new estimate can't strand you.
+- **Optional one-minute check:** turn a disc on a table next to your phone's compass app. If the needle swings all the way round as the disc turns, they really are magnetized across the diameter.
+
+Part D also covers:
+- the counterweight trim, using spare copper pieces and foil squares, so nothing extra to buy;
+- reading each printed part's weight from the slicer, since real prints differ from the model;
+- printed jigs for cutting the stainless strip and the brass;
+- recording these cart lines in `orders.md`.
+
+I also saved a memory note to design around off-the-shelf sizes from now on, instead of asking you to find exact cuts.
+<!-- ------ -->
+---
