@@ -35,7 +35,116 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
 
 ---
 
-## Part D — balance materials review, 2026-10-23 (Opus 5.5 for Sonnet 5.5; do this before Part A's WP4)
+## Part E — split the experiment out into its own public repo (Opus 5.5 for Sonnet 5.5; do this FIRST)
+
+**Decision (2026-10-23):** `lab` is the repo for building a spacetime-physics lab: reusable bench circuits,
+the shared inventory and ordering ledger. The torsion-balance experiment (plan, gates, mechanics, noise
+model, fab-assembled electronics) is specific to one experiment, so it moves to its own public repo. Do
+Part E before Part D, so D's edits land in the new repo; then run D there. A–D's text moves with it (E3).
+Facts checked while planning: `lab` is public with no LICENSE; commit emails are GitHub noreply addresses;
+the working tree was clean; `git-filter-repo` is installed (`~/miniconda3/bin`); `gh` is logged in as
+`arcticoder` with `repo` scope; the name below is free.
+
+### E1 — The repo
+
+- [ ] Name: **`spurious-force-balance`** (the user left the name to us). Local clone at
+      `~/Code/python/spurious-force-balance` (the user chose `~/Code/python/`), sibling of `lab` and `pico`.
+- [ ] Description (≤ 350 characters): "Open, low-cost torsion balance for measuring the spurious forces
+      (supply-lead Lorentz forces, heating, convection) that dominate small-force and thrust experiments:
+      printable CadQuery mechanics, a validated force-noise model, and JLCPCB-assembled RP2040 electronics
+      designed in KiCad and ngspice."
+- [ ] Topics: `torsion-balance`, `force-measurement`, `precision-measurement`, `metrology`,
+      `experimental-physics`, `thrust-measurement`, `open-source-hardware`, `cadquery`, `kicad`, `jlcpcb`,
+      `ngspice`, `rp2040`, `3d-printing`, `physics`.
+- [ ] Create with `gh repo create arcticoder/spurious-force-balance --public --description "…"`, then
+      `gh repo edit --add-topic …` (one flag per topic). Verify with `gh repo view --json
+      description,repositoryTopics,visibility`.
+- [ ] License: none, matching `lab` (no LICENSE there). G1 calls the instrument "open", and with no
+      license it isn't open in the legal sense, so put the choice as a one-line decision at the top of the
+      new repo's TODO-arcticoder: CERN-OHL-P for hardware plus MIT for code (the usual open-hardware pair),
+      or no license, as `lab` has. Don't add a license until the user picks.
+
+### E2 — What moves (history kept with `git filter-repo` on a fresh clone of `lab`, never on the working copy)
+
+| From `lab` | To the new repo | Note |
+|---|---|---|
+| `hardware/` (all: `README.md`, `balance/`, `instrument/`, `tools/jlc_query.py`, CAD exports, `sim/`) | `hardware/` | same path, so no relative imports change |
+| `tools/force_noise_budget.py` | `tools/force_noise_budget.py` | `balance/smoke_test.py` imports it via `../../tools`; same layout keeps that working |
+| `docs/research_instrument_plan.md` | `docs/plan.md` | fix links inside it |
+| `docs/kb/pcb_toolchain_notes.md` | `docs/kb/pcb_toolchain_notes.md` | only about this work |
+| — (new) | `tools/run_all_smoke_tests.py` | a copy of lab's, globbing `hardware/*/smoke_test.py`; prints the same summary line |
+| — (new) | `docs/TODO-agent.md`, `docs/TODO-arcticoder.md`, `docs/TODO-completed.md` | E3 |
+
+Recipe: `git clone ~/Code/python/lab /tmp-scratch/sfb` (in the scratchpad), then `git filter-repo --path
+hardware/ --path tools/force_noise_budget.py --path docs/research_instrument_plan.md --path
+docs/kb/pcb_toolchain_notes.md --path-rename docs/research_instrument_plan.md:docs/plan.md`. Check `git log`
+shows the experiment's commits only, move the result to the sibling directory, set the remote, push
+`main`. Clear `__pycache__`, and add a `.gitignore` (`__pycache__/`, `*.pyc`).
+
+**Stays in `lab`** (reusable or shared): `inventory.md`, `orders.md`, `parts_reference.md` (one ledger
+across repos; the new repo links to them by GitHub URL); every circuit, including
+`signal_conditioning/optical_shadow_readout` (the balance's breadboard readout and A5 front end, a general
+optical-lever circuit), `lockin_amplifier`, `signal_generator_r2r`; the kb notes on the RP2040, RP2350,
+RP2040-Zero, LM358 and datasheet method (general; the new repo links them); `tools/ngspice_runner.py`,
+`resolution_budget.py`, `spice_to_schematic.py` (the moved code doesn't import them). `history.md` and
+`FTL-research-state-sept-2026.md` are historical; leave them.
+
+### E3 — Split the TODO lists
+
+- [ ] New `docs/TODO-agent.md`: Part A (with its hard constraints and progress notes) and Part D, moved here
+      word for word apart from path fixes (`docs/research_instrument_plan.md` → `docs/plan.md`; links to lab's
+      kb, inventory and orders become `https://github.com/arcticoder/lab/blob/main/…`). An intro paragraph
+      the same as lab's, shortened. In `lab`'s TODO-agent, Parts A and D are replaced by one line pointing at
+      the new repo; Parts B and C (lock-in, housekeeping) stay.
+- [ ] New `docs/TODO-arcticoder.md`, same conventions as lab's (see lab's
+      `kb/todo_list_conventions.md`, linked, not copied): "What I need from you" (the license decision, and
+      D's phone-compass check); "Next order — AliExpress: materials for the balance" (moved from lab); "Ready"
+      with item 3 "Print the balance" (moved from lab); and A5's dependency written plainly: it needs `lab`'s
+      items 1–2 (lock-in, optical readout) built first.
+- [ ] `lab`'s TODO-arcticoder: remove the "Next order" balance section and item 3, and renumber. One line at
+      the top: the experiment's orders and builds are in `spurious-force-balance`'s TODO-arcticoder, and the
+      AliExpress cart is shared, so both lists' lines are one checkout. Items 1–2 stay, with one line each
+      saying the balance's A5 check uses them.
+- [ ] `TODO-completed.md` entries already in lab stay in lab; new completions for the experiment go in the
+      new repo's file.
+
+### E4 — Fix references in `lab`
+
+- [ ] `README.md` § "Force balance and fab-assembled instrument (`hardware/`)" (line ~276): replace with
+      two lines naming the experiment and linking the repo.
+- [ ] `docs/kb/circuit_lifecycle_and_repo_scope.md` (line ~184): write the scope rule in plain words. Lab
+      holds reusable bench circuits plus the shared inventory and ledger. Each experiment's design, model,
+      fab files and procedures get their own repo. A circuit built for an experiment stays in lab if it's
+      reusable, and the experiment links to it.
+- [ ] `tools/run_all_smoke_tests.py`: nothing to change (its `*/*/smoke_test.py` glob just stops finding
+      `hardware/`); confirm the count drops from 30 to 28 and that nothing fails.
+- [ ] `lab.code-workspace` (the user's only workspace; they won't make a new one): add
+      `{"path": "../spurious-force-balance"}` to `folders`, after `"."`. The clone sits in `~/Code/python/`, so
+      the relative path resolves from `lab/`. Keep the existing `../pico`, `.` and
+      `../../asciimath/aqei-bridge` entries and the tab indentation.
+- [ ] `grep -rn "hardware/\|research_instrument_plan\|force_noise_budget\|pcb_toolchain_notes"` across lab
+      afterwards: only `history.md` and the pointer lines should remain.
+
+### E5 — The new repo's README (written for an outside reader: a physicist or maker landing from GitHub)
+
+- [ ] Sections: what the instrument is and the question it answers (G1, in the plan's own wording); status
+      (G1–G3 and WP1–WP3 done; A5 prototype next; no board ordered); the numbers (predicted 0.11 nN at 1σ in
+      1000 s in air, a conditional go; air currents dominate; the published anchors the model reproduces);
+      repo map (`hardware/balance`, `hardware/instrument`, `tools`, `docs/plan.md`); how to run (venv recipe from
+      `hardware/README.md`, `python tools/force_noise_budget.py`, the smoke tests); the bench-side companion
+      circuits in `lab` (links); the construction constraints (fab-placed SMT only, USB power, under 50 V DC).
+      No research-priority framing beyond what G1 says. No quotes of the user.
+- [ ] Rerun every check in the new clone: `~/.venvs/lab-hw/bin/python hardware/balance/smoke_test.py`,
+      `hardware/instrument/smoke_test.py`, `python3 tools/force_noise_budget.py`, the new runner. All green
+      before the first push. Commit message as the attribution reminder says.
+
+### E6 — Memory
+
+- [ ] Update `reference_research_instrument_work.md` (paths now in `spurious-force-balance`) and
+      `lab_pico_repo_structure.md` (three repos: `pico`, `lab`, the experiment), and the MEMORY.md lines
+      that point at them.
+
+## Part D — balance materials review, 2026-10-23 (Opus 5.5 for Sonnet 5.5; do this after Part E, in the new repo)
 
 The user put five lines in the AliExpress cart, offered pre-sized acrylic stock or printed clear PETG in
 place of custom-cut acrylic, and asked which lines can be checked out. Evaluated here; the user was given the
