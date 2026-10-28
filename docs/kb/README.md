@@ -22,3 +22,5 @@ LLM-facing notes (not end-user docs). One line per note; the experiment's own no
 | `rp2040_performance_notes.md` | RP2040 throughput: PIO, DMA, fixed point, measured numbers |
 | `rp2040_zero_notes.md`, `rp2350_notes.md` | the RP2040-Zero board and the RP2350 chip guard |
 | `../jlc/coupons.md`, `../jlc/*_quote_ui.md` | the JLC account's coupons (with expiry dates) and the user's captures of JLC's quote pages (PCB/PCBA, 3D printing) |
+| `jlc_account_and_quotes.md` | the JLC account: what a session can and cannot read, coupon rules, quote behaviour (thickness reverts, mass rule with packing, fees) |
+
