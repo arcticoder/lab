@@ -1,7 +1,7 @@
 # JLC account coupons (user's account)
 
 Ledger of the coupons on the JLC account, from the lists the user pasted on 2026-10-27 (the second list, of the new-user coupons, replaced the first: their amounts had shifted with the exchange rate,
-C$14.03 = US$10 now). Rules from the account page's terms: each coupon can be used once, and **only one coupon can be applied to any order**; JLCPCB can change or cancel a coupon at any time; coupons are valid
+C$14.03 = US$10 now). Rules from the account page's terms: each coupon can be used once, and the page's terms say one coupon per order, but the user reports two coupons can be used on the account (2026-10-28), so the plan assumes up to two; JLCPCB can change or cancel a coupon at any time; coupons are valid
 in certain regions only (all of these show for the user's account). "Excl. freight" = the minimum is on the goods. Amounts without a currency prefix are exactly as pasted (they read as US$; verify at checkout).
 Expiry: a date when the page gives one; "30 d" and "60 d" coupons have no date in the paste (the user reads it off the account: `spurious-force-balance/docs/TODO-arcticoder.md`). The plan that assigns coupons to
 orders is in `spurious-force-balance/docs/fabrication.md` ("JLC orders, coupons and parcels"). Update Status when one is used.
@@ -49,10 +49,11 @@ aluminium enclosure ($45), pneumatics ($20, $30), linear shafts ($20). Parts Spe
 Observed 2026-10-27: with a coupon applied, a small test board's estimate fell from about C$2.00 to $0 while the "calculated price" stayed at C$2.81: the coupon covers the goods (freight is excluded) and
 the unused part of it is lost. So put the large coupons on the dear lines (the arm) and the small ones on the cheap boards, and do not spend a large coupon on a line cheaper than it.
 
-## Cart lines
+## How the quote page treats coupons (observed 2026-10-28)
 
-Each uploaded design is a cart line. The terms say one coupon per order; whether each cart line counts as its own order (so the four mechanical boards could take up to four coupons, e.g. JLCONE $8 PCB, New User PCB,
-JLCONE PCB $5 and another) is unknown: the user can see it in the cart (apply a coupon to one line, then try another on a second line) and report it in `TODO-arcticoder.md`.
+The quote page says "The coupon can be applied when you select a payment method": coupons are applied at payment, not in the quote lines. The "special offer" price of about C$2.81 on the quote page is the new-user price for a
+small board (5 pieces up to 100 x 100 mm), not a coupon; uploading the arm (over that size) replaced it with the normal lines (Engineering C$5.61, Board C$8.56, ENIG +C$25.25). Coupons the user could no longer select after
+re-uploading may be attached to an unsubmitted order saved in the cart: deleting the saved lines in the cart is the thing to try (a guess, not confirmed). Ask JLC support if they stay locked.
 
 ## Rules the user supplied (unverified)
 
