@@ -44,6 +44,11 @@ Coupon C$42.09 over C$210.44, ends 2026-12-26): the boards are 2-layer. Flex PCB
 ($10 Aluminum 6061 over $100, $8 Aluminum 7075 over $100, JLCCNC $20 over $200). Mechanical-parts coupons for motors and drives ($25), transmission ($20), linear actuators ($20, $45), aluminium extrusion ($45),
 aluminium enclosure ($45), pneumatics ($20, $30), linear shafts ($20). Parts Special Coupons ($5 over $60, $15 over $200; to 2036-06-02): **maxed out**.
 
+## A coupon cannot take an order below zero
+
+Observed 2026-10-27: with a coupon applied, a small test board's estimate fell from about C$2.00 to $0 while the "calculated price" stayed at C$2.81: the coupon covers the goods (freight is excluded) and
+the unused part of it is lost. So put the large coupons on the dear lines (the arm) and the small ones on the cheap boards, and do not spend a large coupon on a line cheaper than it.
+
 ## Cart lines
 
 Each uploaded design is a cart line. The terms say one coupon per order; whether each cart line counts as its own order (so the four mechanical boards could take up to four coupons, e.g. JLCONE $8 PCB, New User PCB,
