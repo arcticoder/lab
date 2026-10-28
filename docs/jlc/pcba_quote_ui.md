@@ -114,6 +114,12 @@
   - HASL (with lead)
   - LeadFree HASL
   - ENIG (selected by default)
+# Gold Thickness 
+(when ENIG is selected)
+The thickness of the gold layer for ENIG. 1 µ" equals 0.0254 µm.
+## Options
+- **1 µ"** (selected by default)
+- 2 µ"
 # High-spec Options
 ## Outer Copper Weight
   Copper weight on the outer layers (top and bottom). The copper weight for inner layers is 0.5 oz by default.
