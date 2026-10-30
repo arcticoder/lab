@@ -139,6 +139,14 @@ Empty as of 2026-10-24.
 
 ## Ordered, not yet arrived
 
+### AliExpress order placed 2026-10-30 (M3 nuts for the torsion balance, with digital calipers the user was buying anyway)
+
+#### M3 hex thin nuts, 304 stainless, DIN439 (torsion balance: the stainless nuts on the moving arm and the vane holder)
+
+- Listing: https://www.aliexpress.com/item/1005010507401042.html (brand HOWSHENG, model 304-439); variant M3, 20 pieces.
+- DIN439 is the **thin** (low) nut: thinner than the standard M3 nut, so it sits loosely in a pocket sized for a standard one. Used for the 10 stainless nuts the balance needs; the other 10 are spares. Check on arrival that a disc magnet does not pull them.
+- The digital calipers in the same checkout: listing and price not recorded. They are a tool, not stock: log them in `inventory.md` when they arrive.
+
 ### AliExpress order placed 2026-10-24 (torsion-balance materials; the experiment is in the [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance) repo)
 
 
