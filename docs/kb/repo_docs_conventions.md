@@ -1689,3 +1689,7 @@ that would erase the marker.
 - **Links between the repos are GitHub URLs** (`https://github.com/arcticoder/<repo>/blob/main/...`), never relative paths across repos.
 - **A third-party chat transcript the user drops into a repo** (for example an LLM answer about vendor policies) is ingested into a kb note, verified where possible against vendor pages, tagged by source
   (`[second-hand]`, `[community]`, `[confirmed]`, `[verify at checkout]`), and then deleted from the working tree; the user does not commit these.
+
+## Pictures are `.jxl`, tracked by Git LFS (2026-10-30)
+
+In the sibling `spurious-force-balance` repo pictures are lossless JPEG XL (`tools/to_jxl.py` converts; GitHub does not render `.jxl` inline). `lab` keeps `*.jpg` and `*.jxl` in LFS (`.gitattributes`); its generated `schematic.png` files are gitignored and stay PNG. The user does not commit unless a TODO item says so.
