@@ -499,4 +499,4 @@ Smaller traps from the same ingestion:
   "Received" (bag assigned; see `inventory_storage_notes.md`). The experiment repo's TODO-arcticoder says what is still to be added; the user does the checkout. Fabrication orders to JLC are not in `orders.md`
   until placed; their rules are in the experiment repo (`docs/kb/fab_ordering_notes.md`, github.com/arcticoder/spurious-force-balance).
 - **Fasteners:** screws are 304 stainless pan head GB818 (10, 12, 14 mm, 50 each); the M3 nuts on hand are black carbon steel (magnetic). Parts on a moving arm that sits near magnets need 304 nuts and washers
-  (buy: 3.2 mm inner, 7 mm outer diameter washers).
+  (washers to buy: 3.2 mm inner, 7 mm outer diameter). 304 stainless nuts were ordered 2026-10-30 (20 pieces) as the DIN439 **thin** type: it is thinner than a standard M3 nut, so it sits loosely in a pocket sized for the standard one; read a listing's standard number (DIN934 standard, DIN439 thin) before ordering nuts for printed pockets.
