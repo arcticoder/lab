@@ -11,12 +11,6 @@
 		},
 		{
 			"path": "../../asciimath/aqei-bridge"
-		},
-		{
-			"path": "../../typescript/easyeda-mcp-pro"
-		},
-		{
-			"path": "../../../../../opt/apps/easyeda-pro/resources/app"
 		}
 	],
 	"settings": {}

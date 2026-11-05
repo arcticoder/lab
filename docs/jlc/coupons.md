@@ -10,7 +10,7 @@ orders is in `spurious-force-balance/docs/fabrication.md` ("JLC orders, coupons 
 
 | Coupon | Service | Off | Minimum | Conditions | Expires | Planned use |
 |---|---|---|---|---|---|---|
-| JLCONE $8 PCB Coupon | PCB | C$11.22 | C$14.03 | shipping over C$0.70 | 2026-11-26 | **the mechanical boards order** (larger than New User PCB) |
+| JLCONE $8 PCB Coupon | PCB | C$11.22 (the account showed C$11.17 when redeemed) | C$14.03 | shipping over C$0.70 | 2026-11-26 | **USED 2026-11-04 on the arm order** (in JLC's review) |
 | New User PCB - JLCPCB | PCB | C$8.42 | C$2.81 | | 2026-11-25 | a second PCB checkout, if any (see "cart lines" below) |
 | PCB $10 - EasyEDA Design | PCB | $10.00 | $1 | EasyEDA files only | 30 d | not usable with KiCad Gerbers |
 | JLCONE PCB $5 | PCB | $5.00 | $2 | shipping over $1 | 30 d | alternative to New User PCB |
@@ -27,7 +27,7 @@ orders is in `spurious-force-balance/docs/fabrication.md` ("JLC orders, coupons 
 | New User 3D Printing 1 - JLC3DP | 3DP | C$14.03 | C$1.40 | | 2026-11-25 | first printed-parts order |
 | New User 3D Printing 2 - JLC3DP | 3DP | C$14.03 | C$1.40 | | 2026-12-25 | second printed-parts order |
 | New User Mechanical Parts 1 / 2 - JLCMC | fasteners | C$14.03 each | C$1.40 | | 2026-11-25 / 12-25 | M3 stainless nuts and washers, if listed |
-| New User Shipping - All Services | shipping | C$14.03 | C$21.04 of shipping | | 2026-11-25 | only above a shipping charge the plan avoids |
+| New User Shipping - All Services | shipping | C$13.96 | C$20.94 of shipping | | **2026-11-02 (expired)** | only above a shipping charge the plan avoids; the amounts and the date are as the account showed on 2026-11-04 |
 | $10 Off $40 - Global Ship | shipping | $10.00 | $40 of shipping | | 30 d | same |
 
 ## 3D printing coupons that need a material or a large order (30 d unless stated; shipping over $1)
@@ -39,10 +39,15 @@ The two small printed parts planned (about 25 g) will not reach these minimums; 
 
 ## Not relevant to this project
 
+JLCONE 4-Layer PCB $5 (C$6.98 off over C$6.98, 4-layer boards only, expires 2026-12-02; claimed 2026-11-04): the boards are 2-layer.
 Layout service: New User Layout C$28.06, Layout $90 (90 d, over $1), JLCONE Layout $100 (over $110): the layout is done in KiCad here. 4-layer, 6-layer and high-layer PCB coupons ($5 to $42.09; JLCONE 6~32L PCB
 Coupon C$42.09 over C$210.44, ends 2026-12-26): the boards are 2-layer. Flex PCB and flex heater coupons (FPC $10/$5/$15, Flex Heater $20/$20/$5/$10, New User Flex Heater C$14.03). CNC material coupons
 ($10 Aluminum 6061 over $100, $8 Aluminum 7075 over $100, JLCCNC $20 over $200). Mechanical-parts coupons for motors and drives ($25), transmission ($20), linear actuators ($20, $45), aluminium extrusion ($45),
 aluminium enclosure ($45), pneumatics ($20, $30), linear shafts ($20). Parts Special Coupons ($5 over $60, $15 over $200; to 2036-06-02): **maxed out**.
+
+## Expiry runs from the "Get Coupon" click (user, 2026-11-04)
+
+JLC starts a coupon's validity when "Get Coupon" is clicked: every coupon in this ledger has a date because it was claimed, and a coupon not yet claimed has none. So claim a coupon only when its order is about to be placed (a 30-day coupon clicked early burns days). Dates in the ledger are the claim date plus the term; where an entry says only "30 d" or "60 d" the account page shows the date.
 
 ## A coupon cannot take an order below zero
 

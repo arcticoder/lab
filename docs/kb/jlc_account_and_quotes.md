@@ -13,7 +13,7 @@ from their captures; the experiment-specific plan is in `spurious-force-balance`
 ## Coupons
 
 `docs/jlc/coupons.md` is the ledger (expiry dates, what each is for, which are maxed out or irrelevant). Rules: each coupon is used once; the terms say one coupon per order but the user reports two can be used; coupons are applied at payment and in the cart,
-not in the quote lines; a coupon cannot take a line below zero (put big coupons on dear lines). Most new-user coupons end 2026-11-25 (CNC and PCB variants 11-26), others 2026-12-25. EasyEDA-design coupons need EasyEDA files. The "special offer" price of about
+not in the quote lines; a coupon cannot take a line below zero (put big coupons on dear lines). A coupon's expiry runs from the day the user clicks "Get Coupon" (reported 2026-11-04): a coupon that is not claimed yet has no date, and claiming early burns its term, so claim only when the order is about to be placed. Most new-user coupons end 2026-11-25 (CNC and PCB variants 11-26), others 2026-12-25. EasyEDA-design coupons need EasyEDA files. The "special offer" price of about
 C$2.81 on the quote page is a new-user price for a 5-piece board up to 100 x 100 mm, not a coupon.
 
 ## Quote behaviour worth knowing
