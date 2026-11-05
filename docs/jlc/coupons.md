@@ -11,9 +11,9 @@ orders is in `spurious-force-balance/docs/fabrication.md` ("JLC orders, coupons 
 | Coupon | Service | Off | Minimum | Conditions | Expires | Planned use |
 |---|---|---|---|---|---|---|
 | JLCONE $8 PCB Coupon | PCB | C$11.22 (the account showed C$11.17 when redeemed) | C$14.03 | shipping over C$0.70 | 2026-11-26 | **USED 2026-11-04 on the arm order** (in JLC's review) |
-| New User PCB - JLCPCB | PCB | C$8.42 | C$2.81 | | 2026-11-25 | a second PCB checkout, if any (see "cart lines" below) |
+| New User PCB - JLCPCB | PCB | C$8.42 | C$2.81 | | 2026-11-25 | the small-boards panel (`small_panel_gerbers.zip`) if its goods are C$8.42 or more, else JLCONE PCB $5 |
 | PCB $10 - EasyEDA Design | PCB | $10.00 | $1 | EasyEDA files only | 30 d | not usable with KiCad Gerbers |
-| JLCONE PCB $5 | PCB | $5.00 | $2 | shipping over $1 | 30 d | alternative to New User PCB |
+| JLCONE PCB $5 | PCB | $5.00 | $2 | shipping over $1 | 30 d from the claim | the small-boards panel if its goods are under C$8.42 |
 | New User SMT - JLCPCB | PCBA | C$14.03 | C$2.81 | | 2026-11-25 | **sensor-head panel** (if ordered) |
 | PCBA Special Offer | PCBA | $9.00 | $1 | expires in 3 days (about 2026-10-30) | ~2026-10-30 | only if the panel is ordered within days; the New User SMT coupon is larger and lasts longer |
 | PCBA Special Offer | PCBA | $6.00 | $1 | expires in 3 days | ~2026-10-30 | |
