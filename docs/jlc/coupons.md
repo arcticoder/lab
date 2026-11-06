@@ -18,8 +18,8 @@ The plan that assigns coupons to orders is in `spurious-force-balance/docs/fabri
 | New User CNC - JLCCNC | CNC | C$27.86 | over C$2.79 | 2026-11-25 | first CNC checkout (aluminium arm or other part) |
 | New User 3D Printing 1 - JLC3DP | 3DP | C$13.93 | over C$1.39 | 2026-11-25 | first printed-parts order |
 | New User 3D Printing 2 - JLC3DP | 3DP | C$13.93 | over C$1.39 | 2026-12-25 | second printed-parts order |
-| New User Mechanical Parts 1 - JLCMC | fasteners | C$13.93 | over C$1.39 | 2026-11-25 | M3 stainless nuts and washers, if listed |
-| New User Mechanical Parts 2 - JLCMC | fasteners | C$13.93 | over C$1.39 | 2026-12-25 | same |
+| New User Mechanical Parts 1 - JLCMC | fasteners | C$13.93 | over C$1.39 | 2026-11-25 | JLCMC orders no longer combine with other services (notice 2026-11-02), so only worth it if a JLCMC line is worth its own parcel; M3 washer price unreadable (PDF catalogue pages) |
+| New User Mechanical Parts 2 - JLCMC | fasteners | C$13.93 | over C$1.39 | 2026-12-25 | same; see the line above |
 | New User Shipping - All Services | shipping | C$13.93 | over C$20.89 of shipping | 2026-11-25 | only above a shipping charge the plan avoids (the user's paste of 2026-11-04 read "2026/11/2", a truncation of 11/25) |
 | New User Layout - JLCPCB | layout | C$27.86 | over C$1.39 | 2026-12-25 | not relevant (layout is done in KiCad) |
 | New User Flex Heater - JLCPCB | flex heater | C$13.93 | over C$1.39 | 2026-12-25 | not relevant |

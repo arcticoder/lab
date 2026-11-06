@@ -147,7 +147,11 @@ Empty as of 2026-10-24.
 - DIN439 is the **thin** (low) nut: thinner than the standard M3 nut, so it sits loosely in a pocket sized for a standard one. Used for the 10 stainless nuts the balance needs; the other 10 are spares. Check on arrival that a disc magnet does not pull them.
 - The digital calipers in the same checkout: listing and price not recorded. They are a tool, not stock: log them in `inventory.md` when they arrive.
 
-### AliExpress order placed 2026-10-24 (torsion-balance materials; the experiment is in the [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance) repo)
+---
+
+## Received
+
+### AliExpress order placed 2026-10-24, received 2026-11-05 (torsion-balance materials; the experiment is in the [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance) repo)
 
 
 #### Stainless-steel sheet, 304, 0.05 mm (torsion strip)
@@ -177,9 +181,8 @@ Empty as of 2026-10-24.
 - Listing: https://www.aliexpress.com/item/1005005771688003.html; variant 10 × 100 mm, 1 piece.
 - Length is stated to within 1–5 mm.
 
----
-
-## Received
+- Bags (assigned 2026-11-05): everything except the sheet goes in the new `BALANCE MATERIALS` bag; the stainless sheet lies flat in its own card envelope (a crease ruins a 0.05 mm strip). The brass rod length (stated 100 mm) is not yet measured.
+- Checks pending: disc-magnet test on the copper pads, brass rod and stainless sheet (non-magnetic expected); the pads' spec table says "Carbide".
 
 ### M3 hardware (arrived before 2026-10-23)
 

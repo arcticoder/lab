@@ -61,5 +61,6 @@ to a parts table.
 
 ## Hardware added 2026-10-23 (bag not recorded)
 
-M3 hex nuts (black carbon steel, 55) and 304 stainless GB818 pan head M3 screws (50 each of 10, 12, 14 mm) are in `inventory.md` "Prototyping and Cables" with no bag; ask for the bag at the next arrival check. The
-five AliExpress items ordered 2026-10-24 (stainless sheet, foam tape, copper pads, copper foil tape, brass rod) need a bag on arrival; the copper pads and the brass rod must be kept away from the N42 discs' bag.
+M3 hex nuts (black carbon steel, 55) and 304 stainless GB818 pan head M3 screws (50 each of 10, 12, 14 mm) are in `inventory.md` "Prototyping and Cables" with no bag; ask for the bag at the next arrival check.
+
+The five AliExpress items of 2026-10-24 (stainless sheet, foam tape, copper pads, copper foil tape, brass rod) arrived 2026-11-05 and were assigned a new bag, `BALANCE MATERIALS` (sheet excluded: it lies flat in a card envelope; a crease ruins it). Keep the copper pads and the brass rod apart from the N42 discs' bag (`MISC`). The user had not yet measured the rod (100 mm stated) or run the magnet check on pads, rod and sheet. The M3 nuts and screws above still have no bag recorded.

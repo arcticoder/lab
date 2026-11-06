@@ -31,6 +31,7 @@ here.
 | `BREADBOARDS` | Both 830-point boards, MB-102 400-point, SYB-170 ×3 |
 | `INDUCTORS` | The inductor assortment (too big for `MISC`) |
 | `MISC` | CY7C68013A (SCOPELA) board, 9G servo, passive and active buzzers, USB-C test board, coin vibration motors ×10, N42 magnets ×10 (bubble-wrapped) |
+| `BALANCE MATERIALS` | Torsion-balance stock (added 2026-11-05): copper pads ×5, copper foil tape, PE foam tape, brass rod. The 0.05 mm stainless sheet is not in it: it lies flat in its own card envelope |
 
 Not bagged: USB cables, the mains adapters, the soldering tools and the
 solder wick (kept with the iron).
@@ -150,6 +151,11 @@ new build, rather than by eye alone.
 | M3 recessed pan head screw, GB818, 304 stainless, 10 mm | 50 | bag not recorded |
 | M3 recessed pan head screw, GB818, 304 stainless, 12 mm | 50 | bag not recorded |
 | M3 recessed pan head screw, GB818, 304 stainless, 14 mm | 50 | bag not recorded |
+| Stainless steel sheet, 304, 0.05 × 100 × 1000 mm | 1 | Received 2026-11-05. Torsion strip stock (the 4 mm strip is cut from it); keep flat in its own card envelope, no creases. Magnet check pending. Bag: none (flat envelope) |
+| Foam tape, double-sided PE, 3 mm × 10 m, 0.3 mm thick | 1 | Received 2026-11-05. Enclosure slot shim and lid seal. Bag: `BALANCE MATERIALS` |
+| Copper pad, 20 × 20 × 0.3 mm | 5 | Received 2026-11-05. Damper vane and trim weights; listing's spec table says "Carbide": magnet check pending. Bag: `BALANCE MATERIALS` |
+| Copper foil tape, conductive adhesive, 10 mm × 1 m | 1 | Received 2026-11-05. Trim material, spare ground strap. Bag: `BALANCE MATERIALS` |
+| Brass rod, 10 mm diameter × 100 mm | 1 | Received 2026-11-05. One saw cut makes the balance's ballast; the 100 mm length is the listing's figure, not yet measured. Bag: `BALANCE MATERIALS` (or beside it if it will not fit) |
 
 ---
 
@@ -222,20 +228,6 @@ in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 | ADS1115 16-bit ADC module (I2C) | 1 | Ordered 2026-10-02, arrived by 2026-10-17; untested. **Headers soldered with bridges on 2026-10-22; do not power it.** One unit only; a refund is the plan if it is a dud. For `lab/signal_conditioning/adc_ads1115/`. Headers came with it, not yet soldered. |
 | Coin vibration motor, 3V, 10×2.7mm (variant "10Pcs 1027") | 10 | Ordered 2026-10-02, arrived by 2026-10-17; untested. Rated 3V, 80–90mA, stall 120mA max, starts at 2.3V. For `lab/oscillators/vibration_driver/`. |
 | Neodymium disc magnet, N42, D6×3mm, radially magnetized (variant "N42 NdFeB D6x3mm/10PCS") | 10 | Ordered 2026-10-05, arrived by 2026-10-17; strength untested. Poles on the curved sides, not the flat faces; for `HALLAMP`'s field source. |
-
----
-
-## On Order (AliExpress)
-
-Ordered 2026-10-24 (torsion-balance materials; details in `lab/docs/orders.md`; bag to assign on arrival):
-
-| Component | Quantity | Notes |
-|-----------|----------|-------|
-| Stainless steel sheet, 304, 0.05 × 100 × 1000 mm | 1 | the torsion strip is cut from it |
-| Foam tape, double-sided PE, 3 mm × 10 m, 0.3 mm thick | 1 | enclosure slot shim and lid seal |
-| Copper pad, 20 × 20 × 0.3 mm | 5 | damper vane and trim weights; check non-magnetic on arrival |
-| Copper foil tape, conductive adhesive, 10 mm × 1 m | 1 | trim material, spare ground strap |
-| Brass rod, 10 mm diameter × 100 mm | 1 | one saw cut makes the balance's ballast |
 
 ---
 
