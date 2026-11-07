@@ -31,7 +31,7 @@ here.
 | `BREADBOARDS` | Both 830-point boards, MB-102 400-point, SYB-170 ×3 |
 | `INDUCTORS` | The inductor assortment (too big for `MISC`) |
 | `MISC` | CY7C68013A (SCOPELA) board, 9G servo, passive and active buzzers, USB-C test board, coin vibration motors ×10, N42 magnets ×10 (bubble-wrapped) |
-| `BALANCE MATERIALS` | Torsion-balance stock (added 2026-11-05): copper pads ×5, copper foil tape, PE foam tape, brass rod. The 0.05 mm stainless sheet is not in it: it lies flat in its own card envelope |
+| `BALANCE MATERIALS` | Torsion-balance stock (added 2026-11-05): copper pads ×5, copper foil tape, PE foam tape, brass rod. The 0.05 mm stainless sheet arrived as a roll and goes in it loosely (no pressure on the roll, no creases) |
 
 Not bagged: USB cables, the mains adapters, the soldering tools and the
 solder wick (kept with the iron).
@@ -151,7 +151,7 @@ new build, rather than by eye alone.
 | M3 recessed pan head screw, GB818, 304 stainless, 10 mm | 50 | bag not recorded |
 | M3 recessed pan head screw, GB818, 304 stainless, 12 mm | 50 | bag not recorded |
 | M3 recessed pan head screw, GB818, 304 stainless, 14 mm | 50 | bag not recorded |
-| Stainless steel sheet, 304, 0.05 × 100 × 1000 mm | 1 | Received 2026-11-05. Torsion strip stock (the 4 mm strip is cut from it); keep flat in its own card envelope, no creases. Magnet check pending. Bag: none (flat envelope) |
+| Stainless steel sheet, 304, 0.05 × 100 × 1000 mm | 1 | Received 2026-11-05. Torsion strip stock (the 4 mm strip is cut from it); arrived as a roll; keep it loosely rolled with nothing pressing on it, no creases. Magnet check pending. Bag: `BALANCE MATERIALS` |
 | Foam tape, double-sided PE, 3 mm × 10 m, 0.3 mm thick | 1 | Received 2026-11-05. Enclosure slot shim and lid seal. Bag: `BALANCE MATERIALS` |
 | Copper pad, 20 × 20 × 0.3 mm | 5 | Received 2026-11-05. Damper vane and trim weights; listing's spec table says "Carbide": magnet check pending. Bag: `BALANCE MATERIALS` |
 | Copper foil tape, conductive adhesive, 10 mm × 1 m | 1 | Received 2026-11-05. Trim material, spare ground strap. Bag: `BALANCE MATERIALS` |

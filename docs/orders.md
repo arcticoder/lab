@@ -181,7 +181,7 @@ Empty as of 2026-10-24.
 - Listing: https://www.aliexpress.com/item/1005005771688003.html; variant 10 × 100 mm, 1 piece.
 - Length is stated to within 1–5 mm.
 
-- Bags (assigned 2026-11-05): everything except the sheet goes in the new `BALANCE MATERIALS` bag; the stainless sheet lies flat in its own card envelope (a crease ruins a 0.05 mm strip). The brass rod length (stated 100 mm) is not yet measured.
+- Bags (assigned 2026-11-05): everything goes in the new `BALANCE MATERIALS` bag; the stainless sheet came as a roll (not a flat plate as the listing title said) and goes in loosely, with nothing pressing on it (a crease ruins a 0.05 mm strip). The brass rod length (stated 100 mm) is not yet measured.
 - Checks pending: disc-magnet test on the copper pads, brass rod and stainless sheet (non-magnetic expected); the pads' spec table says "Carbide".
 
 ### M3 hardware (arrived before 2026-10-23)
