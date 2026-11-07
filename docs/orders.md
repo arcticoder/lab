@@ -181,11 +181,12 @@ Empty as of 2026-10-24.
 - Listing: https://www.aliexpress.com/item/1005005771688003.html; variant 10 × 100 mm, 1 piece.
 - Length is stated to within 1–5 mm.
 
-- Bags (assigned 2026-11-05): everything goes in the new `BALANCE MATERIALS` bag; the stainless sheet came as a roll (not a flat plate as the listing title said) and goes in loosely, with nothing pressing on it (a crease ruins a 0.05 mm strip). The brass rod length (stated 100 mm) is not yet measured.
-- Checks pending: disc-magnet test on the copper pads, brass rod and stainless sheet (non-magnetic expected); the pads' spec table says "Carbide".
+- Bags (assigned 2026-11-05): everything goes in the new `BALANCE MATERIALS` bag; the stainless sheet came as a roll (not a flat plate as the listing title said) and goes in loosely, with nothing pressing on it (a crease ruins a 0.05 mm strip). The brass rod measured 10 mm diameter and 100 mm long on 2026-11-06 (printed calipers).
+- Disc-magnet test, 2026-11-06: no pull on the copper pads, brass rod or stainless sheet (the pads' spec table says "Carbide"; they are not magnetic).
 
 ### M3 hardware (arrived before 2026-10-23)
 
+- Bag for the M3 nuts and screws: `MISC TOOLS` (recorded 2026-11-06).
 - M3 hex nuts, black carbon steel, 55 pieces: https://www.aliexpress.com/item/4000602853448.html
 - M3 recessed pan head screws, GB818, 304 stainless: 50 pieces each of 10 mm, 12 mm and 14 mm (listing URLs not recorded).
 

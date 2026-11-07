@@ -32,6 +32,7 @@ here.
 | `INDUCTORS` | The inductor assortment (too big for `MISC`) |
 | `MISC` | CY7C68013A (SCOPELA) board, 9G servo, passive and active buzzers, USB-C test board, coin vibration motors ×10, N42 magnets ×10 (bubble-wrapped) |
 | `BALANCE MATERIALS` | Torsion-balance stock (added 2026-11-05): copper pads ×5, copper foil tape, PE foam tape, brass rod. The 0.05 mm stainless sheet arrived as a roll and goes in it loosely (no pressure on the roll, no creases) |
+| `MISC TOOLS` | M3 hardware: carbon-steel nuts ×55 and the 304 pan head screws (10, 12, 14 mm, 50 each); recorded 2026-11-06 |
 
 Not bagged: USB cables, the mains adapters, the soldering tools and the
 solder wick (kept with the iron).
@@ -147,11 +148,11 @@ new build, rather than by eye alone.
 | Breadboard (mini SYB-170) | 1     | 170-point, black; from a 6-in-1 color pack (AliExpress). See `lab/docs/orders.md` / `lab/docs/parts_reference.md` for full specs |
 | Micro USB Cable        | 1        | For Pico power + data                                     |
 | Mini-USB Cable         | 1        | Acquired directly (non-AliExpress) 2026-09-24; removed from the AliExpress cart. Used with `SCOPELA`'s CY7C68013A board |
-| M3 hex nut, black carbon steel | 55 | AliExpress item 4000602853448; magnetic (keep clear of the balance's moving parts); bag not recorded |
-| M3 recessed pan head screw, GB818, 304 stainless, 10 mm | 50 | bag not recorded |
-| M3 recessed pan head screw, GB818, 304 stainless, 12 mm | 50 | bag not recorded |
-| M3 recessed pan head screw, GB818, 304 stainless, 14 mm | 50 | bag not recorded |
-| Stainless steel sheet, 304, 0.05 × 100 × 1000 mm | 1 | Received 2026-11-05. Torsion strip stock (the 4 mm strip is cut from it); arrived as a roll; keep it loosely rolled with nothing pressing on it, no creases. Magnet check pending. Bag: `BALANCE MATERIALS` |
+| M3 hex nut, black carbon steel | 55 | AliExpress item 4000602853448; magnetic (keep clear of the balance's moving parts); bag `MISC TOOLS` |
+| M3 recessed pan head screw, GB818, 304 stainless, 10 mm | 50 | bag `MISC TOOLS` |
+| M3 recessed pan head screw, GB818, 304 stainless, 12 mm | 50 | bag `MISC TOOLS` |
+| M3 recessed pan head screw, GB818, 304 stainless, 14 mm | 50 | bag `MISC TOOLS` |
+| Stainless steel sheet, 304, 0.05 × 100 × 1000 mm | 1 | Received 2026-11-05. Torsion strip stock (the 4 mm strip is cut from it); arrived as a roll; keep it loosely rolled with nothing pressing on it, no creases. Disc-magnet check 2026-11-06: no pull. Bag: `BALANCE MATERIALS` |
 | Foam tape, double-sided PE, 3 mm × 10 m, 0.3 mm thick | 1 | Received 2026-11-05. Enclosure slot shim and lid seal. Bag: `BALANCE MATERIALS` |
 | Copper pad, 20 × 20 × 0.3 mm | 5 | Received 2026-11-05. Damper vane and trim weights; listing's spec table says "Carbide": magnet check pending. Bag: `BALANCE MATERIALS` |
 | Copper foil tape, conductive adhesive, 10 mm × 1 m | 1 | Received 2026-11-05. Trim material, spare ground strap. Bag: `BALANCE MATERIALS` |
