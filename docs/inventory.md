@@ -234,15 +234,15 @@ in `lab/docs/orders.md` and `lab/docs/parts_reference.md`.
 
 ## Filament (3D printing)
 
-Creality Hyper PLA, 1.75 mm, all Creality spools. Printing range on every label: nozzle 190-230 °C, fan on. Bed 25-60 °C (cardboard spools; the grey spool's label gives only "tray ≤ 100 °C"). Weights are the user's gross measurements. Remaining = gross − spool tare: an empty cardboard Creality spool is 155-180 g (±10 g with humidity); the grey spool is not cardboard and its tare is not known. Opened unless the user says otherwise. The usage-window photos were transcribed here and deleted (2026-11-07).
+Creality Hyper PLA, 1.75 mm, all Creality spools. Printing range on every label: nozzle 190-230 °C, fan on. Bed 25-60 °C (cardboard spools; the grey spool's label gives only "tray ≤ 100 °C"). Weights are the user's gross measurements. Remaining = gross − spool tare: an empty cardboard Creality spool is 155-180 g (±10 g with humidity); the grey spool is not cardboard and its tare is not known. Opened unless the user says otherwise. The usage-window photos were transcribed here and deleted (2026-11-07). Empty-spool tares: cardboard 155-180 g; plastic (grey) about 200-240 g.
 
 | Item | Qty | Notes |
 |------|-----|-------|
 | Hyper PLA Red, cardboard spool, 1 kg net | 1 | **Opened.** Gross 1016 g → about 840 g left (836-861 g). Usage window shows filament across most of its length; the weight is the basis. Bag: not recorded |
-| Hyper PLA Grey, plastic spool, 1 kg net | 1 | **Opened (assumed).** Gross 1151 g. Spool tare not known: if the spool is 151 g (what a full 1 kg net implies), about 1.0 kg left. Winding fills the window to its rim. Label: tray ≤ 100 °C. Bag: not recorded. Ask for the empty spool weight |
+| Hyper PLA Grey, plastic spool, 1 kg net | 1 | **Opened (assumed).** Gross 1151 g. Plastic spool: empty tare about 200-240 g (user's figure, average about 220 g), so about 910-950 g left (about 930 g). Winding fills the window to its rim. Label: tray ≤ 100 °C. Bag: not recorded |
 | Hyper PLA White, cardboard spool, 1 kg net | 1 | **Unopened** (plastic wrap and desiccant still in). Gross 1224 g, 44-69 g over the expected 1155-1180 g; wrap or desiccant, not checked. Treat as 1 kg. Bag: not recorded |
 | Hyper PLA Black, cardboard spool, 1 kg net | 1 | **Unopened** (plastic wrap and desiccant still in). Gross 1228 g, 48-73 g over the expected 1155-1180 g. Treat as 1 kg. Bag: not recorded |
-| Hyper PLA White, cardboard spool, 1 kg net | 1 | **Opened, almost empty.** Gross 195 g → about 15-40 g left; filament no longer visible in the window. Bag: not recorded |
+| Hyper PLA White, cardboard spool, 1 kg net | 1 | **Opened, nearly empty, but kept for use.** Gross 195 g → about 15-40 g left; filament no longer visible in the window. The user wants the rest used: a white print that outlasts it needs a pause at the swap, the next white spool loaded, and a manual extrusion to restore flow (plan with the user when it comes up). Do not discard. Bag: not recorded |
 | Hyper PLA Black, cardboard spool, 1 kg net | 1 | **Opened.** Gross 245 g → about 65-90 g left; filament no longer visible in the window. Bag: not recorded |
 
 Printing with these: the balance's frame plan is in `spurious-force-balance/docs/print_requirements.md` (section 6 for the slicer values, the bed capped at 60 °C for Hyper PLA).
