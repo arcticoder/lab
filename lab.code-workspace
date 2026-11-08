@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "../../asciimath/aqei-bridge"
+		},
+		{
+			"path": "../../sysadmin/wsl"
 		}
 	],
 	"settings": {}
