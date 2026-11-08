@@ -24,7 +24,7 @@ The plan that assigns coupons to orders is in `spurious-force-balance/docs/fabri
 | New User Layout - JLCPCB | layout | C$27.86 | over C$1.39 | 2026-12-25 | not relevant (layout is done in KiCad) |
 | New User Flex Heater - JLCPCB | flex heater | C$13.93 | over C$1.39 | 2026-12-25 | not relevant |
 
-Used: JLCONE $8 PCB Coupon (arm order, 2026-11-04; order total C$3.00 on the account page: merchandise 1.20 + shipping 1.80), JLCCNC $10 and the Parts Special Coupons (maxed out).
+Used: JLCONE $8 PCB Coupon (arm order Y3, 2026-11-03; the order page of 2026-11-08 in USD shows merchandise $10.10, shipping $7.75 on Global Standard Direct Line, discount -$15.35, PayPal fee $0.50, total $3.00; the discount was larger than the goods, so the coupon(s) took off shipping too, and the page does not name them), JLCCNC $10 and the Parts Special Coupons (maxed out).
 
 ## Claimable on the coupon center, not yet claimed (terms as shown 2026-11-04)
 
