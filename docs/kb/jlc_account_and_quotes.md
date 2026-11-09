@@ -54,3 +54,9 @@ The account page's "Mechatronic Parts" link has `target=_blank`, so it opens in 
 
 - A cart item persists after the quote page is reloaded, so check the cart before uploading another design.
 - Two order-page states can look like a placed order: "Paid" (the arm, awaiting JLC's production review) and "In Production" (elec_board, clamp_ground). Read the order page to confirm.
+
+## Parcel weight and combining orders (user decisions, 2026-11-08)
+
+- The 0.3 kg cheap-shipping line is no longer a design limit: with the Global Standard Direct Line at C$8.14 for 0.14 kg the user will exceed 0.3 kg if one larger parcel lowers the per-item shipping. He still will not pay a shipping premium for a tiny order, so tiny boards ride in the next JLC order instead of a parcel of their own.
+- A paid or in-production order cannot be merged into a new one; Combine Shipping (a JLC add-on, off by default) must be on when the orders are placed. `clamp_ground` (Y5) was placed without it, so `clamp_plate` cannot join it. Whether PCB and PCBA services can share one parcel is unconfirmed.
+- Coupon expiry to watch: New User SMT (C$13.93) and New User PCB (C$8.36) end 2026-11-25, JLCONE PCB $5 on 2026-11-26.
