@@ -1,19 +1,24 @@
 {
 	"folders": [
 		{
+			"name": "pico",
 			"path": "../pico"
 		},
 		{
+			"name": "lab",
 			"path": "."
 		},
 		{
+			"name": "spurious-force-balance",
 			"path": "../spurious-force-balance"
 		},
 		{
-			"path": "../../asciimath/aqei-bridge"
+			"name": "wsl",
+			"path": "../../sysadmin/wsl"
 		},
 		{
-			"path": "../../sysadmin/wsl"
+			"name": "aqei-bridge",
+			"path": "../../asciimath/aqei-bridge"
 		}
 	],
 	"settings": {}
