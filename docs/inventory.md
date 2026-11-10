@@ -149,6 +149,7 @@ new build, rather than by eye alone.
 | Micro USB Cable        | 1        | For Pico power + data                                     |
 | Mini-USB Cable         | 1        | Acquired directly (non-AliExpress) 2026-09-24; removed from the AliExpress cart. Used with `SCOPELA`'s CY7C68013A board |
 | M3 hex nut, black carbon steel | 55 | AliExpress item 4000602853448; magnetic (keep clear of the balance's moving parts); bag `MISC TOOLS` |
+| M3 thin hex nut, DIN439, 304 stainless | 20 | Received 2026-11-09 (AliExpress item 1005010507401042). 10 go on the balance's moving arm and vane holder, 10 spare; thinner than the standard nut, so they sit loosely in the captured pockets. Magnet check on arrival not yet reported. Bag: `MISC TOOLS` (M3 hardware; confirm) |
 | M3 recessed pan head screw, GB818, 304 stainless, 10 mm | 50 | bag `MISC TOOLS` |
 | M3 recessed pan head screw, GB818, 304 stainless, 12 mm | 50 | bag `MISC TOOLS` |
 | M3 recessed pan head screw, GB818, 304 stainless, 14 mm | 50 | bag `MISC TOOLS` |
@@ -258,4 +259,5 @@ Printing with these: the balance's frame plan is in `spurious-force-balance/docs
 | Soldering iron stand          | 1        | Included with iron                                          |
 | Soldering tip, 5/32 in.       | 2        | Included with iron                                          |
 | 18-in-1 wire stripper/crimper pliers | 1 | Received 2026-09-03; high-carbon steel + PVC handle. Resolves the wire-stripper dependency that was blocking `psu_ultralow_v1`/`psu_low_v2` AA-holder lead termination in `lab/`. |
+| Digital calipers (LCD) | 1 | Received 2026-11-09 (AliExpress, with the thin nuts). Ships without the cell: needs one SR44/LR44 (1.55 V, 11.6 x 5.4 mm); not usable until a battery is bought. Bag: not assigned |
 | Solder wick (desoldering braid), 1.0mm × 1.5m | 1 | Ordered 2026-10-05, arrived by 2026-10-17. Clears the GY-521's bridged header pins (procedure in `signal_conditioning/accelerometer_interface/breadboard.md`) and any bridge on the ADS1115's or RP2040-Zero's headers. |
