@@ -771,4 +771,18 @@ recorded here.
 
 ## On order (placed, not yet received)
 
-Nothing as of 2026-10-17: both October orders arrived.
+### 2026-11-10 order (AliExpress, balance workshop; placed by the user 2026-11-10, 7 line items, not yet received)
+
+Prices in CAD as in the cart; the order cleared the Choice free-shipping threshold (it was C$0.66 short before the files were added). Cart total C$14.19.
+
+| Item | Listing | Variant | Price |
+|------|---------|---------|-------|
+| LR44 button cells, 5-pack | (listing as in the cart) | 5-pack | C$2.85 |
+| JST-SH 1.0 mm 2-pin cable, 10 cm, 5-pack | (listing as in the cart) | 2-pin, 10 cm | C$1.04 |
+| 6-inch 24T mini hacksaw blades, 10 pcs | (listing as in the cart) | 150 mm x 6 mm x 0.4 mm | C$1.92 |
+| Stainless flat washers DIN125 | https://www.aliexpress.com/item/4000174460068.html | M3 x 7 x 0.5, 100 pcs | C$0.73 |
+| 0.5 kg / 0.1 g digital pocket scale (takes AAA cells, none included) | https://www.aliexpress.com/item/32454982206.html | as listed | C$3.79 |
+| M1 calibration weight | https://www.aliexpress.com/item/1005005924323638.html | 1 g | C$2.48 |
+| Diamond needle file set, 14 cm | https://www.aliexpress.com/item/1005007161620280.html | 2 pcs | C$1.38 |
+
+Why: cells for the calipers (and spares); cable for the balance's strip sensor; blades for the brass-rod saw cut; washers for the M3 screws; scale and weight for the calibration route (`spurious-force-balance/docs/procedures.md` B.1); files to finish the sawn brass face and deburr. Expected arrival: a few weeks. On arrival: add each to `inventory.md` with a bag, check the file shape (listing text says round, title and section say flat), and give the head-hole measurement steps once the cell is in the calipers.
