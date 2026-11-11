@@ -777,9 +777,9 @@ Prices in CAD as in the cart; the order cleared the Choice free-shipping thresho
 
 | Item | Listing | Variant | Price |
 |------|---------|---------|-------|
-| LR44 button cells, 5-pack | (listing as in the cart) | 5-pack | C$2.85 |
-| JST-SH 1.0 mm 2-pin cable, 10 cm, 5-pack | (listing as in the cart) | 2-pin, 10 cm | C$1.04 |
-| 6-inch 24T mini hacksaw blades, 10 pcs | (listing as in the cart) | 150 mm x 6 mm x 0.4 mm | C$1.92 |
+| LR44 button cells, 5-pack | https://www.aliexpress.com/item/1005005805225475.html | 5-pack | C$2.85 |
+| JST-SH 1.0 mm 2-pin cable, 10 cm, 5-pack | https://www.aliexpress.com/item/1005004138501132.html | 2-pin, 10 cm | C$1.04 |
+| 6-inch 24T mini hacksaw blades, 10 pcs | https://www.aliexpress.com/item/1005001586493266.html | 150 mm x 6 mm x 0.4 mm | C$1.92 |
 | Stainless flat washers DIN125 | https://www.aliexpress.com/item/4000174460068.html | M3 x 7 x 0.5, 100 pcs | C$0.73 |
 | 0.5 kg / 0.1 g digital pocket scale (takes AAA cells, none included) | https://www.aliexpress.com/item/32454982206.html | as listed | C$3.79 |
 | M1 calibration weight | https://www.aliexpress.com/item/1005005924323638.html | 1 g | C$2.48 |
