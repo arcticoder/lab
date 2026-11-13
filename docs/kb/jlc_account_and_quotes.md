@@ -69,3 +69,7 @@ The account page's "Mechatronic Parts" link has `target=_blank`, so it opens in 
 
 ## clamp_plate and shipping (user, 2026-11-10)
 The user cancelled Y6/Y7 because the shipping price would not come down; they are exploring combining several packages to lower shipping for clamp_plate and other items, so the board is not shelved. Never record tracking numbers in this file.
+
+## 2026-11-12: driving the app for messages and campaign pages (works)
+- Helper (scratchpad, recreate): `websockets` (async) to the tab's `webSocketDebuggerUrl` (no Origin header needed with this library), `Runtime.evaluate` for reads and `element.click()` for clicks; `websocket-client` is not installed. The account tab's left menu item "Messages" (`li.el-menu-item`) opens `user-center/messages`; a message row is a div whose `a` child holds `.../messages/detail?msgNoticeRecordAccessId=...`; navigating that URL with `location.href` works. A `target=_blank` link clicked with `a.click()` opens a new JLCONE tab (event pages, e.g. `jlcpcb.com/events/black-friday-2026`); setting `location.href` or `Page.navigate` to an events URL in the account tab is bounced back.
+- The warm-up coupons are all on one page (11 coupons, no second page); "Get Coupon" buttons turn into "Coupon Claimed"; the account page `user-center/payments/coupon` then lists them with expiry and minimum. A "We've updated our Terms" dialog was on the page: it is the user's to accept.

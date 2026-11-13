@@ -26,6 +26,17 @@ The plan that assigns coupons to orders is in `spurious-force-balance/docs/fabri
 
 Used: JLCONE $8 PCB Coupon (arm order Y3, 2026-11-03; the order page of 2026-11-08 in USD shows merchandise $10.10, shipping $7.75 on Global Standard Direct Line, discount -$15.35, PayPal fee $0.50, total $3.00; the discount was larger than the goods, so the coupon(s) took off shipping too, and the page does not name them), JLCCNC $10 and the Parts Special Coupons (maxed out).
 
+## Black Friday warm-up coupons claimed 2026-11-12 (read from the account's Unused Coupons page through the app; 19 unused in total)
+Claimed from the campaign page `jlcpcb.com/events/black-friday-2026` (opened from the message "Black Friday 2026 Warm-Up", warm-up 2026-11-11 to 17; Black Friday proper 2026-11-18 to 12-02). Valid until 2026-11-27 for all four. Amounts as the account page shows them in CAD today (the rate moved a little since 2026-11-04).
+
+| Coupon | Service | Off | Minimum | Expires | Planned use |
+|---|---|---|---|---|---|
+| BF PCBA $12 | PCBA | C$17.07 | over C$71.13 excluding freight | 2026-11-27 | the main board's assembly (164 parts) if ordered before the end of November; it replaces the New User SMT coupon (C$14.23, 11-25) only if bigger: use the larger per checkout |
+| BF PCBA Parts $10 | JLCPCB parts | C$14.23 | over C$71.13 excluding freight | 2026-11-27 | the parts cost of the same order |
+| BF Shipping $5 - JLCONE | shipping | C$7.11 | over C$28.45 of shipping | 2026-11-27 | shipping of an order whose shipping is over C$28.45 (only a heavy parcel) |
+| BF Prototype $8 - JLCONE | prototype orders | C$11.38 | over C$28.45 excluding freight | 2026-11-27 | a prototype order of at least C$28.45 of goods |
+Not claimed (not useful for this project): BF PCB $12 - EasyEDA (EasyEDA orders), BF Batch $20 - JLCONE (batch orders), BF 6-32L PCB $30, BF Layout $80, BF Stencil $10, BF Flex Heater $15, BF FPC $20; JLC3DP, JLCCNC and JLCMC have their own warm-up coupons behind "Visit ..." links on the campaign page (not read). The campaign page showed an "updated Terms" dialog (Decline / Accept & Continue) which was left untouched for the user.
+
 ## Claimable on the coupon center, not yet claimed (terms as shown 2026-11-04)
 
 JLCONE $20 PCB (C$27.86, over C$696.40, 60 d); JLCONE Batch PCB $15 (C$20.89, over C$1392.80, 30 d); JLCONE FPC $5 (C$6.96, over C$2.79, 30 d); JLCONE High-Layer PCB $30 (C$41.78, over C$6.96, 60 d); PCB $10 and PCBA $10 - EasyEDA Design (C$13.93 each, over C$1.39, 30 d, EasyEDA files only: the EasyEDA route was dropped, so not usable); JLCONE PCBA $20 (C$27.86, over C$139.28, 30 d); JLCONE $50 PCBA (C$69.64, over C$696.40, 60 d); JLCONE Batch PCBA $30 (over C$1392.80); Stencil Coupon (C$6.96, over C$1.39, 30 d); JLCONE $20 3DP (over C$417.84, 60 d); JLCONE $20 MC (C$27.86, over C$139.28, 60 d); layout and flex-heater coupons (not relevant). The three PCB coupons above the order sizes here are out of reach (minimums of hundreds of dollars).
