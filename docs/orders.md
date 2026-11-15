@@ -135,11 +135,11 @@ notes below stay for that day.
 
 ## In cart (not yet checked out)
 
-Empty as of 2026-10-24.
+As of 2026-11-14: the SCVCN photochromic cycling glasses (C$3.48, listing 1005010228786764) for the brass cut, C$1.28 short of the free-shipping line; the second M1 1 g calibration weight (1005005924323638, C$2.48) is the item to add (cart C$5.96). Not placed yet.
 
 ## Ordered, not yet arrived
 
-Nothing from AliExpress in transit as of 2026-11-09 (the 2026-10-30 order arrived). JLC boards in transit or in production are tracked in `spurious-force-balance/docs/TODO-arcticoder.md` and `lab/docs/kb/jlc_account_and_quotes.md`.
+The 2026-11-10 AliExpress order (cells, JST-SH cable, hacksaw blades, washers, 1 g weight, 0.1 g scale, needle files) is in transit (as of 2026-11-14); the 2026-10-30 order arrived 2026-11-09. JLC boards in transit or in production are tracked in `spurious-force-balance/docs/TODO-arcticoder.md` and `lab/docs/kb/jlc_account_and_quotes.md`.
 
 ---
 
