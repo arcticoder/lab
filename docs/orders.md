@@ -135,9 +135,11 @@ notes below stay for that day.
 
 ## In cart (not yet checked out)
 
-As of 2026-11-14: the SCVCN photochromic cycling glasses (C$3.48, listing 1005010228786764) for the brass cut and the calibration weight set 1/2/5/10/20 g (C$2.73, listing 1005005974937195, nickel-plated steel, chosen by the user over the single 1 g weight 1005005924323638 at C$2.48). Cart C$6.21, free shipping. Not placed yet.
+Empty as of 2026-11-14 (the glasses and the weight set were placed the same day, see below).
 
 ## Ordered, not yet arrived
+
+**AliExpress order placed 2026-11-14 (balance: brass-cut glasses and calibration weights; cart C$6.21, free shipping):** SCVCN photochromic cycling glasses (C$3.48, listing 1005010228786764; safety glasses for the brass hacksaw cut) and the 1/2/5/10/20 g nickel-plated steel calibration weight set (C$2.73, listing 1005005974937195; the seller's tolerance claim is +/-0.003 g, unverified; it replaces the single 1 g weight 1005005924323638 as the second 1 g weight for the second rider). Expect it in a few weeks. On arrival: weigh and measure the weights (diameters unknown; the rider seat is 10 mm), log them in `inventory.md` with a bag.
 
 The 2026-11-10 AliExpress order (cells, JST-SH cable, hacksaw blades, washers, 1 g weight, 0.1 g scale, needle files) is in transit (as of 2026-11-14); the 2026-10-30 order arrived 2026-11-09. JLC boards in transit or in production are tracked in `spurious-force-balance/docs/TODO-arcticoder.md` and `lab/docs/kb/jlc_account_and_quotes.md`.
 
