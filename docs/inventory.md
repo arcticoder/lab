@@ -145,7 +145,7 @@ new build, rather than by eye alone.
 |--------------------------|----------|-------------------------------------------------------------|
 | Breadboard (full)      | 1        | 830-point                                                 |
 | Breadboard (full, second) | 1  | 830-point, the same as the first (ordered 2026-10-05 as "800-point"); for builds that stay assembled; arrived by 2026-10-17 |
-| `clamp_ground` FR4 boards (JLC, 1.2 mm, 16 x 14 mm, ground pad and plated hole) | 5 | Received 2026-11-14 (placed 2026-11-06). Four have a pale tinned pad; one has a copper-coloured pad (finish not applied or oxidised): use a tinned one on the balance. Bag: not recorded |
+| `clamp_ground` FR4 boards (JLC, 1.2 mm, 16 x 14 mm, ground pad and plated hole) | 5 | Received 2026-11-14 (placed 2026-11-06). All five pads look the same (the colour difference in the photo was lighting). Bag: not recorded |
 | Breadboard (mini SYB-170) | 1     | 170-point, black; from a 6-in-1 color pack (AliExpress). See `lab/docs/orders.md` / `lab/docs/parts_reference.md` for full specs |
 | Micro USB Cable        | 1        | For Pico power + data                                     |
 | Mini-USB Cable         | 1        | Acquired directly (non-AliExpress) 2026-09-24; removed from the AliExpress cart. Used with `SCOPELA`'s CY7C68013A board |

@@ -135,7 +135,7 @@ notes below stay for that day.
 
 ## In cart (not yet checked out)
 
-As of 2026-11-14: the SCVCN photochromic cycling glasses (C$3.48, listing 1005010228786764) for the brass cut, C$1.28 short of the free-shipping line; the second M1 1 g calibration weight (1005005924323638, C$2.48) is the item to add (cart C$5.96). Not placed yet.
+As of 2026-11-14: the SCVCN photochromic cycling glasses (C$3.48, listing 1005010228786764) for the brass cut and the calibration weight set 1/2/5/10/20 g (C$2.73, listing 1005005974937195, nickel-plated steel, chosen by the user over the single 1 g weight 1005005924323638 at C$2.48). Cart C$6.21, free shipping. Not placed yet.
 
 ## Ordered, not yet arrived
 
