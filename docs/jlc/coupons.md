@@ -73,3 +73,7 @@ re-uploading may be attached to an unsubmitted order saved in the cart: deleting
 - Exporting from EasyEDA reportedly unlocks PCBA coupons that a KiCad or Altium Gerber upload does not (the "EasyEDA Design" coupons above are that case).
 - Publishing a finished project to the EasyEDA / JLCPCB Open Source Hardware Hub reportedly yields project coupons (US$10 up to US$150-400 for highlighted projects).
 - Shipping coupons only apply above their shipping minimum: they do not combine with the $3-4 postal tier.
+
+## 2026-11-15: main-board order cart (3 lines, 0.90 kg)
+Cart showed only BF PCBA $12 (-C$17.09) applied; shipping on Global Standard Direct Line read C$24.06 (list rate: 0.14 kg C$8.14, 0.28 kg about C$10.9, 0.90 kg C$24.06, so cost rises with weight and nothing is free under 1 kg; the cheap earlier parcels were order-level discounts). Account page the same day (read through the app): New User Shipping C$14.24 (shipping over C$21.36, to 2026-11-25) qualifies; BF Shipping $5 needs shipping over C$28.48 (does not); JLCONE 4-Layer PCB $5 (C$7.12, over C$7.12, to 2026-12-02) fits the 4-layer main board; New User PCB C$8.54 and JLCONE PCB $5 C$7.12 fit PCB lines; BF PCBA Parts $10 needs over C$71.19 of parts (parts C$60.97, no). Whether the checkout accepts one coupon per service type (PCB, SMT, shipping) is for the user's checkout to show.
+
