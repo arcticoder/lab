@@ -22,5 +22,5 @@ LLM-facing notes (not end-user docs). One line per note; the experiment's own no
 | `rp2040_performance_notes.md` | RP2040 throughput: PIO, DMA, fixed point, measured numbers |
 | `rp2040_zero_notes.md`, `rp2350_notes.md` | the RP2040-Zero board and the RP2350 chip guard |
 | `../jlc/coupons.md`, `../jlc/*_quote_ui.md` | the JLC account's coupons (with expiry dates) and the user's captures of JLC's quote pages (PCB/PCBA, 3D printing) |
-| `jlc_account_and_quotes.md` | the JLC account: what a session can read (the quote and coupon pages through the JLCONE app's debug port, recipe and gotchas) and cannot (the API, cookies, submitting), coupon rules, quote behaviour (thickness reverts, mass rule with packing, fees) |
+| `jlc_account_and_quotes.md` | the JLC account: what a session can read (the quote and coupon pages through the JLCONE app's debug port, recipe and gotchas) and cannot (the API, cookies, submitting), coupon rules (one per order; the payment page, not the cart, picks the best), quote behaviour (thickness reverts, mass rule with packing, fees), checkout and order-page reads (Global Standard Direct Line refused over US$99, UPS, no order splitting), CDP click and dialog gotchas |
 
