@@ -141,7 +141,7 @@ Empty as of 2026-11-14 (the glasses and the weight set were placed the same day,
 
 **AliExpress order placed 2026-11-14 (balance: brass-cut glasses and calibration weights; cart C$6.21, free shipping):** SCVCN photochromic cycling glasses (C$3.48, listing 1005010228786764; safety glasses for the brass hacksaw cut) and the 1/2/5/10/20 g nickel-plated steel calibration weight set (C$2.73, listing 1005005974937195; the seller's tolerance claim is +/-0.003 g, unverified; it replaces the single 1 g weight 1005005924323638 as the second 1 g weight for the second rider). Expect it in a few weeks. On arrival: weigh and measure the weights (diameters unknown; the rider seat is 10 mm), log them in `inventory.md` with a bag.
 
-The 2026-11-10 AliExpress order (cells, JST-SH cable, hacksaw blades, washers, 1 g weight, 0.1 g scale, needle files) is in transit (as of 2026-11-14); the 2026-10-30 order arrived 2026-11-09. JLC boards in transit or in production are tracked in `spurious-force-balance/docs/TODO-arcticoder.md` and `lab/docs/kb/jlc_account_and_quotes.md`.
+The 2026-11-10 AliExpress order (cells, JST-SH cable, hacksaw blades, washers, 1 g weight, 0.1 g scale, needle files) arrived 2026-11-20; the 2026-10-30 order arrived 2026-11-09. JLC boards in transit or in production are tracked in `spurious-force-balance/docs/TODO-arcticoder.md` and `lab/docs/kb/jlc_account_and_quotes.md`.
 
 ---
 
@@ -153,7 +153,7 @@ The 2026-11-10 AliExpress order (cells, JST-SH cable, hacksaw blades, washers, 1
 
 - Listing: https://www.aliexpress.com/item/1005010507401042.html (brand HOWSHENG, model 304-439); variant M3, 20 pieces.
 - DIN439 is the **thin** (low) nut: thinner than the standard M3 nut, so it sits loosely in a pocket sized for a standard one. Used for the 10 stainless nuts the balance needs; the other 10 are spares. Check on arrival that a disc magnet does not pull them.
-- The digital calipers in the same checkout: listing and price not recorded; logged in `inventory.md` under Tools. They arrived without a battery: they take one SR44/LR44 (1.55 V button cell), so they stay unusable until one is ordered. This was the last AliExpress parcel in transit as of 2026-11-09; the next AliExpress order carries the cells.
+- The digital calipers in the same checkout: listing and price not recorded; logged in `inventory.md` under Tools. They arrived without a battery: they take one SR44/LR44 (1.55 V button cell), so they stayed unusable until the cells of the 2026-11-10 order arrived (2026-11-20).
 
 ### AliExpress order placed 2026-10-24, received 2026-11-05 (torsion-balance materials; the experiment is in the [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance) repo)
 
@@ -773,7 +773,7 @@ recorded here.
 
 ## On order (placed, not yet received)
 
-### 2026-11-10 order (AliExpress, balance workshop; placed by the user 2026-11-10, 7 line items, not yet received)
+### 2026-11-10 order (AliExpress, balance workshop; placed by the user 2026-11-10, 7 line items; received 2026-11-20)
 
 Prices in CAD as in the cart; the order cleared the Choice free-shipping threshold (it was C$0.66 short before the files were added). Cart total C$14.19.
 
@@ -787,4 +787,4 @@ Prices in CAD as in the cart; the order cleared the Choice free-shipping thresho
 | M1 calibration weight | https://www.aliexpress.com/item/1005005924323638.html | 1 g | C$2.48 |
 | Diamond needle file set, 14 cm | https://www.aliexpress.com/item/1005007161620280.html | 2 pcs | C$1.38 |
 
-Why: cells for the calipers (and spares); cable for the balance's strip sensor; blades for the brass-rod saw cut; washers for the M3 screws; scale and weight for the calibration route (`spurious-force-balance/docs/procedures.md` B.1); files to finish the sawn brass face and deburr. Expected arrival: a few weeks. On arrival: add each to `inventory.md` with a bag, check the file shape (listing text says round, title and section say flat), and give the head-hole measurement steps once the cell is in the calipers.
+Why: cells for the calipers (and spares); cable for the balance's strip sensor; blades for the brass-rod saw cut; washers for the M3 screws; scale and weight for the calibration route (`spurious-force-balance/docs/procedures.md` B.1); files to finish the sawn brass face and deburr. **Arrived 2026-11-20** (the user reported the JST-SH cable, hacksaw blades, washers, scale (powers on and off), 1 g weight and needle files; the cells line was not named in the report, so its arrival is assumed, not confirmed). Logged in `inventory.md` with bags. Still to check: the file shape (listing text says round, title and section say flat) and whether the 1 g weight is magnetic.
