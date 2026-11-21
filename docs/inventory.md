@@ -34,20 +34,21 @@ here.
 | `BALANCE MATERIALS` | Torsion-balance stock (no inner bags): copper pads ×5, copper foil tape, PE foam tape, brass rod, the 0.05 mm stainless sheet (loosely rolled, nothing pressing on it, no creases), the 0.1 g pocket scale, the 1 g weight (own baggie) and, when it arrives, the 1-20 g weight set (own baggie). Weights and the scale are nickel-plated steel parts or have steel parts: keep them away from the N42 discs in `MISC` |
 | `MISC TOOLS` | M3 hardware: carbon-steel nuts ×55, the 304 pan head screws (10, 12, 14 mm, 50 each), the 304 stainless M3 washers ×100 and thin nuts ×20; hand tools: hacksaw blades ×10 (in their packaging), diamond needle files, the digital calipers (re-sorting plan below, proposed 2026-11-20) |
 
-### Filing plan for the tools and balance bags (proposed 2026-11-20, from the photos in `spurious-force-balance/docs/img/inbox/tools_bags_2026-11-20/`)
+### Filing plan for the tools and balance bags (final 2026-11-20 after the user's identifications; the user sorts the bags, from the photos in `spurious-force-balance/docs/img/inbox/tools_bags_2026-11-20/`)
 
 Mat coordinates below are in cm on the cutting mat: x along the long printed ruler, y down the side ruler; photos 1-3 are portrait (y grows downward), photos 4-5 landscape (y grows upward). Photo numbers follow the file-name order.
 
 **Bag `HAND TOOLS`** (sub-bags):
 - `CUT + FILE`: X-acto with blades (photo 1, y 19.5-21.5), utility-knife blades and the two empty cases (photo 5, x 21-27), the two red-handled diamond needle files (photo 4, x 21-23), deburring tool (photo 2, y 26-29), the 30 cm steel ruler.
 - `GRIP + STRIP`: blue side cutters (photo 1, y 0-5), needle-nose pliers (photo 2, y 14-19), red 18-in-1 stripper (photo 1, y 22-28), ESD tweezers (photo 3, x 1-3.5).
-- `MEASURE`: digital calipers (photo 1, y 14-19) with the LR44 cells once they arrive, the small bubble level, the yellow multi-tool pen (photo 3, y 27).
+- `MEASURE`: digital calipers (photo 1, y 14-19) with the LR44 cells once they arrive, the small bubble level.
 - `PRINTER`: `NOZZLES` (existing sub-bag, stays closed), black scraper (photo 1, y 6.5-12), the two blue-capped tubes of needles (photo 4, x 2-12, y 0.5-2.5), brass wire brush (photo 4, x 25-28), white plastic pry stick (photo 4, bottom, x 13-26), white spudger (photo 3, x 4-5.5).
 
 **Bag `BENCH + FASTENERS`** (sub-bags):
 - `SCREWS + NUTS` (existing, stays closed; the washer zip bag with its label goes in unopened, photo 5, x 17-27).
-- `SOLDERING`: black iron tray (photo 4, x 2-9), coil iron stand (photo 4, x 9-15), yellow stand (photo 4, x 16-20), yellow sponge (photo 3, x 18-22), solder tube (photo 3, y 5-8), solder wick (photo 2, y 20-25), the iron itself.
-- `GLUE + GREASE`: Gorilla super glue (photo 2, y 8-13), plumber's silicone grease (photo 4, bottom left).
+- `SOLDERING`: black iron tray (photo 4, x 2-9), coil iron stand (photo 4, x 9-15), yellow iron holder with the extra tip beside it (photo 4, x 15-20, y 15-21), yellow sponge (photo 3, x 18-22), solder tube (photo 3, y 5-8), the printed red solder-wire holder (photo 2, x 15-22, y 0-8; partial print, works as is), solder wick (photo 2, y 20-25), the iron itself.
+- `DRIVERS`: the printed revolver screwdriver (photo 3, x 12-22, y 16-20; stuck on the fast, low-torque speed) with its black part (photo 3, x 17.5-22, y 21-25), the yellow multi-tool pen (photo 3, y 27), any other screwdrivers the user chooses to gather.
+- `GLUE + GREASE`: Gorilla super glue (photo 2, y 8-13), plumber's silicone grease (photo 4, bottom left), the clear double-sided acrylic adhesive squares (60 x 60 x 1 mm, 10 pcs, photo 5, x 1-17, y 1-22; leave them in their bag).
 - Photo 3's two USB sticks (x 7-9 and x 17-22, y 9-12) and the hacksaw blades' packaging stay out of both bags: sticks go in `MISC` (in `ELECTRONICS`).
 
 **Bag `BALANCE MATERIALS`** (sub-bags; it must not stay one mixed bag):
@@ -194,7 +195,7 @@ new build, rather than by eye alone.
 | LR44 button cell, 1.55 V (not yet received) | 0 (5 ordered) | In transit (2026-11-10 order, 1005005805225475; not arrived as of 2026-11-20). One goes in the calipers. |
 | JST-SH 1.0 mm 2-pin cable, 10 cm, flying leads | 5 | Received 2026-11-20 (1005004138501132). Strip-sensor and plate-driver leads. Bag: `MISC` (in `ELECTRONICS`) |
 | Digital pocket scale, 0.1 g / 0.5 kg | 1 | Received 2026-11-20 (32454982206). Powers on and off (user). Takes AAA cells (none included). Zero-and-1 g check pending. Bag: `BALANCE MATERIALS` |
-| Calibration weight, 1 g | 1 | Received 2026-11-20 (1005005924323638). Material not stated; check with a magnet before it goes near the damper. Bag: `BALANCE MATERIALS`, own baggie |
+| Calibration weight, 1 g | 1 | Received 2026-11-20 (1005005924323638). Not magnetic (N42 disc test by the user, 2026-11-20). Bag: `BALANCE MATERIALS`, own baggie |
 
 ---
 
@@ -300,6 +301,10 @@ Printing with these: the balance's frame plan is in `spurious-force-balance/docs
 | X-acto knife with spare blades | 1 | Owned (user, 2026-11-20). Strip cutting. Bag: not assigned |
 | Steel ruler, stainless, 30 cm | 1 | Owned (user, 2026-11-20). Strip cutting. Bag: not assigned |
 | Small bubble level | 1 | Owned (user, 2026-11-20); location to be found. Balance trim. Bag: not assigned |
+| Printed solder-wire holder (MakerWorld 2064457) | 1 | Owned; partial print because of fit issues, works as is. Bag: `SOLDERING` |
+| Printed revolver 2-speed screwdriver (Printables 752423) | 1 | Owned; stuck on the fast, low-torque speed. Bag: `DRIVERS` |
+| Soldering-iron holder (yellow) with an extra tip | 1 | Owned. Bag: `SOLDERING` |
+| Double-sided clear acrylic adhesive squares, 60 x 60 x 1 mm | 10 | AliExpress 1005008517680972 (variant 60x60 mm, 10 pcs); order date not recorded; count not verified. Bag: `GLUE + GREASE` |
 | Dremel 3000 rotary tool | 1 | Owned (photographed 2026-11-11). Corded, 1/8 in collet, wrench, belt hook. No stand, guard or flex shaft. Bag: not assigned |
 | Dremel rotary-tool accessories | 1 set | Photographed 2026-11-11: Dremel reinforced cut-off wheel (31 mm diameter, 1.0 mm thick by the user's measurement), a screw mandrel, five sanding drums, four felt polishing wheels and polishing compound, two aluminium-oxide grinding stones, eight carbide/HSS carving burrs, about five twist drills, a dressing stone. Bag: not assigned |
 | Solder wick (desoldering braid), 1.0mm × 1.5m | 1 | Ordered 2026-10-05, arrived by 2026-10-17. Clears the GY-521's bridged header pins (procedure in `signal_conditioning/accelerometer_interface/breadboard.md`) and any bridge on the ADS1115's or RP2040-Zero's headers. |
