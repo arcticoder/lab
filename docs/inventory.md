@@ -53,10 +53,11 @@ Mat coordinates below are in cm on the cutting mat: x along the long printed rul
 
 **Bag `BALANCE MATERIALS`** (sub-bags; it must not stay one mixed bag):
 - `FAB BOARDS`: arm x5, elec_board x10, clamp_ground x5, clamp_plate x5 when it lands (soft contact only; the ENIG pads scratch).
-- `PRINTED FRAME`: base, gantry, head, posts nn/np/pn/pp with their four bars.
-- `PRINTED SMALL`: sensor_bracket, damper_holder, elec_bracket, vane_holder, four lid shelves, two calibration riders.
-- `JIGS`: saw guide base and its four plate blocks, strip guide, gap gauge, hacksaw handle body and cover.
-- `ENCLOSURE PRINTS`: the wall and lid strips now; the plates later (flat, a large freezer bag).
+- `PRINTED FRAME`: `base` (the baseplate everything is bolted to), `gantry` (the upright frame that holds the torsion head), `head` (the round torsion head that sits in the gantry and carries the strip's upper clamp), and the four enclosure corner posts `encl_post_nn`, `encl_post_np`, `encl_post_pn`, `encl_post_pp` (the two letters are the corner's sign in x and y: n negative, p positive) with their four inner corner bars `encl_post_nn_bar`, `encl_post_np_bar`, `encl_post_pn_bar`, `encl_post_pp_bar` (separate pieces the wall slots cut out of each post).
+- `PRINTED SMALL`: `sensor_bracket` (holds the optical sensor around the arm's flag), `damper_holder` (holds the four damper magnets either side of the vane), `elec_bracket` (holds the fixed calibration electrode board), `vane_holder` (the one moving printed part: carries the copper vane on the arm), the four lid shelves `encl_shelf_nx_0`, `encl_shelf_nx_1`, `encl_shelf_px_0`, `encl_shelf_px_1`, and two `fixture_cal_rider` (calibration riders: saddles that clip over the arm board's top edge with a seat on top for the 1 g weight or a bent filament piece, used in pairs for the added-inertia calibration, `docs/procedures.md` B.1).
+- `JIGS`: `fixture_saw_guide_base` and `fixture_saw_guide_plate` (the brass-rod saw guide; the plate prints as four separate blocks), `fixture_strip_guide` (guides the knife when cutting the 4 mm strip), `fixture_gap_gauge` (a 1.00 mm gauge for setting the electrode gap), `fixture_hacksaw_handle_body` and `fixture_hacksaw_handle_cover` (the printed handle that holds the hacksaw blade).
+- `ENCLOSURE PRINTS`: the six strips now (the four `encl_print_wall_*_mullion` wall strips and the two `encl_print_lid_*_mullion` lid strips); the wall plates `encl_print_wall_*_a` / `_b` and lid tiles `encl_print_lid_*_a` / `_b` later (flat, a large freezer bag).
+- Where the files are: all of these are STL files in `spurious-force-balance/hardware/balance/cad/` under the names above. `balance.3mf` in the same folder holds only 19 of them (`base`, `gantry`, `head`, `sensor_bracket`, `damper_holder`, `elec_bracket`, `vane_holder`, the four `encl_post_*`, the four `encl_shelf_*`, `fixture_gap_gauge`, `fixture_saw_guide_base`, `fixture_saw_guide_plate`, `fixture_strip_guide`); the corner bars, `fixture_cal_rider`, the hacksaw handle and the enclosure plates and strips were added later and are not in it. The 3MF's object names are the STL file names.
 - `STRIP SHEET`: the 0.05 mm stainless roll alone, loose, no creases, always on top of the bag (nothing pressing on it).
 - `BRASS + COPPER`: brass rod, five copper pads, copper foil tape, PE foam tape.
 - `CALIBRATION`: the 0.1 g scale, the 1 g weight, and the 1-20 g set when it arrives (nickel-plated steel: keep away from the N42 discs, which stay in `MISC`).
@@ -184,18 +185,18 @@ new build, rather than by eye alone.
 | M3 recessed pan head screw, GB818, 304 stainless, 10 mm | 50 | bag `MISC TOOLS` |
 | M3 recessed pan head screw, GB818, 304 stainless, 12 mm | 50 | bag `MISC TOOLS` |
 | M3 recessed pan head screw, GB818, 304 stainless, 14 mm | 50 | bag `MISC TOOLS` |
-| Stainless steel sheet, 304, 0.05 × 100 × 1000 mm | 1 | Received 2026-11-05. Torsion strip stock (the 4 mm strip is cut from it); arrived as a roll; keep it loosely rolled with nothing pressing on it, no creases. Disc-magnet check 2026-11-06: no pull. Bag: `BALANCE MATERIALS` |
-| Foam tape, double-sided PE, 3 mm × 10 m, 0.3 mm thick | 1 | Received 2026-11-05. Enclosure slot shim and lid seal. Bag: `BALANCE MATERIALS` |
-| Copper pad, 20 × 20 × 0.3 mm | 5 | Received 2026-11-05. Damper vane and trim weights; listing's spec table says "Carbide": magnet check pending. Bag: `BALANCE MATERIALS` |
-| Copper foil tape, conductive adhesive, 10 mm × 1 m | 1 | Received 2026-11-05. Trim material, spare ground strap. Bag: `BALANCE MATERIALS` |
-| Brass rod, 10 mm diameter × 100 mm | 1 | Received 2026-11-05. One saw cut makes the balance's ballast; the 100 mm length is the listing's figure, not yet measured. Bag: `BALANCE MATERIALS` (or beside it if it will not fit) |
+| Stainless steel sheet, 304, 0.05 × 100 × 1000 mm | 1 | Received 2026-11-05. Torsion strip stock (the 4 mm strip is cut from it); arrived as a roll; keep it loosely rolled with nothing pressing on it, no creases. Disc-magnet check 2026-11-06: no pull. Bag: `BALANCE MATERIALS`, sub-bag `STRIP SHEET` |
+| Foam tape, double-sided PE, 3 mm × 10 m, 0.3 mm thick | 1 | Received 2026-11-05. Enclosure slot shim and lid seal. Bag: `BALANCE MATERIALS`, sub-bag `BRASS + COPPER` |
+| Copper pad, 20 × 20 × 0.3 mm | 5 | Received 2026-11-05. Damper vane and trim weights; listing's spec table says "Carbide": magnet check pending. Bag: `BALANCE MATERIALS`, sub-bag `BRASS + COPPER` |
+| Copper foil tape, conductive adhesive, 10 mm × 1 m | 1 | Received 2026-11-05. Trim material, spare ground strap. Bag: `BALANCE MATERIALS`, sub-bag `BRASS + COPPER` |
+| Brass rod, 10 mm diameter × 100 mm | 1 | Received 2026-11-05. One saw cut makes the balance's ballast; the 100 mm length is the listing's figure, not yet measured. Bag: `BALANCE MATERIALS`, sub-bag `BRASS + COPPER` (or beside it if it will not fit) |
 | Stainless flat washer, DIN125, M3 x 7 x 0.5 mm | 100 | Received 2026-11-20 (2026-11-10 AliExpress order, 4000174460068). The balance needs about 20. Bag: `MISC TOOLS` |
 | Mini hacksaw blade, 6 in, 24T, 150 x 6 x 0.4 mm | 10 | Received 2026-11-20 (1005001586493266). For the brass ballast cut in the printed handle. Bag: `MISC TOOLS` |
 | Diamond needle file set, 14 cm, 2 pcs | 1 | Received 2026-11-20 (1005007161620280). Flat (user, 2026-11-20). Bag: `MISC TOOLS` |
 | LR44 button cell, 1.55 V (not yet received) | 0 (5 ordered) | In transit (2026-11-10 order, 1005005805225475; not arrived as of 2026-11-20). One goes in the calipers. |
-| JST-SH 1.0 mm 2-pin cable, 10 cm, flying leads | 5 | Received 2026-11-20 (1005004138501132). Strip-sensor and plate-driver leads. Bag: `MISC` (in `ELECTRONICS`) |
-| Digital pocket scale, 0.1 g / 0.5 kg | 1 | Received 2026-11-20 (32454982206). Powers on and off (user). Takes AAA cells (none included). Zero-and-1 g check pending. Bag: `BALANCE MATERIALS` |
-| Calibration weight, 1 g | 1 | Received 2026-11-20 (1005005924323638). Not magnetic (N42 disc test by the user, 2026-11-20). Bag: `BALANCE MATERIALS`, own baggie |
+| JST-SH 1.0 mm 2-pin cable, 10 cm, flying leads | 5 | Received 2026-11-20 (1005004138501132). Strip-sensor and plate-driver leads. Bag: `BALANCE MATERIALS`, sub-bag `CABLES` |
+| Digital pocket scale, 0.1 g / 0.5 kg | 1 | Received 2026-11-20 (32454982206). Powers on and off (user). Takes AAA cells (none included). Zero-and-1 g check pending. Bag: `BALANCE MATERIALS`, sub-bag `CALIBRATION` |
+| Calibration weight, 1 g | 1 | Received 2026-11-20 (1005005924323638). Not magnetic (N42 disc test by the user, 2026-11-20). Bag: `BALANCE MATERIALS`, sub-bag `CALIBRATION` |
 
 ---
 
