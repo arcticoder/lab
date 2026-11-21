@@ -34,22 +34,22 @@ here.
 | `BALANCE MATERIALS` | Torsion-balance stock (no inner bags): copper pads ×5, copper foil tape, PE foam tape, brass rod, the 0.05 mm stainless sheet (loosely rolled, nothing pressing on it, no creases), the 0.1 g pocket scale, the 1 g weight (own baggie) and, when it arrives, the 1-20 g weight set (own baggie). Weights and the scale are nickel-plated steel parts or have steel parts: keep them away from the N42 discs in `MISC` |
 | `MISC TOOLS` | M3 hardware: carbon-steel nuts ×55, the 304 pan head screws (10, 12, 14 mm, 50 each), the 304 stainless M3 washers ×100 and thin nuts ×20; hand tools: hacksaw blades ×10 (in their packaging), diamond needle files, the digital calipers (re-sorting plan below, proposed 2026-11-20) |
 
-### Filing plan for the tools and balance bags (final 2026-11-20 after the user's identifications; the user sorts the bags, from the photos in `spurious-force-balance/docs/img/inbox/tools_bags_2026-11-20/`)
+### Filing plan for the tools and balance bags (final 2026-11-20 after the user's identifications; the user sorts the bags, from the photos in `lab/docs/img/tools_bags_2026-11-20/`)
 
-Mat coordinates below are in cm on the cutting mat: x along the long printed ruler, y down the side ruler; photos 1-3 are portrait (y grows downward), photos 4-5 landscape (y grows upward). Photo numbers follow the file-name order.
+Mat coordinates below are in cm on the cutting mat: x along the long printed ruler, y down the side ruler; images are in `lab/docs/img/tools_bags_2026-11-20/` as `tools_01_cutters_calipers_xacto_stripper.jpg`, `tools_02_glue_pliers_wick_deburr.jpg`, `tools_03_tweezers_usb_sponge_screwdriver.jpg`, `tools_04_iron_stands_files_grease.jpg`, `tools_05_adhesive_squares_blades_washers.jpg` and `tools_06_washers_clip_pencil.jpg` (the text below uses the `tools_0N` prefix). `tools_01` to `tools_03` are portrait (y grows downward from the top ruler); `tools_04` and `tools_05` are landscape (y grows upward); `tools_06` is landscape with the mat rotated 180 degrees.
 
 **Bag `HAND TOOLS`** (sub-bags):
-- `CUT + FILE`: X-acto with its one blade (photo 1, y 19.5-21.5; the user's other blades are stored elsewhere), utility-knife blades and their one two-part case (photo 5, x 21-27), the two red-handled diamond needle files (photo 4, x 21-23), deburring tool (photo 2, y 26-29). The 30 cm steel ruler stays out of the bags.
-- `GRIP + STRIP`: blue side cutters (photo 1, y 0-5), needle-nose pliers (photo 2, y 14-19), red 18-in-1 stripper (photo 1, y 22-28), ESD tweezers (photo 3, x 1-3.5).
-- `MEASURE`: digital calipers (photo 1, y 14-19) with the LR44 cells once they arrive, the mechanical pencil (photo 6, x 0.5-1.5, y 6-22; photo 3, y 26).
-- `PRINTER`: `NOZZLES` (existing sub-bag, stays closed), black scraper (photo 1, y 6.5-12), the two blue-capped tubes of needles (photo 4, x 2-12, y 0.5-2.5), brass wire brush (photo 4, x 25-28), white plastic pry stick (photo 4, bottom, x 13-26), white spudger (photo 3, x 4-5.5).
+- `CUT + FILE`: X-acto with its one blade (`tools_01`, y 19.5-21.5; the user's other blades are stored elsewhere), utility-knife blades and their one two-part case (`tools_05`, x 21-27), the two red-handled diamond needle files (`tools_04`, x 21-23), deburring tool (`tools_02`, y 26-29). The 30 cm steel ruler stays out of the bags.
+- `GRIP + STRIP`: blue side cutters (`tools_01`, y 0-5), needle-nose pliers (`tools_02`, y 14-19), red 18-in-1 stripper (`tools_01`, y 22-28), ESD tweezers (`tools_03`, x 1-3.5), the printed JST tweezers (white U-clip: `tools_03`, x 15-22, y 11-14.5; `tools_06`, x 3-6, y 14.5-21; Printables 461004).
+- `MEASURE`: digital calipers (`tools_01`, y 14-19) with the LR44 cells once they arrive, the mechanical pencil (`tools_06`, x 0.5-1.5, y 6-22; `tools_03`, y 26).
+- `PRINTER`: `NOZZLES` (existing sub-bag, stays closed), black scraper (`tools_01`, y 6.5-12), the two blue-capped tubes of needles (`tools_04`, x 2-12, y 0.5-2.5), brass wire brush (`tools_04`, x 25-28) with its printed cap cover (grey, `tools_04`, x 27-30, y 20-22; MakerWorld 2028170), white plastic pry stick (`tools_04`, bottom, x 13-26), white spudger (`tools_03`, x 4-5.5).
 
 **Bag `BENCH + FASTENERS`** (sub-bags):
-- `SCREWS + NUTS` (existing, stays closed; the washer zip bag with its label goes in unopened, photo 5, x 17-27).
-- `SOLDERING`: black iron tray (photo 4, x 2-9), coil iron stand (photo 4, x 9-15), yellow iron holder with the extra tip beside it (photo 4, x 15-20, y 15-21), yellow sponge (photo 3, x 18-22), solder tube (photo 3, y 5-8), the printed red solder-wire holder (photo 2, x 15-22, y 0-8; partial print, works as is), solder wick (photo 2, y 20-25). The iron itself stays out of the bags.
-- `DRIVERS`: the printed revolver screwdriver (photo 3, x 12-22, y 16-20; stuck on the fast, low-torque speed) with its support stand (the black part, photo 3, x 17.5-22, y 21-25) and the yellow multi-tool pen (photo 3, y 27; it carries a small bubble level, which is the bubble level for the balance trim). Nothing else goes in `DRIVERS`.
-- `GLUE + GREASE`: Gorilla super glue (photo 2, y 8-13), plumber's silicone grease (photo 4, bottom left), the clear double-sided acrylic adhesive squares (60 x 60 x 1 mm, 10 pcs, photo 5, x 1-17, y 1-22; leave them in their bag).
-- Photo 3's two USB sticks (x 7-9 and x 17-22, y 9-12) and the hacksaw blades' packaging stay out of both bags: sticks go in `MISC` (in `ELECTRONICS`).
+- `SCREWS + NUTS` (existing, stays closed; the washer zip bag with its label goes in unopened, `tools_05`, x 17-27).
+- `SOLDERING`: black iron tray (`tools_04`, x 2-9), coil iron stand (`tools_04`, x 9-15), yellow iron holder with the extra tip beside it (`tools_04`, x 15-20, y 15-21), yellow sponge (`tools_03`, x 18-22), solder tube (`tools_03`, y 5-8), the printed red solder-wire holder (`tools_02`, x 15-22, y 0-8; partial print, works as is), solder wick (`tools_02`, y 20-25). The iron itself stays out of the bags.
+- `DRIVERS`: the printed revolver screwdriver (`tools_03`, x 12-22, y 16-20; stuck on the fast, low-torque speed) with its support stand (the black part, `tools_03`, x 17.5-22, y 21-25) and the yellow multi-tool pen (`tools_03`, y 27; it carries a small bubble level, which is the bubble level for the balance trim). Nothing else goes in `DRIVERS`.
+- `GLUE + GREASE`: Gorilla super glue (`tools_02`, y 8-13), plumber's silicone grease (`tools_04`, bottom left), the clear double-sided acrylic adhesive squares (60 x 60 x 1 mm, 10 pcs, `tools_05`, x 1-17, y 1-22; leave them in their bag).
+- `tools_03`'s two USB sticks (x 7-9 and x 17-22, y 9-12) and the hacksaw blades' packaging stay out of both bags: sticks go in `MISC` (in `ELECTRONICS`).
 
 **Bag `BALANCE MATERIALS`** (sub-bags; it must not stay one mixed bag):
 - `FAB BOARDS`: arm x5, elec_board x10, clamp_ground x5, clamp_plate x5 when it lands (soft contact only; the ENIG pads scratch).
@@ -303,6 +303,9 @@ Printing with these: the balance's frame plan is in `spurious-force-balance/docs
 | Yellow multi-tool pen with a built-in small bubble level | 1 | Owned (user, 2026-11-20). This is the bubble level for the balance trim (another small level is on a tape measure in the kitchen). Bag: `DRIVERS` |
 | Printed solder-wire holder (MakerWorld 2064457) | 1 | Owned; partial print because of fit issues, works as is. Bag: `SOLDERING` |
 | Printed revolver 2-speed screwdriver (Printables 752423) | 1 | Owned; stuck on the fast, low-torque speed. Bag: `DRIVERS` |
+| Printed JST tweezers (Printables 461004) | 1 | Owned. Bag: `GRIP + STRIP` |
+| Printed wire-brush cap cover (MakerWorld 2028170) | 1 | Owned. Bag: `PRINTER`, with the brush |
+| Mechanical pencil | 1 | Owned. Bag: `MEASURE` |
 | Soldering-iron holder (yellow) with an extra tip | 1 | Owned. Bag: `SOLDERING` |
 | Double-sided clear acrylic adhesive squares, 60 x 60 x 1 mm | 10 | AliExpress 1005008517680972 (variant 60x60 mm, 10 pcs); order date not recorded; count not verified. Bag: `GLUE + GREASE` |
 | Dremel 3000 rotary tool | 1 | Owned (photographed 2026-11-11). Corded, 1/8 in collet, wrench, belt hook. No stand, guard or flex shaft. Bag: not assigned |

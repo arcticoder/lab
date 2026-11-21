@@ -12,3 +12,5 @@ __pycache__/
 
 docs/manuals/*.pdf
 *Zone.Identifier
+# --- Photos awaiting conversion (large JPEGs; keep out of git) ---
+docs/img/tools_bags_*/
