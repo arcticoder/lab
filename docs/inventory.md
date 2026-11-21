@@ -39,15 +39,15 @@ here.
 Mat coordinates below are in cm on the cutting mat: x along the long printed ruler, y down the side ruler; photos 1-3 are portrait (y grows downward), photos 4-5 landscape (y grows upward). Photo numbers follow the file-name order.
 
 **Bag `HAND TOOLS`** (sub-bags):
-- `CUT + FILE`: X-acto with blades (photo 1, y 19.5-21.5), utility-knife blades and the two empty cases (photo 5, x 21-27), the two red-handled diamond needle files (photo 4, x 21-23), deburring tool (photo 2, y 26-29), the 30 cm steel ruler.
+- `CUT + FILE`: X-acto with its one blade (photo 1, y 19.5-21.5; the user's other blades are stored elsewhere), utility-knife blades and their one two-part case (photo 5, x 21-27), the two red-handled diamond needle files (photo 4, x 21-23), deburring tool (photo 2, y 26-29). The 30 cm steel ruler stays out of the bags.
 - `GRIP + STRIP`: blue side cutters (photo 1, y 0-5), needle-nose pliers (photo 2, y 14-19), red 18-in-1 stripper (photo 1, y 22-28), ESD tweezers (photo 3, x 1-3.5).
-- `MEASURE`: digital calipers (photo 1, y 14-19) with the LR44 cells once they arrive, the small bubble level.
+- `MEASURE`: digital calipers (photo 1, y 14-19) with the LR44 cells once they arrive, the mechanical pencil (photo 6, x 0.5-1.5, y 6-22; photo 3, y 26).
 - `PRINTER`: `NOZZLES` (existing sub-bag, stays closed), black scraper (photo 1, y 6.5-12), the two blue-capped tubes of needles (photo 4, x 2-12, y 0.5-2.5), brass wire brush (photo 4, x 25-28), white plastic pry stick (photo 4, bottom, x 13-26), white spudger (photo 3, x 4-5.5).
 
 **Bag `BENCH + FASTENERS`** (sub-bags):
 - `SCREWS + NUTS` (existing, stays closed; the washer zip bag with its label goes in unopened, photo 5, x 17-27).
-- `SOLDERING`: black iron tray (photo 4, x 2-9), coil iron stand (photo 4, x 9-15), yellow iron holder with the extra tip beside it (photo 4, x 15-20, y 15-21), yellow sponge (photo 3, x 18-22), solder tube (photo 3, y 5-8), the printed red solder-wire holder (photo 2, x 15-22, y 0-8; partial print, works as is), solder wick (photo 2, y 20-25), the iron itself.
-- `DRIVERS`: the printed revolver screwdriver (photo 3, x 12-22, y 16-20; stuck on the fast, low-torque speed) with its black part (photo 3, x 17.5-22, y 21-25), the yellow multi-tool pen (photo 3, y 27), any other screwdrivers the user chooses to gather.
+- `SOLDERING`: black iron tray (photo 4, x 2-9), coil iron stand (photo 4, x 9-15), yellow iron holder with the extra tip beside it (photo 4, x 15-20, y 15-21), yellow sponge (photo 3, x 18-22), solder tube (photo 3, y 5-8), the printed red solder-wire holder (photo 2, x 15-22, y 0-8; partial print, works as is), solder wick (photo 2, y 20-25). The iron itself stays out of the bags.
+- `DRIVERS`: the printed revolver screwdriver (photo 3, x 12-22, y 16-20; stuck on the fast, low-torque speed) with its support stand (the black part, photo 3, x 17.5-22, y 21-25) and the yellow multi-tool pen (photo 3, y 27; it carries a small bubble level, which is the bubble level for the balance trim). Nothing else goes in `DRIVERS`.
 - `GLUE + GREASE`: Gorilla super glue (photo 2, y 8-13), plumber's silicone grease (photo 4, bottom left), the clear double-sided acrylic adhesive squares (60 x 60 x 1 mm, 10 pcs, photo 5, x 1-17, y 1-22; leave them in their bag).
 - Photo 3's two USB sticks (x 7-9 and x 17-22, y 9-12) and the hacksaw blades' packaging stay out of both bags: sticks go in `MISC` (in `ELECTRONICS`).
 
@@ -298,9 +298,9 @@ Printing with these: the balance's frame plan is in `spurious-force-balance/docs
 | Soldering tip, 5/32 in.       | 2        | Included with iron                                          |
 | 18-in-1 wire stripper/crimper pliers | 1 | Received 2026-09-03; high-carbon steel + PVC handle. Resolves the wire-stripper dependency that was blocking `psu_ultralow_v1`/`psu_low_v2` AA-holder lead termination in `lab/`. |
 | Digital calipers (LCD) | 1 | Received 2026-11-09 (AliExpress, with the thin nuts). Ships without the cell: needs one SR44/LR44 (1.55 V, 11.6 x 5.4 mm); the 2026-11-10 order's cells are still in transit (2026-11-20). Bag: not assigned |
-| X-acto knife with spare blades | 1 | Owned (user, 2026-11-20). Strip cutting. Bag: not assigned |
-| Steel ruler, stainless, 30 cm | 1 | Owned (user, 2026-11-20). Strip cutting. Bag: not assigned |
-| Small bubble level | 1 | Owned (user, 2026-11-20); location to be found. Balance trim. Bag: not assigned |
+| X-acto knife with one blade fitted | 1 | Owned (user, 2026-11-20); the spare blades are stored elsewhere. Strip cutting. Bag: `CUT + FILE` |
+| Steel ruler, stainless, 30 cm | 1 | Owned (user, 2026-11-20). Strip cutting. Stays out of the freezer bags for now |
+| Yellow multi-tool pen with a built-in small bubble level | 1 | Owned (user, 2026-11-20). This is the bubble level for the balance trim (another small level is on a tape measure in the kitchen). Bag: `DRIVERS` |
 | Printed solder-wire holder (MakerWorld 2064457) | 1 | Owned; partial print because of fit issues, works as is. Bag: `SOLDERING` |
 | Printed revolver 2-speed screwdriver (Printables 752423) | 1 | Owned; stuck on the fast, low-torque speed. Bag: `DRIVERS` |
 | Soldering-iron holder (yellow) with an extra tip | 1 | Owned. Bag: `SOLDERING` |
