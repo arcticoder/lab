@@ -190,7 +190,7 @@ The 2026-11-10 AliExpress order (cells, JST-SH cable, hacksaw blades, washers, 1
 
 ### M3 hardware (arrived before 2026-10-23)
 
-- Bag for the M3 nuts and screws: `MISC TOOLS` (recorded 2026-11-06).
+- Bag for the M3 nuts and screws: `MISC TOOLS` (recorded 2026-11-06; since 2026-11-20 `BENCH + FASTENERS`, sub-bag `SCREWS + NUTS`).
 - M3 hex nuts, black carbon steel, 55 pieces: https://www.aliexpress.com/item/4000602853448.html
 - M3 recessed pan head screws, GB818, 304 stainless: 50 pieces each of 10 mm, 12 mm and 14 mm (listing URLs not recorded).
 

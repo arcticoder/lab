@@ -14,7 +14,7 @@ requiring `lab/` to be cloned alongside it — see
 
 ## Storage — which bag holds what
 
-Parts live in labelled bags. Top-level bags (user, 2026-11-20): `ELECTRONICS` (holds the small labelled bags `LEDS` to `MISC` below as inner bags), `BALANCE MATERIALS` (no inner bags) and `MISC TOOLS`. The assignments come from the earlier chat-session
+Parts live in labelled bags. Top-level bags (user, 2026-11-20): `ELECTRONICS` (holds the small labelled bags `LEDS` to `MISC` below as inner bags), `BALANCE MATERIALS` (no inner bags yet; sub-bags planned) and the two tool bags `HAND TOOLS` and `BENCH + FASTENERS` (the old `MISC TOOLS`, split 2026-11-20). The assignments come from the earlier chat-session
 notes plus the user's corrections of 2026-10-17; the placement rule for future
 arrivals is in `kb/inventory_storage_notes.md`. When a part moves, change it
 here.
@@ -31,8 +31,9 @@ here.
 | `BREADBOARDS` | Both 830-point boards, MB-102 400-point, SYB-170 ×3 |
 | `INDUCTORS` | The inductor assortment (too big for `MISC`) |
 | `MISC` | CY7C68013A (SCOPELA) board, 9G servo, passive and active buzzers, USB-C test board, coin vibration motors ×10, N42 magnets ×10 (bubble-wrapped) |
-| `BALANCE MATERIALS` | Torsion-balance stock (no inner bags): copper pads ×5, copper foil tape, PE foam tape, brass rod, the 0.05 mm stainless sheet (loosely rolled, nothing pressing on it, no creases), the 0.1 g pocket scale, the 1 g weight (own baggie) and, when it arrives, the 1-20 g weight set (own baggie). Weights and the scale are nickel-plated steel parts or have steel parts: keep them away from the N42 discs in `MISC` |
-| `MISC TOOLS` | M3 hardware: carbon-steel nuts ×55, the 304 pan head screws (10, 12, 14 mm, 50 each), the 304 stainless M3 washers ×100 and thin nuts ×20; hand tools: hacksaw blades ×10 (in their packaging), diamond needle files, the digital calipers (re-sorting plan below, proposed 2026-11-20) |
+| `BALANCE MATERIALS` | Torsion-balance stock and printed parts, in sub-bags (full list in the filing plan below): `FAB BOARDS`, `PRINTED FRAME`, `PRINTED SMALL`, `JIGS`, `ENCLOSURE PRINTS`, `STRIP SHEET`, `BRASS + COPPER`, `CALIBRATION`, `CABLES`. Steel weights stay away from the N42 discs in `MISC` |
+| `HAND TOOLS` | Sub-bags `CUT + FILE`, `GRIP + STRIP`, `MEASURE`, `PRINTER` (with `NOZZLES`); see the filing plan below |
+| `BENCH + FASTENERS` | Sub-bags `SCREWS + NUTS` (M3 nuts, screws, washers), `SOLDERING`, `DRIVERS`, `GLUE + GREASE`; see the filing plan below |
 
 ### Filing plan for the tools and balance bags (final 2026-11-20 after the user's identifications; the user sorts the bags, from the photos in `lab/docs/img/tools_bags_2026-11-20/`)
 
@@ -63,8 +64,8 @@ Mat coordinates below are in cm on the cutting mat: x along the long printed rul
 - `CALIBRATION`: the 0.1 g scale, the 1 g weight, and the 1-20 g set when it arrives (nickel-plated steel: keep away from the N42 discs, which stay in `MISC`).
 - `CABLES`: the JST-SH cables.
 
-Not bagged: USB cables, the mains adapters, the soldering tools and the
-solder wick (kept with the iron).
+Not bagged: USB cables, the mains adapters, the soldering iron itself, the 30 cm steel ruler, the kitchen level and the spare X-acto blades.
+
 
 **Placement notes:**
 
@@ -180,19 +181,19 @@ new build, rather than by eye alone.
 | Breadboard (mini SYB-170) | 1     | 170-point, black; from a 6-in-1 color pack (AliExpress). See `lab/docs/orders.md` / `lab/docs/parts_reference.md` for full specs |
 | Micro USB Cable        | 1        | For Pico power + data                                     |
 | Mini-USB Cable         | 1        | Acquired directly (non-AliExpress) 2026-09-24; removed from the AliExpress cart. Used with `SCOPELA`'s CY7C68013A board |
-| M3 hex nut, black carbon steel | 55 | AliExpress item 4000602853448; magnetic (keep clear of the balance's moving parts); bag `MISC TOOLS` |
-| M3 thin hex nut, DIN439, 304 stainless | 20 | Received 2026-11-09 (AliExpress item 1005010507401042). 10 go on the balance's moving arm and vane holder, 10 spare; thinner than the standard nut, so they sit loosely in the captured pockets. Magnet check on arrival not yet reported. Bag: `MISC TOOLS` (M3 hardware; confirm) |
-| M3 recessed pan head screw, GB818, 304 stainless, 10 mm | 50 | bag `MISC TOOLS` |
-| M3 recessed pan head screw, GB818, 304 stainless, 12 mm | 50 | bag `MISC TOOLS` |
-| M3 recessed pan head screw, GB818, 304 stainless, 14 mm | 50 | bag `MISC TOOLS` |
+| M3 hex nut, black carbon steel | 55 | AliExpress item 4000602853448; magnetic (keep clear of the balance's moving parts); bag `BENCH + FASTENERS`, sub-bag `SCREWS + NUTS` |
+| M3 thin hex nut, DIN439, 304 stainless | 20 | Received 2026-11-09 (AliExpress item 1005010507401042). 10 go on the balance's moving arm and vane holder, 10 spare; thinner than the standard nut, so they sit loosely in the captured pockets. Magnet check on arrival not yet reported. Bag: `BENCH + FASTENERS`, sub-bag `SCREWS + NUTS` (M3 hardware; confirm) |
+| M3 recessed pan head screw, GB818, 304 stainless, 10 mm | 50 | bag `BENCH + FASTENERS`, sub-bag `SCREWS + NUTS` |
+| M3 recessed pan head screw, GB818, 304 stainless, 12 mm | 50 | bag `BENCH + FASTENERS`, sub-bag `SCREWS + NUTS` |
+| M3 recessed pan head screw, GB818, 304 stainless, 14 mm | 50 | bag `BENCH + FASTENERS`, sub-bag `SCREWS + NUTS` |
 | Stainless steel sheet, 304, 0.05 × 100 × 1000 mm | 1 | Received 2026-11-05. Torsion strip stock (the 4 mm strip is cut from it); arrived as a roll; keep it loosely rolled with nothing pressing on it, no creases. Disc-magnet check 2026-11-06: no pull. Bag: `BALANCE MATERIALS`, sub-bag `STRIP SHEET` |
 | Foam tape, double-sided PE, 3 mm × 10 m, 0.3 mm thick | 1 | Received 2026-11-05. Enclosure slot shim and lid seal. Bag: `BALANCE MATERIALS`, sub-bag `BRASS + COPPER` |
 | Copper pad, 20 × 20 × 0.3 mm | 5 | Received 2026-11-05. Damper vane and trim weights; listing's spec table says "Carbide": magnet check pending. Bag: `BALANCE MATERIALS`, sub-bag `BRASS + COPPER` |
 | Copper foil tape, conductive adhesive, 10 mm × 1 m | 1 | Received 2026-11-05. Trim material, spare ground strap. Bag: `BALANCE MATERIALS`, sub-bag `BRASS + COPPER` |
 | Brass rod, 10 mm diameter × 100 mm | 1 | Received 2026-11-05. One saw cut makes the balance's ballast; the 100 mm length is the listing's figure, not yet measured. Bag: `BALANCE MATERIALS`, sub-bag `BRASS + COPPER` (or beside it if it will not fit) |
-| Stainless flat washer, DIN125, M3 x 7 x 0.5 mm | 100 | Received 2026-11-20 (2026-11-10 AliExpress order, 4000174460068). The balance needs about 20. Bag: `MISC TOOLS` |
-| Mini hacksaw blade, 6 in, 24T, 150 x 6 x 0.4 mm | 10 | Received 2026-11-20 (1005001586493266). For the brass ballast cut in the printed handle. Bag: `MISC TOOLS` |
-| Diamond needle file set, 14 cm, 2 pcs | 1 | Received 2026-11-20 (1005007161620280). Flat (user, 2026-11-20). Bag: `MISC TOOLS` |
+| Stainless flat washer, DIN125, M3 x 7 x 0.5 mm | 100 | Received 2026-11-20 (2026-11-10 AliExpress order, 4000174460068). The balance needs about 20. Bag: `BENCH + FASTENERS`, sub-bag `SCREWS + NUTS` |
+| Mini hacksaw blade, 6 in, 24T, 150 x 6 x 0.4 mm | 10 | Received 2026-11-20 (1005001586493266). For the brass ballast cut in the printed handle. Bag: `HAND TOOLS`, sub-bag `CUT + FILE` |
+| Diamond needle file set, 14 cm, 2 pcs | 1 | Received 2026-11-20 (1005007161620280). Flat (user, 2026-11-20). Bag: `HAND TOOLS`, sub-bag `CUT + FILE` |
 | LR44 button cell, 1.55 V (not yet received) | 0 (5 ordered) | In transit (2026-11-10 order, 1005005805225475; not arrived as of 2026-11-20). One goes in the calipers. |
 | JST-SH 1.0 mm 2-pin cable, 10 cm, flying leads | 5 | Received 2026-11-20 (1005004138501132). Strip-sensor and plate-driver leads. Bag: `BALANCE MATERIALS`, sub-bag `CABLES` |
 | Digital pocket scale, 0.1 g / 0.5 kg | 1 | Received 2026-11-20 (32454982206). Powers on and off (user). Takes AAA cells (none included). Zero-and-1 g check pending. Bag: `BALANCE MATERIALS`, sub-bag `CALIBRATION` |
@@ -298,7 +299,7 @@ Printing with these: the balance's frame plan is in `spurious-force-balance/docs
 | Soldering iron stand          | 1        | Included with iron                                          |
 | Soldering tip, 5/32 in.       | 2        | Included with iron                                          |
 | 18-in-1 wire stripper/crimper pliers | 1 | Received 2026-09-03; high-carbon steel + PVC handle. Resolves the wire-stripper dependency that was blocking `psu_ultralow_v1`/`psu_low_v2` AA-holder lead termination in `lab/`. |
-| Digital calipers (LCD) | 1 | Received 2026-11-09 (AliExpress, with the thin nuts). Ships without the cell: needs one SR44/LR44 (1.55 V, 11.6 x 5.4 mm); the 2026-11-10 order's cells are still in transit (2026-11-20). Bag: not assigned |
+| Digital calipers (LCD) | 1 | Received 2026-11-09 (AliExpress, with the thin nuts). Ships without the cell: needs one SR44/LR44 (1.55 V, 11.6 x 5.4 mm); the 2026-11-10 order's cells are still in transit (2026-11-20). Bag: `HAND TOOLS`, sub-bag `MEASURE` |
 | X-acto knife with one blade fitted | 1 | Owned (user, 2026-11-20); the spare blades are stored elsewhere. Strip cutting. Bag: `CUT + FILE` |
 | Steel ruler, stainless, 30 cm | 1 | Owned (user, 2026-11-20). Strip cutting. Stays out of the freezer bags for now |
 | Yellow multi-tool pen with a built-in small bubble level | 1 | Owned (user, 2026-11-20). This is the bubble level for the balance trim (another small level is on a tape measure in the kitchen). Bag: `DRIVERS` |
@@ -311,4 +312,4 @@ Printing with these: the balance's frame plan is in `spurious-force-balance/docs
 | Double-sided clear acrylic adhesive squares, 60 x 60 x 1 mm | 10 | AliExpress 1005008517680972 (variant 60x60 mm, 10 pcs); order date not recorded; count not verified. Bag: `GLUE + GREASE` |
 | Dremel 3000 rotary tool | 1 | Owned (photographed 2026-11-11). Corded, 1/8 in collet, wrench, belt hook. No stand, guard or flex shaft. Bag: not assigned |
 | Dremel rotary-tool accessories | 1 set | Photographed 2026-11-11: Dremel reinforced cut-off wheel (31 mm diameter, 1.0 mm thick by the user's measurement), a screw mandrel, five sanding drums, four felt polishing wheels and polishing compound, two aluminium-oxide grinding stones, eight carbide/HSS carving burrs, about five twist drills, a dressing stone. Bag: not assigned |
-| Solder wick (desoldering braid), 1.0mm × 1.5m | 1 | Ordered 2026-10-05, arrived by 2026-10-17. Clears the GY-521's bridged header pins (procedure in `signal_conditioning/accelerometer_interface/breadboard.md`) and any bridge on the ADS1115's or RP2040-Zero's headers. |
+| Solder wick (desoldering braid), 1.0mm × 1.5m | 1 | Ordered 2026-10-05, arrived by 2026-10-17. Clears the GY-521's bridged header pins (procedure in `signal_conditioning/accelerometer_interface/breadboard.md`) and any bridge on the ADS1115's or RP2040-Zero's headers. Bag: `BENCH + FASTENERS`, sub-bag `SOLDERING` |

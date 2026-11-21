@@ -67,7 +67,7 @@ The five AliExpress items of 2026-10-24 (stainless sheet, foam tape, copper pads
 
 ## Top-level bags (user, 2026-11-20)
 
-Three outer freezer bags: `ELECTRONICS` (the labelled bags above are inner bags of it), `BALANCE MATERIALS` (no inner bags: small items such as weights get their own baggie) and `MISC TOOLS` (M3 hardware, washers, blades, files, calipers and cells). Magnetic or magnet-sensitive balance parts (steel weights) stay out of the bag with the N42 discs (`MISC` in `ELECTRONICS`).
+Four outer freezer bags: `ELECTRONICS` (the labelled bags in "The bags" above are its inner bags), `BALANCE MATERIALS`, and the two tool bags `HAND TOOLS` and `BENCH + FASTENERS` (the former `MISC TOOLS` and the second tool bag, which had no specific purpose and held whatever fit). Each outer bag gets labelled sub-bags; the plan for them, item by item with image coordinates, is the "Filing plan" section of `docs/inventory.md` (final 2026-11-20; the user does the physical sorting, new arrivals wait on the table until the tool bags are sorted). The user wants no mixed bags: when an item arrives, name its sub-bag, not just the outer bag. Steel parts (the nickel-plated weight set) stay out of the bag with the N42 discs (`MISC`). Keep inventory rows, the filing plan and the storage table consistent (a JST-SH cable bag contradiction was caught on 2026-11-20); jump wires are never inventoried.
 
 ## Tools photos (2026-11-20)
 

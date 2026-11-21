@@ -8,7 +8,7 @@ LLM-facing notes (not end-user docs). One line per note; the experiment's own no
 | `circuit_lifecycle_and_repo_scope.md` | circuit lifecycle, what belongs in lab versus an experiment repo (split of 2026-10-23) |
 | `todo_list_conventions.md` | structure of `TODO-arcticoder.md`/`TODO-agent.md`, the Opus-plans/Sonnet-actions routine |
 | `ordering_ingestion_notes.md` | AliExpress ordering, listing quirks, ledger across repos |
-| `inventory_storage_notes.md` | storage bags and the arrival checklist |
+| `inventory_storage_notes.md` | storage bags (four outer bags with sub-bags), the arrival checklist, the 2026-11-20 tools photos and corrections |
 | `datasheet_and_live_probe_notes.md` | verifying parts from datasheets, web tools, what a session can probe live |
 | `live_bench_measurement_notes.md` | taking live measurements through `mpremote` |
 | `bench_photo_diagnostics_notes.md` | triaging a "built it, got a weird reading" report from a photo |
