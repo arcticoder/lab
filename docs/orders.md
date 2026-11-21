@@ -773,7 +773,7 @@ recorded here.
 
 ## On order (placed, not yet received)
 
-### 2026-11-10 order (AliExpress, balance workshop; placed by the user 2026-11-10, 7 line items; 6 received 2026-11-20, the LR44 cells still in transit)
+### 2026-11-10 order (AliExpress, balance workshop; placed by the user 2026-11-10, 7 line items; 6 received 2026-11-20, the LR44 cells still in transit; AliExpress now promises delivery by 2027-01-13, although the parcel left Humen on 2026-11-18 for the Hong Kong airline and is tracked by two carriers: probably a padded promise date, not a real delay)
 
 Prices in CAD as in the cart; the order cleared the Choice free-shipping threshold (it was C$0.66 short before the files were added). Cart total C$14.19.
 
