@@ -68,3 +68,8 @@ The five AliExpress items of 2026-10-24 (stainless sheet, foam tape, copper pads
 ## Top-level bags (user, 2026-11-20)
 
 Three outer freezer bags: `ELECTRONICS` (the labelled bags above are inner bags of it), `BALANCE MATERIALS` (no inner bags: small items such as weights get their own baggie) and `MISC TOOLS` (M3 hardware, washers, blades, files, calipers and cells). Magnetic or magnet-sensitive balance parts (steel weights) stay out of the bag with the N42 discs (`MISC` in `ELECTRONICS`).
+
+## Tools photos (2026-11-20)
+
+Five photos of the two tool bags' contents (not the `SCREWS + NUTS` or `NOZZLES` sub-bags, not `BALANCE MATERIALS`) are extracted in `spurious-force-balance/docs/img/inbox/tools_bags_2026-11-20/` (git-ignored; the zip is deleted). The mat has a printed cm grid, so quote items as photo number plus x/y in cm. Photo order by file name: 1 calipers and cutters, 2 glue and red printed part, 3 tweezers and iron parts, 4 soldering stand and files, 5 blue films and washers. The filing plan is in `inventory.md` (proposed; the user has not yet confirmed which of the items I could not identify are what). Unidentified: photo 2 red printed clamp-like part (x 15-22, y 0-8); photo 3 black printed cylinder (x 12-22, y 16-20) and black printed holder (x 17.5-22, y 21-25), pointed rod and yellow oval stand in photo 4 (x 15-20, y 15-21), the five blue-tinted 6 cm film squares and the bag labelled "shuangmian-6x6-10PCS" in photo 5 (x 1-14, y 1-22).
+

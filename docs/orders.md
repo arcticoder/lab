@@ -153,7 +153,7 @@ The 2026-11-10 AliExpress order (cells, JST-SH cable, hacksaw blades, washers, 1
 
 - Listing: https://www.aliexpress.com/item/1005010507401042.html (brand HOWSHENG, model 304-439); variant M3, 20 pieces.
 - DIN439 is the **thin** (low) nut: thinner than the standard M3 nut, so it sits loosely in a pocket sized for a standard one. Used for the 10 stainless nuts the balance needs; the other 10 are spares. Check on arrival that a disc magnet does not pull them.
-- The digital calipers in the same checkout: listing and price not recorded; logged in `inventory.md` under Tools. They arrived without a battery: they take one SR44/LR44 (1.55 V button cell), so they stayed unusable until the cells of the 2026-11-10 order arrived (2026-11-20).
+- The digital calipers in the same checkout: listing and price not recorded; logged in `inventory.md` under Tools. They arrived without a battery: they take one SR44/LR44 (1.55 V button cell), so they stay unusable until the cells of the 2026-11-10 order arrive (still in transit as of 2026-11-20).
 
 ### AliExpress order placed 2026-10-24, received 2026-11-05 (torsion-balance materials; the experiment is in the [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance) repo)
 
@@ -773,7 +773,7 @@ recorded here.
 
 ## On order (placed, not yet received)
 
-### 2026-11-10 order (AliExpress, balance workshop; placed by the user 2026-11-10, 7 line items; received 2026-11-20)
+### 2026-11-10 order (AliExpress, balance workshop; placed by the user 2026-11-10, 7 line items; 6 received 2026-11-20, the LR44 cells still in transit)
 
 Prices in CAD as in the cart; the order cleared the Choice free-shipping threshold (it was C$0.66 short before the files were added). Cart total C$14.19.
 
@@ -787,4 +787,4 @@ Prices in CAD as in the cart; the order cleared the Choice free-shipping thresho
 | M1 calibration weight | https://www.aliexpress.com/item/1005005924323638.html | 1 g | C$2.48 |
 | Diamond needle file set, 14 cm | https://www.aliexpress.com/item/1005007161620280.html | 2 pcs | C$1.38 |
 
-Why: cells for the calipers (and spares); cable for the balance's strip sensor; blades for the brass-rod saw cut; washers for the M3 screws; scale and weight for the calibration route (`spurious-force-balance/docs/procedures.md` B.1); files to finish the sawn brass face and deburr. **Arrived 2026-11-20** (the user reported the JST-SH cable, hacksaw blades, washers, scale (powers on and off), 1 g weight and needle files; the cells line was not named in the report, so its arrival is assumed, not confirmed). Logged in `inventory.md` with bags. Still to check: the file shape (listing text says round, title and section say flat) and whether the 1 g weight is magnetic.
+Why: cells for the calipers (and spares); cable for the balance's strip sensor; blades for the brass-rod saw cut; washers for the M3 screws; scale and weight for the calibration route (`spurious-force-balance/docs/procedures.md` B.1); files to finish the sawn brass face and deburr. **Arrived 2026-11-20** (the JST-SH cable, hacksaw blades, washers, scale (powers on and off), 1 g weight and needle files (flat, red-handled); the LR44 cells have NOT arrived (user, 2026-11-20), so the calipers still have no cell). Logged in `inventory.md`. Still to check: whether the 1 g weight is magnetic (touch an N42 disc to it).
