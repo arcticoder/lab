@@ -2,7 +2,7 @@
 
 Ledger of the coupons on the JLC account. **Source of truth from 2026-11-04: the account's Unused Coupons page (`jlcpcb.com/user-center/payments/coupon`), read from the JLCONE app (15 unused coupons)**; amounts are in C$ at the current rate (US$10 = C$13.93). Rules from the coupon terms: each coupon is used once; the page terms say one coupon per order (the user earlier reported two could be used); a coupon covers the goods only ("excluding freight") and never takes a line below zero; "for orders over X" is a minimum on the goods.
 A coupon's validity runs from the day "Get Coupon" is clicked (user, 2026-11-04): the coupon center (`jlcpcb.com/coupon-center`) lists unclaimed coupons with a term ("Valid for 30 / 60 days", no date) and claimed ones with "Use Now" and a date, so every dated coupon below was claimed and a coupon not yet claimed has no date: claim one only when its order is about to be placed.
-The plan that assigns coupons to orders is in `spurious-force-balance/docs/fabrication.md` ("JLC orders, coupons and parcels"). Update the table when one is used.
+The plan that assigns coupons to orders is in `open-torsion-balance/docs/fabrication.md` ("JLC orders, coupons and parcels"). Update the table when one is used.
 
 ## Unused coupons on the account (read 2026-11-04)
 

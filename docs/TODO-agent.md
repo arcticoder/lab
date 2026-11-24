@@ -38,7 +38,7 @@ confirm the numbers, run `smoke_test.py` and get it green) the same way
 ## Torsion-balance experiment — moved to its own repo (2026-10-23)
 
 The fab-assembled force-balance work (the former Part A gates, work packages and toolchain, plus the
-2026-10-23 materials review) lives in [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance); its task lists are
+2026-10-23 materials review) lives in [open-torsion-balance](https://github.com/arcticoder/open-torsion-balance); its task lists are
 `docs/TODO-agent.md` and `docs/TODO-arcticoder.md` there. This repo keeps the reusable bench circuits and the
 shared inventory and order ledger. Lab's `optical_shadow_readout` and `lockin_amplifier` are what that
 experiment's prototype check builds on (items 1 and 2 of `TODO-arcticoder.md`).

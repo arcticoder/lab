@@ -33,7 +33,7 @@ status lives in `README.md`'s "built & bench-tested" table.
 
 1. **Do not power the ADS1115 module** (its headers were soldered with bridges): it is shelved.
 
-The torsion-balance experiment's orders and builds are in [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance)'s
+The torsion-balance experiment's orders and builds are in [open-torsion-balance](https://github.com/arcticoder/open-torsion-balance)'s
 `docs/TODO-arcticoder.md`. The AliExpress cart is shared, so lines from both lists are one checkout.
 
 ## Ready to build now — parts on hand

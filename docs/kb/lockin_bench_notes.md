@@ -148,5 +148,5 @@ signal-level diagnosis.
 
 ## Dependency from the torsion-balance experiment (2026-10-24)
 
-The prototype check (A5) of github.com/arcticoder/spurious-force-balance uses this rig: `signal_conditioning/lockin_amplifier` first, then `signal_conditioning/optical_shadow_readout` (the TIA front end that reports how much light the
+The prototype check (A5) of github.com/arcticoder/open-torsion-balance uses this rig: `signal_conditioning/lockin_amplifier` first, then `signal_conditioning/optical_shadow_readout` (the TIA front end that reports how much light the
 LED puts on the photodiode, the number the experiment's noise model assumes at 100 uA). Keep both assembled on the breadboard until A5 has been run; the experiment's TODO says so. The lock-in's own bench facts above are unchanged.

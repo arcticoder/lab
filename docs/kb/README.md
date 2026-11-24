@@ -1,6 +1,6 @@
 # KB index — `lab/docs/kb`
 
-LLM-facing notes (not end-user docs). One line per note; the experiment's own notes are in github.com/arcticoder/spurious-force-balance `docs/kb/`.
+LLM-facing notes (not end-user docs). One line per note; the experiment's own notes are in github.com/arcticoder/open-torsion-balance `docs/kb/`.
 
 | Note | What it is for |
 |------|----------------|

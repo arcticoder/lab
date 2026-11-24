@@ -1683,7 +1683,7 @@ that would erase the marker.
 
 ## Licenses, cross-repo links and third-party chat transcripts (2026-10-24)
 
-- **Licenses (`lab` and `spurious-force-balance`):** `LICENSE` is MIT (code: Python, MicroPython, tools) and `LICENSE-HARDWARE` is the CERN Open Hardware Licence v2 Permissive (hardware designs and their
+- **Licenses (`lab` and `open-torsion-balance`):** `LICENSE` is MIT (code: Python, MicroPython, tools) and `LICENSE-HARDWARE` is the CERN Open Hardware Licence v2 Permissive (hardware designs and their
   documentation: SPICE netlists, schematics, breadboard guides, parts tables and BOMs, CAD outputs, build documents). Each README has a "License" section saying which is which. A CadQuery script is code (MIT)
   whose output is hardware (CERN-OHL-P). The user chose this pair on 2026-10-24.
 - **Links between the repos are GitHub URLs** (`https://github.com/arcticoder/<repo>/blob/main/...`), never relative paths across repos.
@@ -1692,4 +1692,4 @@ that would erase the marker.
 
 ## Pictures are `.jxl`, tracked by Git LFS (2026-10-30)
 
-In the sibling `spurious-force-balance` repo pictures are lossless JPEG XL (`tools/to_jxl.py` converts; GitHub does not render `.jxl` inline). `lab` keeps `*.jpg` and `*.jxl` in LFS (`.gitattributes`); its generated `schematic.png` files are gitignored and stay PNG. The user does not commit unless a TODO item says so.
+In the sibling `open-torsion-balance` repo pictures are lossless JPEG XL (`tools/to_jxl.py` converts; GitHub does not render `.jxl` inline). `lab` keeps `*.jpg` and `*.jxl` in LFS (`.gitattributes`); its generated `schematic.png` files are gitignored and stay PNG. The user does not commit unless a TODO item says so.

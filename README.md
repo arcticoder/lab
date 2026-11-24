@@ -276,7 +276,7 @@ every row above.
 ## Experiments built on this lab
 
 The torsion-balance study of spurious forces (printable balance, noise model, JLCPCB-assembled electronics) is in
-its own repo, [spurious-force-balance](https://github.com/arcticoder/spurious-force-balance); its prototype check uses this repo's lock-in amplifier and optical
+its own repo, [open-torsion-balance](https://github.com/arcticoder/open-torsion-balance); its prototype check uses this repo's lock-in amplifier and optical
 shadow readout.
 
 ## Repo structure

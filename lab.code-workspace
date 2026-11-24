@@ -13,6 +13,10 @@
 			"path": "../spurious-force-balance"
 		},
 		{
+			"name": "open-torsion-balance",
+			"path": "../open-torsion-balance"
+		},
+		{
 			"name": "wsl",
 			"path": "../../sysadmin/wsl"
 		},
