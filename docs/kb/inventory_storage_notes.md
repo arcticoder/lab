@@ -77,3 +77,7 @@ Six photos of the tool bags' contents (not the `SCREWS + NUTS` or `NOZZLES` sub-
 - The cut torsion strip lives in its own small bag labelled `TORSION STRIP`, inside `STRIP SHEET` (BALANCE MATERIALS), on top of the roll with nothing pressing on it. A second strip is cut just in time, not stocked.
 - Two printed `fixture_cal_rider` copies (the STL holds one) belong in `PRINTED SMALL`; the grey and black spools live in the office on a separate holder (Printables 77791) in a large freezer bag, not on the printer.
 - The hacksaw blades are PINNED (a 1 x 5 mm pin through the thickness 3 mm from each end, 6 x 0.8 x 153.5 mm); log them as such. Photos from the user are processed and deleted by the agent (see open-torsion-balance `kb/project_workflow_notes.md`).
+
+## 2026-11-26 arrivals filed
+Safety glasses (SCVCN photochromic) went to `HAND TOOLS` > `CUT + FILE` (used with the hacksaw blades and needle files for the brass cut); the 1/2/5/10/20 g nickel-plated steel set to `BALANCE MATERIALS` > `CALIBRATION` (the N42 discs are in `ELECTRONICS` > `MISC`: different bags keep them apart); `clamp_plate` x5 to `FAB BOARDS` (the user filed them; two photos looked at and deleted). The set has not been weighed (user task: the 20, 10 and 5 g pieces on the 0.1 g scale; the 1 and 2 g pieces are too light for it).
+
