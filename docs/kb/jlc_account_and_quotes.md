@@ -121,3 +121,7 @@ One coupon per order (checkout and the center's terms agree); the earlier "two c
 
 ## 2026-11-20: the main-board order as read in the app (placed 2026-11-18)
 Order W…(redacted): items Y11 PCB (5 pcs, $31.70, weight 0.62 kg) and SMT…(redacted) Economic PCBA (2 pcs, $120.86, 0.14 kg): merchandise $152.56, shipping $30.97 (UPS Worldwide Express Saver, 0.76 kg), discount -$33.21, total $150.32 (order pages are USD; about C$215). The order page's discount is the JLCONE 20% Off (Max $200) per the Used Coupons tab; the percent coupon applies at payment and beat the cart's -C$42.91 estimate, so read the payment page's coupon selector (not the cart) before judging coupons. Timeline: submitted 11-18 20:33; DFM 'Y11 approved' 11-18 20:34; reviewed, paid and In Production 11-20 05:50; status then 'Data Preparation'. The order page prints the card type and last digits and the address: never copy them. UPS clearance fees are billed at delivery and were not in the total. Order list also shows the clamp_plate order (W…(redacted), total $6.77: goods $1.00 + Global Standard shipping $5.77, Shipped).
+
+## 2026-11-26: main_board order status
+The orders tab already open in the app showed the 2026-11-18 order still `In Production`; a `Page.reload` of that tab and a text read showed it `Shipped` (UPS Worldwide Express Saver, merchandise total US$119.35 after the coupon, shipping US$30.97). Reload works for refreshing the order list; the page text is stale until reloaded. No tracking number recorded.
+
