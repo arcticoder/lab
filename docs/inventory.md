@@ -196,9 +196,9 @@ new build, rather than by eye alone.
 | Diamond needle file set, 14 cm, 2 pcs | 1 | Received 2026-11-20 (1005007161620280). Flat (user, 2026-11-20). Bag: `HAND TOOLS`, sub-bag `CUT + FILE` |
 | LR44 button cell, 1.55 V (not yet received) | 0 (5 ordered) | In transit (2026-11-10 order, 1005005805225475; not arrived as of 2026-11-20). One goes in the calipers. |
 | JST-SH 1.0 mm 2-pin cable, 10 cm, flying leads | 5 | Received 2026-11-20 (1005004138501132). Strip-sensor and plate-driver leads. Bag: `BALANCE MATERIALS`, sub-bag `CABLES` |
-| Digital pocket scale, 0.1 g / 0.5 kg | 1 | Received 2026-11-20 (32454982206). Powers on and off (user). Takes AAA cells (none included). Zero-and-1 g check pending. Bag: `BALANCE MATERIALS`, sub-bag `CALIBRATION` |
+| Digital pocket scale, 0.1 g / 0.5 kg | 1 | Received 2026-11-20 (32454982206). Powers on and off (user). Takes AAA cells (none included). Zero and 1 g check passed 2026-11-27 (1.0 g with both 1 g pieces; 2/5/10/20 g read 2.0/5.0/10.0/20.0 g). Bag: `BALANCE MATERIALS`, sub-bag `CALIBRATION` |
 | Calibration weight, 1 g | 1 | Received 2026-11-20 (1005005924323638). Not magnetic (N42 disc test by the user, 2026-11-20). Bag: `BALANCE MATERIALS`, sub-bag `CALIBRATION` |
-| Calibration weight set 1/2/5/10/20 g, nickel-plated steel | 1 set | Received 2026-11-26 (1005005974937195, 2026-11-14 order). Seller tolerance claim +/-0.003 g, unverified; not yet weighed or measured. Keep away from the N42 discs (`MISC`, a different bag). Bag: `BALANCE MATERIALS`, sub-bag `CALIBRATION` |
+| Calibration weight set 1/2/5/10/20 g, nickel-plated steel | 1 set | Received 2026-11-26 (1005005974937195, 2026-11-14 order). Seller tolerance claim +/-0.003 g, not testable on the 0.1 g scale; weighed 2026-11-27: 1/2/5/10/20 g read 1.0/2.0/5.0/10.0/20.0 g; diameters not yet measured. Keep away from the N42 discs (`MISC`, a different bag). Bag: `BALANCE MATERIALS`, sub-bag `CALIBRATION` |
 | Safety glasses, SCVCN photochromic cycling glasses | 1 | Received 2026-11-26 (1005010228786764, 2026-11-14 order). For the brass hacksaw cut. Bag: `HAND TOOLS`, sub-bag `CUT + FILE` (next to the blades and files they are used with) |
 
 ---

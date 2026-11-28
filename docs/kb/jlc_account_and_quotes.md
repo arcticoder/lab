@@ -125,3 +125,5 @@ Order W…(redacted): items Y11 PCB (5 pcs, $31.70, weight 0.62 kg) and SMT…(r
 ## 2026-11-26: main_board order status
 The orders tab already open in the app showed the 2026-11-18 order still `In Production`; a `Page.reload` of that tab and a text read showed it `Shipped` (UPS Worldwide Express Saver, merchandise total US$119.35 after the coupon, shipping US$30.97). Reload works for refreshing the order list; the page text is stale until reloaded. No tracking number recorded.
 
+## Main-board import charges (2026-11-27)
+The 2026-11-18 order (UPS Worldwide Express Saver) was billed CA$32.97 at delivery, paid by the user on UPS's pay page: government CA$20.37 (HST CA$8.49, other CA$11.88) plus UPS brokerage CA$12.60 (fee CA$12.00, GST/HST CA$0.60). The tracking page had quoted CA$39.27; the pay page's lower figure was what was charged. Estimated delivery moved to 2026-12-02 after the airport departure scan on 2026-11-26. Landed cost: US$150.32 on the order page plus CA$32.97. JLC's own order total never includes these; a Canada-bound UPS order adds about 15 %.
